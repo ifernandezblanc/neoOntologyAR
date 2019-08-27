@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig>
+<Tracking>
+<ModelTarget name="Mark8_t1"/>
+</Tracking>
+
+<Assembly name="Mark8_t1s_assembly">
+<Part name="Mark8_t1" translation="0 0 0" rotation="AD: 0 0 1 0"/>
+<EntryPoint name="viewpoint_0000" translation="-1.89113e-17 0.0408726 0.639007" rotation="AD: 1 2.3134434523469404e-16 -7.294259186650049e-17 215">
+
+</EntryPoint>
+
+</Assembly>
+</QCARConfig>
