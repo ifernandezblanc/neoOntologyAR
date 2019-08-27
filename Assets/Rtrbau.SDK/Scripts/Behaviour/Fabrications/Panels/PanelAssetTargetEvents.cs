@@ -41,7 +41,6 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
-
         public TrackableBehaviour assetTargetTrackableBehaviour;
         #endregion CLASS_VARIABLES
 

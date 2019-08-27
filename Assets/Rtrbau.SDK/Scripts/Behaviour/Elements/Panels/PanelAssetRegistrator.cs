@@ -339,12 +339,11 @@ namespace Rtrbau
 
         void LoadAssetModel(GameObject gameObject, string absolutePath)
         {
-            // Add asset manager as children of asset target
-            assetManager.transform.SetParent(assetTarget.transform, false);
+            // Load asset model manual registrator
+            assetManager.AddComponent<AssetManager>();
+            assetManager.GetComponent<AssetManager>().Initialise();
 
             assetRegistratorObjectsLoaded += 1;
-
-            Debug.Log("PanelAssetRegistrator: LoadAssetModel:" + OnRegistratorObjectsDownloaded == null);
 
             if (OnRegistratorObjectsDownloaded != null)
             {
@@ -359,9 +358,8 @@ namespace Rtrbau
         {
             if (assetRegistratorObjectsLoaded == 2)
             {
-                // Load asset model manual registrator
-                assetManager.AddComponent<AssetManager>();
-                assetManager.GetComponent<AssetManager>().Initialise();
+                // Add asset manager (model) as children of asset target
+                assetManager.transform.SetParent(assetTarget.transform, false);
 
                 // Initialise registrator and streaming buttons
                 // StreamingButton.instance.Initialise();
@@ -369,7 +367,7 @@ namespace Rtrbau
                 // RegistrationButton.instance.Initialise(assetModel.transform.GetChild(1).gameObject);
                 RegistrationButton.instance.Initialise(assetManager.GetComponent<AssetManager>().assetRegistrator);
 
-                Debug.Log("RegistratorAsset: :LoadAssetRegistrator: Asset Registrator Objects found.");
+                Debug.Log("RegistratorAsset: LoadAssetRegistrator: Asset Registrator Objects found.");
 
                 assetStatusPanel.text = "Asset Registrator Objects found. Please gaze at your asset.";
             }
