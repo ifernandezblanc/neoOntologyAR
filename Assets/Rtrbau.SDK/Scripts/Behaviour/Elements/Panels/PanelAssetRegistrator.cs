@@ -45,7 +45,7 @@ namespace Rtrbau
         public RtrbauFile assetTargetDAT;
 
         public GameObject assetTarget;
-        public GameObject assetManager;
+        public GameObject assetModel;
 
         public ObjectImporter assetModelImporter;
         public ImportOptions assetModelImportOptions;
@@ -102,15 +102,16 @@ namespace Rtrbau
             OnDatasetFileDownloaded -= LoadAssetTarget;
             OnRegistratorObjectsDownloaded -= LoadAssetRegistrator;
         }
-
         #endregion MONOBEHAVIOUR_METHODS
+
+        #region INITIALISATION_METHODS
         /// <summary>
-        /// Describe script purpose
-        /// Add links when code has been inspired
+        /// 
         /// </summary>
+        /// <param name="asset"></param>
         public void Initialise(OntologyEntity asset)
         {
-            if (loadingPanel == null || assetNamePanel == null || 
+            if (loadingPanel == null || assetNamePanel == null ||
                 assetStatusPanel == null || assetRegistrationButton == null)
             {
                 Debug.LogError("Fabrications not found for this rtrbau element.");
@@ -119,7 +120,7 @@ namespace Rtrbau
             {
                 assetEntity = asset;
 
-                assetManager = new GameObject(assetEntity.name);
+                assetModel = new GameObject(assetEntity.name);
 
                 assetDatasetFilesDownloaded = 0;
                 assetRegistratorObjectsLoaded = 0;
@@ -130,8 +131,6 @@ namespace Rtrbau
                 DownloadElement();
             }
         }
-        #region INITIALISATION_METHODS
-
         #endregion INITIALISATION_METHODS
 
         #region IELEMENTABLE_METHODS
@@ -202,27 +201,31 @@ namespace Rtrbau
         /// </summary>
         public void InputIntoReport()
         {
-            // Set asset manager as RtrbauChild
-            assetManager.transform.SetParent(this.transform.root, true);
+            // When asset has been registered with Vuforia
+            // Detach asset model
+            assetTarget.transform.DetachChildren();
+            // Initialise asset model as asset manager
+            assetModel.AddComponent<AssetManager>();
+            // Initialise asset registrator (manual)
+            assetModel.GetComponent<AssetManager>().Initialise();
+            // Initialise asset registration button
+            RegistrationButton.instance.Initialise(assetModel.GetComponent<AssetManager>().assetRegistrator);
+            // Destroy asset target
+            Destroy(assetTarget);
             // Terminate Vuforia
             Tracker.instance.StopVuforia();
             Tracker.instance.TerminateVuforia();
-            // Destroy Target
-            Destroy(assetTarget);
-            // Initialise asset visualiser
-            assetManager.GetComponent<AssetManager>().InitialiseVisualiser();
-            // IMPORTANT: StreamingButton de-activated in script, need to remove it
-
+            
             // Move to next panel
             string ontologiesURI = Rtrbauer.instance.ontology.ontologyURI.AbsoluteUri + "/" + "ontologies#ontologies";
             OntologyEntity ontologies = new OntologyEntity(ontologiesURI);
             PanellerEvents.TriggerEvent("LoadOperationOntologies", ontologies);
-            // Rtrbauer.instance.LoadVisualiser();
         }
 
         #endregion IELEMENTABLE_METHODS
 
         #region CLASS_METHODS
+        #region PRIVATE
         /// <summary>
         /// Describe script purpose
         /// Add links when code has been inspired
@@ -235,7 +238,7 @@ namespace Rtrbau
             assetModelImportOptions.buildColliders = true;
             // UPG: check if its possible to de-activate materials loading
             assetModelImportOptions.hideWhileLoading = true;
-            /// assetModelImportOptions.localEulerAngles = new Vector3(0, 180, 0);
+            // assetModelImportOptions.localEulerAngles = new Vector3(0, 180, 0);
         }
         /// <summary>
         /// Describe script purpose
@@ -249,7 +252,7 @@ namespace Rtrbau
             if (modelAsset != null)
             {
                 string modelName = "Model_" + modelAsset.name;
-                assetModelImporter.ImportModelAsync(modelName, modelAsset.FilePath(), assetManager.transform, assetModelImportOptions);
+                assetModelImporter.ImportModelAsync(modelName, modelAsset.FilePath(), assetModel.transform, assetModelImportOptions);
                 assetStatusPanel.text = "Loading Asset Model";
                 loadingPanel.SetActive(true);
             }
@@ -339,10 +342,13 @@ namespace Rtrbau
 
         void LoadAssetModel(GameObject gameObject, string absolutePath)
         {
-            // Load asset model manual registrator
-            assetManager.AddComponent<AssetManager>();
-            assetManager.GetComponent<AssetManager>().Initialise();
-
+            // Load transparent material for asset components models
+            Material componentMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardTransparentBlue") as Material;
+            // Find mesh renderers for asset components models
+            MeshRenderer[] components = assetModel.transform.GetChild(0).GetComponentsInChildren<MeshRenderer>();
+            // Assign material to components models meshes renderers
+            LoadAssetModelMaterials(components, componentMaterial);
+            
             assetRegistratorObjectsLoaded += 1;
 
             if (OnRegistratorObjectsDownloaded != null)
@@ -358,14 +364,10 @@ namespace Rtrbau
         {
             if (assetRegistratorObjectsLoaded == 2)
             {
-                // Add asset manager (model) as children of asset target
-                assetManager.transform.SetParent(assetTarget.transform, false);
-
-                // Initialise registrator and streaming buttons
-                // StreamingButton.instance.Initialise();
-                // Not sure which component is at this point
-                // RegistrationButton.instance.Initialise(assetModel.transform.GetChild(1).gameObject);
-                RegistrationButton.instance.Initialise(assetManager.GetComponent<AssetManager>().assetRegistrator);
+                // Add asset model as children of asset target
+                assetModel.transform.SetParent(assetTarget.transform, false);
+                // Rotate asset model 180 degrees on y-axis to align with target
+                assetModel.transform.Rotate(new Vector3(0, 180, 0), Space.Self);
 
                 Debug.Log("RegistratorAsset: LoadAssetRegistrator: Asset Registrator Objects found.");
 
@@ -377,10 +379,14 @@ namespace Rtrbau
             }
         }
 
-        public void EvaluateNextStep()
+        void LoadAssetModelMaterials(MeshRenderer[] models, Material material)
         {
-            InputIntoReport();
+            foreach (MeshRenderer model in models)
+            {
+                model.material = material;
+            }
         }
+        #endregion PRIVATE
         #endregion CLASS_METHODS
     }
 }

@@ -150,8 +150,18 @@ namespace Rtrbau
             // Send relationship used to connect to the following individual to the report
             Reporter.instance.ReportElement(relationshipAttribute);
             // IMPORTANT: this button is set up for individuals in consult mode (IndividualProperties)
-            OntologyElement individualElement = new OntologyElement(nextIndividual, OntologyElementType.IndividualProperties);
-            visualiser.LoadElement(individualElement,Rtrbauer.instance.user.procedure);
+            OntologyElement individual = new OntologyElement(nextIndividual, OntologyElementType.IndividualProperties);
+            GameObject nextElement = visualiser.FindElement(individual);
+            if (nextElement != null)
+            {
+                Material lineMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardTransparentBlue") as Material;
+                element.gameObject.AddComponent<ElementsLine>();
+                element.gameObject.GetComponent<ElementsLine>().Initialise(element.gameObject, nextElement, lineMaterial);
+            }
+            else
+            {
+                RtrbauerEvents.TriggerEvent("LoadElement", individual, Rtrbauer.instance.user.procedure);
+            }
         }
         #endregion IFABRICATIONABLE_METHODS
 

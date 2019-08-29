@@ -1247,7 +1247,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7396154387351273479}
-        m_MethodName: EvaluateNextStep
+        m_MethodName: InputIntoReport
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2271,7 +2271,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 785869126805495449}
-  - {fileID: 5173619501820021086}
+  - {fileID: 6798775377404780890}
   - {fileID: 7400273200848559344}
   - {fileID: 785869128077358260}
   - {fileID: 4998391648005118182}
@@ -2329,7 +2329,7 @@ MonoBehaviour:
   assetRegistratorObjectsLoaded: 0
   assetNamePanel: {fileID: 4998391648899047137}
   assetStatusPanel: {fileID: 3656506800943493553}
-  loadingPanel: {fileID: 5172162920098078406}
+  loadingPanel: {fileID: 6798775377404780593}
   assetRegistrationButton: {fileID: 2386531231781620203}
 --- !u!1001 &6798775377404780619
 PrefabInstance:
@@ -2400,13 +2400,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2a5d20217e6d4ae48a2426b59cf26fc6, type: 3}
---- !u!1 &5172162920098078406 stripped
+--- !u!1 &6798775377404780593 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1845680809735290509, guid: 2a5d20217e6d4ae48a2426b59cf26fc6,
     type: 3}
   m_PrefabInstance: {fileID: 6798775377404780619}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &5173619501820021086 stripped
+--- !u!4 &6798775377404780890 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1843794866575141141, guid: 2a5d20217e6d4ae48a2426b59cf26fc6,
     type: 3}

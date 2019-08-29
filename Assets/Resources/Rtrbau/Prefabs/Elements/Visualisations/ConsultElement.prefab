@@ -131,9 +131,9 @@ MonoBehaviour:
     elementAttributes: []
   assignedFabrications: []
   rtrbauLocation: 0
+  noChildFabrications: []
   individualText: {fileID: 8604428453739541634}
   classText: {fileID: 2613696886265107365}
-  lineMaterial: {fileID: 2100000, guid: a7e0d8f908f5a9944aae7356c5e4bbb3, type: 2}
   objectClassesNumber: 0
   fabricationsSelected: 0
   componentDistanceDownloaded: 0
@@ -223,7 +223,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1769672710559988233}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.501, y: 0.175, z: 0}
+  m_LocalPosition: {x: -0.549, y: 0.197, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1178922226237225400}
@@ -244,7 +244,7 @@ MonoBehaviour:
   Columns: 1
   TileSize: {x: 1.1, y: 1.1, z: 0}
   Gutters: {x: 0, y: 0.05, z: 0}
-  LayoutDireciton: {x: 1, y: -1, z: 0}
+  LayoutDireciton: {x: 1, y: 1, z: 0}
   StartPosition: {x: 0, y: 0, z: 0}
   Centered: 0
   DepthCalculatedBy: 0
@@ -278,7 +278,7 @@ RectTransform:
   m_GameObject: {fileID: 3155392963306097325}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.75}
-  m_LocalScale: {x: 0.050000004, y: 0.050000004, z: 0.05000001}
+  m_LocalScale: {x: 0.050000004, y: 0.050000004, z: 0.05}
   m_Children: []
   m_Father: {fileID: 1178922226237225400}
   m_RootOrder: 1
@@ -482,7 +482,7 @@ RectTransform:
   m_GameObject: {fileID: 3950789325940277479}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.75}
-  m_LocalScale: {x: 0.050000004, y: 0.050000004, z: 0.05000001}
+  m_LocalScale: {x: 0.050000004, y: 0.050000004, z: 0.05}
   m_Children: []
   m_Father: {fileID: 1178922226237225400}
   m_RootOrder: 0

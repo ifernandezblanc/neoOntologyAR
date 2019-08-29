@@ -36,8 +36,8 @@ namespace Rtrbau
     {
         #region INITIALISATION_VARIABLES
         public GameObject assetTarget;
-        public TextMeshProUGUI assetStatus;
         public GameObject assetRegistrationButton;
+        public TextMeshProUGUI assetStatus;
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
@@ -100,9 +100,11 @@ namespace Rtrbau
 
         #region CLASS_METHODS
         /// <summary>
-        /// Describe script purpose
-        /// Add links when code has been inspired
+        /// 
         /// </summary>
+        /// <param name="targetAsset"></param>
+        /// <param name="statusPanel"></param>
+        /// <param name="registrationButton"></param>
         public virtual void Initialise(GameObject targetAsset, TextMeshProUGUI statusPanel, GameObject registrationButton)
         {
             assetTarget = targetAsset;
@@ -131,6 +133,10 @@ namespace Rtrbau
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="status"></param>
         void WriteStatusChange(string status)
         {
             if (assetStatus != null)
@@ -139,7 +145,6 @@ namespace Rtrbau
             }
             else { }
         }
-
         #endregion CLASS_METHODS
     }
 }

@@ -56,12 +56,13 @@ namespace Rtrbau
         public List<RtrbauFabrication> assignedFabrications;
         public List<KeyValuePair<RtrbauFabrication,GameObject>> elementFabrications;
         public RtrbauElementLocation rtrbauLocation;
+        public List<GameObject> noChildFabrications;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
         public TextMeshPro individualText;
         public TextMeshPro classText;
-        public Material lineMaterial;
+        private Material lineMaterial;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -74,13 +75,16 @@ namespace Rtrbau
         #region MONOBEHAVIOUR_METHODS
         void Start() { }
 
-        void Update() { UpdateLineRenderer(); }
+        void Update() { }
 
         void OnEnable() { }
 
         void OnDisable() { }
 
-        void OnDestroy() { DestroyIt(); }
+        void OnDestroy()
+        {
+            DestroyIt();
+        }
         #endregion MONOBEHAVIOUR_METHODS
 
         #region INITIALISATION_METHODS
@@ -90,7 +94,7 @@ namespace Rtrbau
         /// </summary>
         public void Initialise(AssetVisualiser assetVisualiser, OntologyElement elementIndividual, GameObject previous)
         {
-            if (individualText == null || classText == null || lineMaterial == null)
+            if (individualText == null || classText == null)
             {
                 Debug.LogError("Consult Element: Fabrication not found. Please assign them in ElementConsult script.");
             }
@@ -98,6 +102,8 @@ namespace Rtrbau
             {
                 if (elementIndividual.type == OntologyElementType.IndividualProperties)
                 {
+                    lineMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardTransparentBlue") as Material;
+
                     visualiser = assetVisualiser;
                     individualElement = elementIndividual;
                     previousElement = previous;
@@ -112,6 +118,7 @@ namespace Rtrbau
 
                     assignedFabrications = new List<RtrbauFabrication>();
                     elementFabrications = new List<KeyValuePair<RtrbauFabrication,GameObject>>();
+                    noChildFabrications = new List<GameObject>();
                     AddLineRenderer();
                     DownloadElement();
                 }
@@ -359,6 +366,7 @@ namespace Rtrbau
                 {
                     fabrication.Value.transform.SetParent(visualiser.transform, true);
                     fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, fabrication.Value.transform);
+                    noChildFabrications.Add(fabrication.Value);
                 }
                 else
                 {
@@ -379,9 +387,9 @@ namespace Rtrbau
         /// </summary>
         public void DestroyIt()
         {
-            foreach (KeyValuePair<RtrbauFabrication, GameObject> fabrication in elementFabrications)
+            foreach (GameObject fabrication in noChildFabrications)
             {
-                fabrication.Value.GetComponent<IVisualisable>().DestroyIt();
+                Destroy(fabrication);
             }
         }
         #endregion IVISUALISABLE_METHODS
@@ -541,33 +549,13 @@ namespace Rtrbau
 
         void AddLineRenderer()
         {
-            if (previousElement != null)
+            if (previousElement)
             {
-                // Set line widht at 10% of element consult panel
-                float width = this.transform.localScale.x * 0.01f;
-                this.gameObject.AddComponent<LineRenderer>();
-                this.gameObject.GetComponent<LineRenderer>().useWorldSpace = true;
-                this.gameObject.GetComponent<LineRenderer>().material = lineMaterial;
-                this.gameObject.GetComponent<LineRenderer>().startWidth = width;
-                this.gameObject.GetComponent<LineRenderer>().endWidth = width;
-                UpdateLineRenderer();
+                this.gameObject.AddComponent<ElementsLine>();
+                this.gameObject.GetComponent<ElementsLine>().Initialise(this.gameObject, previousElement, lineMaterial);
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        void UpdateLineRenderer()
-        {
-            if (previousElement != null)
-            {
-                // Set start and end of line in world coordinates
-                Vector3 start = this.transform.position;
-                Vector3 end = previousElement.transform.position;
-                this.gameObject.GetComponent<LineRenderer>().SetPosition(0, start);
-                this.gameObject.GetComponent<LineRenderer>().SetPosition(1, end);
-            }
-        }
         #endregion CLASS_METHODS
     }
 }

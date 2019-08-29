@@ -33,15 +33,15 @@ namespace Rtrbau
     public class AssetManager : MonoBehaviour, IVisualisable
     {
         #region CLASS_VARIABLES
-        // private Bounds assetModelBounds;
+        public Bounds assetBounds;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECTS_MANAGED
         public GameObject asset;
         public GameObject assetModel;
+        public List<GameObject> assetComponentsModels;
         public GameObject assetRegistrator;
         public GameObject assetVisualiser;
-        public List<GameObject> assetComponentsModels;
         #endregion GAMEOBJECTS_MANAGED
 
         #region GAMEOBJECTS_PREFABS
@@ -56,29 +56,44 @@ namespace Rtrbau
         #region INITIALISATION_METHODS
         public void Initialise()
         {
-            // Initialise class variables
-            // assetModelBounds = new Bounds(Vector3.zero, Vector3.zero);
-            assetComponentsModels = new List<GameObject>();
+            Vector3 registeredPosition = this.transform.position;
+            Quaternion registeredRotation = this.transform.rotation;
 
-            // Run additional visualisation initialiser functionalities
-            LocateIt();
-            LoadMaterials();
-            LoadMeshes();
-            LoadBoxCollider();
-            LoadBoundingBox();
-            LoadManipulationHandler();
-        }
+            // Set model at origin
+            this.transform.position = new Vector3(0, 0, 0);
+            this.transform.rotation = Quaternion.Euler(0, 0, 0);
 
-        public void InitialiseVisualiser()
-        {
-            GameObject visualiser = new GameObject();
-            visualiser.AddComponent<AssetVisualiser>();
-            visualiser.GetComponent<AssetVisualiser>().Initialise(this);
-            assetVisualiser = visualiser;
+            // Initialise asset manager reference
+            asset = this.gameObject;
+
+            // Initialise asset model reference;
+            assetModel = this.transform.GetChild(0).gameObject;
+
+            // Initialise asset model components references
+            assetComponentsModels = ReturnModels(assetModel);
+
+            // Create asset registrator
+            assetRegistrator = new GameObject();
+            assetRegistrator.name = "Registrator_" + asset.name;
+            assetRegistrator.transform.SetParent(asset.transform, false);
+
+            // Assign asset model to asset registrator
+            assetModel.transform.SetParent(assetRegistrator.transform, true);
+
+            // Initialise asset registrator
+            InitialiseRegistrator();
+
+            // Initialise asset visualiser
+            InitialiseVisualiser();
+
+            // Set back at registered position
+            this.transform.position = registeredPosition;
+            this.transform.rotation = registeredRotation;
         }
         #endregion INITIALISATION_METHODS
 
         #region MONOBEHAVIOUR_METHODS
+        void Start() { assetBounds = new Bounds(); }
         void OnDestroy() { DestroyIt(); }
         #endregion MONOBEHAVIOUR_METHODS
 
@@ -88,78 +103,53 @@ namespace Rtrbau
         /// </summary>
         public void LocateIt()
         {
-            // Top parent of asset visualisation (holds all translations and rotations from target)
-            asset = this.gameObject;
-            // Needs to rotate 180 degrees on y-axis to align with asset target
-            asset.transform.localRotation *= Quaternion.Euler(0, 180, 0);
-            // Game object to control asset top parent manual registration
-            // Should include loaded models as childs to keep them in a single copy
-            assetRegistrator = new GameObject();
-            assetRegistrator.name = "Registrator_" + asset.name;
-            assetRegistrator.transform.SetParent(asset.transform, false);
-            assetRegistrator.transform.position = asset.transform.position;
-            // Game object parent of loaded asset component models
-            assetModel = GameObject.Find("Model_" + asset.name);
-            assetModel.transform.SetParent(assetRegistrator.transform, true);
-            // List of game objects of loaded asset component models
-            foreach (Transform child in assetModel.transform)
-            {
-                assetComponentsModels.Add(child.gameObject);
-            }
+            // Managed in creation at PanelAssetRegistrator
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public void DestroyIt() { assetVisualiser.GetComponent<IVisualisable>().DestroyIt(); }
+        public void DestroyIt() { }
         #endregion IVISUALISABLE_METHODS
 
         #region CLASS_METHODS
-        #region PRIVATE
-        /// <summary>
-        /// Loads necessary materials to build asset registrator from project resources.
-        /// </summary>
-        void LoadMaterials()
-        {
-            assetModelMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardTransparentBlue") as Material;
-            BoxMaterial = Resources.Load("MRTK/BoundingBox") as Material;
-            BoxGrabbedMaterial = Resources.Load("MRTK/BoundingBoxGrabbed") as Material;
-            HandleMaterial = Resources.Load("MRTK/BoundingBoxHandleWhite") as Material;
-            HandleGrabbedMaterial = Resources.Load("MRTK/BoundingBoxHandleBlueGrabbed") as Material;
-            RotationHandleSlatePrefab = Resources.Load("MRTK/MRTK_BoundingBox_RotateWidget") as GameObject;
-        }
+        #region INITIALISERS
 
-        /// <summary>
-        /// Modifies loaded asset components models to adapt to rtrbau visualisation.
-        /// </summary>
-        void LoadMeshes()
+        #endregion INITIALISERS
+        #region PRIVATE
+        List<GameObject> ReturnModels(GameObject assetModel)
         {
-            foreach (GameObject component in assetComponentsModels)
+            List<GameObject> models = new List<GameObject>();
+
+            MeshRenderer[] components = assetModel.GetComponentsInChildren<MeshRenderer>();
+
+            foreach (MeshRenderer component in components)
             {
-                // Change material for rtrbau visualisation
-                component.GetComponent<MeshRenderer>().material = assetModelMaterial;
+                models.Add(component.gameObject);
                 // Add manipulator in bounds centre for controlling mesh in fabrications;
                 GameObject componentManipulator = new GameObject();
                 componentManipulator.name = "Manipulator_" + component.name;
                 componentManipulator.transform.SetParent(component.transform, false);
                 componentManipulator.transform.position = component.GetComponent<MeshRenderer>().bounds.center;
-                // Calculate assetModelBounds for following initialisation functions
-                // assetModelBounds.Encapsulate(component.GetComponent<MeshRenderer>().bounds);
+                // Caculate bounds in local space because object in 
+                assetBounds.Encapsulate(component.bounds);
             }
+
+            return models;
+        }
+
+        void InitialiseRegistrator()
+        {
+            LoadBoundingBox();
+            LoadManipulationHandler();
         }
 
 
-        /// <summary>
-        /// Adds box collider to asset registrator for enabling bounding box and manipulation handler.
-        /// </summary>
-        void LoadBoxCollider()
+        void InitialiseVisualiser()
         {
-            Bounds bounds = CalculateAssetBounds();
-
-            // https://answers.unity.com/questions/22019/auto-sizing-primitive-collider-based-on-child-mesh.html
-            assetRegistrator.AddComponent<BoxCollider>();
-            assetRegistrator.GetComponent<BoxCollider>().center = assetRegistrator.transform.InverseTransformPoint(bounds.center);
-            assetRegistrator.GetComponent<BoxCollider>().size = bounds.size;
+            assetVisualiser = new GameObject();
+            assetVisualiser.AddComponent<AssetVisualiser>();
+            assetVisualiser.GetComponent<AssetVisualiser>().Initialise(this);
         }
 
         /// <summary>
@@ -167,9 +157,24 @@ namespace Rtrbau
         /// </summary>
         void LoadBoundingBox()
         {
+            // Load materials
+            BoxMaterial = Resources.Load("MRTK/BoundingBox") as Material;
+            BoxGrabbedMaterial = Resources.Load("MRTK/BoundingBoxGrabbed") as Material;
+            HandleMaterial = Resources.Load("MRTK/BoundingBoxHandleWhite") as Material;
+            HandleGrabbedMaterial = Resources.Load("MRTK/BoundingBoxHandleBlueGrabbed") as Material;
+            RotationHandleSlatePrefab = Resources.Load("MRTK/MRTK_BoundingBox_RotateWidget") as GameObject;
+
+            // Load Box Collider
+            // https://answers.unity.com/questions/22019/auto-sizing-primitive-collider-based-on-child-mesh.html
+            assetRegistrator.AddComponent<BoxCollider>();
+            assetRegistrator.GetComponent<BoxCollider>().center = assetRegistrator.transform.InverseTransformPoint(assetBounds.center);
+            assetRegistrator.GetComponent<BoxCollider>().size = assetBounds.size;
+
+            // Assign component and properties
             assetRegistrator.AddComponent<BoundingBox>();
             assetRegistrator.GetComponent<BoundingBox>().targetObject = asset;
             assetRegistrator.GetComponent<BoundingBox>().boundsOverride = assetRegistrator.GetComponent<BoxCollider>();
+            assetRegistrator.GetComponent<BoundingBox>().CalculationMethod = BoundingBox.BoundsCalculationMethod.ColliderOnly;
             assetRegistrator.GetComponent<BoundingBox>().BoxMaterial = BoxMaterial;
             assetRegistrator.GetComponent<BoundingBox>().BoxGrabbedMaterial = BoxGrabbedMaterial;
             assetRegistrator.GetComponent<BoundingBox>().HandleMaterial = HandleMaterial;
@@ -202,25 +207,22 @@ namespace Rtrbau
         /// Returns asset model bounds calculated from component models with meshes.
         /// </summary>
         /// <returns></returns>
-        public Bounds CalculateAssetBounds()
+        public Bounds ReturnAssetBoundsLocal()
         {
-            Bounds assetBounds = new Bounds(Vector3.zero, Vector3.zero);
-
-            foreach (GameObject component in assetComponentsModels)
+            Bounds bounds = new Bounds();
+            foreach (GameObject model in assetComponentsModels)
             {
-                assetBounds.Encapsulate(component.GetComponent<MeshRenderer>().bounds);
+                bounds.Encapsulate(model.GetComponent<MeshFilter>().mesh.bounds);
             }
-
-            return assetBounds;
+            return bounds;
         }
         /// <summary>
         /// Returns the asset's centre position in world space coordinates.
         /// </summary>
         /// <returns></returns>
-        public Vector3 CalculateAssetCentreWorld()
+        public Vector3 ReturnAssetCentreWorld()
         {
-            Vector3 bcCentre = assetRegistrator.GetComponent<BoxCollider>().center;
-            return assetRegistrator.transform.TransformPoint(bcCentre);
+            return assetRegistrator.transform.InverseTransformPoint(assetRegistrator.GetComponent<BoxCollider>().center);
         }
 
         /// <summary>

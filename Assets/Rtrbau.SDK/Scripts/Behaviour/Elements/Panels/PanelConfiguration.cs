@@ -199,6 +199,9 @@ namespace Rtrbau
         {
             string serverURL = serverWriteButton.text;
             StartCoroutine(CheckServerConnection(serverURL));
+            //// When working at home to avoid server connection:
+            ////serverURI = serverURL;
+            ////InputIntoReport();
             Debug.Log("PanelConfiguration: ConfigureServer: Server configured is: " + serverURL);
         }
 

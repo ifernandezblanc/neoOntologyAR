@@ -571,11 +571,11 @@ PlayerSettings:
   m_MobileRenderingPath: 1
   metroPackageName: RtrbauIFB
   metroPackageVersion: 1.0.0.0
-  metroCertificatePath: 
+  metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
-  metroCertificateSubject: 
-  metroCertificateIssuer: 
-  metroCertificateNotAfter: 0000000000000000
+  metroCertificateSubject: IFernandezBlanc
+  metroCertificateIssuer: IFernandezBlanc
+  metroCertificateNotAfter: 80e054e5cf7bd601
   metroApplicationDescription: Template_3D
   wsaImages: {}
   metroTileShortName: RtrbauV2
@@ -604,11 +604,11 @@ PlayerSettings:
       EnterpriseAuthentication: False
       HumanInterfaceDevice: False
       InputInjectionBrokered: False
-      InternetClient: True
+      InternetClient: False
       InternetClientServer: True
       Location: False
       LowLevelDevices: False
-      Microphone: True
+      Microphone: False
       MusicLibrary: False
       Objects3D: False
       OfflineMapsManagement: False

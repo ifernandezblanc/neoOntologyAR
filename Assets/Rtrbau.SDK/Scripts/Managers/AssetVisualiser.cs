@@ -21,7 +21,8 @@ Date: 19/08/2019
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Microsoft.MixedReality.Toolkit.Utilities;
+using System.Linq;
+using Microsoft.MixedReality.Toolkit.UI;
 #endregion
 
 /// <summary>
@@ -41,6 +42,8 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
+        private List<KeyValuePair<OntologyElement,GameObject>> loadedElements;
+        private List<GameObject> createdElements;
         private GameObject lastElement;
         private List<GameObject> primaryElements;
         private int primaryCounter;
@@ -69,6 +72,7 @@ namespace Rtrbau
             // Reference to the asset manager
             manager = assetManager;
             // Initialise variables
+            loadedElements = new List<KeyValuePair<OntologyElement, GameObject>>();
             lastElement = null;
             primaryElements = new List<GameObject>();
             primaryCounter = 0;
@@ -98,7 +102,7 @@ namespace Rtrbau
             RtrbauerEvents.StopListening("LocateElement", LocateElement);
         }
 
-        void OnDestroy() { DestroyIt(); }
+        void OnDestroy() { }
         #endregion MONOBEHAVIOUR_METHODS
 
         #region IVISUALISABLE_METHODS
@@ -109,7 +113,10 @@ namespace Rtrbau
             // Assign as child of asset manager
             this.transform.SetParent(manager.transform, false);
             // Locate at asset centre
-            this.transform.position = manager.CalculateAssetCentreWorld();
+            this.transform.position = manager.ReturnAssetCentreWorld();
+            // Rotate 180 degrees over y-axis to align with asset target rotation
+            // this.transform.localRotation = Quaternion.Euler(0, 180, 0);
+            // Changed to asset manager to be rotated
         }
 
         /// <summary>
@@ -119,14 +126,7 @@ namespace Rtrbau
         public void DestroyIt()
         {
             // Identify all rtrbau elements visualised and destroy
-            foreach (GameObject element in primaryElements)
-            { element.GetComponent<IVisualisable>().DestroyIt(); }
-
-            foreach (GameObject element in secondaryElements)
-            { element.GetComponent<IVisualisable>().DestroyIt(); }
-
-            foreach (GameObject element in tertiaryElements)
-            { element.GetComponent<IVisualisable>().DestroyIt(); }
+            // All elements are child, so they will be destroyed with this one
         }
         #endregion IVISUALISABLE_METHODS
 
@@ -142,27 +142,188 @@ namespace Rtrbau
         /// <param name="locationCounter"></param>
         void AddElement (GameObject element, RtrbauElementLocation location, ref List<GameObject> locationElements, ref int locationCounter)
         {
-            Bounds bounds = manager.CalculateAssetBounds();
-            // Calculate the maximum number of elements that can be in a specified location
-            // int locationElementsNo = (((int)location) * 4) + 5;
-            // For a maximum of 1 element in primary location:
+            // Calculate number of elements per location
             int locationElementsNo = (int)location + 1;
 
+            // Remove earliest element on location list if location is full
             if (locationCounter == locationElementsNo) { locationCounter = 0; }
 
             if (locationElements.Count == locationElementsNo)
             {
-                GameObject.Destroy(locationElements[0]);
-                locationElements.RemoveAt(0);   
+                Destroy(locationElements[0]);
+                locationElements.RemoveAt(0);
             }
 
-            element.transform.SetParent(this.transform, false);
+            // Assign element to location
             locationElements.Add(element);
-            SetSize(element, bounds);
-            SetPosition(element, location, bounds, locationElementsNo, locationCounter);
-            // SetFabrications(element);
+
+            // Assign element as child of visualiser
+            element.transform.SetParent(this.transform, false);
+
+            // Assign bounding box to element
+            // CreateBoundingBox(element);
+
+            // Set translation of element according to location
+            SetTranslation(element, locationElementsNo, locationCounter);
+
+            
+
+            // Assign element as last element
             lastElement = element;
+            // Iterate over location element counter
             locationCounter++;
+        }
+
+
+        void CreateBoundingBox(GameObject element)
+        {
+            element.AddComponent<BoundingBox>();
+            element.GetComponent<BoundingBox>().ShowScaleHandles = false;
+            element.GetComponent<BoundingBox>().ShowWireFrame = false;
+            element.GetComponent<BoundingBox>().ShowRotationHandleForX = false;
+            element.GetComponent<BoundingBox>().ShowRotationHandleForY = false;
+            element.GetComponent<BoundingBox>().ShowRotationHandleForZ = false;
+        }
+
+        /// <summary>
+        /// Sets position of element according to the visualiser position and assets size.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="location"></param>
+        /// <param name="bounds"></param>
+        /// <param name="locationCounter"></param>
+        void SetTranslation(GameObject element, int locationElements,  int locationCounter)
+        {
+            // SetScale()???
+            Bounds assetBounds = manager.ReturnAssetBoundsLocal();
+            Vector3 elementSize = CalculateElementBounds(element).size;
+            Vector3 elementScale = element.transform.localScale;
+            // Variables to calculate position:
+            // Assumes the origin of the element is at is asset's centre (asset visualiser origin)
+            float aX = assetBounds.extents.x;
+            float aY = assetBounds.extents.y;
+            Debug.Log("aX: " + aX + " aY: " + aY);
+            float eX = (elementSize.x * elementScale.x) / 2;
+            float eY = (elementSize.x * elementScale.y) / 2;
+            Debug.Log("eX: " + eX + " eY: " + eY);
+            float oX = eX * 0.15f;
+            float oY = eY * 0.15f;
+            float pX;
+            float pY;
+
+            if (locationElements == 1)
+            {
+                pX = aX + eX + oX;
+                pY = eY;
+            }
+            else if (locationElements == 2)
+            {
+                if (locationCounter == 0)
+                {
+                    pX = aX + 3 * eX + 2 * oX;
+                    pY = eY;
+                }
+                else if (locationCounter == 1)
+                {
+                    pX = - aX - 3 * eX - 2 * oX;
+                    pY = eY;
+                }
+                else
+                {
+                    throw new ArgumentException("Number of location counter not implemented.");
+                }
+            }
+            else if (locationElements == 3)
+            {
+                if (locationCounter == 0)
+                {
+                    pX = aX + 5 * eX + 3 * oX;
+                    pY = eY;
+                }
+                else if (locationCounter == 1)
+                {
+                    pX = 0;
+                    pY = aY + eY + oY;
+                }
+                else if (locationCounter == 2)
+                {
+                    pX = - aX - 5 * eX - 3 * oX;
+                    pY = eY;
+                }
+                else
+                {
+                    throw new ArgumentException("Number of location counter not implemented.");
+                }
+            }
+            else
+            {
+                throw new ArgumentException("Number of location elements not implemented.");
+            }
+
+            Debug.Log("pX: " + pX + " pY: " + pY);
+            element.transform.localPosition = new Vector3(pX, pY, 0);
+
+            //// Calculate position different according to number of elements
+            //switch (locationElements)
+            //{
+            //    case 1:
+            //        // pX = bounds.extents.x + (elementBounds.extents.x * 1.15f);
+            //        pX = assetBounds.extents.x;
+            //        pY = elementBounds.extents.x * 1.15f;
+            //        break;
+            //    case 2:
+            //        switch (locationCounter)
+            //        {
+            //            case 0:
+            //                // pX = bounds.extents.x + (elementBounds.size.x * 1.65f);
+            //                pX = assetBounds.extents.x + (elementBounds.extents.x * 1.15f);
+            //                pY = elementBounds.size.x * 1.65f;
+            //                break;
+            //            default:
+            //                // pX = -bounds.extents.x - (elementBounds.size.x * 1.65f);
+            //                pX = -assetBounds.extents.x;
+            //                pY = elementBounds.size.x * 1.65f;
+            //                break;
+            //        }
+            //        break;
+            //    default:
+            //        switch (locationCounter)
+            //        {
+            //            case 0:
+            //                // pX = bounds.extents.x + (elementBounds.size.x * 2.75f);
+            //                pX = assetBounds.extents.x;
+            //                pY = elementBounds.size.x * 2.75f;
+            //                break;
+            //            case 1:
+            //                // pX = elementBounds.size.x * 2.75f;
+            //                pX = 0;
+            //                pY = assetBounds.extents.y + (elementBounds.size.y * 2.75f);
+            //                break;
+            //            default:
+            //                // pX = -bounds.extents.x - (elementBounds.size.x * 2.75f);
+            //                pX = -assetBounds.extents.x;
+            //                pY = elementBounds.size.x * 2.75f;
+            //                break;
+            //        }
+            //        break;
+            //}
+
+            // element.transform.localPosition = new Vector3(pX, pY, 0);
+
+            //// Calculate position vector
+            //// Calculate direction of position vector from visualiser origin:
+            //Vector3 direction = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0);
+            //Debug.Log(direction);
+            //// Calculate offset magnitude of position vector according to element size:
+            //Bounds elementBounds = CalculateElementBounds(element);
+            //Vector3 magnitude = new Vector3(elementBounds.extents.x, elementBounds.extents.y, 0) * (int)location;
+            //// Vector3 offset = (bounds.extents * 1.75f) + magnitude;
+            //Vector3 offset = (bounds.extents) + magnitude;
+            //// Vector3 offset = (bounds.extents + element.transform.GetComponentInChildren<BoxCollider>().bounds.extents) * magnitude;
+            //Debug.Log(offset); 
+            //// Vector3 origin = manager.CalculateAssetCentreWorld();
+            //// UPG: offset to make rectangular shape instead of circular
+            //element.transform.localPosition += Vector3.Scale(offset, direction);
         }
 
         /// <summary>
@@ -171,7 +332,7 @@ namespace Rtrbau
         /// </summary>
         /// <param name="element"></param>
         /// <param name="bounds"></param>
-        void SetSize(GameObject element, Bounds bounds)
+        void SetScale(GameObject element, Bounds bounds)
         {
             // UPGRADE REQUIRED
             // NEED TO ADAPT TO MODEL, IF MODEL SCALE IS HIGHER, THEN MULTIPLE (IF BIGGER THAN 1)
@@ -206,94 +367,21 @@ namespace Rtrbau
             else { }
         }
 
-        /// <summary>
-        /// Sets position of element according to the visualiser position and assets size.
-        /// </summary>
-        /// <param name="element"></param>
-        /// <param name="location"></param>
-        /// <param name="bounds"></param>
-        /// <param name="locationCounter"></param>
-        void SetPosition(GameObject element, RtrbauElementLocation location, Bounds bounds, int elementsNo,  int locationCounter)
-        {
-            // Add manipulator to control element position from its center
-            //GameObject elementLocator = new GameObject();
-            //elementLocator.name = "Manipulator_" + element.name;
-            //elementLocator.transform.SetParent(element.transform, false);
-            // Bounds elementBounds = CalculateElementBounds(element);
-            Bounds elementBounds = element.transform.GetComponentInChildren<BoxCollider>().bounds;
-            //elementLocator.transform.position = elementBounds.center;
-
-            // Variables to calculate position;
-            float pX;
-            float pY;
-            // Calculate position different according to number of elements
-            switch (elementsNo)
-            {
-                case 1:
-                    pX = bounds.extents.x + (elementBounds.extents.x * 1.15f);
-                    pY = elementBounds.extents.x * 1.15f;
-                    break;
-                case 2:
-                    switch (locationCounter)
-                    {
-                        case 0:
-                            pX = bounds.extents.x + (elementBounds.size.x * 1.65f);
-                            pY = elementBounds.size.x * 1.65f;
-                            break;
-                        default:
-                            pX = -bounds.extents.x - (elementBounds.size.x * 1.65f);
-                            pY = elementBounds.size.x * 1.65f;
-                            break;
-                    }
-                    break;
-                default:
-                    switch (locationCounter)
-                    {
-                        case 0:
-                            pX = bounds.extents.x + (elementBounds.size.x * 2.75f);
-                            pY = elementBounds.size.x * 2.75f;
-                            break;
-                        case 1:
-                            pX = elementBounds.size.x * 2.75f;
-                            pY = bounds.extents.y + (elementBounds.size.y * 2.75f);
-                            break;
-                        default:
-                            pX = -bounds.extents.x - (elementBounds.size.x * 2.75f);
-                            pY = elementBounds.size.x * 2.75f;
-                            break;
-                    }
-                    break;
-            }
-
-            element.transform.localPosition += new Vector3(pX, pY, 0);
-
-            //// Calculate position vector
-            //// Calculate direction of position vector from visualiser origin:
-            //Vector3 direction = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0);
-            //Debug.Log(direction);
-            //// Calculate offset magnitude of position vector according to element size:
-            //Bounds elementBounds = CalculateElementBounds(element);
-            //Vector3 magnitude = new Vector3(elementBounds.extents.x, elementBounds.extents.y, 0) * (int)location;
-            //// Vector3 offset = (bounds.extents * 1.75f) + magnitude;
-            //Vector3 offset = (bounds.extents) + magnitude;
-            //// Vector3 offset = (bounds.extents + element.transform.GetComponentInChildren<BoxCollider>().bounds.extents) * magnitude;
-            //Debug.Log(offset); 
-            //// Vector3 origin = manager.CalculateAssetCentreWorld();
-            //// UPG: offset to make rectangular shape instead of circular
-            //element.transform.localPosition += Vector3.Scale(offset, direction);
-        }
-
         Bounds CalculateElementBounds(GameObject element)
         {
-            Bounds elementBounds = new Bounds(Vector3.zero, Vector3.zero);
+            Bounds elementBounds = new Bounds();
 
-            MeshRenderer[] elementMeshes = element.GetComponentsInChildren<MeshRenderer>();
+            MeshFilter[] elements = element.GetComponentsInChildren<MeshFilter>();
 
-            foreach (MeshRenderer mesh in elementMeshes)
+            foreach (MeshFilter elementMesh in elements)
             {
-                Debug.Log(mesh.gameObject.name);
-                elementBounds.Encapsulate(mesh.bounds);
+                Debug.Log(elementMesh.gameObject.name);
+                elementBounds.Encapsulate(elementMesh.mesh.bounds);
             }
+
+            //element.AddComponent<BoxCollider>();
+            //element.GetComponent<BoxCollider>().center = elementBounds.center;
+            //element.GetComponent<BoxCollider>().size = elementBounds.size;
 
             return elementBounds;
         }
@@ -314,21 +402,45 @@ namespace Rtrbau
         //        throw new ArgumentException("IElementable not implemented.");
         //    }
         //}
+
+
+        bool ElementLoaded(OntologyElement element)
+        {
+            return loadedElements.Any(x => x.Key.entity.name == element.entity.name && x.Key.entity.ontology == element.entity.ontology && x.Key.type == element.type);
+        }
         #endregion PRIVATE
 
         #region PUBLIC
+        /// <summary>
+        /// Returns gameobject corresponding to <paramref name="element"/> of <paramref name="type"/>.
+        /// If not found, returns null.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public GameObject FindElement(OntologyElement element)
+        {
+            return loadedElements.Find(x => x.Key.entity.name == element.entity.name && x.Key.entity.ontology == element.entity.ontology && x.Key.type == element.type).Value;
+        }
+
         /// <summary>
         /// Creates new <paramref name="element"/> of <paramref name="type"/>.
         /// If <paramref name="element"/> found in list, then re-loaded instead.
         /// </summary>
         /// <param name="element"></param>
         /// <param name="type"></param>
-        public void LoadElement(OntologyElement element, RtrbauElementType type)
+        void LoadElement(OntologyElement element, RtrbauElementType type)
         {
             if (type == RtrbauElementType.Consult)
             {
-                GameObject newElement = GameObject.Instantiate(consultElement);
-                newElement.GetComponent<ElementConsult>().Initialise(this, element, lastElement);
+                Debug.Log("LoadElement: loaded already:" + ElementLoaded(element));
+
+                if (!ElementLoaded(element))
+                {
+                    GameObject newElement = GameObject.Instantiate(consultElement);
+                    newElement.GetComponent<ElementConsult>().Initialise(this, element, lastElement);
+                    loadedElements.Add(new KeyValuePair<OntologyElement, GameObject>(element, newElement));
+                }
             }
             else if (type == RtrbauElementType.Report)
             {
@@ -340,12 +452,16 @@ namespace Rtrbau
             }
         }
 
+        
+
+
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="element"></param>
         /// <param name="location"></param>
-        public void LocateElement(GameObject element, RtrbauElementLocation location)
+        void LocateElement(GameObject element, RtrbauElementLocation location)
         {
             if (location == RtrbauElementLocation.Primary)
             {
@@ -363,18 +479,6 @@ namespace Rtrbau
             {
                 throw new ArgumentException("Rtrbau Element Location not implemented.");
             }
-
-            // visualisedElements[location].Add(element);
-            //GameObject locationVisualiser;
-            //Debug.Log("Visualiser: LocateElement: " + element.GetComponent<ElementConsult>().individualElement.entity.name);
-            //if (visualisedElements.TryGetValue(location, out locationVisualiser))
-            //{
-            //    locationVisualiser.GetComponent<VisualiserLocation>().AddElement(element);
-            //}
-            //else
-            //{
-            //    throw new ArgumentException("Visualisation location not implemented.");
-            //}
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS

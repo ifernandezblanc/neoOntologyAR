@@ -213,7 +213,7 @@ namespace Rtrbau
             // Start visualiser behaviour (pre-loaded with the asset registrator)
             OntologyElement element = new OntologyElement(entity.URI(), OntologyElementType.IndividualProperties);
             // Make sure the element is of correct RtrbauElementType
-            RtrbauerEvents.TriggerEvent("LoadElement", element, RtrbauElementType.Consult);
+            RtrbauerEvents.TriggerEvent("LoadElement", element, Rtrbauer.instance.user.procedure);
         }
         #endregion CLASS_METHODS
     }
