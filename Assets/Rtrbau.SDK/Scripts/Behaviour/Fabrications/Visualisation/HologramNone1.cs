@@ -148,7 +148,7 @@ namespace Rtrbau
 
             SetModel();
             SetHologram();
-            AddLineRenderer();
+            // AddLineRenderer();
         }
 
         /// <summary>
@@ -244,7 +244,8 @@ namespace Rtrbau
         void SetHologramPosition()
         {
             // Set direction from asset origin to model origin
-            Vector3 direction = model.GetComponent<MeshRenderer>().bounds.center - visualiser.manager.assetRegistrator.GetComponent<BoxCollider>().center;
+            // Vector3 direction = model.GetComponent<MeshRenderer>().bounds.center - visualiser.manager.assetRegistrator.GetComponent<BoxCollider>().center;
+            Vector3 direction = model.GetComponent<MeshRenderer>().bounds.center - visualiser.transform.position;
             direction = direction / direction.magnitude;
             // Set further in the direction of the object
             hologram.transform.position = model.GetComponent<MeshRenderer>().bounds.center + (Vector3.Normalize(direction)*0.15f);
@@ -268,44 +269,6 @@ namespace Rtrbau
                 else { }
             }
             else { }
-        }
-                
-        //void AddTextPanel(string note)
-        //{
-        //    text = Instantiate(textPanel);
-        //    // Attach to model manipulator
-        //    text.transform.SetParent(model.transform.GetChild(0), false);
-        //    // Re-scale text panel
-        //    float sX = text.transform.localScale.x / scale.transform.localScale.x;
-        //    float sY = text.transform.localScale.y / scale.transform.localScale.y;
-        //    float sZ = text.transform.localScale.z / scale.transform.localScale.z;
-        //    text.transform.localScale = new Vector3(sX, sY, sZ);
-        //    // Re-allocate above model
-        //    float positionUP = model.GetComponent<MeshRenderer>().bounds.size.y;
-        //    text.transform.localPosition += new Vector3(0, positionUP, 0);
-        //    // Provide name
-        //    text.transform.GetChild(1).GetComponent<TextMeshPro>().text = note;
-        //}
-
-        void AddLineRenderer()
-        {
-            // Set line widht at 10% of element consult panel
-            float width = element.localScale.x * 0.01f;
-            this.gameObject.AddComponent<LineRenderer>();
-            this.gameObject.GetComponent<LineRenderer>().useWorldSpace = true;
-            this.gameObject.GetComponent<LineRenderer>().material = material;
-            this.gameObject.GetComponent<LineRenderer>().startWidth = width;
-            this.gameObject.GetComponent<LineRenderer>().endWidth = width;
-            UpdateLineRenderer();
-        }
-
-        void UpdateLineRenderer()
-        {
-            // Set start and end of line in world coordinates
-            Vector3 start = hologram.transform.position;
-            Vector3 end = element.transform.position;
-            this.gameObject.GetComponent<LineRenderer>().SetPosition(0, start);
-            this.gameObject.GetComponent<LineRenderer>().SetPosition(1, end);
         }
         #endregion CLASS_METHODS
     }

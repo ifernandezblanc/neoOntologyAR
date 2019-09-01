@@ -65,7 +65,8 @@ namespace Rtrbau
 
         #region GAMEOBJECT_PREFABS
         //public GameObject textPanel;
-        public Material material;
+        public Material lineMaterial;
+        public Material modelMaterial;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -76,7 +77,7 @@ namespace Rtrbau
         void Start()
         {
             //if (textPanel == null || material == null)
-            if (material == null)
+            if (lineMaterial == null || modelMaterial == null )
             {
                 throw new ArgumentException("AnimationNone2 script requires some prefabs to work.");
             }
@@ -99,11 +100,11 @@ namespace Rtrbau
                 ModelToOrigin(model, component);
             }
 
-            //if (componentPair != null)
-            //{
-            //    ModelToOrigin(modelPair, componentPair, textPair);
-            //    ModelToOrigin(modelPair, componentPair, textPair);
-            //}
+            if (componentPair != null)
+            {
+                // ModelToOrigin(modelPair, componentPair, textPair);
+                ModelToOrigin(modelPair, componentPair);
+            }
         }
 
         void OnEnable() { }
@@ -122,8 +123,6 @@ namespace Rtrbau
         /// <param name="scale"></param>
         public void Initialise(AssetVisualiser assetVisualiser, RtrbauFabrication fabrication, Transform elementParent, Transform fabricationParent)
         {
-            // Is location necessary?
-            // Maybe change inferfromtext by initialise in IFabricationable?
             visualiser = assetVisualiser;
             data = fabrication;
             element = elementParent;
@@ -159,42 +158,10 @@ namespace Rtrbau
                     model = Instantiate(component);
                     model.name = this.name + componentName + this.GetHashCode();
                     model.transform.SetParent(scale, true);
-                    model.GetComponent<MeshRenderer>().material = material;
-
-                    // Create Line renderer
-                    // Set line widht at 10% of element consult panel
-                    float width = element.localScale.x * 0.01f;
-                    model.AddComponent<LineRenderer>();
-                    model.GetComponent<LineRenderer>().useWorldSpace = true;
-                    model.GetComponent<LineRenderer>().material = material;
-                    model.GetComponent<LineRenderer>().startWidth = width;
-                    model.GetComponent<LineRenderer>().endWidth = width;
-                    UpdateLineRenderer(model);
-
-                    //// Create model text panel
-                    //text = Instantiate(textPanel);
-                    //// Attach to model manipulator
-                    //text.transform.SetParent(model.transform.GetChild(0), false);
-                    //// Re-scale text panel
-                    //float sX = text.transform.localScale.x / scale.transform.localScale.x;
-                    //float sY = text.transform.localScale.y / scale.transform.localScale.y;
-                    //float sZ = text.transform.localScale.z / scale.transform.localScale.z;
-                    //text.transform.localScale = new Vector3(sX, sY, sZ);
-                    //// Re-allocate above model
-                    //float positionUP = model.GetComponent<MeshRenderer>().bounds.size.y;
-                    //text.transform.localPosition += new Vector3(0, positionUP, 0);
-                    //// Provide name
-                    //text.transform.GetChild(1).GetComponent<TextMeshPro>().text = facet.Value.attributeName.name + ": " + componentName;
-
-                    //// Create Line renderer
-                    //// Set line widht at 10% of element consult panel
-                    //float width = element.localScale.x * 0.01f;
-                    //text.AddComponent<LineRenderer>();
-                    //text.GetComponent<LineRenderer>().useWorldSpace = true;
-                    //text.GetComponent<LineRenderer>().material = material;
-                    //text.GetComponent<LineRenderer>().startWidth = width;
-                    //text.GetComponent<LineRenderer>().endWidth = width;
-                    //UpdateLineRenderer(text);
+                    model.GetComponent<MeshRenderer>().material = modelMaterial;
+                    // Add line renderer for animated model
+                    model.AddComponent<ElementsLine>();
+                    model.AddComponent<ElementsLine>().Initialise(model, element.gameObject, lineMaterial);
 
                 }
                 else if (facet.Key == DataFormats.animationnone2.formatFacets[1])
@@ -227,48 +194,11 @@ namespace Rtrbau
 
                     componentPair = visualiser.manager.FindAssetComponent(componentPairName);
 
-                    // Create model pair
+                    // Create model pair: does not have line renderer
                     modelPair = Instantiate(componentPair);
                     modelPair.name = this.name + componentPairName + this.GetHashCode();
                     modelPair.transform.SetParent(scale, true);
-                    modelPair.GetComponent<MeshRenderer>().material = material;
-
-                    // Create Line renderer
-                    // Set line widht at 10% of element consult panel
-                    float width = element.localScale.x * 0.01f;
-                    modelPair.AddComponent<LineRenderer>();
-                    modelPair.GetComponent<LineRenderer>().useWorldSpace = true;
-                    modelPair.GetComponent<LineRenderer>().material = material;
-                    modelPair.GetComponent<LineRenderer>().startWidth = width;
-                    modelPair.GetComponent<LineRenderer>().endWidth = width;
-                    UpdateLineRenderer(modelPair);
-
-                    ModelToOrigin(modelPair, componentPair);
-
-                    //// Create model text panel
-                    //textPair = Instantiate(textPanel);
-                    //// Attach to model manipulator
-                    //textPair.transform.SetParent(modelPair.transform.GetChild(0), false);
-                    //// Re-scale text panel
-                    //float sX = textPair.transform.localScale.x / scale.transform.localScale.x;
-                    //float sY = textPair.transform.localScale.y / scale.transform.localScale.y;
-                    //float sZ = textPair.transform.localScale.z / scale.transform.localScale.z;
-                    //textPair.transform.localScale = new Vector3(sX, sY, sZ);
-                    //// Re-allocate above model
-                    //float positionUP = modelPair.GetComponent<MeshRenderer>().bounds.size.y;
-                    //textPair.transform.localPosition += new Vector3(0, positionUP, 0);
-                    //// Provide name
-                    //textPair.transform.GetChild(1).GetComponent<TextMeshPro>().text = facet.Value.attributeName.name + ": " + componentName;
-
-                    //// Create Line renderer
-                    //// Set line widht at 10% of element consult panel
-                    //float width = element.localScale.x * 0.01f;
-                    //textPair.AddComponent<LineRenderer>();
-                    //textPair.GetComponent<LineRenderer>().useWorldSpace = true;
-                    //textPair.GetComponent<LineRenderer>().material = material;
-                    //textPair.GetComponent<LineRenderer>().startWidth = width;
-                    //textPair.GetComponent<LineRenderer>().endWidth = width;
-                    //UpdateLineRenderer(textPair);
+                    modelPair.GetComponent<MeshRenderer>().material = lineMaterial;
 
                 }
                 else if (facet.Key == DataFormats.animationnone2.formatFacets[8])
@@ -342,57 +272,13 @@ namespace Rtrbau
 
             model.transform.position += Vector3.Scale(Vector3.Normalize(Vector3.Scale(directionTranslation, translation)), magnitudeTranslation);
             model.transform.rotation *= directionRotation;
-            UpdateLineRenderer(model);
         }
-        //void ModelMove(GameObject model, GameObject component, GameObject text)
-        //{
-        //    Vector3 translation;
-
-        //    if (componentPair != null)
-        //    {
-        //        translation = component.GetComponent<MeshRenderer>().bounds.center - componentPair.GetComponent<MeshRenderer>().bounds.center;
-        //    }
-        //    else
-        //    {
-        //        translation = new Vector3(1, 1, 1);
-        //    }
-
-        //    model.transform.position += Vector3.Scale(Vector3.Normalize(Vector3.Scale(directionTranslation, translation)), magnitudeTranslation);
-        //    model.transform.rotation *= directionRotation;
-        //    UpdateLineRenderer(text);
-        //}
 
         void ModelToOrigin(GameObject model, GameObject component)
         {
             model.transform.position = component.transform.position;
             model.transform.rotation = component.transform.rotation;
-            UpdateLineRenderer(model);
         }
-        //void ModelToOrigin(GameObject model, GameObject component, GameObject text)
-        //{
-        //    model.transform.position = component.transform.position;
-        //    model.transform.rotation = component.transform.rotation;
-        //    UpdateLineRenderer(text);
-        //}
-
-        void UpdateLineRenderer(GameObject model)
-        {
-            // Set start and end of line in world coordinates
-            Vector3 start = model.GetComponent<MeshRenderer>().bounds.center;
-            Vector3 end = element.transform.position;
-            model.GetComponent<LineRenderer>().SetPosition(0, start);
-            model.GetComponent<LineRenderer>().SetPosition(1, end);
-
-        }
-        //void UpdateLineRenderer(GameObject text)
-        //{
-        //    // Set start and end of line in world coordinates
-        //    Vector3 start = text.transform.position;
-        //    Vector3 end = element.transform.position;
-        //    text.GetComponent<LineRenderer>().SetPosition(0, start);
-        //    text.GetComponent<LineRenderer>().SetPosition(1, end);
-
-        //}
         #endregion CLASS_METHODS
     }
 }

@@ -48,7 +48,8 @@ namespace Rtrbau
 
         #region GAMEOBJECT_PREFABS
         public GameObject textPanel;
-        public Material material;
+        public Material lineMaterial;
+        public Material modelMaterial;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -58,18 +59,13 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (textPanel == null || material == null)
+            if (textPanel == null || lineMaterial == null || modelMaterial == null)
             {
                 throw new ArgumentException("ModelManipulation1 script requires some prefabs to work.");
             }
         }
 
-        void Update()
-        {
-            // model.transform.position = component.transform.position;
-            // model.transform.rotation = component.transform.rotation;
-            UpdateLineRenderer();
-        }
+        void Update() { }
 
         void OnEnable() { }
 
@@ -115,8 +111,6 @@ namespace Rtrbau
             {
                 string name = Parser.ParseURI(Parser.ParseURI(attribute.attributeValue, '/', RtrbauParser.post), '.', RtrbauParser.pre);
 
-                // Debug.Log(modelName);
-
                 component = visualiser.transform.parent.gameObject.GetComponent<AssetManager>().FindAssetComponent(name);
 
                 model = Instantiate(component);
@@ -126,7 +120,6 @@ namespace Rtrbau
                 string note = attribute.attributeName.name + ": " + name;
                 Debug.Log("ModelManipulation1: " + note);
                 AddTextPanel(note);
-                AddLineRenderer();
             }
             else
             {
@@ -164,7 +157,7 @@ namespace Rtrbau
             // Assign parent and location
             model.transform.SetParent(scale, true);
             // Change material
-            model.GetComponent<MeshRenderer>().material = material;
+            model.GetComponent<MeshRenderer>().material = modelMaterial;
             // Assign initial location and rotation
             model.transform.position = component.transform.position;
             model.transform.rotation = component.transform.rotation;
@@ -193,27 +186,9 @@ namespace Rtrbau
             text.transform.localPosition += new Vector3(0, positionUP, 0);
             // Provide name
             text.transform.GetChild(1).GetComponent<TextMeshPro>().text = note;
-        }
-
-        void AddLineRenderer()
-        {
-            // Set line widht at 10% of element consult panel
-            float width = element.localScale.x * 0.01f;
-            text.AddComponent<LineRenderer>();
-            text.GetComponent<LineRenderer>().useWorldSpace = true;
-            text.GetComponent<LineRenderer>().material = material;
-            text.GetComponent<LineRenderer>().startWidth = width;
-            text.GetComponent<LineRenderer>().endWidth = width;
-            UpdateLineRenderer();
-        }
-
-        void UpdateLineRenderer()
-        {
-            // Set start and end of line in world coordinates
-            Vector3 start = text.transform.position;
-            Vector3 end = element.transform.position;
-            text.GetComponent<LineRenderer>().SetPosition(0, start);
-            text.GetComponent<LineRenderer>().SetPosition(1, end);
+            // Add line renderer to text panel
+            text.AddComponent<ElementsLine>();
+            text.AddComponent<ElementsLine>().Initialise(text, element.gameObject, lineMaterial);
         }
         #endregion CLASS_METHODS
     }
