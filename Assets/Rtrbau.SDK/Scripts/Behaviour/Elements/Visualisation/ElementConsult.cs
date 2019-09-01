@@ -63,6 +63,7 @@ namespace Rtrbau
         public TextMeshPro individualText;
         public TextMeshPro classText;
         private Material lineMaterial;
+        private GameObject viewer;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -75,7 +76,14 @@ namespace Rtrbau
         #region MONOBEHAVIOUR_METHODS
         void Start() { }
 
-        void Update() { }
+        void Update()
+        {
+            if (viewer != null)
+            {
+                this.transform.LookAt(viewer.transform.position);
+                this.transform.Rotate(0, 180, 0);
+            }
+        }
 
         void OnEnable() { }
 
@@ -103,6 +111,7 @@ namespace Rtrbau
                 if (elementIndividual.type == OntologyElementType.IndividualProperties)
                 {
                     lineMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardTransparentBlue") as Material;
+                    viewer = GameObject.FindGameObjectWithTag("MainCamera");
 
                     visualiser = assetVisualiser;
                     individualElement = elementIndividual;

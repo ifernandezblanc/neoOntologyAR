@@ -113,7 +113,7 @@ namespace Rtrbau
             // Assign as child of asset manager
             this.transform.SetParent(manager.transform, false);
             // Locate at asset centre
-            this.transform.position = manager.ReturnAssetCentreWorld();
+            this.transform.localPosition = manager.ReturnAssetCentreLocal();
             // Rotate 180 degrees over y-axis to align with asset target rotation
             // this.transform.localRotation = Quaternion.Euler(0, 180, 0);
             // Changed to asset manager to be rotated
@@ -143,11 +143,12 @@ namespace Rtrbau
         void AddElement (GameObject element, RtrbauElementLocation location, ref List<GameObject> locationElements, ref int locationCounter)
         {
             // Calculate number of elements per location
-            int locationElementsNo = (int)location + 1;
+            int locationElementsNo;
+            if ((int)location == 0) { locationElementsNo = 1; }
+            else { locationElementsNo = (int)location * 2; }
 
             // Remove earliest element on location list if location is full
             if (locationCounter == locationElementsNo) { locationCounter = 0; }
-
             if (locationElements.Count == locationElementsNo)
             {
                 Destroy(locationElements[0]);
@@ -156,34 +157,19 @@ namespace Rtrbau
 
             // Assign element to location
             locationElements.Add(element);
-
             // Assign element as child of visualiser
             element.transform.SetParent(this.transform, false);
-
-            // Assign bounding box to element
-            // CreateBoundingBox(element);
-
-            // Set translation of element according to location
-            SetTranslation(element, locationElementsNo, locationCounter);
-
-            
-
+            // Set position of element according to location
+            SetPosition(element, location, locationCounter);
+            // Set scale of element according to asset size
+            SetScale(element);
+            // Rotation is set in element according to viewers position
             // Assign element as last element
             lastElement = element;
             // Iterate over location element counter
             locationCounter++;
         }
 
-
-        void CreateBoundingBox(GameObject element)
-        {
-            element.AddComponent<BoundingBox>();
-            element.GetComponent<BoundingBox>().ShowScaleHandles = false;
-            element.GetComponent<BoundingBox>().ShowWireFrame = false;
-            element.GetComponent<BoundingBox>().ShowRotationHandleForX = false;
-            element.GetComponent<BoundingBox>().ShowRotationHandleForY = false;
-            element.GetComponent<BoundingBox>().ShowRotationHandleForZ = false;
-        }
 
         /// <summary>
         /// Sets position of element according to the visualiser position and assets size.
@@ -192,63 +178,66 @@ namespace Rtrbau
         /// <param name="location"></param>
         /// <param name="bounds"></param>
         /// <param name="locationCounter"></param>
-        void SetTranslation(GameObject element, int locationElements,  int locationCounter)
+        void SetPosition(GameObject element, RtrbauElementLocation location,  int locationCounter)
         {
-            // SetScale()???
             Bounds assetBounds = manager.ReturnAssetBoundsLocal();
-            Vector3 elementSize = CalculateElementBounds(element).size;
-            Vector3 elementScale = element.transform.localScale;
             // Variables to calculate position:
-            // Assumes the origin of the element is at is asset's centre (asset visualiser origin)
-            float aX = assetBounds.extents.x;
-            float aY = assetBounds.extents.y;
-            Debug.Log("aX: " + aX + " aY: " + aY);
-            float eX = (elementSize.x * elementScale.x) / 2;
-            float eY = (elementSize.x * elementScale.y) / 2;
-            Debug.Log("eX: " + eX + " eY: " + eY);
-            float oX = eX * 0.15f;
-            float oY = eY * 0.15f;
             float pX;
             float pY;
+            float pZ;
 
-            if (locationElements == 1)
+            if (location == RtrbauElementLocation.Primary)
             {
-                pX = aX + eX + oX;
-                pY = eY;
+                // Only one position in this location
+                pX = assetBounds.size.x;
+                pY = 0;
+                pZ = 0;
             }
-            else if (locationElements == 2)
+            else if (location == RtrbauElementLocation.Secondary)
             {
+                // Two positions in this location
                 if (locationCounter == 0)
                 {
-                    pX = aX + 3 * eX + 2 * oX;
-                    pY = eY;
+                    pX = assetBounds.size.x;
+                    pY = assetBounds.size.y;
+                    pZ = - assetBounds.size.z;
                 }
                 else if (locationCounter == 1)
                 {
-                    pX = - aX - 3 * eX - 2 * oX;
-                    pY = eY;
+                    pX = -assetBounds.size.x;
+                    pY = assetBounds.size.y;
+                    pZ = -assetBounds.size.z;
                 }
                 else
                 {
                     throw new ArgumentException("Number of location counter not implemented.");
                 }
             }
-            else if (locationElements == 3)
+            else if (location == RtrbauElementLocation.Tertiary)
             {
                 if (locationCounter == 0)
                 {
-                    pX = aX + 5 * eX + 3 * oX;
-                    pY = eY;
+                    pX = assetBounds.size.x;
+                    pY = assetBounds.size.y;
+                    pZ = -2*assetBounds.size.z;
                 }
                 else if (locationCounter == 1)
                 {
-                    pX = 0;
-                    pY = aY + eY + oY;
+                    pX = assetBounds.size.x;
+                    pY = 0;
+                    pZ = -2 * assetBounds.size.z;
                 }
                 else if (locationCounter == 2)
                 {
-                    pX = - aX - 5 * eX - 3 * oX;
-                    pY = eY;
+                    pX = -assetBounds.size.x;
+                    pY = assetBounds.size.y;
+                    pZ = -2 * assetBounds.size.z;
+                }
+                else if (locationCounter == 3)
+                {
+                    pX = -assetBounds.size.x;
+                    pY = 0;
+                    pZ = -2 * assetBounds.size.z;
                 }
                 else
                 {
@@ -260,149 +249,28 @@ namespace Rtrbau
                 throw new ArgumentException("Number of location elements not implemented.");
             }
 
-            Debug.Log("pX: " + pX + " pY: " + pY);
-            element.transform.localPosition = new Vector3(pX, pY, 0);
-
-            //// Calculate position different according to number of elements
-            //switch (locationElements)
-            //{
-            //    case 1:
-            //        // pX = bounds.extents.x + (elementBounds.extents.x * 1.15f);
-            //        pX = assetBounds.extents.x;
-            //        pY = elementBounds.extents.x * 1.15f;
-            //        break;
-            //    case 2:
-            //        switch (locationCounter)
-            //        {
-            //            case 0:
-            //                // pX = bounds.extents.x + (elementBounds.size.x * 1.65f);
-            //                pX = assetBounds.extents.x + (elementBounds.extents.x * 1.15f);
-            //                pY = elementBounds.size.x * 1.65f;
-            //                break;
-            //            default:
-            //                // pX = -bounds.extents.x - (elementBounds.size.x * 1.65f);
-            //                pX = -assetBounds.extents.x;
-            //                pY = elementBounds.size.x * 1.65f;
-            //                break;
-            //        }
-            //        break;
-            //    default:
-            //        switch (locationCounter)
-            //        {
-            //            case 0:
-            //                // pX = bounds.extents.x + (elementBounds.size.x * 2.75f);
-            //                pX = assetBounds.extents.x;
-            //                pY = elementBounds.size.x * 2.75f;
-            //                break;
-            //            case 1:
-            //                // pX = elementBounds.size.x * 2.75f;
-            //                pX = 0;
-            //                pY = assetBounds.extents.y + (elementBounds.size.y * 2.75f);
-            //                break;
-            //            default:
-            //                // pX = -bounds.extents.x - (elementBounds.size.x * 2.75f);
-            //                pX = -assetBounds.extents.x;
-            //                pY = elementBounds.size.x * 2.75f;
-            //                break;
-            //        }
-            //        break;
-            //}
-
-            // element.transform.localPosition = new Vector3(pX, pY, 0);
-
-            //// Calculate position vector
-            //// Calculate direction of position vector from visualiser origin:
-            //Vector3 direction = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0);
-            //Debug.Log(direction);
-            //// Calculate offset magnitude of position vector according to element size:
-            //Bounds elementBounds = CalculateElementBounds(element);
-            //Vector3 magnitude = new Vector3(elementBounds.extents.x, elementBounds.extents.y, 0) * (int)location;
-            //// Vector3 offset = (bounds.extents * 1.75f) + magnitude;
-            //Vector3 offset = (bounds.extents) + magnitude;
-            //// Vector3 offset = (bounds.extents + element.transform.GetComponentInChildren<BoxCollider>().bounds.extents) * magnitude;
-            //Debug.Log(offset); 
-            //// Vector3 origin = manager.CalculateAssetCentreWorld();
-            //// UPG: offset to make rectangular shape instead of circular
-            //element.transform.localPosition += Vector3.Scale(offset, direction);
+            Debug.Log("pX: " + pX + " pY: " + pY + " pZ: " + pZ);
+            element.transform.localPosition = new Vector3(pX, pY, pZ);
         }
 
         /// <summary>
         /// /// <summary>
-        /// Adapts <paramref name="element"/> scale (only x and y) if bigger than the asset.
+        /// Adapts <paramref name="element"/> scale (only x and y) to adapt to asset size.
         /// </summary>
         /// <param name="element"></param>
-        /// <param name="bounds"></param>
-        void SetScale(GameObject element, Bounds bounds)
+        void SetScale(GameObject element)
         {
-            // UPGRADE REQUIRED
-            // NEED TO ADAPT TO MODEL, IF MODEL SCALE IS HIGHER, THEN MULTIPLE (IF BIGGER THAN 1)
+            // Determine asset size through model bounds
+            Bounds asset = manager.ReturnAssetBoundsLocal();
 
-            // Calculate scales of element compared to asset
-            List<bool> scales = new List<bool>
-            {
-                {element.transform.localScale.x > bounds.size.x },
-                {element.transform.localScale.y > bounds.size.y }
-                // {element.transform.localScale.z > bounds.size.z }
-            };
+            // Re-scale element to match horizontal asset extents (x-axis)
+            float sM = asset.extents.x / element.transform.localScale.x;
+            float sX = element.transform.localScale.x * sM;
+            float sY = element.transform.localScale.y * sM;
+            float sZ = element.transform.localScale.z;
 
-            // If element scales are greather than one, then divide by the greatest
-            if (scales.FindAll(x => x == true).Count != 0)
-            {
-                List<float> sizes = new List<float>
-                {
-                    {element.transform.localScale.x / bounds.size.x },
-                    {element.transform.localScale.y / bounds.size.y }
-                    // {element.transform.localScale.z / bounds.size.z }
-                };
-
-                sizes.Sort((x, y) => x.CompareTo(y));
-
-                float sX = element.transform.localScale.x / sizes[sizes.Count - 1];
-                float sY = element.transform.localScale.y / sizes[sizes.Count - 1];
-                float sZ = element.transform.localScale.z;
-                // float sZ = element.transform.localScale.z / sizes[sizes.Count - 1];
-
-                element.transform.localScale = new Vector3(sX, sY, sZ);
-            }
-            else { }
+            element.transform.localScale = new Vector3(sX, sY, sZ);
         }
-
-        Bounds CalculateElementBounds(GameObject element)
-        {
-            Bounds elementBounds = new Bounds();
-
-            MeshFilter[] elements = element.GetComponentsInChildren<MeshFilter>();
-
-            foreach (MeshFilter elementMesh in elements)
-            {
-                Debug.Log(elementMesh.gameObject.name);
-                elementBounds.Encapsulate(elementMesh.mesh.bounds);
-            }
-
-            //element.AddComponent<BoxCollider>();
-            //element.GetComponent<BoxCollider>().center = elementBounds.center;
-            //element.GetComponent<BoxCollider>().size = elementBounds.size;
-
-            return elementBounds;
-        }
-
-
-        /// <summary>
-        /// Activtes the CreateFabrications function from IElementable
-        /// </summary>
-        /// <param name="element"></param>
-        //void SetFabrications(GameObject element)
-        //{
-        //    if (element.GetComponent<IElementable>() != null)
-        //    {
-        //        element.GetComponent<IElementable>().CreateFabrications();
-        //    }
-        //    else
-        //    {
-        //        throw new ArgumentException("IElementable not implemented.");
-        //    }
-        //}
-
 
         bool ElementLoaded(OntologyElement element)
         {
@@ -451,10 +319,6 @@ namespace Rtrbau
                 throw new ArgumentException("Rtrbau Element type not implemented");
             }
         }
-
-        
-
-
 
         /// <summary>
         /// 

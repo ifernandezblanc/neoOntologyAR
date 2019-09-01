@@ -217,12 +217,12 @@ namespace Rtrbau
             return bounds;
         }
         /// <summary>
-        /// Returns the asset's centre position in world space coordinates.
+        /// Returns the asset's centre position in asset's local space coordinates.
         /// </summary>
         /// <returns></returns>
-        public Vector3 ReturnAssetCentreWorld()
+        public Vector3 ReturnAssetCentreLocal()
         {
-            return assetRegistrator.transform.InverseTransformPoint(assetRegistrator.GetComponent<BoxCollider>().center);
+            return assetRegistrator.GetComponent<BoxCollider>().center;
         }
 
         /// <summary>
