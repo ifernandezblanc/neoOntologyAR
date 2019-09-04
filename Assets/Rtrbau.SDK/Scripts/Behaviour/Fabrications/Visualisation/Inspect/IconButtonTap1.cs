@@ -31,7 +31,7 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
-    public class TextButtonTap1 : MonoBehaviour, IFabricationable, IVisualisable
+    public class IconButtonTap1 : MonoBehaviour, IFabricationable, IVisualisable
     {
         #region INITIALISATION_VARIABLES
         public AssetVisualiser visualiser;
@@ -41,17 +41,18 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
+        public Sprite icon;
         public OntologyEntity relationshipAttribute;
         #endregion CLASS_VARIABLES
 
-        #region FACETS_VARIABLES
+        #region FACET_VARIABLES
         public string nextIndividual;
-        #endregion FACETS_VARIABLES
+        public string iconName;
+        #endregion FACET_VARIABLES
 
         #region GAMEOBJECT_PREFABS
         public TextMeshPro text;
-        public MeshRenderer panel;
-        public Material seenMaterial;
+        public SpriteRenderer sprite;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -61,9 +62,9 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (text == null)
+            if (text == null || sprite == null)
             {
-                throw new ArgumentException("TextButtonTap1 script requires some prefabs to work.");
+                throw new ArgumentException("IconButtonTap1 script requires some prefabs to work.");
             }
         }
 
@@ -115,16 +116,24 @@ namespace Rtrbau
         /// </summary>
         public void InferFromText()
         {
-            DataFacet textfacet2 = DataFormats.textbuttontap1.formatFacets[0];
+            DataFacet iconfacet2 = DataFormats.IconButtonTap1.formatFacets[0];
             RtrbauAttribute attribute;
 
             // Check data received meets fabrication requirements
-            if (data.fabricationData.TryGetValue(textfacet2, out attribute))
+            if (data.fabricationData.TryGetValue(iconfacet2, out attribute))
             {
-                // string attributeValue = Parser.ParseURI(attribute.attributeValue, '#', RtrbauParser.post);
-                // text.text = attribute.attributeName.name + ": " + attributeValue;
-                text.text = attribute.attributeName.name;
+                // Add text for attributes name
+                string attributeName = Parser.ParseURI(attribute.attributeValue, '#', RtrbauParser.post);
+                text.text = attribute.attributeName.name + ":";
+                // Find icon that retrieves value
+                // iconName = Libraries.IconLibrary.Find(x => x.Contains(attribute.attributeValue));
+                iconName = Libraries.IconLibrary.Find(x => attribute.attributeValue.Contains(x));
+                string iconPath = "Rtrbau/Icons/" + iconName;
+
+                
+                text.text = attribute.attributeName.name + ": " + attribute.attributeValue;
                 nextIndividual = attribute.attributeValue;
+
                 relationshipAttribute = new OntologyEntity(attribute.attributeName.URI());
             }
             else
@@ -145,14 +154,13 @@ namespace Rtrbau
             GameObject nextElement = visualiser.FindElement(individual);
             if (nextElement != null)
             {
-                Debug.Log("OnNextVisualisation: " + nextElement.name);
                 element.gameObject.GetComponent<ElementsLine>().UpdateLineEnd(nextElement);
+                //Material lineMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardTransparentBlue") as Material;
+                //element.gameObject.AddComponent<ElementsLine>();
+                //element.gameObject.GetComponent<ElementsLine>().Initialise(element.gameObject, nextElement, lineMaterial);
             }
             else
             {
-                // Element parent to modify material in expectance of a new element
-                element.GetComponent<ElementConsult>().ModifyMaterial();
-                // Trigger event to load a new element
                 RtrbauerEvents.TriggerEvent("LoadElement", individual, Rtrbauer.instance.user.procedure);
             }
         }
@@ -166,7 +174,7 @@ namespace Rtrbau
 
         public void ModifyMaterial()
         {
-            panel.material = seenMaterial;
+            // To complete
         }
 
         public void DestroyIt()

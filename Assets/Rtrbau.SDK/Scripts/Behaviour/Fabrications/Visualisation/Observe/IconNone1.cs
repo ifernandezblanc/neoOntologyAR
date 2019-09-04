@@ -10,7 +10,7 @@ Copyright (c) 2019 Babcock International Group. All Rights Reserved.
 All Rights Reserved.
 Confidential and Proprietary - Protected under copyright and other laws.
 
-Date: 25/08/2019
+Date: 20/08/2019
 ==============================================================================*/
 
 /// <summary>
@@ -21,9 +21,7 @@ Date: 25/08/2019
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
-using System.IO;
-using UnityEngine.Networking;
+using System.Linq;
 using TMPro;
 using Microsoft.MixedReality.Toolkit.UI;
 #endregion NAMESPACES
@@ -34,7 +32,7 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
-    public class AudioTap1 : MonoBehaviour, IFabricationable, IVisualisable
+    public class IconNone1 : MonoBehaviour, IFabricationable, IVisualisable
     {
         #region INITIALISATION_VARIABLES
         public AssetVisualiser visualiser;
@@ -44,40 +42,27 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
-        public AudioClip audioSource;
+        public string iconName;
+        public Sprite icon;
         #endregion CLASS_VARIABLES
-
-        #region FACET_VARIABLES
-        public RtrbauFile audioFile;
-        #endregion FACET_VARIABLES
 
         #region GAMEOBJECT_PREFABS
         public TextMeshPro text;
+        public SpriteRenderer sprite;
         public MeshRenderer panel;
         public Material seenMaterial;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
-        public bool audioLoaded;
-        public bool audioPlaying;
+
         #endregion CLASS_EVENTS
 
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (text == null || panel == null || seenMaterial == null)
+            if (text == null || sprite == null || panel == null || seenMaterial == null)
             {
-                throw new ArgumentException("AudioTap1 script requires some prefabs to work.");
-            }
-            else
-            {
-                //string attributeValue = "http://138.250.108.1:3003/api/files/wav/audioexample.wav";
-                //audioPlaying = false;
-                //text.text = "Audio: ";
-                //audioFile = new RtrbauFile(attributeValue);
-                //LoaderEvents.StartListening(audioFile.EventName(), DownloadedAudio);
-                //Loader.instance.StartFileDownload(audioFile);
-                //Debug.Log("AudioTap1: InferFromText: Started audio download " + audioFile.URL());
+                throw new ArgumentException("IconNone1 script requires some prefabs to work.");
             }
         }
 
@@ -105,7 +90,6 @@ namespace Rtrbau
             data = fabrication;
             element = elementParent;
             scale = fabricationParent;
-            audioPlaying = false;
             // loc = location;
             Scale();
             InferFromText();
@@ -116,13 +100,15 @@ namespace Rtrbau
         /// </summary>
         public void Scale()
         {
-            // Debug.Log("Root: " + this.transform.root.name);
+            Debug.Log("Root: " + this.transform.root.name);
 
             float sX = this.transform.localScale.x / scale.transform.localScale.x;
             float sY = this.transform.localScale.y / scale.transform.localScale.y;
             float sZ = this.transform.localScale.z / scale.transform.localScale.z;
 
             this.transform.localScale = new Vector3(sX, sY, sZ);
+
+            // UPG: to autosize icon image
         }
 
         /// <summary>
@@ -130,17 +116,27 @@ namespace Rtrbau
         /// </summary>
         public void InferFromText()
         {
-            DataFacet audiofacet1 = DataFormats.audiotap1.formatFacets[0];
+            DataFacet iconnone1Source = DataFormats.IconNone1.formatFacets[0];
             RtrbauAttribute attribute;
 
             // Check data received meets fabrication requirements
-            if (data.fabricationData.TryGetValue(audiofacet1, out attribute))
+            if (data.fabricationData.TryGetValue(iconnone1Source, out attribute))
             {
-                text.text = attribute.attributeName.name + ": ";
-                audioFile = new RtrbauFile(attribute.attributeValue);
-                LoaderEvents.StartListening(audioFile.EventName(), DownloadedAudio);
-                Loader.instance.StartFileDownload(audioFile);
-                Debug.Log("AudioTap1: InferFromText: Started audio download " + audioFile.URL());
+                // Add text for attributes name
+                text.text = attribute.attributeName.name + ":";
+                // Find icon that retrieves value
+                Debug.Log(attribute.attributeValue);
+                // iconName = Libraries.IconLibrary.Find(x => x.Contains(attribute.attributeValue));
+                iconName = Libraries.IconLibrary.Find(x => attribute.attributeValue.Contains(x));
+                string iconPath = "Rtrbau/Icons/" + iconName;
+                Debug.Log(iconName);
+                // Load icon's sprite
+                icon = Resources.Load<Sprite>(iconPath);
+                // Assign to sprite renderer
+                sprite.sprite = icon;
+                // Set correct size to sprite according to prefab configuration
+                // UPG: modify for auto-sizing
+                sprite.size = new Vector2(2.0f, 2.0f);
             }
             else
             {
@@ -176,76 +172,6 @@ namespace Rtrbau
         #endregion IVISUALISABLE_METHODS
 
         #region CLASS_METHODS
-        #region PRIVATE
-        void DownloadedAudio(RtrbauFile file)
-        {
-            LoaderEvents.StopListening(audioFile.EventName(), DownloadedAudio);
-            Debug.Log("AudioTap1: LoadAudio: downloaded " + audioFile.URL());
-
-            if (audioFile != null)
-            {
-                if (File.Exists(audioFile.FilePath()))
-                {
-                    audioFile = file;
-                    StartCoroutine(LoadAudio(audioFile));
-                }
-                else
-                {
-                    Debug.LogError("AudioTap1: DownloadedAudio: " + audioFile.name + "not found.");
-                }
-            }
-            else
-            {
-                Debug.LogError("AudioTap1: DownloadedAudio: " + audioFile.name + "not found.");
-            }
-
-        }
-
-        IEnumerator LoadAudio(RtrbauFile audioFile)
-        {
-            if(audioFile.type == RtrbauFileType.wav)
-            {
-                UnityWebRequest audioRequest = UnityWebRequestMultimedia.GetAudioClip(audioFile.FilePath(), AudioType.WAV);
-
-                yield return audioRequest.SendWebRequest();
-
-                if (audioRequest.isNetworkError || audioRequest.isHttpError)
-                {
-                    Debug.LogError(audioRequest.error);
-                }
-                else
-                {
-                    audioSource = DownloadHandlerAudioClip.GetContent(audioRequest);
-                    this.transform.GetChild(1).GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(true);
-                    this.gameObject.GetComponent<AudioSource>().clip = audioSource;
-                    audioLoaded = true;
-                }
-            }
-            else
-            {
-                Debug.LogError("AudioTap1: LoadAudio: " + audioFile.type + "not implemented for AudioTap1.");
-            }
-        }
-        #endregion PRIVATE
-
-        #region PUBLIC
-        public void PlayAudio()
-        {
-            if (audioLoaded)
-            {
-                if (!audioPlaying)
-                {
-                    audioPlaying = true;
-                    this.gameObject.GetComponent<AudioSource>().Play();
-                }
-                else
-                {
-                    audioPlaying = false;
-                    this.gameObject.GetComponent<AudioSource>().Stop();
-                }
-            }
-        }
-        #endregion PUBLIC
         #endregion CLASS_METHODS
     }
 }

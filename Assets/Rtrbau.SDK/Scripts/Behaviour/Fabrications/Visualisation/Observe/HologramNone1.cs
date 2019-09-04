@@ -119,7 +119,7 @@ namespace Rtrbau
 
             foreach (KeyValuePair<DataFacet, RtrbauAttribute> facet in data.fabricationData)
             {
-                if (facet.Key == DataFormats.hologramnone1.formatFacets[0])
+                if (facet.Key == DataFormats.HologramNone1.formatFacets[0])
                 {
                     // Find hologram that retrieves value
                     hologramName = Libraries.HologramLibrary.Find(x => x.Contains(facet.Value.attributeValue));
@@ -128,14 +128,14 @@ namespace Rtrbau
                     hologram = Instantiate(hologramOriginal);
 
                 }
-                else if (facet.Key == DataFormats.hologramnone1.formatFacets[1])
+                else if (facet.Key == DataFormats.HologramNone1.formatFacets[1])
                 {
                     // Find component that relates to hologram's model
                     componentName = Parser.ParseURI(Parser.ParseURI(facet.Value.attributeValue, '/', RtrbauParser.post), '.', RtrbauParser.pre);
                     component = visualiser.transform.parent.gameObject.GetComponent<AssetManager>().FindAssetComponentManipulator(componentName);
                     model = Instantiate(component);
                 }
-                else if (facet.Key == DataFormats.hologramnone1.formatFacets[2])
+                else if (facet.Key == DataFormats.HologramNone1.formatFacets[2])
                 {
                     // Find icon that retrieves value
                     iconName = Libraries.IconLibrary.Find(x => x.Contains(facet.Value.attributeValue));

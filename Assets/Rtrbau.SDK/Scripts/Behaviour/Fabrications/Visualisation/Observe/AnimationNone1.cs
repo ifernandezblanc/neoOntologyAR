@@ -143,7 +143,7 @@ namespace Rtrbau
 
             foreach (KeyValuePair<DataFacet,RtrbauAttribute> facet in data.fabricationData)
             {
-                if (facet.Key == DataFormats.animationnone1.formatFacets[0])
+                if (facet.Key == DataFormats.AnimationNone1.formatFacets[0])
                 {
                     componentName = Parser.ParseURI(Parser.ParseURI(facet.Value.attributeValue, '/', RtrbauParser.post), '.', RtrbauParser.pre);
 
@@ -181,7 +181,7 @@ namespace Rtrbau
                     UpdateLineRenderer(text);
 
                 }
-                else if (facet.Key == DataFormats.animationnone1.formatFacets[1])
+                else if (facet.Key == DataFormats.AnimationNone1.formatFacets[1])
                 {
                     componentPairName = Parser.ParseURI(Parser.ParseURI(facet.Value.attributeValue, '/', RtrbauParser.post), '.', RtrbauParser.pre);
 
@@ -219,11 +219,11 @@ namespace Rtrbau
                     UpdateLineRenderer(textPair);
 
                 }
-                else if (facet.Key == DataFormats.animationnone1.formatFacets[2])
+                else if (facet.Key == DataFormats.AnimationNone1.formatFacets[2])
                 {
                     movementName = facet.Value.attributeValue;
                 }
-                else if (facet.Key == DataFormats.animationnone1.formatFacets[3])
+                else if (facet.Key == DataFormats.AnimationNone1.formatFacets[3])
                 {
                     movementRestrictionName = facet.Value.attributeValue;
                 }

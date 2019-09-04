@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -263,6 +264,12 @@ namespace Rtrbau
         {
             "boolean"
         };
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public static List<string> TextLibrary = StringLibrary.Concat(NumericLibrary).Concat(BooleanLibrary).ToList();
 
         /// <summary>
         /// Describe script purpose

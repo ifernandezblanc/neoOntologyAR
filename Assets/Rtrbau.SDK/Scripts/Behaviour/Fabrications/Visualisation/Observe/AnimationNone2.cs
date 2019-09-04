@@ -176,7 +176,7 @@ namespace Rtrbau
 
             foreach (KeyValuePair<DataFacet,RtrbauAttribute> facet in data.fabricationData)
             {
-                if (facet.Key == DataFormats.animationnone2.formatFacets[0])
+                if (facet.Key == DataFormats.AnimationNone2.formatFacets[0])
                 {
                     componentName = Parser.ParseURI(Parser.ParseURI(facet.Value.attributeValue, '/', RtrbauParser.post), '.', RtrbauParser.pre);
 
@@ -198,31 +198,31 @@ namespace Rtrbau
                     modelOriginRotation = model.transform.rotation;
 
                 }
-                else if (facet.Key == DataFormats.animationnone2.formatFacets[1])
+                else if (facet.Key == DataFormats.AnimationNone2.formatFacets[1])
                 {
                     freeTranslationX = (facet.Value.attributeValue == "true");
                 }
-                else if (facet.Key == DataFormats.animationnone2.formatFacets[2])
+                else if (facet.Key == DataFormats.AnimationNone2.formatFacets[2])
                 {
                     freeTranslationY = (facet.Value.attributeValue == "true");
                 }
-                else if (facet.Key == DataFormats.animationnone2.formatFacets[3])
+                else if (facet.Key == DataFormats.AnimationNone2.formatFacets[3])
                 {
                     freeTranslationZ = (facet.Value.attributeValue == "true");
                 }
-                else if (facet.Key == DataFormats.animationnone2.formatFacets[4])
+                else if (facet.Key == DataFormats.AnimationNone2.formatFacets[4])
                 {
                     freeRotationX = (facet.Value.attributeValue == "true");
                 }
-                else if (facet.Key == DataFormats.animationnone2.formatFacets[5])
+                else if (facet.Key == DataFormats.AnimationNone2.formatFacets[5])
                 {
                     freeRotationY = (facet.Value.attributeValue == "true");
                 }
-                else if (facet.Key == DataFormats.animationnone2.formatFacets[6])
+                else if (facet.Key == DataFormats.AnimationNone2.formatFacets[6])
                 {
                     freeRotationZ = (facet.Value.attributeValue == "true");
                 }
-                else if (facet.Key == DataFormats.animationnone2.formatFacets[7])
+                else if (facet.Key == DataFormats.AnimationNone2.formatFacets[7])
                 {
                     componentPairName = Parser.ParseURI(Parser.ParseURI(facet.Value.attributeValue, '/', RtrbauParser.post), '.', RtrbauParser.pre);
 
@@ -241,10 +241,10 @@ namespace Rtrbau
                     modelPairOriginRotation = modelPair.transform.rotation;
 
                 }
-                else if (facet.Key == DataFormats.animationnone2.formatFacets[8])
+                else if (facet.Key == DataFormats.AnimationNone2.formatFacets[8])
                 {
                     inverseMovement = (facet.Value.attributeValue == "true");
-                    Debug.Log("Inverse Movement: " + inverseMovement);
+                    // Debug.Log("Inverse Movement: " + inverseMovement);
                 }
                 else
                 {
@@ -308,17 +308,17 @@ namespace Rtrbau
             Vector3 inverseTranslation;
             if (inverseMovement == true)
             {
-                Debug.Log("Inverse Movement: " + inverseMovement);
+                // Debug.Log("Inverse Movement: " + inverseMovement);
                 // Set new model origin
                 model.transform.position += Vector3.Scale(freeTranslation, component.GetComponentInChildren<MeshRenderer>().bounds.size * 4f);
-                Debug.Log("inversed position: " + model.transform.position);
+                // Debug.Log("inversed position: " + model.transform.position);
                 modelOriginPosition = model.transform.position;
                 modelOriginRotation = model.transform.rotation;
                 inverseTranslation = new Vector3(-1f, -1f, -1f);
             }
             else
             {
-                Debug.Log("Inverse Movement: " + inverseMovement);
+                // Debug.Log("Inverse Movement: " + inverseMovement);
                 inverseTranslation = new Vector3(1, 1, 1);
                 animationBounds.Expand(0.5f);
             }

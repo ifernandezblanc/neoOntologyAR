@@ -104,7 +104,7 @@ namespace Rtrbau
         /// </summary>
         public void InferFromText()
         {
-            DataFacet source = DataFormats.modelmanipulation1.formatFacets[0];
+            DataFacet source = DataFormats.ModelManipulation1.formatFacets[0];
             RtrbauAttribute attribute;
 
             // Check data received meets fabrication requirements
@@ -119,7 +119,7 @@ namespace Rtrbau
                 UpdateComponentModel();
                 AddManipulationHandler();
                 string note = attribute.attributeName.name + ": " + name;
-                Debug.Log("ModelManipulation1: " + note);
+                // Debug.Log("ModelManipulation1: " + note);
                 AddTextPanel(note);
             }
             else

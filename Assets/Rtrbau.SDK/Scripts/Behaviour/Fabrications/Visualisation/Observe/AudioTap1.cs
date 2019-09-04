@@ -34,7 +34,7 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
-    public class ImageManipulation1 : MonoBehaviour, IFabricationable, IVisualisable
+    public class AudioTap1 : MonoBehaviour, IFabricationable, IVisualisable
     {
         #region INITIALISATION_VARIABLES
         public AssetVisualiser visualiser;
@@ -44,39 +44,40 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
-        public Sprite imageSource;
+        public AudioClip audioSource;
         #endregion CLASS_VARIABLES
 
         #region FACET_VARIABLES
-        public RtrbauFile imageFile;
+        public RtrbauFile audioFile;
         #endregion FACET_VARIABLES
 
         #region GAMEOBJECT_PREFABS
         public TextMeshPro text;
-        public SpriteRenderer image;
-        public Material lineMaterial;
         public MeshRenderer panel;
         public Material seenMaterial;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
+        public bool audioLoaded;
+        public bool audioPlaying;
         #endregion CLASS_EVENTS
 
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (text == null || image == null || lineMaterial == null || panel == null || seenMaterial == null)
+            if (text == null || panel == null || seenMaterial == null)
             {
-                throw new ArgumentException("ImageManipulation1 script requires some prefabs to work.");
+                throw new ArgumentException("AudioTap1 script requires some prefabs to work.");
             }
             else
             {
-                //string attributeValue = "http://138.250.108.1:3003/api/files/jpg/error_1-1-2-2-2_3.jpg";
-                //text.text = "Image: ";
-                //imageFile = new RtrbauFile(attributeValue);
-                //LoaderEvents.StartListening(imageFile.EventName(), DownloadedImage);
-                //Loader.instance.StartFileDownload(imageFile);
-                //Debug.Log("AudioTap1: InferFromText: Started audio download " + imageFile.URL());
+                //string attributeValue = "http://138.250.108.1:3003/api/files/wav/audioexample.wav";
+                //audioPlaying = false;
+                //text.text = "Audio: ";
+                //audioFile = new RtrbauFile(attributeValue);
+                //LoaderEvents.StartListening(audioFile.EventName(), DownloadedAudio);
+                //Loader.instance.StartFileDownload(audioFile);
+                //Debug.Log("AudioTap1: InferFromText: Started audio download " + audioFile.URL());
             }
         }
 
@@ -104,6 +105,7 @@ namespace Rtrbau
             data = fabrication;
             element = elementParent;
             scale = fabricationParent;
+            audioPlaying = false;
             // loc = location;
             Scale();
             InferFromText();
@@ -128,23 +130,21 @@ namespace Rtrbau
         /// </summary>
         public void InferFromText()
         {
-            DataFacet imagefacet1 = DataFormats.imagemanipulation1.formatFacets[0];
+            DataFacet audiofacet1 = DataFormats.AudioTap1.formatFacets[0];
             RtrbauAttribute attribute;
 
             // Check data received meets fabrication requirements
-            if (data.fabricationData.TryGetValue(imagefacet1, out attribute))
+            if (data.fabricationData.TryGetValue(audiofacet1, out attribute))
             {
                 text.text = attribute.attributeName.name + ": ";
-                imageFile = new RtrbauFile(attribute.attributeValue);
-                LoaderEvents.StartListening(imageFile.EventName(), DownloadedImage);
-                Loader.instance.StartFileDownload(imageFile);
-                Debug.Log("ImageManipulation1: InferFromText: Started audio download " + imageFile.URL());
-                this.gameObject.AddComponent<ElementsLine>();
-                this.gameObject.GetComponent<ElementsLine>().Initialise(this.gameObject, element.gameObject, lineMaterial);
+                audioFile = new RtrbauFile(attribute.attributeValue);
+                LoaderEvents.StartListening(audioFile.EventName(), DownloadedAudio);
+                Loader.instance.StartFileDownload(audioFile);
+                Debug.Log("AudioTap1: InferFromText: Started audio download " + audioFile.URL());
             }
             else
             {
-                throw new ArgumentException(data.fabricationName + " cannot implement: " + attribute.attributeName + " recieved.");
+                throw new ArgumentException(data.fabricationName + " cannot implement: " + attribute.attributeName + " received.");
             }
         }
 
@@ -177,60 +177,74 @@ namespace Rtrbau
 
         #region CLASS_METHODS
         #region PRIVATE
-        void DownloadedImage(RtrbauFile imageFile)
+        void DownloadedAudio(RtrbauFile file)
         {
-            LoaderEvents.StopListening(imageFile.EventName(), DownloadedImage);
-            Debug.Log("ImageManipulation1: LoadAudio: downloaded " + imageFile.URL());
+            LoaderEvents.StopListening(audioFile.EventName(), DownloadedAudio);
+            Debug.Log("AudioTap1: LoadAudio: downloaded " + audioFile.URL());
 
-            if (imageFile != null)
+            if (audioFile != null)
             {
-                if (File.Exists(imageFile.FilePath()))
+                if (File.Exists(audioFile.FilePath()))
                 {
-                    StartCoroutine(LoadImage(imageFile));
+                    audioFile = file;
+                    StartCoroutine(LoadAudio(audioFile));
                 }
                 else
                 {
-                    Debug.LogError("ImageManipulation1: DownloadedAudio: " + imageFile.name + "not found.");
+                    Debug.LogError("AudioTap1: DownloadedAudio: " + audioFile.name + "not found.");
                 }
             }
             else
             {
-                Debug.LogError("ImageManipulation1: DownloadedAudio: " + imageFile.name + "not found.");
+                Debug.LogError("AudioTap1: DownloadedAudio: " + audioFile.name + "not found.");
             }
 
         }
 
-        IEnumerator LoadImage(RtrbauFile imageFile)
+        IEnumerator LoadAudio(RtrbauFile audioFile)
         {
-            if(imageFile != null)
+            if(audioFile.type == RtrbauFileType.wav)
             {
-                UnityWebRequest imageRequest = UnityWebRequestTexture.GetTexture(imageFile.FilePath());
+                UnityWebRequest audioRequest = UnityWebRequestMultimedia.GetAudioClip(audioFile.FilePath(), AudioType.WAV);
 
-                yield return imageRequest.SendWebRequest();
+                yield return audioRequest.SendWebRequest();
 
-                if (imageRequest.isNetworkError || imageRequest.isHttpError)
+                if (audioRequest.isNetworkError || audioRequest.isHttpError)
                 {
-                    Debug.LogError(imageRequest.error);
+                    Debug.LogError(audioRequest.error);
                 }
                 else
                 {
-                    Texture2D imageTexture = DownloadHandlerTexture.GetContent(imageRequest);
-                    // According to unity documentation
-                    imageSource = Sprite.Create(imageTexture, new Rect(0.0f, 0.0f, imageTexture.width, imageTexture.height), new Vector2(0.5f, 0.5f), 100.0f);
-                    image.sprite = imageSource;
-                    image.drawMode = SpriteDrawMode.Sliced;
-                    // According to fabrication current size
-                    image.size = new Vector2(0.2f, 0.19f);
+                    audioSource = DownloadHandlerAudioClip.GetContent(audioRequest);
+                    this.transform.GetChild(1).GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(true);
+                    this.gameObject.GetComponent<AudioSource>().clip = audioSource;
+                    audioLoaded = true;
                 }
             }
             else
             {
-                Debug.LogError("ImageManipulation1: LoadAudio: " + imageFile.type + "not implemented for ImageManipulation1.");
+                Debug.LogError("AudioTap1: LoadAudio: " + audioFile.type + "not implemented for AudioTap1.");
             }
         }
         #endregion PRIVATE
 
         #region PUBLIC
+        public void PlayAudio()
+        {
+            if (audioLoaded)
+            {
+                if (!audioPlaying)
+                {
+                    audioPlaying = true;
+                    this.gameObject.GetComponent<AudioSource>().Play();
+                }
+                else
+                {
+                    audioPlaying = false;
+                    this.gameObject.GetComponent<AudioSource>().Stop();
+                }
+            }
+        }
         #endregion PUBLIC
         #endregion CLASS_METHODS
     }

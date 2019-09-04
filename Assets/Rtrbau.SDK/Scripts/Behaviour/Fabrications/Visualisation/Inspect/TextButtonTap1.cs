@@ -10,7 +10,7 @@ Copyright (c) 2019 Babcock International Group. All Rights Reserved.
 All Rights Reserved.
 Confidential and Proprietary - Protected under copyright and other laws.
 
-Date: 20/08/2019
+Date: 24/08/2019
 ==============================================================================*/
 
 /// <summary>
@@ -21,7 +21,6 @@ Date: 20/08/2019
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 using TMPro;
 using Microsoft.MixedReality.Toolkit.UI;
 #endregion NAMESPACES
@@ -32,7 +31,7 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
-    public class IconNone1 : MonoBehaviour, IFabricationable, IVisualisable
+    public class TextButtonTap1 : MonoBehaviour, IFabricationable, IVisualisable
     {
         #region INITIALISATION_VARIABLES
         public AssetVisualiser visualiser;
@@ -42,13 +41,15 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
-        public string iconName;
-        public Sprite icon;
+        public OntologyEntity relationshipAttribute;
         #endregion CLASS_VARIABLES
+
+        #region FACETS_VARIABLES
+        public string nextIndividual;
+        #endregion FACETS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
         public TextMeshPro text;
-        public SpriteRenderer sprite;
         public MeshRenderer panel;
         public Material seenMaterial;
         #endregion GAMEOBJECT_PREFABS
@@ -60,9 +61,9 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (text == null || sprite == null || panel == null || seenMaterial == null)
+            if (text == null)
             {
-                throw new ArgumentException("IconNone1 script requires some prefabs to work.");
+                throw new ArgumentException("TextButtonTap1 script requires some prefabs to work.");
             }
         }
 
@@ -72,7 +73,7 @@ namespace Rtrbau
 
         void OnDisable() { }
 
-        void OnDestroy () { DestroyIt(); }
+        void OnDestroy() { DestroyIt(); }
         #endregion MONOBEHVAIOUR_METHODS
 
         #region IFABRICATIONABLE_METHODS
@@ -100,15 +101,13 @@ namespace Rtrbau
         /// </summary>
         public void Scale()
         {
-            Debug.Log("Root: " + this.transform.root.name);
+            // Debug.Log("Root: " + this.transform.root.name);
 
             float sX = this.transform.localScale.x / scale.transform.localScale.x;
             float sY = this.transform.localScale.y / scale.transform.localScale.y;
             float sZ = this.transform.localScale.z / scale.transform.localScale.z;
 
             this.transform.localScale = new Vector3(sX, sY, sZ);
-
-            // UPG: to autosize icon image
         }
 
         /// <summary>
@@ -116,27 +115,17 @@ namespace Rtrbau
         /// </summary>
         public void InferFromText()
         {
-            DataFacet iconnone1Source = DataFormats.iconnone1.formatFacets[0];
+            DataFacet textfacet2 = DataFormats.TextButtonTap1.formatFacets[0];
             RtrbauAttribute attribute;
 
             // Check data received meets fabrication requirements
-            if (data.fabricationData.TryGetValue(iconnone1Source, out attribute))
+            if (data.fabricationData.TryGetValue(textfacet2, out attribute))
             {
-                // Add text for attributes name
-                text.text = attribute.attributeName.name + ":";
-                // Find icon that retrieves value
-                Debug.Log(attribute.attributeValue);
-                // iconName = Libraries.IconLibrary.Find(x => x.Contains(attribute.attributeValue));
-                iconName = Libraries.IconLibrary.Find(x => attribute.attributeValue.Contains(x));
-                string iconPath = "Rtrbau/Icons/" + iconName;
-                Debug.Log(iconName);
-                // Load icon's sprite
-                icon = Resources.Load<Sprite>(iconPath);
-                // Assign to sprite renderer
-                sprite.sprite = icon;
-                // Set correct size to sprite according to prefab configuration
-                // UPG: modify for auto-sizing
-                sprite.size = new Vector2(2.0f, 2.0f);
+                // string attributeValue = Parser.ParseURI(attribute.attributeValue, '#', RtrbauParser.post);
+                // text.text = attribute.attributeName.name + ": " + attributeValue;
+                text.text = attribute.attributeName.name;
+                nextIndividual = attribute.attributeValue;
+                relationshipAttribute = new OntologyEntity(attribute.attributeName.URI());
             }
             else
             {
@@ -149,8 +138,23 @@ namespace Rtrbau
         /// </summary>
         public void OnNextVisualisation()
         {
-            // Do nothing
-            // Activation / de-activation is managed by
+            // Send relationship used to connect to the following individual to the report
+            Reporter.instance.ReportElement(relationshipAttribute);
+            // IMPORTANT: this button is set up for individuals in consult mode (IndividualProperties)
+            OntologyElement individual = new OntologyElement(nextIndividual, OntologyElementType.IndividualProperties);
+            GameObject nextElement = visualiser.FindElement(individual);
+            if (nextElement != null)
+            {
+                Debug.Log("OnNextVisualisation: " + nextElement.name);
+                element.gameObject.GetComponent<ElementsLine>().UpdateLineEnd(nextElement);
+            }
+            else
+            {
+                // Element parent to modify material in expectance of a new element
+                element.GetComponent<ElementConsult>().ModifyMaterial();
+                // Trigger event to load a new element
+                RtrbauerEvents.TriggerEvent("LoadElement", individual, Rtrbauer.instance.user.procedure);
+            }
         }
         #endregion IFABRICATIONABLE_METHODS
 

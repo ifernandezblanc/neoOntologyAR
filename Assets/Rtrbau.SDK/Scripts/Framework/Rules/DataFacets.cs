@@ -31,75 +31,81 @@ namespace Rtrbau
     /// </summary>
     public static class DataFacets
     {
+        private static RtrbauFacetRuleType All = RtrbauFacetRuleType.All;
+        private static RtrbauFacetRuleType Any = RtrbauFacetRuleType.Any;
+
+        // Standard rule formatting: [All, Any, Any] (Originally design like that)
+
         #region FACETS
         #region TEXT_FACETS
-        public static DataFacetRules textFacet1 = new DataFacetRules(null, null, null); // All properties will fit into here
-        public static DataFacetRules textFacet2 = new DataFacetRules(null, null, Libraries.IndividualLibrary);
-        public static DataFacetRules textFacet3 = new DataFacetRules(null, Libraries.SetLibrary, null); // Error in here, see above to solve
+        public static DataFacetRules TextFacet0 = new DataFacetRules(All, null, Any, null, Any, null); // All properties will fit into here
+        public static DataFacetRules TextFacet1 = new DataFacetRules(All, null, Any, Libraries.TextLibrary, Any, null);
+        public static DataFacetRules TextFacet2 = new DataFacetRules(All, null, Any, null, Any, Libraries.IndividualLibrary);
+        public static DataFacetRules TextFacet3 = new DataFacetRules(All, null, Any, Libraries.SetLibrary, Any, null); // Error in here, see above to solve
         #endregion TEXT_FACETS
 
         #region ICON_FACETS
-        // public static DataFacetRules iconFacet1 = new DataFacetRules(null, Libraries.StringLibrary, Libraries.IconLibrary);
-        public static DataFacetRules iconFacet1 = new DataFacetRules(null, Libraries.StringLibrary, Libraries.IconLibrary);
-        public static DataFacetRules iconFacet2 = new DataFacetRules(Libraries.IconLibrary, null, Libraries.IndividualLibrary); // Error in here: need to change name rules evaluation (maybe accept type of rule evaluation as parameter?)
-        public static DataFacetRules iconFacet3 = new DataFacetRules(Libraries.IconLibrary, Libraries.SetLibrary, null); // Error in here, see above to solve
+        // public static DataFacetRules IconFacet1 = new DataFacetRules(null, Libraries.StringLibrary, Libraries.IconLibrary);
+        public static DataFacetRules IconFacet1 = new DataFacetRules(All, null, Any, Libraries.StringLibrary, Any, Libraries.IconLibrary);
+        public static DataFacetRules IconFacet2 = new DataFacetRules(All, Libraries.IconLibrary, Any, null, Any, Libraries.IndividualLibrary); // Error in here: need to change name rules evaluation (maybe accept type of rule evaluation as parameter?)
+        public static DataFacetRules IconFacet3 = new DataFacetRules(All, Libraries.IconLibrary, Any, Libraries.SetLibrary, Any, null); // Error in here, see above to solve
         #endregion ICON_FACETS
 
         #region AUDIO_FACETS
-        public static DataFacetRules audioFacet1 = new DataFacetRules(null, Libraries.URILibrary, Libraries.AudioFileLibrary);
+        public static DataFacetRules AudioFacet1 = new DataFacetRules(All, null, Any, Libraries.URILibrary, Any, Libraries.AudioFileLibrary);
         #endregion AUDIO_FACETS
 
         #region PICTURE_FACETS
-        public static DataFacetRules pictureFacet1 = new DataFacetRules(null, Libraries.URILibrary, Libraries.PictureFileLibrary);
+        public static DataFacetRules PictureFacet1 = new DataFacetRules(All, null, Any, Libraries.URILibrary, Any, Libraries.PictureFileLibrary);
         #endregion PICTURE_FACETS
 
         #region VIDEO_FACETS
-        public static DataFacetRules videoFacet1 = new DataFacetRules(null, Libraries.URILibrary, Libraries.VideoFileLibrary);
+        public static DataFacetRules VideoFacet1 = new DataFacetRules(All, null, Any, Libraries.URILibrary, Any, Libraries.VideoFileLibrary);
         #endregion VIDEO_FACETS
 
         #region MODEL_FACETS
-        public static DataFacetRules modelFacet1 = new DataFacetRules(null, Libraries.URILibrary, Libraries.ModelFileLibrary);
+        public static DataFacetRules ModelFacet1 = new DataFacetRules(All, null, Any, Libraries.URILibrary, Any, Libraries.ModelFileLibrary);
         #endregion MODEL_FACETS
 
         #region HOLOGRAM_FACETS
-        public static DataFacetRules hologramFacet1 = new DataFacetRules(null, Libraries.StringLibrary, Libraries.HologramLibrary);
-        public static DataFacetRules hologramFacet2 = new DataFacetRules(null, Libraries.URILibrary, Libraries.ModelFileLibrary);
-        public static DataFacetRules hologramFacet3 = new DataFacetRules(null, Libraries.StringLibrary, Libraries.IconLibrary);
-        public static DataFacetRules hologramFacet4 = new DataFacetRules(Libraries.PositionXLibrary, Libraries.NumericLibrary, null);
-        public static DataFacetRules hologramFacet5 = new DataFacetRules(Libraries.PositionYLibrary, Libraries.NumericLibrary, null);
-        public static DataFacetRules hologramFacet6 = new DataFacetRules(Libraries.PositionZLibrary, Libraries.NumericLibrary, null);
-        public static DataFacetRules hologramFacet7 = new DataFacetRules(Libraries.RotationXLibrary, Libraries.NumericLibrary, null);
-        public static DataFacetRules hologramFacet8 = new DataFacetRules(Libraries.RotationYLibrary, Libraries.NumericLibrary, null);
-        public static DataFacetRules hologramFacet9 = new DataFacetRules(Libraries.RotationZLibrary, Libraries.NumericLibrary, null);
+        public static DataFacetRules HologramFacet1 = new DataFacetRules(All, null, Any, Libraries.StringLibrary, Any, Libraries.HologramLibrary);
+        public static DataFacetRules HologramFacet2 = new DataFacetRules(All, null, Any, Libraries.URILibrary, Any, Libraries.ModelFileLibrary);
+        public static DataFacetRules HologramFacet3 = new DataFacetRules(All, null, Any, Libraries.StringLibrary, Any, Libraries.IconLibrary);
+        public static DataFacetRules HologramFacet4 = new DataFacetRules(All, Libraries.PositionXLibrary, Any, Libraries.NumericLibrary, Any, null);
+        public static DataFacetRules HologramFacet5 = new DataFacetRules(All, Libraries.PositionYLibrary, Any, Libraries.NumericLibrary, Any, null);
+        public static DataFacetRules HologramFacet6 = new DataFacetRules(All, Libraries.PositionZLibrary, Any, Libraries.NumericLibrary, Any, null);
+        public static DataFacetRules HologramFacet7 = new DataFacetRules(All, Libraries.RotationXLibrary, Any, Libraries.NumericLibrary, Any, null);
+        public static DataFacetRules HologramFacet8 = new DataFacetRules(All, Libraries.RotationYLibrary, Any, Libraries.NumericLibrary, Any, null);
+        public static DataFacetRules HologramFacet9 = new DataFacetRules(All, Libraries.RotationZLibrary, Any, Libraries.NumericLibrary, Any, null);
         #endregion HOLOGRAM_FACETS
 
         #region ANIMATION_FACETS
-        public static DataFacetRules animationFacet1 = new DataFacetRules(null, Libraries.URILibrary, Libraries.ModelFileLibrary);
-        public static DataFacetRules animationFacet2 = new DataFacetRules(null, Libraries.StringLibrary, Libraries.MovementLibrary);
-        public static DataFacetRules animationFacet3 = new DataFacetRules(null, Libraries.StringLibrary, Libraries.MovementRestrictionLibrary);
-        public static DataFacetRules animationFacet4 = new DataFacetRules(Libraries.MovementPairLibrary, Libraries.URILibrary, Libraries.ModelFileLibrary);
-        public static DataFacetRules animationFacet5 = new DataFacetRules(Libraries.MovementInverseLibrary, Libraries.BooleanLibrary, null);
-        public static DataFacetRules animationFacet6 = new DataFacetRules(Libraries.MovementSpeedLibrary, Libraries.NumericLibrary, null);
-        public static DataFacetRules animationFacet7 = new DataFacetRules(Libraries.MovementTranslationXLibrary, Libraries.BooleanLibrary, null);
-        public static DataFacetRules animationFacet8 = new DataFacetRules(Libraries.MovementTranslationYLibrary, Libraries.BooleanLibrary, null);
-        public static DataFacetRules animationFacet9 = new DataFacetRules(Libraries.MovementTranslationZLibrary, Libraries.BooleanLibrary, null);
-        public static DataFacetRules animationFacet10 = new DataFacetRules(Libraries.MovementRotationXLibrary, Libraries.BooleanLibrary, null);
-        public static DataFacetRules animationFacet11 = new DataFacetRules(Libraries.MovementRotationYLibrary, Libraries.BooleanLibrary, null);
-        public static DataFacetRules animationFacet12 = new DataFacetRules(Libraries.MovementRotationZLibrary, Libraries.BooleanLibrary, null);
-        public static DataFacetRules animationFacet13 = new DataFacetRules(Libraries.MovementTranslationXLibrary, Libraries.NumericLibrary, null);
-        public static DataFacetRules animationFacet14 = new DataFacetRules(Libraries.MovementTranslationYLibrary, Libraries.NumericLibrary, null);
-        public static DataFacetRules animationFacet15 = new DataFacetRules(Libraries.MovementTranslationZLibrary, Libraries.NumericLibrary, null);
-        public static DataFacetRules animationFacet16 = new DataFacetRules(Libraries.MovementRotationXLibrary, Libraries.NumericLibrary, null);
-        public static DataFacetRules animationFacet17 = new DataFacetRules(Libraries.MovementRotationYLibrary, Libraries.NumericLibrary, null);
-        public static DataFacetRules animationFacet18 = new DataFacetRules(Libraries.MovementRotationZLibrary, Libraries.NumericLibrary, null);
-        public static DataFacetRules animationFacet19 = new DataFacetRules(Libraries.FreedomDegreeTranslationXLibrary, Libraries.BooleanLibrary, null);
-        public static DataFacetRules animationFacet20 = new DataFacetRules(Libraries.FreedomDegreeTranslationYLibrary, Libraries.BooleanLibrary, null);
-        public static DataFacetRules animationFacet21 = new DataFacetRules(Libraries.FreedomDegreeTranslationZLibrary, Libraries.BooleanLibrary, null);
-        public static DataFacetRules animationFacet22 = new DataFacetRules(Libraries.FreedomDegreeRotationXLibrary, Libraries.BooleanLibrary, null);
-        public static DataFacetRules animationFacet23 = new DataFacetRules(Libraries.FreedomDegreeRotationYLibrary, Libraries.BooleanLibrary, null);
-        public static DataFacetRules animationFacet24 = new DataFacetRules(Libraries.FreedomDegreeRotationZLibrary, Libraries.BooleanLibrary, null);
-        public static DataFacetRules animationFacet25 = new DataFacetRules(null, Libraries.SetLibrary, Libraries.MovementLibrary);
-        public static DataFacetRules animationFacet26 = new DataFacetRules(null, Libraries.SetLibrary, Libraries.MovementRestrictionLibrary);
+        public static DataFacetRules AnimationFacet1 = new DataFacetRules(All, null, Any, Libraries.URILibrary, Any, Libraries.ModelFileLibrary);
+        public static DataFacetRules AnimationFacet2 = new DataFacetRules(All, null, Any, Libraries.StringLibrary, Any, Libraries.MovementLibrary);
+        public static DataFacetRules AnimationFacet3 = new DataFacetRules(All, null, Any, Libraries.StringLibrary, Any, Libraries.MovementRestrictionLibrary);
+        public static DataFacetRules AnimationFacet4 = new DataFacetRules(All, Libraries.MovementPairLibrary, Any, Libraries.URILibrary, Any, Libraries.ModelFileLibrary);
+        public static DataFacetRules AnimationFacet5 = new DataFacetRules(All, Libraries.MovementInverseLibrary, Any, Libraries.BooleanLibrary, Any, null);
+        public static DataFacetRules AnimationFacet6 = new DataFacetRules(All, Libraries.MovementSpeedLibrary, Any, Libraries.NumericLibrary, Any, null);
+        public static DataFacetRules AnimationFacet7 = new DataFacetRules(All, Libraries.MovementTranslationXLibrary, Any, Libraries.BooleanLibrary, Any, null);
+        public static DataFacetRules AnimationFacet8 = new DataFacetRules(All, Libraries.MovementTranslationYLibrary, Any, Libraries.BooleanLibrary, Any, null);
+        public static DataFacetRules AnimationFacet9 = new DataFacetRules(All, Libraries.MovementTranslationZLibrary, Any, Libraries.BooleanLibrary, Any, null);
+        public static DataFacetRules AnimationFacet10 = new DataFacetRules(All, Libraries.MovementRotationXLibrary, Any, Libraries.BooleanLibrary, Any, null);
+        public static DataFacetRules AnimationFacet11 = new DataFacetRules(All, Libraries.MovementRotationYLibrary, Any, Libraries.BooleanLibrary, Any, null);
+        public static DataFacetRules AnimationFacet12 = new DataFacetRules(All, Libraries.MovementRotationZLibrary, Any, Libraries.BooleanLibrary, Any, null);
+        public static DataFacetRules AnimationFacet13 = new DataFacetRules(All, Libraries.MovementTranslationXLibrary, Any, Libraries.NumericLibrary, Any, null);
+        public static DataFacetRules AnimationFacet14 = new DataFacetRules(All, Libraries.MovementTranslationYLibrary, Any, Libraries.NumericLibrary, Any, null);
+        public static DataFacetRules AnimationFacet15 = new DataFacetRules(All, Libraries.MovementTranslationZLibrary, Any, Libraries.NumericLibrary, Any, null);
+        public static DataFacetRules AnimationFacet16 = new DataFacetRules(All, Libraries.MovementRotationXLibrary, Any, Libraries.NumericLibrary, Any, null);
+        public static DataFacetRules AnimationFacet17 = new DataFacetRules(All, Libraries.MovementRotationYLibrary, Any, Libraries.NumericLibrary, Any, null);
+        public static DataFacetRules AnimationFacet18 = new DataFacetRules(All, Libraries.MovementRotationZLibrary, Any, Libraries.NumericLibrary, Any, null);
+        public static DataFacetRules AnimationFacet19 = new DataFacetRules(All, Libraries.FreedomDegreeTranslationXLibrary, Any, Libraries.BooleanLibrary, Any, null);
+        public static DataFacetRules AnimationFacet20 = new DataFacetRules(All, Libraries.FreedomDegreeTranslationYLibrary, Any, Libraries.BooleanLibrary, Any, null);
+        public static DataFacetRules AnimationFacet21 = new DataFacetRules(All, Libraries.FreedomDegreeTranslationZLibrary, Any, Libraries.BooleanLibrary, Any, null);
+        public static DataFacetRules AnimationFacet22 = new DataFacetRules(All, Libraries.FreedomDegreeRotationXLibrary, Any, Libraries.BooleanLibrary, Any, null);
+        public static DataFacetRules AnimationFacet23 = new DataFacetRules(All, Libraries.FreedomDegreeRotationYLibrary, Any, Libraries.BooleanLibrary, Any, null);
+        public static DataFacetRules AnimationFacet24 = new DataFacetRules(All, Libraries.FreedomDegreeRotationZLibrary, Any, Libraries.BooleanLibrary, Any, null);
+        public static DataFacetRules AnimationFacet25 = new DataFacetRules(All, null, Any, Libraries.SetLibrary, Any, Libraries.MovementLibrary);
+        public static DataFacetRules AnimationFacet26 = new DataFacetRules(All, null, Any, Libraries.SetLibrary, Any, Libraries.MovementRestrictionLibrary);
         #endregion ANIMATION_FACETS
         #endregion FACETS
     }

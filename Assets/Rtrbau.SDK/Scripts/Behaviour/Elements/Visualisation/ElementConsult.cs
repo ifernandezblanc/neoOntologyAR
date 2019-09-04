@@ -182,40 +182,82 @@ namespace Rtrbau
         /// </summary>
         public void SelectFabrications()
         {
-            // RTRBAU ALGORITHM: Data formats matching (Loops 3 and 4 combined)
-            foreach (DataFormat format in Dictionaries.DataFormatsConsult)
+            // Return list of acceptable formats according to user and environment configuration
+            // These formats to be used in the following loop
+            // This new loop to replace second loop below
+            List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>> availableFormats = new List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>>();
+
+            foreach (Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat> format in Dictionaries.ConsultFormats)
             {
-                Debug.Log("ElementConsult: EvaluateElement: " + format.formatName + " required facets: " + format.formatRequiredFacets);
-                List<RtrbauFabrication> formatAssignedFabrications = format.EvaluateFormat(rtrbauElement);
-                
+                // Check environment and user formats
+                Tuple<RtrbauAugmentation, RtrbauInteraction> envFacets = format.Item3.EvaluateFormat();
+                Tuple<RtrbauComprehensiveness, RtrbauDescriptiveness> userFacets = format.Item4.EvaluateFormat();
+
+                if (envFacets != null && userFacets != null)
+                {
+                    availableFormats.Add(format);
+                    Debug.Log("EvaluateElement: fabrication available: " + format.Item1);
+                }
+                else { }
+            }
+
+            foreach (Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat> format in availableFormats)
+            {
+                Debug.Log("ElementConsult: EvaluateElement: " + format.Item2.formatName + " required facets: " + format.Item2.formatRequiredFacets);
+                List<RtrbauFabrication> formatAssignedFabrications = format.Item2.EvaluateFormat(rtrbauElement);
+
                 if (formatAssignedFabrications != null)
                 {
                     foreach (RtrbauFabrication fabrication in formatAssignedFabrications)
                     {
-                        assignedFabrications.Add(fabrication);
                         Debug.Log("EvaluateElement: fabrication assigned: " + fabrication.fabricationName);
+                        // Add environment and user features to fabrication
+                        // UPG: since environment and user formats are being evaluated before, there is no need to add them to RtrbauFabrication class?
+                        fabrication.fabricationAugmentation = format.Item3.formatAugmentation.facetAugmentation;
+                        fabrication.fabricationInteraction = format.Item3.formatInteraction.facetInteraction;
+                        fabrication.fabricationComprehension = format.Item4.formatComprehension;
+                        fabrication.fabricationDescription = format.Item4.formatDescription;
+                        // Add fabrication to assigned fabrications list
+                        assignedFabrications.Add(fabrication);
                     }
                 }
             }
 
-            // RTRBAU ALGORITHM: Environment and user formats matching (Loop 6 and 7 modified and combined)
-            foreach (RtrbauFabrication fabrication in assignedFabrications.ToList())
-            {
-                Tuple<RtrbauAugmentation, RtrbauInteraction> envFacets = Dictionaries.EnvironmentFormatsConsult.Find(x => x.formatName == fabrication.fabricationName).EvaluateFormat();
-                Tuple<RtrbauComprehensiveness, RtrbauDescriptiveness> userFacets = Dictionaries.UserFormatsConsult.Find(x => x.formatName == fabrication.fabricationName).EvaluateFormat();
 
-                if (envFacets == null || userFacets == null)
-                {
-                    assignedFabrications.Remove(fabrication);
-                }
-                else
-                {
-                    fabrication.fabricationAugmentation = envFacets.Item1;
-                    fabrication.fabricationInteraction = envFacets.Item2;
-                    fabrication.fabricationComprehension = userFacets.Item1;
-                    fabrication.fabricationDescription = userFacets.Item2;
-                }
-            }
+            //// RTRBAU ALGORITHM: Data formats matching (Loops 3 and 4 combined)
+            //foreach (DataFormat format in Dictionaries.DataFormatsConsult)
+            //{
+            //    Debug.Log("ElementConsult: EvaluateElement: " + format.formatName + " required facets: " + format.formatRequiredFacets);
+            //    List<RtrbauFabrication> formatAssignedFabrications = format.EvaluateFormat(rtrbauElement);
+                
+            //    if (formatAssignedFabrications != null)
+            //    {
+            //        foreach (RtrbauFabrication fabrication in formatAssignedFabrications)
+            //        {
+            //            assignedFabrications.Add(fabrication);
+            //            Debug.Log("EvaluateElement: fabrication assigned: " + fabrication.fabricationName);
+            //        }
+            //    }
+            //}
+
+            //// RTRBAU ALGORITHM: Environment and user formats matching (Loop 6 and 7 modified and combined)
+            //foreach (RtrbauFabrication fabrication in assignedFabrications.ToList())
+            //{
+            //    Tuple<RtrbauAugmentation, RtrbauInteraction> envFacets = Dictionaries.EnvironmentFormatsConsult.Find(x => x.formatName == fabrication.fabricationName).EvaluateFormat();
+            //    Tuple<RtrbauComprehensiveness, RtrbauDescriptiveness> userFacets = Dictionaries.UserFormatsConsult.Find(x => x.formatName == fabrication.fabricationName).EvaluateFormat();
+
+            //    if (envFacets == null || userFacets == null)
+            //    {
+            //        assignedFabrications.Remove(fabrication);
+            //    }
+            //    else
+            //    {
+            //        fabrication.fabricationAugmentation = envFacets.Item1;
+            //        fabrication.fabricationInteraction = envFacets.Item2;
+            //        fabrication.fabricationComprehension = userFacets.Item1;
+            //        fabrication.fabricationDescription = userFacets.Item2;
+            //    }
+            //}
 
             // RTRBAU ALGORITHM: Eliminate duplicated fabrications (Loop 5 modified)
             // Eliminate duplicated formats with lower number of attributes
@@ -248,7 +290,63 @@ namespace Rtrbau
                     }
                 }
                 else { }
+            }
 
+            // RTRBAU ALGORITHM: Identify non-assigned attributes and create default fabrications for them (new extension)
+            // Identify attributes assigned to generated fabrications
+            List<RtrbauAttribute> assignedAttributes = new List<RtrbauAttribute>();
+
+            foreach (RtrbauFabrication fabrication in assignedFabrications)
+            {
+                assignedAttributes.AddRange(fabrication.fabricationData.Values.ToList());
+            }
+
+            //foreach (RtrbauAttribute attribute in assignedAttributes)
+            //{
+            //    Debug.Log("EvaluateElement: assigned attributes: " + attribute.attributeName.name + " : " + attribute.attributeValue);
+            //}
+
+            // Identify attributes that have not been assigned to generated fabrications
+            List<RtrbauAttribute> nonAssignedAttributes = rtrbauElement.elementAttributes.Where(x => assignedAttributes.All(y => y.attributeValue != x.attributeValue)).ToList();
+            // Generate default fabrications for non-assigned attributes
+            foreach (RtrbauAttribute attribute in nonAssignedAttributes)
+            {
+                // Debug.Log("EvaluateElement: non assignedAttribute: " + attribute.attributeName.name + " : " + attribute.attributeValue);
+
+                if (attribute.attributeType == RtrbauFabricationType.Observe)
+                {
+                    // Create new fabrication for non-assigned attribute
+                    RtrbauFabrication fabrication = new RtrbauFabrication(RtrbauFabricationName.DefaultObserve, RtrbauFabricationType.Observe, new Dictionary<DataFacet, RtrbauAttribute>
+                    {
+                        { DataFormats.DefaultObserve.formatFacets[0], attribute }
+                    });
+                    // UPG: since environment and user formats are being evaluated before, there is no need to add them to RtrbauFabrication class?
+                    fabrication.fabricationAugmentation = EnvironmentFormats.DefaultObserve.formatAugmentation.facetAugmentation;
+                    fabrication.fabricationInteraction = EnvironmentFormats.DefaultObserve.formatInteraction.facetInteraction;
+                    fabrication.fabricationComprehension = UserFormats.DefaultObserve.formatComprehension;
+                    fabrication.fabricationDescription = UserFormats.DefaultObserve.formatDescription;
+                    // Assign fabrication to assignedFabrications
+                    assignedFabrications.Add(fabrication);
+                }
+                else if (attribute.attributeType == RtrbauFabricationType.Inspect)
+                {
+                    // Create new fabrication for non-assigned attribute
+                    RtrbauFabrication fabrication = new RtrbauFabrication(RtrbauFabricationName.DefaultInspect, RtrbauFabricationType.Inspect, new Dictionary<DataFacet, RtrbauAttribute>
+                    {
+                        { DataFormats.DefaultInspect.formatFacets[0], attribute }
+                    });
+                    // UPG: since environment and user formats are being evaluated before, there is no need to add them to RtrbauFabrication class?
+                    fabrication.fabricationAugmentation = EnvironmentFormats.DefaultInspect.formatAugmentation.facetAugmentation;
+                    fabrication.fabricationInteraction = EnvironmentFormats.DefaultInspect.formatInteraction.facetInteraction;
+                    fabrication.fabricationComprehension = UserFormats.DefaultInspect.formatComprehension;
+                    fabrication.fabricationDescription = UserFormats.DefaultInspect.formatDescription;
+                    // Assign fabrication to assignedFabrications
+                    assignedFabrications.Add(fabrication);
+                }
+                else
+                {
+                    throw new ArgumentException("Default fabrications not implemented for fabrication type: " + attribute.attributeType);
+                }
             }
 
             //foreach (RtrbauFabrication fab in assignedFabrications)

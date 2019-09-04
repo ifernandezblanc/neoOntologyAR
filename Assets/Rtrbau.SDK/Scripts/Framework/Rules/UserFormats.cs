@@ -28,47 +28,57 @@ namespace Rtrbau
     public static class UserFormats
     {
         #region FORMATS
+        /// <summary>
+        /// 
+        /// </summary>
+        #region DEFAULT_FORMATS
+        public static UserFormat DefaultObserve = new UserFormat(RtrbauFabricationName.DefaultObserve, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
+        public static UserFormat DefaultInspect = new UserFormat(RtrbauFabricationName.DefaultInspect, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
+        public static UserFormat DefaultRecord = new UserFormat(RtrbauFabricationName.DefaultRecord, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
+        public static UserFormat DefaultNominate = new UserFormat(RtrbauFabricationName.DefaultNominate, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
+        #endregion DEFAULT_FORMATS
+
         #region TEXT_FORMATS
-        public static UserFormat textnone1 = new UserFormat(RtrbauFabricationName.TextNone1, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
+        public static UserFormat TextNone1 = new UserFormat(RtrbauFabricationName.TextNone1, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
         #endregion TEXT_FORMATS
 
         #region ICON_FORMATS
-        public static UserFormat iconnone1 = new UserFormat(RtrbauFabricationName.IconNone1, RtrbauComprehensiveness.twoD, RtrbauDescriptiveness.symbolic);
+        public static UserFormat IconNone1 = new UserFormat(RtrbauFabricationName.IconNone1, RtrbauComprehensiveness.twoD, RtrbauDescriptiveness.symbolic);
         #endregion ICON_FORMATS
 
         #region AUDIO_FORMATS
-        public static UserFormat audiotap1 = new UserFormat(RtrbauFabricationName.AudioTap1, RtrbauComprehensiveness.fourD, RtrbauDescriptiveness.literal);
+        public static UserFormat AudioTap1 = new UserFormat(RtrbauFabricationName.AudioTap1, RtrbauComprehensiveness.fourD, RtrbauDescriptiveness.literal);
         #endregion AUDIO_FORMATS
 
         #region IMAGE_FORMATS
-        public static UserFormat imagemanipulation1 = new UserFormat(RtrbauFabricationName.ImageManipulation1, RtrbauComprehensiveness.twoD, RtrbauDescriptiveness.literal);
+        public static UserFormat ImageManipulation1 = new UserFormat(RtrbauFabricationName.ImageManipulation1, RtrbauComprehensiveness.twoD, RtrbauDescriptiveness.literal);
         #endregion IMAGE_FORMATS
 
         #region VIDEO_FORMATS
-        public static UserFormat videomanipulation1 = new UserFormat(RtrbauFabricationName.VideoManipulation1, RtrbauComprehensiveness.threeD, RtrbauDescriptiveness.literal);
+        public static UserFormat VideoManipulation1 = new UserFormat(RtrbauFabricationName.VideoManipulation1, RtrbauComprehensiveness.threeD, RtrbauDescriptiveness.literal);
         #endregion VIDEO_FORMATS
 
         #region MODEL_FORMATS
-        public static UserFormat modelmanipulation1 = new UserFormat(RtrbauFabricationName.ModelManipulation1, RtrbauComprehensiveness.threeD, RtrbauDescriptiveness.literal);
+        public static UserFormat ModelManipulation1 = new UserFormat(RtrbauFabricationName.ModelManipulation1, RtrbauComprehensiveness.threeD, RtrbauDescriptiveness.literal);
         #endregion MODEL_FORMATS
 
         #region HOLOGRAM_FORMATS
-        public static UserFormat hologramnone1 = new UserFormat(RtrbauFabricationName.HologramNone1, RtrbauComprehensiveness.threeD, RtrbauDescriptiveness.symbolic);
-        public static UserFormat hologramnone2 = new UserFormat(RtrbauFabricationName.HologramNone2, RtrbauComprehensiveness.threeD, RtrbauDescriptiveness.symbolic);
+        public static UserFormat HologramNone1 = new UserFormat(RtrbauFabricationName.HologramNone1, RtrbauComprehensiveness.threeD, RtrbauDescriptiveness.symbolic);
+        public static UserFormat HologramNone2 = new UserFormat(RtrbauFabricationName.HologramNone2, RtrbauComprehensiveness.threeD, RtrbauDescriptiveness.symbolic);
         #endregion HOLOGRAM_FORMATS
 
         #region ANIMATION_FORMATS
-        public static UserFormat animationnone1 = new UserFormat(RtrbauFabricationName.AnimationNone1, RtrbauComprehensiveness.fourD, RtrbauDescriptiveness.literal);
-        public static UserFormat animationnone2 = new UserFormat(RtrbauFabricationName.AnimationNone2, RtrbauComprehensiveness.fourD, RtrbauDescriptiveness.literal);
+        public static UserFormat AnimationNone1 = new UserFormat(RtrbauFabricationName.AnimationNone1, RtrbauComprehensiveness.fourD, RtrbauDescriptiveness.literal);
+        public static UserFormat AnimationNone2 = new UserFormat(RtrbauFabricationName.AnimationNone2, RtrbauComprehensiveness.fourD, RtrbauDescriptiveness.literal);
         // UPG: to create others with more generic approaches to adapt to other animations rather than these ones
         #endregion ANIMATION_FORMATS
 
         #region TEXTBUTTON_FORMATS
-        public static UserFormat textbuttontap1 = new UserFormat(RtrbauFabricationName.TextButtonTap1, RtrbauComprehensiveness.twoD, RtrbauDescriptiveness.literal);
+        public static UserFormat TextButtonTap1 = new UserFormat(RtrbauFabricationName.TextButtonTap1, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
         #endregion TEXTBUTTON_FORMATS
 
         #region ICONBUTTON_FORMATS
-        public static UserFormat iconbuttontap1 = new UserFormat(RtrbauFabricationName.IconButtonTap1, RtrbauComprehensiveness.threeD, RtrbauDescriptiveness.symbolic);
+        public static UserFormat IconButtonTap1 = new UserFormat(RtrbauFabricationName.IconButtonTap1, RtrbauComprehensiveness.twoD, RtrbauDescriptiveness.symbolic);
         #endregion ICONBUTTON_FORMATS
 
         #region MODELBUTTON_FORMATS
@@ -76,19 +86,19 @@ namespace Rtrbau
         #endregion MODELBUTTON_FORMATS
 
         #region AUDIORECORD_FORMATS
-        public static UserFormat audiorecordhold1 = new UserFormat(RtrbauFabricationName.AudioRecordHold1, RtrbauComprehensiveness.fourD, RtrbauDescriptiveness.literal);
+        public static UserFormat AudioRecordHold1 = new UserFormat(RtrbauFabricationName.AudioRecordHold1, RtrbauComprehensiveness.fourD, RtrbauDescriptiveness.literal);
         #endregion AUDIORECORD_FORMATS
 
         #region PICTURERECORD_FORMATS
-        public static UserFormat imagecordhold1 = new UserFormat(RtrbauFabricationName.ImageRecordHold1, RtrbauComprehensiveness.twoD, RtrbauDescriptiveness.literal);
+        public static UserFormat ImageRecordHold1 = new UserFormat(RtrbauFabricationName.ImageRecordHold1, RtrbauComprehensiveness.twoD, RtrbauDescriptiveness.literal);
         #endregion PICTURERECORD_FORMATS
 
         #region VIDEORECORD_FORMATS
-        public static UserFormat videorecordhold1 = new UserFormat(RtrbauFabricationName.VideoRecordHold1, RtrbauComprehensiveness.threeD, RtrbauDescriptiveness.literal);
+        public static UserFormat VideoRecordHold1 = new UserFormat(RtrbauFabricationName.VideoRecordHold1, RtrbauComprehensiveness.threeD, RtrbauDescriptiveness.literal);
         #endregion VIDEORECORD_FORMATS
 
         #region MODELRECORD_FORMATS
-        public static UserFormat modelrecordhold1 = new UserFormat(RtrbauFabricationName.ModelRecordHold1, RtrbauComprehensiveness.threeD, RtrbauDescriptiveness.literal);
+        public static UserFormat ModelRecordHold1 = new UserFormat(RtrbauFabricationName.ModelRecordHold1, RtrbauComprehensiveness.threeD, RtrbauDescriptiveness.literal);
         #endregion MODELRECORD_FORMATS
 
         #region ANIMATIONRECORD_FORMATS
@@ -96,12 +106,12 @@ namespace Rtrbau
         #endregion ANIMATIONRECORD_FORMATS
 
         #region DICTATION_FORMATS
-        public static UserFormat textdictation1 = new UserFormat(RtrbauFabricationName.TextDictation1, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
+        public static UserFormat TextDictation1 = new UserFormat(RtrbauFabricationName.TextDictation1, RtrbauComprehensiveness.fourD, RtrbauDescriptiveness.literal);
         // oneD or twoD??
         #endregion DICTATION_FORMATS
 
         #region TEXTRECORD_FORMATS
-        public static UserFormat textkeyboard1 = new UserFormat(RtrbauFabricationName.TextKeyboard1, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
+        public static UserFormat TextKeyboard1 = new UserFormat(RtrbauFabricationName.TextKeyboard1, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
         #endregion TEXTRECORD_FORMATS
 
         #region MODELPANEL_FORMATS
@@ -109,11 +119,11 @@ namespace Rtrbau
         #endregion MODELPANEL_FORMATS
 
         #region TEXTPANEL_FORMATS
-        public static UserFormat textpaneltap1 = new UserFormat(RtrbauFabricationName.TextPanelTap1, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
+        public static UserFormat TextPanelTap1 = new UserFormat(RtrbauFabricationName.TextPanelTap1, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
         #endregion TEXTPANEL_FORMATS
 
         #region ICONPANEL_FORMATS
-        public static UserFormat iconpaneltap1 = new UserFormat(RtrbauFabricationName.IconPanelTap1, RtrbauComprehensiveness.twoD, RtrbauDescriptiveness.symbolic);
+        public static UserFormat IconPanelTap1 = new UserFormat(RtrbauFabricationName.IconPanelTap1, RtrbauComprehensiveness.twoD, RtrbauDescriptiveness.symbolic);
         #endregion ICONPANEL_FORMATS
         #endregion FORMATS
     }

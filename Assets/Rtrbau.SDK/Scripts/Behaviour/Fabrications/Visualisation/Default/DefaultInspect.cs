@@ -10,7 +10,7 @@ Copyright (c) 2019 Babcock International Group. All Rights Reserved.
 All Rights Reserved.
 Confidential and Proprietary - Protected under copyright and other laws.
 
-Date: 20/08/2019
+Date: 24/08/2019
 ==============================================================================*/
 
 /// <summary>
@@ -31,7 +31,7 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
-    public class TextNone1 : MonoBehaviour, IFabricationable, IVisualisable
+    public class DefaultInspect : MonoBehaviour, IFabricationable, IVisualisable
     {
         #region INITIALISATION_VARIABLES
         public AssetVisualiser visualiser;
@@ -41,8 +41,12 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
-
+        public OntologyEntity relationshipAttribute;
         #endregion CLASS_VARIABLES
+
+        #region FACETS_VARIABLES
+        public string nextIndividual;
+        #endregion FACETS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
         public TextMeshPro text;
@@ -57,9 +61,9 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (text == null || panel == null || seenMaterial == null)
+            if (text == null)
             {
-                throw new ArgumentException("TextNone1 script requires some prefabs to work.");
+                throw new ArgumentException("TextButtonTap1 script requires some prefabs to work.");
             }
         }
 
@@ -69,7 +73,7 @@ namespace Rtrbau
 
         void OnDisable() { }
 
-        void OnDestroy () { DestroyIt(); }
+        void OnDestroy() { DestroyIt(); }
         #endregion MONOBEHVAIOUR_METHODS
 
         #region IFABRICATIONABLE_METHODS
@@ -111,17 +115,21 @@ namespace Rtrbau
         /// </summary>
         public void InferFromText()
         {
-            DataFacet textfacet1 = DataFormats.textnone1.formatFacets[0];
+            DataFacet textfacet2 = DataFormats.DefaultInspect.formatFacets[0];
             RtrbauAttribute attribute;
 
             // Check data received meets fabrication requirements
-            if (data.fabricationData.TryGetValue(textfacet1, out attribute))
+            if (data.fabricationData.TryGetValue(textfacet2, out attribute))
             {
-                text.text = attribute.attributeName.name + ": " + attribute.attributeValue;
+                // string attributeValue = Parser.ParseURI(attribute.attributeValue, '#', RtrbauParser.post);
+                // text.text = attribute.attributeName.name + ": " + attributeValue;
+                text.text = attribute.attributeName.name;
+                nextIndividual = attribute.attributeValue;
+                relationshipAttribute = new OntologyEntity(attribute.attributeName.URI());
             }
             else
             {
-                throw new ArgumentException(data.fabricationName + " cannot implement: " + attribute.attributeName + " recieved.");
+                throw new ArgumentException(data.fabricationName + " cannot implement: " + attribute.attributeName + " received.");
             }
         }
 
@@ -130,8 +138,23 @@ namespace Rtrbau
         /// </summary>
         public void OnNextVisualisation()
         {
-            // Do nothing
-            // Activation / de-activation is managed by
+            // Send relationship used to connect to the following individual to the report
+            Reporter.instance.ReportElement(relationshipAttribute);
+            // IMPORTANT: this button is set up for individuals in consult mode (IndividualProperties)
+            OntologyElement individual = new OntologyElement(nextIndividual, OntologyElementType.IndividualProperties);
+            GameObject nextElement = visualiser.FindElement(individual);
+            if (nextElement != null)
+            {
+                Debug.Log("OnNextVisualisation: " + nextElement.name);
+                element.gameObject.GetComponent<ElementsLine>().UpdateLineEnd(nextElement);
+            }
+            else
+            {
+                // Element parent to modify material in expectance of a new element
+                element.GetComponent<ElementConsult>().ModifyMaterial();
+                // Trigger event to load a new element
+                RtrbauerEvents.TriggerEvent("LoadElement", individual, Rtrbauer.instance.user.procedure);
+            }
         }
         #endregion IFABRICATIONABLE_METHODS
 

@@ -130,96 +130,151 @@ namespace Rtrbau
         #endregion DICTIONARIES_STATIC
 
         #region DICTIONARIES_FORMATS
+        #region CONSULT_FORMATS
+        public static List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>> ConsultFormats
+            = new List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>>
+            {
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.TextNone1, DataFormats.TextNone1, EnvironmentFormats.TextNone1, UserFormats.TextNone1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.IconNone1, DataFormats.IconNone1, EnvironmentFormats.IconNone1, UserFormats.IconNone1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.AudioTap1, DataFormats.AudioTap1, EnvironmentFormats.AudioTap1, UserFormats.AudioTap1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.ImageManipulation1, DataFormats.ImageManipulation1, EnvironmentFormats.ImageManipulation1, UserFormats.ImageManipulation1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.VideoManipulation1, DataFormats.VideoManipulation1, EnvironmentFormats.VideoManipulation1, UserFormats.VideoManipulation1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.ModelManipulation1, DataFormats.ModelManipulation1, EnvironmentFormats.ModelManipulation1, UserFormats.ModelManipulation1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.HologramNone1, DataFormats.HologramNone1, EnvironmentFormats.HologramNone1, UserFormats.HologramNone1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.HologramNone2, DataFormats.HologramNone2, EnvironmentFormats.HologramNone2, UserFormats.HologramNone2),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.AnimationNone1, DataFormats.AnimationNone1, EnvironmentFormats.AnimationNone1, UserFormats.AnimationNone1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.AnimationNone2, DataFormats.AnimationNone2, EnvironmentFormats.AnimationNone2, UserFormats.AnimationNone2),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.TextButtonTap1, DataFormats.TextButtonTap1, EnvironmentFormats.TextButtonTap1, UserFormats.TextButtonTap1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.IconButtonTap1, DataFormats.IconButtonTap1, EnvironmentFormats.IconButtonTap1, UserFormats.IconButtonTap1)
+            };
+        #endregion CONSULT_FORMATS
+
+        #region REPORT_FORMATS
+        public static List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>> ReportFormats
+            = new List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>>
+            {
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.TextDictation1, DataFormats.TextDictation1, EnvironmentFormats.TextDictation1, UserFormats.TextDictation1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.TextKeyboard1, DataFormats.TextKeyboard1, EnvironmentFormats.TextKeyboard1, UserFormats.TextKeyboard1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.AudioRecordHold1, DataFormats.AudioRecordHold1, EnvironmentFormats.AudioRecordHold1, UserFormats.AudioRecordHold1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.ImageRecordHold1, DataFormats.ImageRecordHold1, EnvironmentFormats.ImageRecordHold1, UserFormats.ImageRecordHold1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.VideoRecordHold1, DataFormats.VideoRecordHold1, EnvironmentFormats.VideoRecordHold1, UserFormats.VideoRecordHold1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.ModelRecordHold1, DataFormats.ModelRecordHold1, EnvironmentFormats.ModelRecordHold1, UserFormats.ModelRecordHold1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.TextPanelTap1, DataFormats.TextPanelTap1, EnvironmentFormats.TextPanelTap1, UserFormats.TextPanelTap1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.IconPanelTap1, DataFormats.IconPanelTap1, EnvironmentFormats.IconPanelTap1, UserFormats.IconPanelTap1)
+            };
+        #endregion REPORT_FORMATS
+
+
         // UPG: Add new formats to both dictionaries
-        #region DATA_FORMATS
-        public static List<DataFormat> DataFormatsConsult = new List<DataFormat>
-        {
-            { DataFormats.textnone1 },
-            { DataFormats.iconnone1 },
-            { DataFormats.audiotap1 },
-            { DataFormats.imagemanipulation1 },
-            { DataFormats.videomanipulation1 },
-            { DataFormats.modelmanipulation1 },
-            { DataFormats.hologramnone1 },
-            { DataFormats.hologramnone2 },
-            { DataFormats.animationnone1 },
-            { DataFormats.animationnone2 },
-            { DataFormats.textbuttontap1 },
-            { DataFormats.iconbuttontap1 }
-        };
+        //#region DATA_FORMATS
+        //public static List<DataFormat> DataFormatsConsult = new List<DataFormat>
+        //{
+        //    { DataFormats.TextNone1 },
+        //    { DataFormats.IconNone1 },
+        //    { DataFormats.AudioTap1 },
+        //    { DataFormats.ImageManipulation1 },
+        //    { DataFormats.VideoManipulation1 },
+        //    { DataFormats.ModelManipulation1 },
+        //    { DataFormats.HologramNone1 },
+        //    { DataFormats.HologramNone2 },
+        //    { DataFormats.AnimationNone1 },
+        //    { DataFormats.AnimationNone2 },
+        //    { DataFormats.TextButtonTap1 },
+        //    { DataFormats.IconButtonTap1 }
+        //};
 
-        public static List<DataFormat> DataFormatsReport = new List<DataFormat>
-        {
-            { DataFormats.textdictation1 },
-            { DataFormats.textkeyboard1 },
-            { DataFormats.audiorecordhold1 },
-            { DataFormats.imagecordhold1 },
-            { DataFormats.videorecordhold1 },
-            { DataFormats.modelrecordhold1 },
-            { DataFormats.textpaneltap1 },
-            { DataFormats.iconpaneltap1 }
-        };
-        #endregion DATA_FORMATS
+        //public static List<DataFormat> DataFormatsReport = new List<DataFormat>
+        //{
+        //    { DataFormats.TextDictation1 },
+        //    { DataFormats.TextKeyboard1 },
+        //    { DataFormats.AudioRecordHold1 },
+        //    { DataFormats.ImageRecordHold1 },
+        //    { DataFormats.VideoRecordHold1 },
+        //    { DataFormats.ModelRecordHold1 },
+        //    { DataFormats.TextPanelTap1 },
+        //    { DataFormats.IconPanelTap1 }
+        //};
+        //#endregion DATA_FORMATS
 
-        #region ENVIRONMENT_FORMATS
-        public static List<EnvironmentFormat> EnvironmentFormatsConsult = new List<EnvironmentFormat>
-        {
-            { EnvironmentFormats.textnone1 },
-            { EnvironmentFormats.iconnone1 },
-            { EnvironmentFormats.audiotap1 },
-            { EnvironmentFormats.imagemanipulation1 },
-            { EnvironmentFormats.videomanipulation1 },
-            { EnvironmentFormats.modelmanipulation1 },
-            { EnvironmentFormats.hologramnone1 },
-            { EnvironmentFormats.hologramnone2 },
-            { EnvironmentFormats.animationnone1 },
-            { EnvironmentFormats.animationnone2 },
-            { EnvironmentFormats.textbuttontap1 },
-            { EnvironmentFormats.iconbuttontap1 }
-        };
+        //#region ENVIRONMENT_FORMATS
+        //public static List<EnvironmentFormat> EnvironmentFormatsConsult = new List<EnvironmentFormat>
+        //{
+        //    { EnvironmentFormats.TextNone1 },
+        //    { EnvironmentFormats.IconNone1 },
+        //    { EnvironmentFormats.AudioTap1 },
+        //    { EnvironmentFormats.ImageManipulation1 },
+        //    { EnvironmentFormats.VideoManipulation1 },
+        //    { EnvironmentFormats.ModelManipulation1 },
+        //    { EnvironmentFormats.HologramNone1 },
+        //    { EnvironmentFormats.HologramNone2 },
+        //    { EnvironmentFormats.AnimationNone1 },
+        //    { EnvironmentFormats.AnimationNone2 },
+        //    { EnvironmentFormats.TextButtonTap1 },
+        //    { EnvironmentFormats.IconButtonTap1 }
+        //};
 
-        public static List<EnvironmentFormat> EnvironmentFormatsReport = new List<EnvironmentFormat>
-        {
-            { EnvironmentFormats.textkeyboard1 },
-            { EnvironmentFormats.textdictation1 },
-            { EnvironmentFormats.audiorecordhold1 },
-            { EnvironmentFormats.imagecordhold1 },
-            { EnvironmentFormats.videorecordhold1 },
-            { EnvironmentFormats.modelrecordhold1 },
-            { EnvironmentFormats.textpaneltap1 },
-            { EnvironmentFormats.iconpaneltap1 }
-        };
-        #endregion ENVIRONMENT_FORMATS
+        //public static List<EnvironmentFormat> EnvironmentFormatsReport = new List<EnvironmentFormat>
+        //{
+        //    { EnvironmentFormats.TextKeyboard1 },
+        //    { EnvironmentFormats.TextDictation1 },
+        //    { EnvironmentFormats.AudioRecordHold1 },
+        //    { EnvironmentFormats.ImageRecordHold1 },
+        //    { EnvironmentFormats.VideoRecordHold1 },
+        //    { EnvironmentFormats.ModelRecordHold1 },
+        //    { EnvironmentFormats.TextPanelTap1 },
+        //    { EnvironmentFormats.IconPanelTap1 }
+        //};
+        //#endregion ENVIRONMENT_FORMATS
 
-        #region USER_FORMATS
-        public static List<UserFormat> UserFormatsConsult = new List<UserFormat>
-        {
-            { UserFormats.textnone1 },
-            { UserFormats.iconnone1 },
-            { UserFormats.audiotap1 },
-            { UserFormats.imagemanipulation1 },
-            { UserFormats.videomanipulation1 },
-            { UserFormats.modelmanipulation1 },
-            { UserFormats.hologramnone1 },
-            { UserFormats.hologramnone2 },
-            { UserFormats.animationnone1 },
-            { UserFormats.animationnone2 },
-            { UserFormats.textbuttontap1 },
-            { UserFormats.iconbuttontap1 }
-        };
+        //#region USER_FORMATS
+        //public static List<UserFormat> UserFormatsConsult = new List<UserFormat>
+        //{
+        //    { UserFormats.TextNone1 },
+        //    { UserFormats.IconNone1 },
+        //    { UserFormats.AudioTap1 },
+        //    { UserFormats.ImageManipulation1 },
+        //    { UserFormats.VideoManipulation1 },
+        //    { UserFormats.ModelManipulation1 },
+        //    { UserFormats.HologramNone1 },
+        //    { UserFormats.HologramNone2 },
+        //    { UserFormats.AnimationNone1 },
+        //    { UserFormats.AnimationNone2 },
+        //    { UserFormats.TextButtonTap1 },
+        //    { UserFormats.IconButtonTap1 }
+        //};
 
-        public static List<UserFormat> UserFormatsReport = new List<UserFormat>
-        {
-            { UserFormats.textkeyboard1 },
-            { UserFormats.textdictation1 },
-            { UserFormats.audiorecordhold1 },
-            { UserFormats.imagecordhold1 },
-            { UserFormats.videorecordhold1 },
-            { UserFormats.modelrecordhold1 },
-            { UserFormats.textpaneltap1 },
-            { UserFormats.iconpaneltap1 }
-        };
-        #endregion USER_FORMATS
+        //public static List<UserFormat> UserFormatsReport = new List<UserFormat>
+        //{
+        //    { UserFormats.TextKeyboard1 },
+        //    { UserFormats.TextDictation1 },
+        //    { UserFormats.AudioRecordHold1 },
+        //    { UserFormats.ImageRecordHold1 },
+        //    { UserFormats.VideoRecordHold1 },
+        //    { UserFormats.ModelRecordHold1 },
+        //    { UserFormats.TextPanelTap1 },
+        //    { UserFormats.IconPanelTap1 }
+        //};
+        //#endregion USER_FORMATS
         #endregion DICTIONARIES_FORMATS
 
         #region DICTIONARIES_CONFIGURATION

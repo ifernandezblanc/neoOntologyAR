@@ -10,7 +10,7 @@ Copyright (c) 2019 Babcock International Group. All Rights Reserved.
 All Rights Reserved.
 Confidential and Proprietary - Protected under copyright and other laws.
 
-Date: 24/08/2019
+Date: 20/08/2019
 ==============================================================================*/
 
 /// <summary>
@@ -31,7 +31,7 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
-    public class IconButtonTap1 : MonoBehaviour, IFabricationable, IVisualisable
+    public class DefaultObserve : MonoBehaviour, IFabricationable, IVisualisable
     {
         #region INITIALISATION_VARIABLES
         public AssetVisualiser visualiser;
@@ -41,18 +41,13 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
-        public Sprite icon;
-        public OntologyEntity relationshipAttribute;
-        #endregion CLASS_VARIABLES
 
-        #region FACET_VARIABLES
-        public string nextIndividual;
-        public string iconName;
-        #endregion FACET_VARIABLES
+        #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
         public TextMeshPro text;
-        public SpriteRenderer sprite;
+        public MeshRenderer panel;
+        public Material seenMaterial;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -62,9 +57,9 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (text == null || sprite == null)
+            if (text == null || panel == null || seenMaterial == null)
             {
-                throw new ArgumentException("IconButtonTap1 script requires some prefabs to work.");
+                throw new ArgumentException("TextNone1 script requires some prefabs to work.");
             }
         }
 
@@ -74,7 +69,7 @@ namespace Rtrbau
 
         void OnDisable() { }
 
-        void OnDestroy() { DestroyIt(); }
+        void OnDestroy () { DestroyIt(); }
         #endregion MONOBEHVAIOUR_METHODS
 
         #region IFABRICATIONABLE_METHODS
@@ -116,29 +111,17 @@ namespace Rtrbau
         /// </summary>
         public void InferFromText()
         {
-            DataFacet iconfacet2 = DataFormats.iconbuttontap1.formatFacets[0];
+            DataFacet textfacet0 = DataFormats.DefaultObserve.formatFacets[0];
             RtrbauAttribute attribute;
 
             // Check data received meets fabrication requirements
-            if (data.fabricationData.TryGetValue(iconfacet2, out attribute))
+            if (data.fabricationData.TryGetValue(textfacet0, out attribute))
             {
-                // Add text for attributes name
-                string attributeName = Parser.ParseURI(attribute.attributeValue, '#', RtrbauParser.post);
-                text.text = attribute.attributeName.name + ":";
-                // Find icon that retrieves value
-                // iconName = Libraries.IconLibrary.Find(x => x.Contains(attribute.attributeValue));
-                iconName = Libraries.IconLibrary.Find(x => attribute.attributeValue.Contains(x));
-                string iconPath = "Rtrbau/Icons/" + iconName;
-
-                
                 text.text = attribute.attributeName.name + ": " + attribute.attributeValue;
-                nextIndividual = attribute.attributeValue;
-
-                relationshipAttribute = new OntologyEntity(attribute.attributeName.URI());
             }
             else
             {
-                throw new ArgumentException(data.fabricationName + " cannot implement: " + attribute.attributeName + " received.");
+                throw new ArgumentException(data.fabricationName + " cannot implement: " + attribute.attributeName + " recieved.");
             }
         }
 
@@ -147,22 +130,8 @@ namespace Rtrbau
         /// </summary>
         public void OnNextVisualisation()
         {
-            // Send relationship used to connect to the following individual to the report
-            Reporter.instance.ReportElement(relationshipAttribute);
-            // IMPORTANT: this button is set up for individuals in consult mode (IndividualProperties)
-            OntologyElement individual = new OntologyElement(nextIndividual, OntologyElementType.IndividualProperties);
-            GameObject nextElement = visualiser.FindElement(individual);
-            if (nextElement != null)
-            {
-                element.gameObject.GetComponent<ElementsLine>().UpdateLineEnd(nextElement);
-                //Material lineMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardTransparentBlue") as Material;
-                //element.gameObject.AddComponent<ElementsLine>();
-                //element.gameObject.GetComponent<ElementsLine>().Initialise(element.gameObject, nextElement, lineMaterial);
-            }
-            else
-            {
-                RtrbauerEvents.TriggerEvent("LoadElement", individual, Rtrbauer.instance.user.procedure);
-            }
+            // Do nothing
+            // Activation / de-activation is managed by
         }
         #endregion IFABRICATIONABLE_METHODS
 
@@ -174,7 +143,7 @@ namespace Rtrbau
 
         public void ModifyMaterial()
         {
-            // To complete
+            panel.material = seenMaterial;
         }
 
         public void DestroyIt()

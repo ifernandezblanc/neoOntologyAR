@@ -245,8 +245,11 @@ namespace Rtrbau
     [Serializable]
     public class DataFacetRules
     {
+        public RtrbauFacetRuleType facetNameType;
         public List<string> facetNameRule;
+        public RtrbauFacetRuleType facetRangeType;
         public List<string> facetRangeRule;
+        public RtrbauFacetRuleType facetValueType;
         public List<string> facetValueRule;
         public int facetRestrictivity;
 
@@ -259,15 +262,18 @@ namespace Rtrbau
         /// <param name="nameRules"></param>
         /// <param name="rangeRules"></param>
         /// <param name="valueRules"></param>
-        public DataFacetRules(List<string> nameRules, List<string> rangeRules, List<string> valueRules)
+        public DataFacetRules(RtrbauFacetRuleType nameRuleType, List<string> nameRules, RtrbauFacetRuleType rangeRuleType, List<string> rangeRules, RtrbauFacetRuleType valueRuleType, List<string> valueRules)
         {
             facetRestrictivity = 0;
             if (nameRules != null) facetRestrictivity += 1;
             if (rangeRules != null) facetRestrictivity += 1;
             if (valueRules != null) facetRestrictivity += 1;
-            
+
+            facetNameType = nameRuleType;
             facetNameRule = nameRules;
+            facetRangeType = rangeRuleType;
             facetRangeRule = rangeRules;
+            facetValueType = valueRuleType;
             facetValueRule = valueRules;
         }
         #endregion CONSTRUCTOR
@@ -284,9 +290,14 @@ namespace Rtrbau
         public bool EvaluateFacet(string attributeName, string attributeRange, string attributeValue)
         {
             // RTRBAU ALGORITHM: Rules in loop 3
-            bool nameMet = EvaluateAllRules(facetNameRule, attributeName);
-            bool rangeMet = EvaluateAnyRule(facetRangeRule, attributeRange);
-            bool valueMet = EvaluateAnyRule(facetValueRule, attributeValue);
+            bool nameMet = EvaluateRule(facetNameType, facetNameRule, attributeName);
+            bool rangeMet = EvaluateRule(facetRangeType, facetRangeRule, attributeRange);
+            bool valueMet = EvaluateRule(facetValueType, facetValueRule, attributeValue);
+
+            //// RTRBAU ALGORITHM: Rules in loop 3
+            //bool nameMet = EvaluateAllRules(facetNameRule, attributeName);
+            //bool rangeMet = EvaluateAnyRule(facetRangeRule, attributeRange);
+            //bool valueMet = EvaluateAnyRule(facetValueRule, attributeValue);
 
             if (nameMet && rangeMet && valueMet)
             {
@@ -296,6 +307,23 @@ namespace Rtrbau
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Returns true if a given <paramref name="attribute"/> matches <paramref name="rules"/> according to <paramref name="ruleType"/>.
+        /// Otherwise, throws an exception.
+        /// </summary>
+        /// <param name="ruleType"></param>
+        /// <param name="rules"></param>
+        /// <param name="attribute"></param>
+        /// <returns></returns>
+        bool EvaluateRule (RtrbauFacetRuleType ruleType, List<string> rules, string attribute)
+        {
+            bool ruleMet;
+            if (ruleType == RtrbauFacetRuleType.All) { ruleMet = EvaluateAllRules(rules, attribute); }
+            else if (ruleType == RtrbauFacetRuleType.Any) { ruleMet = EvaluateAnyRule(rules, attribute);  }
+            else { throw new ArgumentException("RtrbauFacetRuleType not implemented"); }
+            return ruleMet;
         }
 
         /// <summary>

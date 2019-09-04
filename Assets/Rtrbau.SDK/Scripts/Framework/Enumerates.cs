@@ -58,9 +58,16 @@ namespace Rtrbau
 
     /// <summary>
     /// Describe script purpose
+    /// Add links when code has been inspired 
+    /// </summary>
+    public enum RtrbauFacetRuleType : int { Any, All }
+
+    /// <summary>
+    /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
     public enum RtrbauFabricationName : int {
+        DefaultObserve, DefaultInspect, DefaultRecord, DefaultNominate,
         AudioTap1,
         TextNone1, TextNone2, TextNone3,
         IconNone1,
