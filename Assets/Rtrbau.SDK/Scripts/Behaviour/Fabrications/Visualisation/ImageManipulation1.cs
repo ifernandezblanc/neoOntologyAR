@@ -54,6 +54,9 @@ namespace Rtrbau
         #region GAMEOBJECT_PREFABS
         public TextMeshPro text;
         public SpriteRenderer image;
+        public Material lineMaterial;
+        public MeshRenderer panel;
+        public Material seenMaterial;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -62,7 +65,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (text == null || image == null)
+            if (text == null || image == null || lineMaterial == null || panel == null || seenMaterial == null)
             {
                 throw new ArgumentException("ImageManipulation1 script requires some prefabs to work.");
             }
@@ -136,6 +139,8 @@ namespace Rtrbau
                 LoaderEvents.StartListening(imageFile.EventName(), DownloadedImage);
                 Loader.instance.StartFileDownload(imageFile);
                 Debug.Log("ImageManipulation1: InferFromText: Started audio download " + imageFile.URL());
+                this.gameObject.AddComponent<ElementsLine>();
+                this.gameObject.GetComponent<ElementsLine>().Initialise(this.gameObject, element.gameObject, lineMaterial);
             }
             else
             {
@@ -157,6 +162,11 @@ namespace Rtrbau
         public void LocateIt()
         {
             // Fabrication location is managed by its element.
+        }
+
+        public void ModifyMaterial()
+        {
+            panel.material = seenMaterial;
         }
 
         public void DestroyIt()

@@ -60,3 +60,4 @@ MonoBehaviour:
     type: 3}
   lineMaterial: {fileID: 2100000, guid: a7e0d8f908f5a9944aae7356c5e4bbb3, type: 2}
   modelMaterial: {fileID: 2100000, guid: d1e6ac5dd3c0c3b40ac84b4b2a1faaff, type: 2}
+  seenMaterial: {fileID: 2100000, guid: a8de2758c4b4460cae694f0d50d94fbb, type: 2}

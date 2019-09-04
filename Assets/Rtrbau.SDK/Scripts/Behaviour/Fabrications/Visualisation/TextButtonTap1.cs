@@ -50,6 +50,8 @@ namespace Rtrbau
 
         #region GAMEOBJECT_PREFABS
         public TextMeshPro text;
+        public MeshRenderer panel;
+        public Material seenMaterial;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -144,12 +146,13 @@ namespace Rtrbau
             if (nextElement != null)
             {
                 Debug.Log("OnNextVisualisation: " + nextElement.name);
-                Material lineMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardTransparentBlue") as Material;
-                element.gameObject.AddComponent<ElementsLine>();
-                element.gameObject.GetComponent<ElementsLine>().Initialise(element.gameObject, nextElement, lineMaterial);
+                element.gameObject.GetComponent<ElementsLine>().UpdateLineEnd(nextElement);
             }
             else
             {
+                // Element parent to modify material in expectance of a new element
+                element.GetComponent<ElementConsult>().ModifyMaterial();
+                // Trigger event to load a new element
                 RtrbauerEvents.TriggerEvent("LoadElement", individual, Rtrbauer.instance.user.procedure);
             }
         }
@@ -159,6 +162,11 @@ namespace Rtrbau
         public void LocateIt()
         {
             // Fabrication location is managed by its element.
+        }
+
+        public void ModifyMaterial()
+        {
+            panel.material = seenMaterial;
         }
 
         public void DestroyIt()

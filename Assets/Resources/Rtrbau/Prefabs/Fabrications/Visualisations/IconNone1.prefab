@@ -264,6 +264,8 @@ MonoBehaviour:
   icon: {fileID: 0}
   text: {fileID: 5881989411513763387}
   sprite: {fileID: 3937164426460121477}
+  panel: {fileID: 383325156276437623}
+  seenMaterial: {fileID: 2100000, guid: a8de2758c4b4460cae694f0d50d94fbb, type: 2}
 --- !u!1 &2797331477048436227
 GameObject:
   m_ObjectHideFlags: 0
@@ -336,7 +338,7 @@ MeshRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a8de2758c4b4460cae694f0d50d94fbb, type: 2}
+  - {fileID: 2100000, guid: 02eb9ea842d9036458ea654eb32d49a8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

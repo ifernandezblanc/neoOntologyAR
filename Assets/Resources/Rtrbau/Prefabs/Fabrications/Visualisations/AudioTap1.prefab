@@ -155,6 +155,8 @@ MonoBehaviour:
   scale: {fileID: 0}
   audioSource: {fileID: 0}
   text: {fileID: 4929488461084679022}
+  panel: {fileID: 6807335988675127702}
+  seenMaterial: {fileID: 2100000, guid: a8de2758c4b4460cae694f0d50d94fbb, type: 2}
   audioLoaded: 0
   audioPlaying: 0
 --- !u!1 &2405219252224656463
@@ -345,7 +347,7 @@ MeshRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a8de2758c4b4460cae694f0d50d94fbb, type: 2}
+  - {fileID: 2100000, guid: 02eb9ea842d9036458ea654eb32d49a8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -897,7 +899,7 @@ MeshRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a8de2758c4b4460cae694f0d50d94fbb, type: 2}
+  - {fileID: 2100000, guid: 02eb9ea842d9036458ea654eb32d49a8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

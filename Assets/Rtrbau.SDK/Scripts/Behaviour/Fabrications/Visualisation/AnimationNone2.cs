@@ -42,13 +42,17 @@ namespace Rtrbau
         #region CLASS_VARIABLES
         public GameObject component;
         public GameObject model;
-        //public GameObject text;
+        public Vector3 modelOriginPosition;
+        public Quaternion modelOriginRotation;
         public GameObject componentPair;
         public GameObject modelPair;
-        //public GameObject textPair;
+        public Vector3 modelPairOriginPosition;
+        public Quaternion modelPairOriginRotation;
         public Vector3 magnitudeTranslation;
         public Vector3 directionTranslation;
+        public float magnitudeRotation;
         public Quaternion directionRotation;
+        public Bounds animationBounds;
         #endregion CLASS_VARIABLES
 
         #region FACET_VARIABLES
@@ -70,7 +74,7 @@ namespace Rtrbau
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
-
+        public bool movementCalculated;
         #endregion CLASS_EVENTS
 
         #region MONOBEHVAIOUR_METHODS
@@ -85,25 +89,49 @@ namespace Rtrbau
 
         void Update()
         {
-            // Generate the area where animation will occur
-            Bounds animBounds = component.GetComponent<MeshRenderer>().bounds;
-            animBounds.Expand(1);
+            if (movementCalculated)
+            {
+                //if (animationBounds.Contains(model.transform.position))
+                //{
+                //    //ModelMove(model, component, text);
+                //    ModelMove(model, component);
+                //}
+                //else
+                //{
+                //    //ModelToOrigin(model, component, text);
+                //    ModelToOrigin(model, modelOriginPosition, modelOriginRotation);
+                //}
 
-            if (animBounds.Contains(model.transform.position))
-            {
-                //ModelMove(model, component, text);
-                ModelMove(model, component);
-            }
-            else
-            {
-                //ModelToOrigin(model, component, text);
-                ModelToOrigin(model, component);
-            }
+                if (inverseMovement)
+                {
+                    if (animationBounds.Contains(model.transform.position))
+                    {
+                        ModelToOrigin(model, modelOriginPosition, modelOriginRotation);
+                    }
+                    else
+                    {
+                        ModelMove(model, component);
+                    }
+                }
+                else
+                {
+                    if (animationBounds.Contains(model.transform.position))
+                    {
+                        //ModelMove(model, component, text);
+                        ModelMove(model, component);
+                    }
+                    else
+                    {
+                        //ModelToOrigin(model, component, text);
+                        ModelToOrigin(model, modelOriginPosition, modelOriginRotation);
+                    }
+                }
 
-            if (componentPair != null)
-            {
-                // ModelToOrigin(modelPair, componentPair, textPair);
-                ModelToOrigin(modelPair, componentPair);
+                if (componentPair != null)
+                {
+                    // ModelToOrigin(modelPair, componentPair, textPair);
+                    ModelToOrigin(modelPair, modelPairOriginPosition, modelPairOriginRotation);
+                }
             }
         }
 
@@ -152,16 +180,22 @@ namespace Rtrbau
                 {
                     componentName = Parser.ParseURI(Parser.ParseURI(facet.Value.attributeValue, '/', RtrbauParser.post), '.', RtrbauParser.pre);
 
-                    component = visualiser.manager.FindAssetComponent(componentName);
+                    component = visualiser.manager.FindAssetComponentManipulator(componentName);
 
                     // Create model
                     model = Instantiate(component);
                     model.name = this.name + componentName + this.GetHashCode();
-                    model.transform.SetParent(scale, true);
-                    model.GetComponent<MeshRenderer>().material = modelMaterial;
+                    // model.transform.SetParent(scale, true);
+                    model.transform.SetParent(scale, false);
+                    model.GetComponentInChildren<MeshRenderer>().material = modelMaterial;
+                    model.transform.position = component.transform.position;
+                    model.transform.rotation = component.transform.rotation;
                     // Add line renderer for animated model
-                    model.AddComponent<ElementsLine>();
+                    // model.AddComponent<ElementsLine>().Initialise(model.transform.GetChild(0).gameObject, element.gameObject, lineMaterial);
                     model.AddComponent<ElementsLine>().Initialise(model, element.gameObject, lineMaterial);
+                    // Set model origin
+                    modelOriginPosition = model.transform.position;
+                    modelOriginRotation = model.transform.rotation;
 
                 }
                 else if (facet.Key == DataFormats.animationnone2.formatFacets[1])
@@ -192,18 +226,25 @@ namespace Rtrbau
                 {
                     componentPairName = Parser.ParseURI(Parser.ParseURI(facet.Value.attributeValue, '/', RtrbauParser.post), '.', RtrbauParser.pre);
 
-                    componentPair = visualiser.manager.FindAssetComponent(componentPairName);
+                    componentPair = visualiser.manager.FindAssetComponentManipulator(componentPairName);
 
                     // Create model pair: does not have line renderer
                     modelPair = Instantiate(componentPair);
                     modelPair.name = this.name + componentPairName + this.GetHashCode();
-                    modelPair.transform.SetParent(scale, true);
-                    modelPair.GetComponent<MeshRenderer>().material = lineMaterial;
+                    // modelPair.transform.SetParent(scale, true);
+                    modelPair.transform.SetParent(scale, false);
+                    modelPair.GetComponentInChildren<MeshRenderer>().material = lineMaterial;
+                    modelPair.transform.position = componentPair.transform.position;
+                    modelPair.transform.rotation = componentPair.transform.rotation;
+                    // Set model pair origin
+                    modelPairOriginPosition = modelPair.transform.position;
+                    modelPairOriginRotation = modelPair.transform.rotation;
 
                 }
                 else if (facet.Key == DataFormats.animationnone2.formatFacets[8])
                 {
                     inverseMovement = (facet.Value.attributeValue == "true");
+                    Debug.Log("Inverse Movement: " + inverseMovement);
                 }
                 else
                 {
@@ -230,6 +271,11 @@ namespace Rtrbau
             // Fabrication location is managed by its element.
         }
 
+        public void ModifyMaterial()
+        {
+            // Nothing to do in this case
+        }
+
         public void DestroyIt()
         {
             Destroy(this.gameObject);
@@ -242,42 +288,59 @@ namespace Rtrbau
         {
             // Generate fabrication features from read attributes
             // Calculate magnitude of translation
-            magnitudeTranslation = component.GetComponent<MeshRenderer>().bounds.size * 0.1f;
+            magnitudeTranslation = component.GetComponentInChildren<MeshRenderer>().bounds.size * 0.1f;
+            // Calculate magnitude of rotation
+            magnitudeRotation = 0.05f;
+            // Generate the area where animation will occur
+            animationBounds = component.GetComponentInChildren<MeshRenderer>().bounds;
             // Calculate allowed directions to translate
             Vector3 freeTranslation = new Vector3(Convert.ToInt32(freeTranslationX), Convert.ToInt32(freeTranslationY), Convert.ToInt32(freeTranslationZ));
-            // Calculate movement inversion
-            Vector3 inverseTranslation;
-            if (inverseMovement == true) { inverseTranslation = new Vector3(-1f, -1f, -1f); }
-            else { inverseTranslation = new Vector3(1, 1, 1); }
-            // Assign results to animation translation
-            directionTranslation = Vector3.Normalize(Vector3.Scale(freeTranslation, inverseTranslation));
             // Calculate allowed directions to rotate
             Vector3 freeRotation = new Vector3(Convert.ToInt32(freeRotationX), Convert.ToInt32(freeRotationY), Convert.ToInt32(freeRotationZ));
+            // Caclulate movement translation
+            Vector3 movementTranslation;
+            if (componentPair != null)
+            // { movementTranslation = component.GetComponentInChildren<MeshRenderer>().bounds.center - componentPair.GetComponentInChildren<MeshRenderer>().bounds.center; }
+            { movementTranslation = component.transform.position - componentPair.transform.position; }
+            else
+            { movementTranslation = new Vector3(1, 1, 1); }
+            // Calculate movement inversion
+            Vector3 inverseTranslation;
+            if (inverseMovement == true)
+            {
+                Debug.Log("Inverse Movement: " + inverseMovement);
+                // Set new model origin
+                model.transform.position += Vector3.Scale(freeTranslation, component.GetComponentInChildren<MeshRenderer>().bounds.size * 4f);
+                Debug.Log("inversed position: " + model.transform.position);
+                modelOriginPosition = model.transform.position;
+                modelOriginRotation = model.transform.rotation;
+                inverseTranslation = new Vector3(-1f, -1f, -1f);
+            }
+            else
+            {
+                Debug.Log("Inverse Movement: " + inverseMovement);
+                inverseTranslation = new Vector3(1, 1, 1);
+                animationBounds.Expand(0.5f);
+            }
+            // Assign results to animation translation
+            directionTranslation = Vector3.Normalize(Vector3.Scale(Vector3.Scale(freeTranslation, movementTranslation), inverseTranslation));
             // Assign results to animation rotation
-            directionRotation = Quaternion.Euler(Vector3.Normalize(freeRotation) * 2f);
+            directionRotation = Quaternion.Euler(Vector3.Normalize(freeRotation));
+            // Activate movement
+            movementCalculated = true;
         }
 
         void ModelMove(GameObject model, GameObject component)
         {
-            Vector3 translation;
-
-            if (componentPair != null)
-            {
-                translation = component.GetComponent<MeshRenderer>().bounds.center - componentPair.GetComponent<MeshRenderer>().bounds.center;
-            }
-            else
-            {
-                translation = new Vector3(1, 1, 1);
-            }
-
-            model.transform.position += Vector3.Scale(Vector3.Normalize(Vector3.Scale(directionTranslation, translation)), magnitudeTranslation);
+            model.transform.position += Vector3.Scale(directionTranslation, magnitudeTranslation);
+            // model.transform.RotateAround(model.transform.GetChild(0).position, directionRotation.eulerAngles, magnitudeRotation);
             model.transform.rotation *= directionRotation;
         }
 
-        void ModelToOrigin(GameObject model, GameObject component)
+        void ModelToOrigin(GameObject model, Vector3 originPosition, Quaternion originRotation)
         {
-            model.transform.position = component.transform.position;
-            model.transform.rotation = component.transform.rotation;
+            model.transform.position = originPosition;
+            model.transform.rotation = originRotation;
         }
         #endregion CLASS_METHODS
     }

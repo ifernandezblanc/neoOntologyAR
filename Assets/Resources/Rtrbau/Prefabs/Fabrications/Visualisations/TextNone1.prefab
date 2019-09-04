@@ -56,6 +56,8 @@ MonoBehaviour:
   element: {fileID: 0}
   scale: {fileID: 0}
   text: {fileID: 6630073792250167641}
+  panel: {fileID: 5049462465945056161}
+  seenMaterial: {fileID: 2100000, guid: a8de2758c4b4460cae694f0d50d94fbb, type: 2}
 --- !u!1 &3894412299913569571
 GameObject:
   m_ObjectHideFlags: 0
@@ -332,7 +334,7 @@ MeshRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a8de2758c4b4460cae694f0d50d94fbb, type: 2}
+  - {fileID: 2100000, guid: 02eb9ea842d9036458ea654eb32d49a8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

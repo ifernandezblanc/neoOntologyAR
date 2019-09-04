@@ -50,6 +50,7 @@ namespace Rtrbau
         public GameObject textPanel;
         public Material lineMaterial;
         public Material modelMaterial;
+        public Material seenMaterial;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -59,7 +60,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (textPanel == null || lineMaterial == null || modelMaterial == null)
+            if (textPanel == null || lineMaterial == null || modelMaterial == null || seenMaterial == null)
             {
                 throw new ArgumentException("ModelManipulation1 script requires some prefabs to work.");
             }
@@ -111,7 +112,7 @@ namespace Rtrbau
             {
                 string name = Parser.ParseURI(Parser.ParseURI(attribute.attributeValue, '/', RtrbauParser.post), '.', RtrbauParser.pre);
 
-                component = visualiser.transform.parent.gameObject.GetComponent<AssetManager>().FindAssetComponent(name);
+                component = visualiser.transform.parent.gameObject.GetComponent<AssetManager>().FindAssetComponentManipulator(name);
 
                 model = Instantiate(component);
 
@@ -143,6 +144,11 @@ namespace Rtrbau
             // Fabrication location is managed by its element.
         }
 
+        public void ModifyMaterial()
+        {
+            text.transform.GetChild(0).GetComponent<MeshRenderer>().material = seenMaterial;
+        }
+
         public void DestroyIt()
         {
             Destroy(this.gameObject);
@@ -155,9 +161,10 @@ namespace Rtrbau
             // Assign name
             model.name = this.name + name + this.GetHashCode();
             // Assign parent and location
-            model.transform.SetParent(scale, true);
+            // model.transform.SetParent(scale, true);
+            model.transform.SetParent(scale, false);
             // Change material
-            model.GetComponent<MeshRenderer>().material = modelMaterial;
+            model.GetComponentInChildren<MeshRenderer>().material = modelMaterial;
             // Assign initial location and rotation
             model.transform.position = component.transform.position;
             model.transform.rotation = component.transform.rotation;
@@ -175,19 +182,21 @@ namespace Rtrbau
         {
             text = Instantiate(textPanel);
             // Attach to model manipulator
-            text.transform.SetParent(model.transform.GetChild(0), false);
+            // text.transform.SetParent(model.transform.GetChild(0), false);
+            text.transform.SetParent(model.transform, false);
             // Re-scale text panel
             float sX = text.transform.localScale.x / scale.transform.localScale.x;
             float sY = text.transform.localScale.y / scale.transform.localScale.y;
             float sZ = text.transform.localScale.z / scale.transform.localScale.z;
             text.transform.localScale = new Vector3(sX, sY, sZ);
             // Re-allocate above model
-            float positionUP = model.GetComponent<MeshRenderer>().bounds.size.y;
+            // UPG: to put in a more accurate position considering component bounds and panel offset
+            // float positionUP = model.GetComponentInChildren<MeshRenderer>().bounds.size.y;
+            float positionUP = model.GetComponentInChildren<MeshRenderer>().bounds.extents.y + (text.GetComponentInChildren<BoxCollider>().bounds.size.y + text.GetComponentInChildren<BoxCollider>().transform.localScale.y);
             text.transform.localPosition += new Vector3(0, positionUP, 0);
             // Provide name
             text.transform.GetChild(1).GetComponent<TextMeshPro>().text = note;
             // Add line renderer to text panel
-            text.AddComponent<ElementsLine>();
             text.AddComponent<ElementsLine>().Initialise(text, element.gameObject, lineMaterial);
         }
         #endregion CLASS_METHODS

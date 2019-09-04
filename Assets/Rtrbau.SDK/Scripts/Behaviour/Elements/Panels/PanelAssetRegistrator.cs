@@ -346,8 +346,8 @@ namespace Rtrbau
             Material componentMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardTransparentBlue") as Material;
             // Find mesh renderers for asset components models
             MeshRenderer[] components = assetModel.transform.GetChild(0).GetComponentsInChildren<MeshRenderer>();
-            // Assign material to components models meshes renderers
-            LoadAssetModelMaterials(components, componentMaterial);
+            // Assign manipulator and material to components models meshes renderers
+            LoadAssetModelsManipulators(components, componentMaterial);
             
             assetRegistratorObjectsLoaded += 1;
 
@@ -379,10 +379,11 @@ namespace Rtrbau
             }
         }
 
-        void LoadAssetModelMaterials(MeshRenderer[] models, Material material)
+        void LoadAssetModelsManipulators(MeshRenderer[] models, Material material)
         {
             foreach (MeshRenderer model in models)
             {
+                // Set material of model mesh renderer
                 model.material = material;
             }
         }

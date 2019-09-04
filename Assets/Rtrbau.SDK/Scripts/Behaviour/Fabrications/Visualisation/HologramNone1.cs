@@ -132,7 +132,7 @@ namespace Rtrbau
                 {
                     // Find component that relates to hologram's model
                     componentName = Parser.ParseURI(Parser.ParseURI(facet.Value.attributeValue, '/', RtrbauParser.post), '.', RtrbauParser.pre);
-                    component = visualiser.transform.parent.gameObject.GetComponent<AssetManager>().FindAssetComponent(componentName);
+                    component = visualiser.transform.parent.gameObject.GetComponent<AssetManager>().FindAssetComponentManipulator(componentName);
                     model = Instantiate(component);
                 }
                 else if (facet.Key == DataFormats.hologramnone1.formatFacets[2])
@@ -167,6 +167,11 @@ namespace Rtrbau
             // Fabrication location is managed by its element.
         }
 
+        public void ModifyMaterial()
+        {
+            // Do nothing in this case
+        }
+
         public void DestroyIt()
         {
             Destroy(this.gameObject);
@@ -177,15 +182,15 @@ namespace Rtrbau
         void SetModel()
         {
             model.name = this.name + componentName + this.GetHashCode();
-            model.transform.SetParent(scale, true);
-            model.GetComponent<MeshRenderer>().material = material;
+            model.transform.SetParent(scale, false);
+            model.GetComponentInChildren<MeshRenderer>().material = material;
             model.transform.position = component.transform.position;
             model.transform.rotation = component.transform.rotation;
         }
         void SetHologram()
         {
             hologram.name = this.name + hologramName + this.GetHashCode();
-            hologram.transform.SetParent(scale, true);
+            hologram.transform.SetParent(scale, false);
             SetHologramMaterial();
             SetHologramScale();
             SetHologramPosition();
@@ -244,11 +249,10 @@ namespace Rtrbau
         void SetHologramPosition()
         {
             // Set direction from asset origin to model origin
-            // Vector3 direction = model.GetComponent<MeshRenderer>().bounds.center - visualiser.manager.assetRegistrator.GetComponent<BoxCollider>().center;
-            Vector3 direction = model.GetComponent<MeshRenderer>().bounds.center - visualiser.transform.position;
+            Vector3 direction = model.GetComponentInChildren<MeshRenderer>().bounds.center - visualiser.transform.position;
             direction = direction / direction.magnitude;
             // Set further in the direction of the object
-            hologram.transform.position = model.GetComponent<MeshRenderer>().bounds.center + (Vector3.Normalize(direction)*0.15f);
+            hologram.transform.position = model.GetComponentInChildren<MeshRenderer>().bounds.center + (Vector3.Normalize(direction)*0.15f);
             hologram.transform.LookAt(model.transform);
 
             // To rotate the hologram according to specific positions due to 

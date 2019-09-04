@@ -128,14 +128,14 @@ namespace Rtrbau
                                 // Changed way in which components are found in the scene
                                 // It is dependent on visualiser being unique in the scene
                                 // UPG: to adapt for when visualiser won't be unique
-                                GameObject component = assetManager.FindAssetComponent(individualValue.name);
-                                Debug.Log(component.name);
+                                string componentName = assetManager.FindAssetComponent(individualValue.name);
+                                Debug.Log(componentName);
                                 Debug.Log(individualValue.name);
                                 // But only when the component is found in the scene
                                 // In that case, it is assumed the obj file was taken from the current server
                                 // Otherwise, it is already now the attribute is of object type
                                 // if (GameObject.Find(individualValue.name) != null)
-                                if (component.name == individualValue.name)
+                                if (componentName == individualValue.name)
                                 {
                                     attributeRange = new OntologyEntity(Rtrbauer.instance.uris.XSD + "#anyURI");
                                     attributeValue = Rtrbauer.instance.server.serverURI + "api/files/obj/" + individualValue.name + ".obj";

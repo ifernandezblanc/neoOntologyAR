@@ -53,6 +53,8 @@ namespace Rtrbau
 
         #region GAMEOBJECT_PREFABS
         public TextMeshPro text;
+        public MeshRenderer panel;
+        public Material seenMaterial;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -63,7 +65,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (text == null)
+            if (text == null || panel == null || seenMaterial == null)
             {
                 throw new ArgumentException("AudioTap1 script requires some prefabs to work.");
             }
@@ -160,6 +162,11 @@ namespace Rtrbau
         public void LocateIt()
         {
             // Fabrication location is managed by its element.
+        }
+
+        public void ModifyMaterial()
+        {
+            panel.material = seenMaterial;
         }
 
         public void DestroyIt()

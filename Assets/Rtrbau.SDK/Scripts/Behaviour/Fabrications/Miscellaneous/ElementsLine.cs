@@ -31,7 +31,6 @@ public class ElementsLine : MonoBehaviour
     public Material lineMaterial;
     #endregion INITIALISATION_VARIABLES
 
-
     #region MONOBEHAVIOUR_METHODS
     // Start is called before the first frame update
     void Start()
@@ -42,12 +41,16 @@ public class ElementsLine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (start && end)
+        if (start != null && end != null)
         {
             Vector3 startPoint = start.transform.position;
             Vector3 endPoint = end.transform.position;
             start.gameObject.GetComponent<LineRenderer>().SetPosition(0, startPoint);
             start.gameObject.GetComponent<LineRenderer>().SetPosition(1, endPoint);
+        }
+        else
+        {
+            start.gameObject.GetComponent<LineRenderer>().positionCount = 0;
         }
     }
     #endregion MONOBEHAVIOUR_METHODS
@@ -55,13 +58,14 @@ public class ElementsLine : MonoBehaviour
     #region INITIALISATION_METHODS
     public void Initialise(GameObject lineStart, GameObject lineEnd, Material lineMaterial)
     {
-        if (lineStart && lineEnd)
+        if (lineStart != null && lineEnd != null)
         {
             // Reference line starting and ending game objects
             start = lineStart;
             end = lineEnd;
             // Set line widht at 10% of starting element consult panel
-            float width = start.transform.localScale.x * 0.01f;
+            // float width = start.transform.localScale.x * 0.01f;
+            float width = 0.005f;
             // Add line renderer to starting game object
             start.gameObject.AddComponent<LineRenderer>();
             start.gameObject.GetComponent<LineRenderer>().useWorldSpace = true;
@@ -69,6 +73,11 @@ public class ElementsLine : MonoBehaviour
             start.gameObject.GetComponent<LineRenderer>().startWidth = width;
             start.gameObject.GetComponent<LineRenderer>().endWidth = width;
         }
+    }
+
+    public void UpdateLineEnd(GameObject lineEnd)
+    {
+        end = lineEnd;
     }
     #endregion INITIALISATION_METHODS
 }

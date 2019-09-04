@@ -154,9 +154,10 @@ namespace Rtrbau
             GameObject nextElement = visualiser.FindElement(individual);
             if (nextElement != null)
             {
-                Material lineMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardTransparentBlue") as Material;
-                element.gameObject.AddComponent<ElementsLine>();
-                element.gameObject.GetComponent<ElementsLine>().Initialise(element.gameObject, nextElement, lineMaterial);
+                element.gameObject.GetComponent<ElementsLine>().UpdateLineEnd(nextElement);
+                //Material lineMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardTransparentBlue") as Material;
+                //element.gameObject.AddComponent<ElementsLine>();
+                //element.gameObject.GetComponent<ElementsLine>().Initialise(element.gameObject, nextElement, lineMaterial);
             }
             else
             {
@@ -169,6 +170,11 @@ namespace Rtrbau
         public void LocateIt()
         {
             // Fabrication location is managed by its element.
+        }
+
+        public void ModifyMaterial()
+        {
+            // To complete
         }
 
         public void DestroyIt()

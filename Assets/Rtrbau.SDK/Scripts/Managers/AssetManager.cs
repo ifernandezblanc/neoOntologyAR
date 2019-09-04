@@ -106,6 +106,8 @@ namespace Rtrbau
             // Managed in creation at PanelAssetRegistrator
         }
 
+        public void ModifyMaterial() { }
+
         /// <summary>
         /// 
         /// </summary>
@@ -125,14 +127,19 @@ namespace Rtrbau
 
             foreach (MeshRenderer component in components)
             {
-                models.Add(component.gameObject);
-                // Add manipulator in bounds centre for controlling mesh in fabrications;
+                // Caculate asset bounds in local space
+                assetBounds.Encapsulate(component.bounds);
+                // Add manipulator in bounds centre for controlling mesh in fabrications
                 GameObject componentManipulator = new GameObject();
                 componentManipulator.name = "Manipulator_" + component.name;
                 componentManipulator.transform.SetParent(component.transform, false);
-                componentManipulator.transform.position = component.GetComponent<MeshRenderer>().bounds.center;
-                // Caculate bounds in local space because object in 
-                assetBounds.Encapsulate(component.bounds);
+                componentManipulator.transform.position = component.bounds.center;
+                // Set component mesh as child of manipulator parent
+                componentManipulator.transform.SetParent(assetModel.transform, true);
+                component.transform.SetParent(componentManipulator.transform, true);
+                // Add component to models list
+                // models.Add(component.gameObject);
+                models.Add(componentManipulator);
             }
 
             return models;
@@ -212,7 +219,8 @@ namespace Rtrbau
             Bounds bounds = new Bounds();
             foreach (GameObject model in assetComponentsModels)
             {
-                bounds.Encapsulate(model.GetComponent<MeshFilter>().mesh.bounds);
+                // bounds.Encapsulate(model.GetComponent<MeshFilter>().mesh.bounds);
+                bounds.Encapsulate(model.GetComponentInChildren<MeshFilter>().mesh.bounds);
             }
             return bounds;
         }
@@ -226,17 +234,36 @@ namespace Rtrbau
         }
 
         /// <summary>
-        /// Returns asset component model by <paramref name="name"/>.
+        /// Returns asset component manipulator by component <paramref name="name"/>.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public GameObject FindAssetComponent(string name)
+        public GameObject FindAssetComponentManipulator(string name)
         {
-            GameObject component = assetComponentsModels.Find(x => x.name == name);
+            GameObject component = assetComponentsModels.Find(x => x.name == "Manipulator_" + name);
 
             if (component != null)
             {
                 return component;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Returns asset component name if component found in scene by <paramref name="name"/>, otherwise returns null.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public string FindAssetComponent(string name)
+        {
+            GameObject component = assetComponentsModels.Find(x => x.name == "Manipulator_" + name);
+
+            if (component != null)
+            {
+                return component.transform.GetChild(0).name;
             }
             else
             {

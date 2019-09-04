@@ -45,8 +45,8 @@ namespace Rtrbau
         private List<KeyValuePair<OntologyElement,GameObject>> loadedElements;
         private List<GameObject> createdElements;
         private GameObject lastElement;
-        private List<GameObject> primaryElements;
-        private int primaryCounter;
+        private GameObject primaryElement;
+        // private bool primaryCounter;
         private List<GameObject> secondaryElements;
         private int secondaryCounter;
         private List<GameObject> tertiaryElements;
@@ -74,8 +74,8 @@ namespace Rtrbau
             // Initialise variables
             loadedElements = new List<KeyValuePair<OntologyElement, GameObject>>();
             lastElement = null;
-            primaryElements = new List<GameObject>();
-            primaryCounter = 0;
+            primaryElement = null;
+            // primaryCounter = false;
             secondaryElements = new List<GameObject>();
             secondaryCounter = 0;
             tertiaryElements = new List<GameObject>();
@@ -119,6 +119,8 @@ namespace Rtrbau
             // Changed to asset manager to be rotated
         }
 
+        public void ModifyMaterial() { }
+
         /// <summary>
         /// Identifies all rtrbau elements visualised and destroys them.
         /// Then, destroys itself;
@@ -133,8 +135,49 @@ namespace Rtrbau
         #region CLASS_METHODS
         #region PRIVATE
         /// <summary>
-        /// Adds <paramref name="element"/> to visualisation location and 
-        /// deletes oldest element and re-locates all.
+        /// Adds <paramref name="element"/> as primary element.
+        /// If null, then removes existing primary element.
+        /// Primary element only makes sense to exist at one instant (step), otherwise always delete.
+        /// </summary>
+        /// <param name="element"></param>
+        void AddPrimaryElement(GameObject element)
+        {
+            if (element == null)
+            {
+                if (primaryElement != null)
+                {
+                    Destroy(primaryElement);
+                    // Find in list of loaded elements and remove
+                    loadedElements.Remove(loadedElements.Find(x => x.Value == primaryElement));
+                    // Assign primary element as null
+                    primaryElement = null;
+                    
+                }
+                else { }
+            }
+            else
+            {
+                if (primaryElement != null)
+                {
+                    Destroy(primaryElement);
+                    loadedElements.Remove(loadedElements.Find(x => x.Value == primaryElement));
+                }
+
+                // Assign this element as primary
+                primaryElement = element;
+
+                // Replicate AddElement function
+                if (lastElement != null) { lastElement.GetComponent<IVisualisable>().ModifyMaterial(); }
+                element.transform.SetParent(this.transform, false);
+                SetPosition(element, RtrbauElementLocation.Primary, 0);
+                SetScale(element);
+                lastElement = element;
+            }
+        }
+
+        /// <summary>
+        /// Adds <paramref name="element"/> to visualisation location (other than primary) in orderer position. 
+        /// Deletes oldest element in location and element in primary location.
         /// </summary>
         /// <param name="element"></param>
         /// <param name="location"></param>
@@ -144,17 +187,27 @@ namespace Rtrbau
         {
             // Calculate number of elements per location
             int locationElementsNo;
-            if ((int)location == 0) { locationElementsNo = 1; }
-            else { locationElementsNo = (int)location * 2; }
+            if ((int)location != 0) { locationElementsNo = ((int)location * 2) + 2; }
+            //if ((int)location != 0) { locationElementsNo = 5; }
+            else { throw new ArgumentException("AddElement function should only be used for non-primary locations, please use AddElementPrimary"); }
+            // else { locationElementsNo = 1; }
+            // Should only be used for other locations rather than primary
+
+            // Remove primary element
+            AddPrimaryElement(null);
 
             // Remove earliest element on location list if location is full
             if (locationCounter == locationElementsNo) { locationCounter = 0; }
             if (locationElements.Count == locationElementsNo)
             {
-                Destroy(locationElements[0]);
+                GameObject destroyable = locationElements[0];
+                Destroy(destroyable);
+                loadedElements.Remove(loadedElements.Find(x => x.Value == destroyable));
                 locationElements.RemoveAt(0);
             }
 
+            // Modify material of last element (in case it hasn't been the one which drove the new element)
+            if (lastElement != null) { lastElement.GetComponent<IVisualisable>().ModifyMaterial(); }
             // Assign element to location
             locationElements.Add(element);
             // Assign element as child of visualiser
@@ -195,59 +248,92 @@ namespace Rtrbau
             }
             else if (location == RtrbauElementLocation.Secondary)
             {
-                // Two positions in this location
-                if (locationCounter == 0)
+                if (locationCounter < 3)
                 {
-                    pX = assetBounds.size.x;
-                    pY = assetBounds.size.y;
-                    pZ = - assetBounds.size.z;
-                }
-                else if (locationCounter == 1)
-                {
-                    pX = -assetBounds.size.x;
-                    pY = assetBounds.size.y;
-                    pZ = -assetBounds.size.z;
+                    pX = assetBounds.size.x - locationCounter * assetBounds.size.x;
+                    pY = assetBounds.size.y * 2f;
+                    pZ = 0;
                 }
                 else
                 {
-                    throw new ArgumentException("Number of location counter not implemented.");
+                    pX = -assetBounds.size.x;
+                    pY = assetBounds.size.y * 2f;
+                    pZ = -(locationCounter - 2) * assetBounds.size.z;
                 }
             }
             else if (location == RtrbauElementLocation.Tertiary)
             {
-                if (locationCounter == 0)
-                {
-                    pX = assetBounds.size.x;
-                    pY = assetBounds.size.y;
-                    pZ = -2*assetBounds.size.z;
-                }
-                else if (locationCounter == 1)
-                {
-                    pX = assetBounds.size.x;
-                    pY = 0;
-                    pZ = -2 * assetBounds.size.z;
-                }
-                else if (locationCounter == 2)
-                {
-                    pX = -assetBounds.size.x;
-                    pY = assetBounds.size.y;
-                    pZ = -2 * assetBounds.size.z;
-                }
-                else if (locationCounter == 3)
-                {
-                    pX = -assetBounds.size.x;
-                    pY = 0;
-                    pZ = -2 * assetBounds.size.z;
-                }
-                else
-                {
-                    throw new ArgumentException("Number of location counter not implemented.");
-                }
+                pX = assetBounds.size.x * 2;
+                pY = assetBounds.size.y * 2f;
+                pZ = -assetBounds.size.z * locationCounter;
             }
             else
             {
-                throw new ArgumentException("Number of location elements not implemented.");
+                throw new ArgumentException("Rtrbau Element Location not implemented.");
             }
+
+            //if (location == RtrbauElementLocation.Primary)
+            //{
+            //    // Only one position in this location
+            //    pX = assetBounds.size.x;
+            //    pY = 0;
+            //    pZ = 0;
+            //}
+            //else if (location == RtrbauElementLocation.Secondary)
+            //{
+            //    // Two positions in this location
+            //    if (locationCounter == 0)
+            //    {
+            //        pX = assetBounds.size.x;
+            //        pY = assetBounds.size.y;
+            //        pZ = - assetBounds.size.z;
+            //    }
+            //    else if (locationCounter == 1)
+            //    {
+            //        pX = -assetBounds.size.x;
+            //        pY = assetBounds.size.y;
+            //        pZ = -assetBounds.size.z;
+            //    }
+            //    else
+            //    {
+            //        throw new ArgumentException("Number of location counter not implemented.");
+            //    }
+            //}
+            //else if (location == RtrbauElementLocation.Tertiary)
+            //{
+            //    if (locationCounter == 0)
+            //    {
+            //        pX = assetBounds.size.x;
+            //        pY = assetBounds.size.y;
+            //        pZ = -2*assetBounds.size.z;
+            //    }
+            //    else if (locationCounter == 1)
+            //    {
+            //        pX = assetBounds.size.x;
+            //        pY = 0;
+            //        pZ = -2 * assetBounds.size.z;
+            //    }
+            //    else if (locationCounter == 2)
+            //    {
+            //        pX = -assetBounds.size.x;
+            //        pY = assetBounds.size.y;
+            //        pZ = -2 * assetBounds.size.z;
+            //    }
+            //    else if (locationCounter == 3)
+            //    {
+            //        pX = -assetBounds.size.x;
+            //        pY = 0;
+            //        pZ = -2 * assetBounds.size.z;
+            //    }
+            //    else
+            //    {
+            //        throw new ArgumentException("Number of location counter not implemented.");
+            //    }
+            //}
+            //else
+            //{
+            //    throw new ArgumentException("Number of location elements not implemented.");
+            //}
 
             Debug.Log("pX: " + pX + " pY: " + pY + " pZ: " + pZ);
             element.transform.localPosition = new Vector3(pX, pY, pZ);
@@ -329,7 +415,7 @@ namespace Rtrbau
         {
             if (location == RtrbauElementLocation.Primary)
             {
-                AddElement(element, location, ref primaryElements, ref primaryCounter);
+                AddPrimaryElement(element);
             }
             else if (location == RtrbauElementLocation.Secondary)
             {

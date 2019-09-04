@@ -27,6 +27,7 @@ using TMPro;
 namespace Rtrbau
 {
     /// <summary>
+    /// TO MODIFY
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
@@ -146,7 +147,7 @@ namespace Rtrbau
                 {
                     componentName = Parser.ParseURI(Parser.ParseURI(facet.Value.attributeValue, '/', RtrbauParser.post), '.', RtrbauParser.pre);
 
-                    component = visualiser.manager.FindAssetComponent(componentName);
+                    component = visualiser.manager.FindAssetComponentManipulator(componentName);
 
                     // Create model
                     model = Instantiate(component);
@@ -184,7 +185,7 @@ namespace Rtrbau
                 {
                     componentPairName = Parser.ParseURI(Parser.ParseURI(facet.Value.attributeValue, '/', RtrbauParser.post), '.', RtrbauParser.pre);
 
-                    componentPair = visualiser.manager.FindAssetComponent(componentPairName);
+                    componentPair = visualiser.manager.FindAssetComponentManipulator(componentPairName);
 
                     // Create model pair
                     modelPair = Instantiate(componentPair);
@@ -249,6 +250,11 @@ namespace Rtrbau
         public void LocateIt()
         {
             // Fabrication location is managed by its element.
+        }
+
+        public void ModifyMaterial()
+        {
+            // Nothing to do in this case
         }
 
         public void DestroyIt()

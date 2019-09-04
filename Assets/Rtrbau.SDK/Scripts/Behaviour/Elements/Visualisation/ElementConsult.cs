@@ -57,13 +57,18 @@ namespace Rtrbau
         public List<KeyValuePair<RtrbauFabrication,GameObject>> elementFabrications;
         public RtrbauElementLocation rtrbauLocation;
         public List<GameObject> noChildFabrications;
+        public List<GameObject> childFabrications;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
-        public TextMeshPro individualText;
         public TextMeshPro classText;
-        private Material lineMaterial;
+        public TextMeshPro individualText;
+        public MeshRenderer panel;
+        public Transform fabricationsPanel;
+        public Transform fabricationsSidePanel;
+        public Material seenMaterial;
         private GameObject viewer;
+        private Material lineMaterial;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -71,6 +76,7 @@ namespace Rtrbau
         public bool fabricationsSelected;
         public bool componentDistanceDownloaded;
         public bool operationDistanceDownloaded;
+        public bool materialChanged;
         #endregion CLASS_EVENTS
 
         #region MONOBEHAVIOUR_METHODS
@@ -102,7 +108,7 @@ namespace Rtrbau
         /// </summary>
         public void Initialise(AssetVisualiser assetVisualiser, OntologyElement elementIndividual, GameObject previous)
         {
-            if (individualText == null || classText == null)
+            if (individualText == null || classText == null || fabricationsPanel == null || fabricationsSidePanel == null || panel == null || seenMaterial == null) 
             {
                 Debug.LogError("Consult Element: Fabrication not found. Please assign them in ElementConsult script.");
             }
@@ -110,7 +116,7 @@ namespace Rtrbau
             {
                 if (elementIndividual.type == OntologyElementType.IndividualProperties)
                 {
-                    lineMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardTransparentBlue") as Material;
+                    lineMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardBlue") as Material;
                     viewer = GameObject.FindGameObjectWithTag("MainCamera");
 
                     visualiser = assetVisualiser;
@@ -125,9 +131,12 @@ namespace Rtrbau
                     componentDistanceDownloaded = false;
                     operationDistanceDownloaded = false;
 
+                    materialChanged = false;
+
                     assignedFabrications = new List<RtrbauFabrication>();
                     elementFabrications = new List<KeyValuePair<RtrbauFabrication,GameObject>>();
                     noChildFabrications = new List<GameObject>();
+                    childFabrications = new List<GameObject>();
                     AddLineRenderer();
                     DownloadElement();
                 }
@@ -336,10 +345,9 @@ namespace Rtrbau
         /// </summary>
         public void InputIntoReport()
         {
-            // Since element consults are not modified, they can be inputted into report just after being created
+            // Function called after generating fabrications
+            // Input into report
             Reporter.instance.ReportElement(individualElement.entity);
-            // To wait for element to be used?
-            // Or to input just after located?
         }
         #endregion IELEMENTABLE_METHODS
 
@@ -349,8 +357,8 @@ namespace Rtrbau
         /// </summary>
         public void LocateIt()
         {
-            Transform fabricationsPanel = this.transform.GetChild(3);
-            Transform fabricationsSidePanel = this.transform.GetChild(4);
+            // Transform fabricationsPanel = this.transform.GetChild(3);
+            // Transform fabricationsSidePanel = this.transform.GetChild(4);
 
             // UPG: add ordering for tiled fabrications (buttons, icons, text).
             foreach (KeyValuePair<RtrbauFabrication, GameObject> fabrication in elementFabrications)
@@ -361,19 +369,22 @@ namespace Rtrbau
                 {
                     fabrication.Value.transform.SetParent(fabricationsPanel, false);
                     fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
+                    childFabrications.Add(fabrication.Value);
                 }
                 else if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Image ||
                     fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Video)
                 {
                     fabrication.Value.transform.SetParent(fabricationsSidePanel, false);
                     fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
+                    childFabrications.Add(fabrication.Value);
                 }
 
                 else if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Model ||
                     fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Hologram ||
                     fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Animation)
                 {
-                    fabrication.Value.transform.SetParent(visualiser.transform, true);
+                    // fabrication.Value.transform.SetParent(visualiser.transform, true);
+                    fabrication.Value.transform.SetParent(visualiser.transform, false);
                     fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, fabrication.Value.transform);
                     noChildFabrications.Add(fabrication.Value);
                 }
@@ -389,6 +400,30 @@ namespace Rtrbau
 
             // ElementConsult location is managed by its visualiser.
             RtrbauerEvents.TriggerEvent("LocateElement", this.gameObject, rtrbauLocation);
+        }
+
+        /// <summary>
+        /// Modifies material 
+        /// </summary>
+        public void ModifyMaterial()
+        {
+            if (!materialChanged)
+            {
+                panel.material = seenMaterial;
+                // Modify material for all child fabrications
+                foreach (GameObject fabrication in childFabrications)
+                {
+                    fabrication.GetComponent<IVisualisable>().ModifyMaterial();
+                }
+                // Modify material for all no-child fabrications
+                foreach (GameObject fabrication in noChildFabrications)
+                {
+                    fabrication.GetComponent<IVisualisable>().ModifyMaterial();
+                }
+                // Modify material change event
+                materialChanged = true;
+            }
+            else { }
         }
 
         /// <summary>
@@ -558,10 +593,9 @@ namespace Rtrbau
 
         void AddLineRenderer()
         {
-            if (previousElement)
+            if (previousElement != null)
             {
-                this.gameObject.AddComponent<ElementsLine>();
-                this.gameObject.GetComponent<ElementsLine>().Initialise(this.gameObject, previousElement, lineMaterial);
+                this.gameObject.AddComponent<ElementsLine>().Initialise(this.gameObject, previousElement, lineMaterial);
             }
         }
 
