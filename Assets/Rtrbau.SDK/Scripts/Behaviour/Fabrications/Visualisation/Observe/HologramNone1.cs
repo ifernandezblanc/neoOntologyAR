@@ -207,7 +207,7 @@ namespace Rtrbau
 
         void SetHologramScale()
         {
-            Bounds modelBounds = model.GetComponent<MeshRenderer>().bounds;
+            Bounds modelBounds = model.GetComponentInChildren<MeshRenderer>().bounds;
 
             // Calculate scales of element compared to asset
             List<bool> scales = new List<bool>
