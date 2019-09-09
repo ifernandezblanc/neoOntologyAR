@@ -67,6 +67,9 @@ namespace Rtrbau
         public Transform fabricationsPanel;
         public Transform fabricationsSidePanel;
         public Material seenMaterial;
+        public SpriteRenderer activationButton;
+        public Sprite activationButtonMaximise;
+        public Sprite activationButtonMinimise;
         private GameObject viewer;
         private Material lineMaterial;
         #endregion GAMEOBJECT_PREFABS
@@ -77,6 +80,7 @@ namespace Rtrbau
         public bool componentDistanceDownloaded;
         public bool operationDistanceDownloaded;
         public bool materialChanged;
+        public bool fabricationsActive;
         #endregion CLASS_EVENTS
 
         #region MONOBEHAVIOUR_METHODS
@@ -108,7 +112,7 @@ namespace Rtrbau
         /// </summary>
         public void Initialise(AssetVisualiser assetVisualiser, OntologyElement elementIndividual, GameObject previous)
         {
-            if (individualText == null || classText == null || fabricationsPanel == null || fabricationsSidePanel == null || panel == null || seenMaterial == null) 
+            if (individualText == null || classText == null || fabricationsPanel == null || fabricationsSidePanel == null || panel == null || seenMaterial == null || activationButton == null || activationButtonMaximise == null || activationButtonMinimise == null) 
             {
                 Debug.LogError("Consult Element: Fabrication not found. Please assign them in ElementConsult script.");
             }
@@ -132,6 +136,8 @@ namespace Rtrbau
                     operationDistanceDownloaded = false;
 
                     materialChanged = false;
+
+                    fabricationsActive = false;
 
                     assignedFabrications = new List<RtrbauFabrication>();
                     elementFabrications = new List<KeyValuePair<RtrbauFabrication,GameObject>>();
@@ -222,42 +228,6 @@ namespace Rtrbau
                     }
                 }
             }
-
-
-            //// RTRBAU ALGORITHM: Data formats matching (Loops 3 and 4 combined)
-            //foreach (DataFormat format in Dictionaries.DataFormatsConsult)
-            //{
-            //    Debug.Log("ElementConsult: EvaluateElement: " + format.formatName + " required facets: " + format.formatRequiredFacets);
-            //    List<RtrbauFabrication> formatAssignedFabrications = format.EvaluateFormat(rtrbauElement);
-                
-            //    if (formatAssignedFabrications != null)
-            //    {
-            //        foreach (RtrbauFabrication fabrication in formatAssignedFabrications)
-            //        {
-            //            assignedFabrications.Add(fabrication);
-            //            Debug.Log("EvaluateElement: fabrication assigned: " + fabrication.fabricationName);
-            //        }
-            //    }
-            //}
-
-            //// RTRBAU ALGORITHM: Environment and user formats matching (Loop 6 and 7 modified and combined)
-            //foreach (RtrbauFabrication fabrication in assignedFabrications.ToList())
-            //{
-            //    Tuple<RtrbauAugmentation, RtrbauInteraction> envFacets = Dictionaries.EnvironmentFormatsConsult.Find(x => x.formatName == fabrication.fabricationName).EvaluateFormat();
-            //    Tuple<RtrbauComprehensiveness, RtrbauDescriptiveness> userFacets = Dictionaries.UserFormatsConsult.Find(x => x.formatName == fabrication.fabricationName).EvaluateFormat();
-
-            //    if (envFacets == null || userFacets == null)
-            //    {
-            //        assignedFabrications.Remove(fabrication);
-            //    }
-            //    else
-            //    {
-            //        fabrication.fabricationAugmentation = envFacets.Item1;
-            //        fabrication.fabricationInteraction = envFacets.Item2;
-            //        fabrication.fabricationComprehension = userFacets.Item1;
-            //        fabrication.fabricationDescription = userFacets.Item2;
-            //    }
-            //}
 
             // RTRBAU ALGORITHM: Eliminate duplicated fabrications (Loop 5 modified)
             // Eliminate duplicated formats with lower number of attributes
@@ -498,6 +468,9 @@ namespace Rtrbau
 
             // ElementConsult location is managed by its visualiser.
             RtrbauerEvents.TriggerEvent("LocateElement", this.gameObject, rtrbauLocation);
+
+            // Set fabrications as active
+            fabricationsActive = true;
         }
 
         /// <summary>
@@ -537,6 +510,7 @@ namespace Rtrbau
         #endregion IVISUALISABLE_METHODS
 
         #region CLASS_METHODS
+        #region PRIVATE
         /// <summary>
         /// 
         /// </summary>
@@ -696,7 +670,45 @@ namespace Rtrbau
                 this.gameObject.AddComponent<ElementsLine>().Initialise(this.gameObject, previousElement, lineMaterial);
             }
         }
+        #endregion PRIVATE
 
+        #region PUBLIC
+        public void ActivateFabrications()
+        {
+            if (fabricationsActive)
+            {
+                foreach(GameObject fabrication in childFabrications)
+                {
+                    fabrication.SetActive(false);
+                }
+
+                foreach(GameObject fabrication in noChildFabrications)
+                {
+                    fabrication.SetActive(false);
+                }
+
+                fabricationsActive = false;
+                activationButton.sprite = activationButtonMaximise;
+                activationButton.size = new Vector2(0.75f, 0.75f);
+            }
+            else
+            {
+                foreach (GameObject fabrication in childFabrications)
+                {
+                    fabrication.SetActive(true);
+                }
+
+                foreach (GameObject fabrication in noChildFabrications)
+                {
+                    fabrication.SetActive(true);
+                }
+
+                fabricationsActive = true;
+                activationButton.sprite = activationButtonMinimise;
+                activationButton.size = new Vector2(0.75f, 0.75f);
+            }
+        }
+        #endregion PUBLIC
         #endregion CLASS_METHODS
     }
 }
