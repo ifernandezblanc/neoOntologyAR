@@ -24,6 +24,7 @@ using UnityEngine;
 using System;
 using System.IO;
 using TMPro;
+using UnityEngine.UI;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -76,9 +77,10 @@ namespace Rtrbau
         #endregion CLASS_VARIABLES
 
         #region MONOBEHAVIOUR_METHODS
-        void OnDestroy()
+        // void OnDestroy()
+        void OnApplicationQuit()
         {
-            // SendReport();
+            SendReport();
         }
         #endregion MONOBEHAVIOUR_METHODS
 
@@ -98,31 +100,42 @@ namespace Rtrbau
             else
             {
                 // reportPanel = this.transform.Find("ReportElements").gameObject;
-                // reportDictionary = new List<KeyValuePair<DateTime, OntologyEntity>>();
-                InitialiseReport();
+                reportDictionary = new List<KeyValuePair<DateTime, OntologyEntity>>();
             }
         }
 
         /// <summary>
         /// Initialises report dictionary
         /// </summary>
-        public void InitialiseReport()
+        public void ReinitialiseReport()
         {
+            // Destroy reported elements if exist
+            HorizontalLayoutGroup[] reportedElements = reportPanel.GetComponentsInChildren<HorizontalLayoutGroup>();
+
+            if (reportedElements.Length != 0)
+            {
+                foreach (HorizontalLayoutGroup reportedElement in reportedElements)
+                {
+                    Destroy(reportedElement.gameObject);
+                }
+            }
+
             // Initialise report dictionary
             reportDictionary = new List<KeyValuePair<DateTime, OntologyEntity>>();
 
-            // UPG: to reinitialise with Vuforia to start the app again
-            // Find existing reported elements
-            //TextMeshProUGUI[] reportedElements = reportPanel.GetComponentsInChildren<TextMeshProUGUI>();
+            // Update user
+            Rtrbauer.instance.user.name = "User" + "_" + DateTime.Now.ToString("dd-MM-yy_hh-mm-ss");
 
-            //// Destroy existing reported elements
-            //if (reportedElements.Length != 0)
-            //{
-            //    foreach (TextMeshProUGUI reportedElement in reportedElements)
-            //    {
-            //        Destroy(reportedElement.gameObject);
-            //    }
-            //}
+            // Re-initialise dictionary elements: server, user and asset
+            string serverReport = Rtrbauer.instance.server.serverURI + "server" + "#" + "connected";
+            string userReport = Rtrbauer.instance.server.serverURI + "user" + "#" + Rtrbauer.instance.user.name;
+
+            // Report re-initialised elements
+            ReportElement(new OntologyEntity(serverReport));
+            ReportElement(new OntologyEntity(userReport));
+            ReportElement(new OntologyEntity(Rtrbauer.instance.asset.assetURI));
+
+            // UPG: to reinitialise with Vuforia to start the app again (start at configuration panel)
         }
 
         /// <summary>
@@ -159,7 +172,8 @@ namespace Rtrbau
             {
                 reportWriter.WriteLine("{");
                 reportWriter.WriteLine("\"time\": " + "\"" + reportDictionary[i].Key.ToLongTimeString() + "\",");
-                reportWriter.WriteLine("\"entity\": " + JsonUtility.ToJson(reportDictionary[i].Value));
+                // reportWriter.WriteLine("\"entity\": " + JsonUtility.ToJson(reportDictionary[i].Value));
+                reportWriter.WriteLine("\"entity\": " + "\"" + reportDictionary[i].Value.URI() + "\"");
                 if (i != reportDictionary.Count - 1) { reportWriter.WriteLine("},"); }
                 else { reportWriter.WriteLine("}"); }
             }

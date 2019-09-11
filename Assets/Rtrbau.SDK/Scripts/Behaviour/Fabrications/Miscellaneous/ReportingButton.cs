@@ -45,6 +45,8 @@ namespace Rtrbau
         {
             // Send report
             Reporter.instance.SendReport();
+            // Reinitialise report
+            Reporter.instance.ReinitialiseReport();
             // Reinitialise visualiser
             Rtrbauer.instance.ReloadVisualiser();
             // Reinitialise paneller at ontologies level
