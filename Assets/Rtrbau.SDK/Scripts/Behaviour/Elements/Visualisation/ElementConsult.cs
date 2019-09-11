@@ -517,7 +517,7 @@ namespace Rtrbau
         /// <param name="elementIndividual"></param>
         void DownloadedIndividual(OntologyElement elementIndividual)
         {
-            LoaderEvents.StopListening(elementIndividual.EventName(), DownloadedClass);
+            LoaderEvents.StopListening(elementIndividual.EventName(), DownloadedIndividual);
 
             if (File.Exists(individualElement.FilePath()))
             {
