@@ -43,6 +43,7 @@ public class ElementsLine : MonoBehaviour
     {
         if (start != null && end != null)
         {
+            start.gameObject.GetComponent<LineRenderer>().positionCount = 2;
             Vector3 startPoint = start.transform.position;
             Vector3 endPoint = end.transform.position;
             start.gameObject.GetComponent<LineRenderer>().SetPosition(0, startPoint);

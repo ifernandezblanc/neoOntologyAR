@@ -117,6 +117,8 @@ namespace Rtrbau
             // Rotate 180 degrees over y-axis to align with asset target rotation
             // this.transform.localRotation = Quaternion.Euler(0, 180, 0);
             // Changed to asset manager to be rotated
+            // Add asset visualiser to rtrbauer for control
+            // Rtrbauer.instance.visualiser = this.gameObject;
         }
 
         public void ModifyMaterial() { }

@@ -71,13 +71,14 @@ namespace Rtrbau
         #region CLASS_VARIABLES
         public GameObject reportElement;
         public GameObject reportPanel;
+        public GameObject reportButton;
         public List<KeyValuePair<DateTime, OntologyEntity>> reportDictionary;
         #endregion CLASS_VARIABLES
 
         #region MONOBEHAVIOUR_METHODS
         void OnDestroy()
         {
-            SendReport();
+            // SendReport();
         }
         #endregion MONOBEHAVIOUR_METHODS
 
@@ -90,15 +91,38 @@ namespace Rtrbau
         {
             // reportElement = Resources.Load("Rtrbau/Prefabs/Fabrications/ReportElement") as GameObject;
 
-            if (reportElement == null || reportPanel == null)
+            if (reportElement == null || reportPanel == null || reportButton == null)
             {
                 Debug.LogError("There must be prefabs for element reporting.");
             }
             else
             {
                 // reportPanel = this.transform.Find("ReportElements").gameObject;
-                reportDictionary = new List<KeyValuePair<DateTime, OntologyEntity>>();
+                // reportDictionary = new List<KeyValuePair<DateTime, OntologyEntity>>();
+                InitialiseReport();
             }
+        }
+
+        /// <summary>
+        /// Initialises report dictionary
+        /// </summary>
+        public void InitialiseReport()
+        {
+            // Initialise report dictionary
+            reportDictionary = new List<KeyValuePair<DateTime, OntologyEntity>>();
+
+            // UPG: to reinitialise with Vuforia to start the app again
+            // Find existing reported elements
+            //TextMeshProUGUI[] reportedElements = reportPanel.GetComponentsInChildren<TextMeshProUGUI>();
+
+            //// Destroy existing reported elements
+            //if (reportedElements.Length != 0)
+            //{
+            //    foreach (TextMeshProUGUI reportedElement in reportedElements)
+            //    {
+            //        Destroy(reportedElement.gameObject);
+            //    }
+            //}
         }
 
         /// <summary>

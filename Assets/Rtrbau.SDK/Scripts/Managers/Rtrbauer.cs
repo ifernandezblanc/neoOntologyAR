@@ -144,9 +144,12 @@ namespace Rtrbau
         /// </summary>
         public void LoadPaneller()
         {
-            GameObject rtrbauPaneller = Instantiate(paneller);
-            rtrbauPaneller.transform.SetParent(this.transform.root, false);
-            rtrbauPaneller.GetComponent<Paneller>().Initialise();
+            //GameObject rtrbauPaneller = Instantiate(paneller);
+            //rtrbauPaneller.transform.SetParent(this.transform.root, false);
+            //rtrbauPaneller.GetComponent<Paneller>().Initialise();
+
+            // UPG: to load paneller as unique element in the game
+            paneller.GetComponent<Paneller>().Initialise();
         }
 
     }
