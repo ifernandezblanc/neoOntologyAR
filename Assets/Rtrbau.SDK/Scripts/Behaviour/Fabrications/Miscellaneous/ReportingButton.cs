@@ -46,7 +46,7 @@ namespace Rtrbau
             // Send report
             Reporter.instance.SendReport();
             // Quit application
-            Application.Quit();
+            // Application.Quit();
             //// Initialise new report
             //Reporter.instance.InitialiseReport();
             //// Reload paneller at ontologies
