@@ -65,6 +65,7 @@ namespace Rtrbau
         void OnDisable()
         {
             OnSelectedFabrications -= LocateElement;
+            DestroyFabricationsListeners();
         }
         #endregion MONOBEHAVIOUR_METHODS
 
@@ -214,6 +215,19 @@ namespace Rtrbau
             OntologyElement element = new OntologyElement(entity.URI(), OntologyElementType.IndividualProperties);
             // Make sure the element is of correct RtrbauElementType
             RtrbauerEvents.TriggerEvent("LoadElement", element, Rtrbauer.instance.user.procedure);
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        void DestroyFabricationsListeners()
+        {
+            foreach (JsonIndividual individual in individuals.ontIndividuals)
+            {
+                OntologyEntity individualEntity = new OntologyEntity(individual.ontIndividual);
+                PanellerEvents.StopListening(individualEntity.Entity(), NominatedIndividual);
+            }
         }
         #endregion CLASS_METHODS
     }

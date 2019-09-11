@@ -45,15 +45,12 @@ namespace Rtrbau
         {
             // Send report
             Reporter.instance.SendReport();
-            // Quit application
-            // Application.Quit();
-            //// Initialise new report
-            //Reporter.instance.InitialiseReport();
-            //// Reload paneller at ontologies
-            //// Rtrbauer.instance.LoadPaneller();
-            //string ontologiesURI = Rtrbauer.instance.ontology.ontologyURI.AbsoluteUri + "/" + "ontologies#ontologies";
-            //OntologyEntity ontologies = new OntologyEntity(ontologiesURI);
-            //PanellerEvents.TriggerEvent("LoadOperationOntologies", ontologies);
+            // Reinitialise visualiser
+            Rtrbauer.instance.ReloadVisualiser();
+            // Reinitialise paneller at ontologies level
+            string ontologiesURI = Rtrbauer.instance.ontology.ontologyURI.AbsoluteUri + "/" + "ontologies#ontologies";
+            OntologyEntity ontologies = new OntologyEntity(ontologiesURI);
+            PanellerEvents.TriggerEvent("LoadOperationOntologies", ontologies);
         }
         #endregion CLASS_METHODS
     }

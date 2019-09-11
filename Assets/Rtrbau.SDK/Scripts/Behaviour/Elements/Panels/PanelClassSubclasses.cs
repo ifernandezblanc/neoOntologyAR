@@ -79,6 +79,7 @@ namespace Rtrbau
             OnSelectedFabrications -= LocateElement;
             OnSubclassEvaluated -= EvaluateNextStep;
             DestroyFabrications();
+            DestroyFabricationListeners();
         }
         #endregion MONOBEHAVIOUR_METHODS
 
@@ -98,6 +99,7 @@ namespace Rtrbau
                 if (fabrications.Count != 0)
                 {
                     DestroyFabrications();
+                    DestroyFabricationListeners();
                 }
             }
             else
@@ -551,6 +553,19 @@ namespace Rtrbau
             {
                 PanellerEvents.StopListening(fabrication.Key.Entity(), NominatedSubclass);
                 GameObject.Destroy(fabrication.Value);
+            }
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired 
+        /// </summary>
+        void DestroyFabricationListeners()
+        {
+            foreach (JsonSubclass subclass in subclasses.ontSubclasses)
+            {
+                OntologyEntity subclassEntity = new OntologyEntity(subclass.ontSubclass);
+                PanellerEvents.StopListening(subclassEntity.Entity(), NominatedSubclass);
             }
         }
 

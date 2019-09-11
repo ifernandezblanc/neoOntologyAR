@@ -74,13 +74,14 @@ namespace Rtrbau
 
         #region GAMEOBJECT_PREFABS
         public GameObject paneller;
-        public GameObject visualiser;
+        private GameObject assetManager;
         #endregion GAMEOBJECT_PREFABS
 
         #region MONOBEHAVIOUR_METHODS
         void Awake()
         {
-            if (paneller == null || visualiser == null)
+            // if (paneller == null || visualiser == null)
+            if (paneller == null)
             {
                 throw new ArgumentException("RtrbauVisualiser and RtrbauPaneller game objects should be attached");
             }
@@ -150,6 +151,27 @@ namespace Rtrbau
 
             // UPG: to load paneller as unique element in the game
             paneller.GetComponent<Paneller>().Initialise();
+        }
+
+        public GameObject LoadVisualiser(AssetManager parentManager)
+        {
+            assetManager = parentManager.gameObject;
+            GameObject assetVisualiser = new GameObject();
+            assetVisualiser.AddComponent<AssetVisualiser>();
+            assetVisualiser.GetComponent<AssetVisualiser>().Initialise(parentManager);
+            return assetVisualiser;
+        }
+
+        public void ReloadVisualiser()
+        {
+            if (assetManager != null)
+            {
+                assetManager.GetComponent<AssetManager>().assetVisualiser.GetComponent<AssetVisualiser>().DestroyIt();
+            }
+            else
+            {
+                throw new ArgumentException("Asset manager not loaded");
+            }
         }
 
     }

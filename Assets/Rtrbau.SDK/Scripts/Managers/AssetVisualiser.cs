@@ -124,13 +124,36 @@ namespace Rtrbau
         public void ModifyMaterial() { }
 
         /// <summary>
-        /// Identifies all rtrbau elements visualised and destroys them.
-        /// Then, destroys itself;
+        /// Identifies all rtrbau elements visualised and destroys them, and reinitialise their managers.
+        /// But does not destroy itself.
         /// </summary>
         public void DestroyIt()
         {
             // Identify all rtrbau elements visualised and destroy
-            // All elements are child, so they will be destroyed with this one
+            if (primaryElement != null)
+            {
+                Destroy(primaryElement);
+            }
+
+            foreach (GameObject element in secondaryElements)
+            {
+                Destroy(element);
+            }
+
+            foreach (GameObject element in tertiaryElements)
+            {
+                Destroy(element);
+            }
+
+            // Initialise variables
+            loadedElements = new List<KeyValuePair<OntologyElement, GameObject>>();
+            lastElement = null;
+            primaryElement = null;
+            // primaryCounter = false;
+            secondaryElements = new List<GameObject>();
+            secondaryCounter = 0;
+            tertiaryElements = new List<GameObject>();
+            tertiaryCounter = 0;
         }
         #endregion IVISUALISABLE_METHODS
 

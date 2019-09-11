@@ -154,9 +154,12 @@ namespace Rtrbau
 
         void InitialiseVisualiser()
         {
-            assetVisualiser = new GameObject();
-            assetVisualiser.AddComponent<AssetVisualiser>();
-            assetVisualiser.GetComponent<AssetVisualiser>().Initialise(this);
+            //assetVisualiser = new GameObject();
+            //assetVisualiser.AddComponent<AssetVisualiser>();
+            //assetVisualiser.GetComponent<AssetVisualiser>().Initialise(this);
+
+            // UPG: to enable rtrbauer to control visualiser
+            assetVisualiser = Rtrbauer.instance.LoadVisualiser(this);
         }
 
         /// <summary>

@@ -148,7 +148,8 @@ namespace Rtrbau
         {
             // Destroy objects and events
             Debug.Log("Paneller: LoadOperationOntologies " + entity.URI());
-            PanellerEvents.StopListening("LoadOperationOntologies", LoadOperationOntologies);
+            // Disabled stop listening for new incoming reports (same user and time)
+            // PanellerEvents.StopListening("LoadOperationOntologies", LoadOperationOntologies);
             Destroy(panelAssetRegistrator);
 
             // Declare initialisation variables
@@ -163,7 +164,8 @@ namespace Rtrbau
         {
             // Destroy objects and events
             Debug.Log("Paneller: LoadOperationSubclasses " + entity.URI());
-            PanellerEvents.StopListening("LoadOperationSubclasses", LoadOperationSubclasses);
+            // Disabled stop listening for new incoming reports (same user and time)
+            // PanellerEvents.StopListening("LoadOperationSubclasses", LoadOperationSubclasses);
             Destroy(panelOntologies);
 
             // Declare initialisation variables
@@ -180,7 +182,8 @@ namespace Rtrbau
         {
             // Destroy objects and events
             Debug.Log("Paneller: LoadOperationIndividuals " + entity.URI());
-            PanellerEvents.StopListening("LoadOperationIndividuals", LoadOperationIndividuals);
+            // Disabled stop listening for new incoming reports (same user and time)
+            // PanellerEvents.StopListening("LoadOperationIndividuals", LoadOperationIndividuals);
             Destroy(panelClasses);
 
             // Declare initialisation variables
@@ -195,7 +198,8 @@ namespace Rtrbau
         {
             // Destroy objects and events
             Debug.Log("Paneller: LoadVisualiser " + entity.URI());
-            PanellerEvents.StopListening("UnloadPaneller", UnloadPaneller);
+            // Disabled stop listening for new incoming reports (same user and time)
+            // PanellerEvents.StopListening("UnloadPaneller", UnloadPaneller);
             Destroy(panelIndividuals);
 
             // The rationale ends here for now. Please send report.

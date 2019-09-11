@@ -65,6 +65,8 @@ namespace Rtrbau
         void OnDisable()
         {
             OnSelectedFabrications -= LocateElement;
+            // Remember to destroy all events generated in paneller events for the ontology (paneller being re-used)
+            DestroyFabricationsListeners();
         }
         #endregion MONOBEHAVIOUR_METHODS
 
@@ -208,10 +210,24 @@ namespace Rtrbau
         void NominatedOntology(OntologyEntity entity)
         {
             Debug.Log("NominatedOntology: Button Clicked " + entity.ontology);
+            Debug.Log("NominatedOntology: Button Clicked " + DateTime.Now);
 
             // InputIntoReport()
             Reporter.instance.ReportElement(entity);
             PanellerEvents.TriggerEvent("LoadOperationSubclasses", entity);
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        void DestroyFabricationsListeners()
+        {
+            foreach (JsonOntology ontology in ontologies.ontOntologies)
+            {
+                OntologyEntity ontologyEntity = new OntologyEntity(ontology.ontUri);
+                PanellerEvents.StopListening(ontologyEntity.Entity(), NominatedOntology);
+            }
         }
         #endregion CLASS_METHODS
     }
