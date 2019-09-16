@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Microsoft.MixedReality.Toolkit.UI;
 #endregion
 
 /// <summary>
@@ -42,14 +41,18 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
+        // List of loaded elements, key value pair for individual URI and relevant game object
         private List<KeyValuePair<OntologyElement,GameObject>> loadedElements;
-        private List<GameObject> createdElements;
+        // private List<GameObject> createdElements;
         private GameObject lastElement;
+        // There is only one primary element, so no need to hold a list of them
         private GameObject primaryElement;
         // private bool primaryCounter;
-        private List<GameObject> secondaryElements;
+        // Key value pair for class URI and relevant game object
+        private Dictionary<string,GameObject> secondaryElements;
         private int secondaryCounter;
-        private List<GameObject> tertiaryElements;
+        // Key value pair for class URI and relevant game object
+        private Dictionary<string, GameObject> tertiaryElements;
         private int tertiaryCounter;
         #endregion CLASS_VARIABLES
 
@@ -76,9 +79,9 @@ namespace Rtrbau
             lastElement = null;
             primaryElement = null;
             // primaryCounter = false;
-            secondaryElements = new List<GameObject>();
+            secondaryElements = new Dictionary<string, GameObject>();
             secondaryCounter = 0;
-            tertiaryElements = new List<GameObject>();
+            tertiaryElements = new Dictionary<string, GameObject>();
             tertiaryCounter = 0;
             // Locate visualiser
             LocateIt();
@@ -135,14 +138,14 @@ namespace Rtrbau
                 Destroy(primaryElement);
             }
 
-            foreach (GameObject element in secondaryElements)
+            foreach (KeyValuePair<string,GameObject> element in secondaryElements)
             {
-                Destroy(element);
+                Destroy(element.Value);
             }
 
-            foreach (GameObject element in tertiaryElements)
+            foreach (KeyValuePair<string, GameObject> element in tertiaryElements)
             {
-                Destroy(element);
+                Destroy(element.Value);
             }
 
             // Initialise variables
@@ -150,9 +153,9 @@ namespace Rtrbau
             lastElement = null;
             primaryElement = null;
             // primaryCounter = false;
-            secondaryElements = new List<GameObject>();
+            secondaryElements = new Dictionary<string, GameObject>();
             secondaryCounter = 0;
-            tertiaryElements = new List<GameObject>();
+            tertiaryElements = new Dictionary<string, GameObject>();
             tertiaryCounter = 0;
         }
         #endregion IVISUALISABLE_METHODS
@@ -190,13 +193,8 @@ namespace Rtrbau
 
                 // Assign this element as primary
                 primaryElement = element;
-
-                // Replicate AddElement function
-                if (lastElement != null) { lastElement.GetComponent<IVisualisable>().ModifyMaterial(); }
-                element.transform.SetParent(this.transform, false);
-                SetPosition(element, RtrbauElementLocation.Primary, 0);
-                SetScale(element);
-                lastElement = element;
+                // Alocate element to its position, scale and rotation
+                SetElement(element, RtrbauElementLocation.Primary, 0);
             }
         }
 
@@ -208,7 +206,7 @@ namespace Rtrbau
         /// <param name="location"></param>
         /// <param name="locationElements"></param>
         /// <param name="locationCounter"></param>
-        void AddElement (GameObject element, RtrbauElementLocation location, ref List<GameObject> locationElements, ref int locationCounter)
+        void AddElement (GameObject element, RtrbauElementLocation location, ref Dictionary<string,GameObject> locationElements, ref int locationCounter)
         {
             // Calculate number of elements per location
             int locationElementsNo;
@@ -221,20 +219,49 @@ namespace Rtrbau
             // Remove primary element
             AddPrimaryElement(null);
 
-            // Remove earliest element on location list if location is full
-            if (locationCounter == locationElementsNo) { locationCounter = 0; }
-            if (locationElements.Count == locationElementsNo)
+            // Remove element from same class if exist in same location
+            GameObject elementSameClass;
+            if (locationElements.TryGetValue(element.GetComponent<ElementConsult>().classElement.URL(), out elementSameClass))
             {
-                GameObject destroyable = locationElements[0];
-                Destroy(destroyable);
-                loadedElements.Remove(loadedElements.Find(x => x.Value == destroyable));
-                locationElements.RemoveAt(0);
+                int classLocation = locationElements.Values.ToList().IndexOf(elementSameClass);
+                Destroy(elementSameClass);
+                // Update element of class in location
+                locationElements[element.GetComponent<ElementConsult>().classElement.URL()] = element;
+                // Alocate element to its position, scale and rotation
+                SetElement(element, location, classLocation);
             }
+            else
+            {
+                // Remove earliest element on location list if location is full
+                if (locationCounter == locationElementsNo) { locationCounter = 0; }
+                if (locationElements.Count == locationElementsNo)
+                {
+                    GameObject firstElementLocation;
+                    if (locationElements.TryGetValue(locationElements.Keys.First(), out firstElementLocation))
+                    {
+                        Destroy(firstElementLocation);
+                        locationElements.Remove(locationElements.Keys.First());
+                    }
+                }
+                // Assign element to location
+                locationElements.Add(element.GetComponent<ElementConsult>().classElement.URL(), element);
+                // Alocate element to its position, scale and rotation
+                SetElement(element, location, locationCounter);
+                // Iterate over location element counter
+                locationCounter++;
+            }
+        }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="location"></param>
+        /// <param name="locationCounter"></param>
+        void SetElement(GameObject element, RtrbauElementLocation location, int locationCounter)
+        {
             // Modify material of last element (in case it hasn't been the one which drove the new element)
             if (lastElement != null) { lastElement.GetComponent<IVisualisable>().ModifyMaterial(); }
-            // Assign element to location
-            locationElements.Add(element);
             // Assign element as child of visualiser
             element.transform.SetParent(this.transform, false);
             // Set position of element according to location
@@ -244,8 +271,6 @@ namespace Rtrbau
             // Rotation is set in element according to viewers position
             // Assign element as last element
             lastElement = element;
-            // Iterate over location element counter
-            locationCounter++;
         }
 
 
@@ -296,69 +321,6 @@ namespace Rtrbau
             {
                 throw new ArgumentException("Rtrbau Element Location not implemented.");
             }
-
-            //if (location == RtrbauElementLocation.Primary)
-            //{
-            //    // Only one position in this location
-            //    pX = assetBounds.size.x;
-            //    pY = 0;
-            //    pZ = 0;
-            //}
-            //else if (location == RtrbauElementLocation.Secondary)
-            //{
-            //    // Two positions in this location
-            //    if (locationCounter == 0)
-            //    {
-            //        pX = assetBounds.size.x;
-            //        pY = assetBounds.size.y;
-            //        pZ = - assetBounds.size.z;
-            //    }
-            //    else if (locationCounter == 1)
-            //    {
-            //        pX = -assetBounds.size.x;
-            //        pY = assetBounds.size.y;
-            //        pZ = -assetBounds.size.z;
-            //    }
-            //    else
-            //    {
-            //        throw new ArgumentException("Number of location counter not implemented.");
-            //    }
-            //}
-            //else if (location == RtrbauElementLocation.Tertiary)
-            //{
-            //    if (locationCounter == 0)
-            //    {
-            //        pX = assetBounds.size.x;
-            //        pY = assetBounds.size.y;
-            //        pZ = -2*assetBounds.size.z;
-            //    }
-            //    else if (locationCounter == 1)
-            //    {
-            //        pX = assetBounds.size.x;
-            //        pY = 0;
-            //        pZ = -2 * assetBounds.size.z;
-            //    }
-            //    else if (locationCounter == 2)
-            //    {
-            //        pX = -assetBounds.size.x;
-            //        pY = assetBounds.size.y;
-            //        pZ = -2 * assetBounds.size.z;
-            //    }
-            //    else if (locationCounter == 3)
-            //    {
-            //        pX = -assetBounds.size.x;
-            //        pY = 0;
-            //        pZ = -2 * assetBounds.size.z;
-            //    }
-            //    else
-            //    {
-            //        throw new ArgumentException("Number of location counter not implemented.");
-            //    }
-            //}
-            //else
-            //{
-            //    throw new ArgumentException("Number of location elements not implemented.");
-            //}
 
             Debug.Log("pX: " + pX + " pY: " + pY + " pZ: " + pZ);
             element.transform.localPosition = new Vector3(pX, pY, pZ);

@@ -505,17 +505,17 @@ namespace Rtrbau
                 //}
             }
 
-            // Disable tile grid object collection from side panel to allow image manipulation
-            // Maybe do it with other fabrication panel as well?
-            // fabricationsSidePanel.GetComponent<TileGridObjectCollection>().enabled = false;
-            fabricationsObserveImageVideo.GetComponent<TileGridObjectCollection>().enabled = false;
-
             // ElementConsult location is managed by its visualiser.
             RtrbauerEvents.TriggerEvent("LocateElement", this.gameObject, rtrbauLocation);
 
             // Set fabrications as active
             fabricationsActive = true;
             statusText.text = "Element maximised, click to hide information";
+
+            // Disable tile grid object collection from side panel to allow image manipulation
+            // Maybe do it with other fabrication panel as well?
+            // fabricationsSidePanel.GetComponent<TileGridObjectCollection>().enabled = false;
+            fabricationsObserveImageVideo.GetComponent<TileGridObjectCollection>().enabled = false;
         }
 
         /// <summary>

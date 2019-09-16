@@ -117,8 +117,8 @@ namespace Rtrbau
             // Check data received meets fabrication requirements
             if (data.fabricationData.TryGetValue(textfacet1, out attribute))
             {
-                text.text = attribute.attributeName.name + ": " + attribute.attributeValue;
-                // text.text = attribute.attributeValue;
+                // text.text = attribute.attributeName.name + ": " + attribute.attributeValue;
+                text.text = attribute.attributeValue;
             }
             else
             {
