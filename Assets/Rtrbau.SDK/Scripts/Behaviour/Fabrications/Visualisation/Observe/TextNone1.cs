@@ -118,6 +118,7 @@ namespace Rtrbau
             if (data.fabricationData.TryGetValue(textfacet1, out attribute))
             {
                 text.text = attribute.attributeName.name + ": " + attribute.attributeValue;
+                // text.text = attribute.attributeValue;
             }
             else
             {

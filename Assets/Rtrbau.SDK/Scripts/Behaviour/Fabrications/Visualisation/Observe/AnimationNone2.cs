@@ -69,6 +69,9 @@ namespace Rtrbau
 
         #region GAMEOBJECT_PREFABS
         //public GameObject textPanel;
+        public MeshRenderer fabricationPanel;
+        public TextMeshPro fabricationText;
+        public Material seenMaterial;
         public Material lineMaterial;
         public Material modelMaterial;
         #endregion GAMEOBJECT_PREFABS
@@ -81,7 +84,7 @@ namespace Rtrbau
         void Start()
         {
             //if (textPanel == null || material == null)
-            if (lineMaterial == null || modelMaterial == null )
+            if (fabricationPanel == null || fabricationText == null || seenMaterial == null || lineMaterial == null || modelMaterial == null )
             {
                 throw new ArgumentException("AnimationNone2 script requires some prefabs to work.");
             }
@@ -91,17 +94,6 @@ namespace Rtrbau
         {
             if (movementCalculated)
             {
-                //if (animationBounds.Contains(model.transform.position))
-                //{
-                //    //ModelMove(model, component, text);
-                //    ModelMove(model, component);
-                //}
-                //else
-                //{
-                //    //ModelToOrigin(model, component, text);
-                //    ModelToOrigin(model, modelOriginPosition, modelOriginRotation);
-                //}
-
                 if (inverseMovement)
                 {
                     if (animationBounds.Contains(model.transform.position))
@@ -117,19 +109,16 @@ namespace Rtrbau
                 {
                     if (animationBounds.Contains(model.transform.position))
                     {
-                        //ModelMove(model, component, text);
                         ModelMove(model, component);
                     }
                     else
                     {
-                        //ModelToOrigin(model, component, text);
                         ModelToOrigin(model, modelOriginPosition, modelOriginRotation);
                     }
                 }
 
                 if (componentPair != null)
                 {
-                    // ModelToOrigin(modelPair, componentPair, textPair);
                     ModelToOrigin(modelPair, modelPairOriginPosition, modelPairOriginRotation);
                 }
             }
@@ -156,6 +145,8 @@ namespace Rtrbau
             element = elementParent;
             scale = fabricationParent;
 
+            fabricationText.text = "Animation available, follow line to view.";
+            Scale();
             InferFromText();
         }
 
@@ -164,7 +155,13 @@ namespace Rtrbau
         /// </summary>
         public void Scale()
         {
-            // Do nothing when 3D models involved.
+            // Debug.Log("Root: " + this.transform.root.name);
+
+            float sX = this.transform.localScale.x / element.transform.localScale.x;
+            float sY = this.transform.localScale.y / element.transform.localScale.y;
+            float sZ = this.transform.localScale.z / element.transform.localScale.z;
+
+            this.transform.localScale = new Vector3(sX, sY, sZ);
         }
 
         /// <summary>
@@ -192,7 +189,8 @@ namespace Rtrbau
                     model.transform.rotation = component.transform.rotation;
                     // Add line renderer for animated model
                     // model.AddComponent<ElementsLine>().Initialise(model.transform.GetChild(0).gameObject, element.gameObject, lineMaterial);
-                    model.AddComponent<ElementsLine>().Initialise(model, element.gameObject, lineMaterial);
+                    // model.AddComponent<ElementsLine>().Initialise(model, element.gameObject, lineMaterial);
+                    model.AddComponent<ElementsLine>().Initialise(model, this.gameObject, lineMaterial);
                     // Set model origin
                     modelOriginPosition = model.transform.position;
                     modelOriginRotation = model.transform.rotation;
@@ -274,11 +272,14 @@ namespace Rtrbau
         public void ModifyMaterial()
         {
             // Nothing to do in this case
+            fabricationPanel.material = seenMaterial;
         }
 
         public void DestroyIt()
         {
             Destroy(this.gameObject);
+            Destroy(model);
+            Destroy(modelPair);
         }
 
         #endregion IVISUALISABLE_METHODS

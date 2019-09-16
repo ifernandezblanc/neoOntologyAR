@@ -83,10 +83,31 @@ namespace Rtrbau
         public GameObject individualsPanel;
         #endregion GAMEOBJECT_PREFABS
 
-        /// <summary>
-        /// Describe script purpose
-        /// Add links when code has been inspired
-        /// </summary>
+        #region MONOBEHAVIOUR_METHODS
+        void Awake() { }
+
+        void Start()
+        {
+            // Uncomment if paneller to be used on its own for the moment
+            // Initialise();
+        }
+
+        void OnEnable()
+        {
+            PanellerEvents.StartListening("LoadConfiguration", LoadConfiguration);
+            PanellerEvents.StartListening("LoadAssets", LoadAssets);
+            PanellerEvents.StartListening("LoadAssetRegistrator", LoadAssetRegistrator);
+            PanellerEvents.StartListening("LoadOperationOntologies", LoadOperationOntologies);
+            PanellerEvents.StartListening("LoadOperationSubclasses", LoadOperationSubclasses);
+            PanellerEvents.StartListening("LoadOperationIndividuals", LoadOperationIndividuals);
+            PanellerEvents.StartListening("UnloadPaneller", UnloadPaneller);
+        }
+
+        void Update() { }
+
+        void OnDisable() { }
+        #endregion MONOBEHAVIOUR_METHODS
+
         #region CLASS_METHODS
         public void Initialise()
         {
@@ -208,33 +229,6 @@ namespace Rtrbau
         }
         #endregion CLASS_METHODS
 
-        #region MONOBEHAVIOUR_METHODS
-        void Start()
-        {
-            // Uncomment if paneller to be used on its own for the moment
-            // Initialise();
-        }
-
-        void OnEnable()
-        {
-            PanellerEvents.StartListening("LoadConfiguration", LoadConfiguration);
-            PanellerEvents.StartListening("LoadAssets", LoadAssets);
-            PanellerEvents.StartListening("LoadAssetRegistrator", LoadAssetRegistrator);
-            PanellerEvents.StartListening("LoadOperationOntologies", LoadOperationOntologies);
-            PanellerEvents.StartListening("LoadOperationSubclasses", LoadOperationSubclasses);
-            PanellerEvents.StartListening("LoadOperationIndividuals", LoadOperationIndividuals);
-            PanellerEvents.StartListening("UnloadPaneller", UnloadPaneller);
-        }
-
-        void Update()
-        {
-
-        }
-
-        void OnDisable()
-        {
-            
-        }
-        #endregion MONOBEHAVIOUR_METHODS
+        
     }
 }

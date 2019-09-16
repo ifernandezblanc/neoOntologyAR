@@ -43,11 +43,12 @@ namespace Rtrbau
         #region CLASS_VARIABLES
         public GameObject component;
         public GameObject model;
-        public GameObject text;
+        // public GameObject text;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
-        public GameObject textPanel;
+        public MeshRenderer fabricationPanel;
+        public TextMeshPro fabricationText;
         public Material lineMaterial;
         public Material modelMaterial;
         public Material seenMaterial;
@@ -60,7 +61,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (textPanel == null || lineMaterial == null || modelMaterial == null || seenMaterial == null)
+            if (fabricationPanel == null || fabricationText == null || lineMaterial == null || modelMaterial == null || seenMaterial == null)
             {
                 throw new ArgumentException("ModelManipulation1 script requires some prefabs to work.");
             }
@@ -71,6 +72,8 @@ namespace Rtrbau
         void OnEnable() { }
 
         void OnDisable() { }
+
+        void OnDestroy() { DestroyIt(); }
         #endregion MONOBEHVAIOUR_METHODS
 
         #region IFABRICATIONABLE_METHODS
@@ -88,6 +91,7 @@ namespace Rtrbau
             data = fabrication;
             element = elementParent;
             scale = fabricationParent;
+            Scale();
             InferFromText();
         }
 
@@ -96,7 +100,11 @@ namespace Rtrbau
         /// </summary>
         public void Scale()
         {
-            // Do nothing when 3D models involved.
+            float sX = this.transform.localScale.x / element.transform.localScale.x;
+            float sY = this.transform.localScale.y / element.transform.localScale.y;
+            float sZ = this.transform.localScale.z / element.transform.localScale.z;
+
+            this.transform.localScale = new Vector3(sX, sY, sZ);
         }
 
         /// <summary>
@@ -114,13 +122,15 @@ namespace Rtrbau
 
                 component = visualiser.transform.parent.gameObject.GetComponent<AssetManager>().FindAssetComponentManipulator(name);
 
+                // Update fabrication text with component name
+                string note = attribute.attributeName.name + ": " + name;
+                fabricationText.text = note;
+                // Debug.Log("ModelManipulation1: " + note);
+                // AddTextPanel(note);
+                // Instantiate component model
                 model = Instantiate(component);
-
                 UpdateComponentModel();
                 AddManipulationHandler();
-                string note = attribute.attributeName.name + ": " + name;
-                // Debug.Log("ModelManipulation1: " + note);
-                AddTextPanel(note);
             }
             else
             {
@@ -146,16 +156,18 @@ namespace Rtrbau
 
         public void ModifyMaterial()
         {
-            text.transform.GetChild(0).GetComponent<MeshRenderer>().material = seenMaterial;
+            fabricationPanel.material = seenMaterial;
         }
 
         public void DestroyIt()
         {
             Destroy(this.gameObject);
+            Destroy(model);
         }
         #endregion IVISUALISABLE_METHODS
 
         #region CLASS_METHODS
+
         void UpdateComponentModel()
         {
             // Assign name
@@ -168,6 +180,8 @@ namespace Rtrbau
             // Assign initial location and rotation
             model.transform.position = component.transform.position;
             model.transform.rotation = component.transform.rotation;
+            // Add line renderer to fabrication text panel
+            model.AddComponent<ElementsLine>().Initialise(model, this.gameObject, lineMaterial);
         }
 
         void AddManipulationHandler()
@@ -176,28 +190,6 @@ namespace Rtrbau
             model.AddComponent<ManipulationHandler>();
             model.GetComponent<ManipulationHandler>().ManipulationType = ManipulationHandler.HandMovementType.OneAndTwoHanded;
             model.GetComponent<ManipulationHandler>().TwoHandedManipulationType = ManipulationHandler.TwoHandedManipulation.MoveRotateScale;
-        }
-                
-        void AddTextPanel(string note)
-        {
-            text = Instantiate(textPanel);
-            // Attach to model manipulator
-            // text.transform.SetParent(model.transform.GetChild(0), false);
-            text.transform.SetParent(model.transform, false);
-            // Re-scale text panel
-            float sX = text.transform.localScale.x / scale.transform.localScale.x;
-            float sY = text.transform.localScale.y / scale.transform.localScale.y;
-            float sZ = text.transform.localScale.z / scale.transform.localScale.z;
-            text.transform.localScale = new Vector3(sX, sY, sZ);
-            // Re-allocate above model
-            // UPG: to put in a more accurate position considering component bounds and panel offset
-            // float positionUP = model.GetComponentInChildren<MeshRenderer>().bounds.size.y;
-            float positionUP = model.GetComponentInChildren<MeshRenderer>().bounds.extents.y + (text.GetComponentInChildren<BoxCollider>().bounds.size.y + text.GetComponentInChildren<BoxCollider>().transform.localScale.y);
-            text.transform.localPosition += new Vector3(0, positionUP, 0);
-            // Provide name
-            text.transform.GetChild(1).GetComponent<TextMeshPro>().text = note;
-            // Add line renderer to text panel
-            text.AddComponent<ElementsLine>().Initialise(text, element.gameObject, lineMaterial);
         }
         #endregion CLASS_METHODS
     }

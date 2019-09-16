@@ -50,10 +50,11 @@ namespace Rtrbau
 
                     if (!panellerEventsManager)
                     {
-                        Debug.LogError("There needs to be one active SelectionPanelEvents script on the Panel GameObject");
+                        Debug.LogError("There needs to be one active PanellerEvents script on the Panel GameObject");
                     }
                     else
                     {
+                        // Modified for paneller to initialise its own events
                         panellerEventsManager.Initialise();
                     }
                 }
@@ -111,7 +112,7 @@ namespace Rtrbau
             if (instance.panellerEventsDictionary.TryGetValue(eventName, out thisEvent))
             {
                 thisEvent.Invoke(eventEntity);
-                /// instance.selectionEventsDictionary[eventName]();
+                // instance.selectionEventsDictionary[eventName]();
             }
         }
     }

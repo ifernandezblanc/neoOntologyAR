@@ -55,7 +55,10 @@ namespace Rtrbau
 
         #region GAMEOBJECT_PREFABS
         // public GameObject textPanel;
-        public Material material;
+        public MeshRenderer fabricationPanel;
+        public TextMeshPro fabricationText;
+        public Material seenMaterial;
+        public Material modelMaterial;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -66,7 +69,7 @@ namespace Rtrbau
         void Start()
         {
             // if (textPanel == null || material == null)
-            if (material == null)
+            if (fabricationPanel == null || fabricationText == null || seenMaterial == null || modelMaterial == null)
             {
                 throw new ArgumentException("HologramNone1 script requires some prefabs to work.");
             }
@@ -82,6 +85,8 @@ namespace Rtrbau
         void OnEnable() { }
 
         void OnDisable() { }
+
+        void OnDestroy() { DestroyIt(); }
         #endregion MONOBEHVAIOUR_METHODS
 
         #region IFABRICATIONABLE_METHODS
@@ -99,6 +104,7 @@ namespace Rtrbau
             data = fabrication;
             element = elementParent;
             scale = fabricationParent;
+            Scale();
             InferFromText();
         }
 
@@ -107,7 +113,11 @@ namespace Rtrbau
         /// </summary>
         public void Scale()
         {
-            // Do nothing when 3D models involved.
+            float sX = this.transform.localScale.x / element.transform.localScale.x;
+            float sY = this.transform.localScale.y / element.transform.localScale.y;
+            float sZ = this.transform.localScale.z / element.transform.localScale.z;
+
+            this.transform.localScale = new Vector3(sX, sY, sZ);
         }
 
         /// <summary>
@@ -148,6 +158,7 @@ namespace Rtrbau
 
             SetModel();
             SetHologram();
+            fabricationText.text = "Hologram available, follow line to view.";
             // AddLineRenderer();
         }
 
@@ -169,12 +180,14 @@ namespace Rtrbau
 
         public void ModifyMaterial()
         {
-            // Do nothing in this case
+            fabricationPanel.material = seenMaterial;
         }
 
         public void DestroyIt()
         {
             Destroy(this.gameObject);
+            Destroy(model);
+            Destroy(hologram);
         }
         #endregion IVISUALISABLE_METHODS
 
@@ -183,7 +196,7 @@ namespace Rtrbau
         {
             model.name = this.name + componentName + this.GetHashCode();
             model.transform.SetParent(scale, false);
-            model.GetComponentInChildren<MeshRenderer>().material = material;
+            model.GetComponentInChildren<MeshRenderer>().material = modelMaterial;
             model.transform.position = component.transform.position;
             model.transform.rotation = component.transform.rotation;
         }
@@ -201,7 +214,7 @@ namespace Rtrbau
             MeshRenderer[] hologramMeshes = hologram.GetComponentsInChildren<MeshRenderer>();
             foreach (MeshRenderer mesh in hologramMeshes)
             {
-                mesh.material = material;
+                mesh.material = modelMaterial;
             }
         }
 

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2466163226809672845}
   - component: {fileID: 2466163226809672846}
-  - component: {fileID: 2466163226809672847}
+  - component: {fileID: 4658538398299179210}
   m_Layer: 0
   m_Name: RtrbauPaneller
   m_TagString: Untagged
@@ -56,7 +56,7 @@ MonoBehaviour:
     type: 3}
   individualsPanel: {fileID: 6347673805669758020, guid: 8c2a3ea56834c094392fbe137fdfd00e,
     type: 3}
---- !u!114 &2466163226809672847
+--- !u!114 &4658538398299179210
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
