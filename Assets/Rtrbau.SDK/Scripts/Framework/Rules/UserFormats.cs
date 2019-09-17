@@ -40,6 +40,7 @@ namespace Rtrbau
 
         #region TEXT_FORMATS
         public static UserFormat TextNone1 = new UserFormat(RtrbauFabricationName.TextNone1, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
+        //public static UserFormat TextNone2 = new UserFormat(RtrbauFabricationName.TextNone2, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
         #endregion TEXT_FORMATS
 
         #region ICON_FORMATS

@@ -136,6 +136,8 @@ namespace Rtrbau
             {
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
                 (RtrbauFabricationName.TextNone1, DataFormats.TextNone1, EnvironmentFormats.TextNone1, UserFormats.TextNone1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.TextNone2, DataFormats.TextNone2, EnvironmentFormats.TextNone2, UserFormats.TextNone2),
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
                 (RtrbauFabricationName.IconNone1, DataFormats.IconNone1, EnvironmentFormats.IconNone1, UserFormats.IconNone1),
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>

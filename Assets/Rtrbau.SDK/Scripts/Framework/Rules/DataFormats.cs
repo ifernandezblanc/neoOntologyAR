@@ -63,6 +63,15 @@ namespace Rtrbau
         {
            new DataFacet(RtrbauFacetForm.source, DataFacets.TextFacet1)
         });
+
+        //public static DataFormat TextNone2 = new DataFormat(RtrbauFabricationName.TextNone2, RtrbauFabricationType.Observe, new List<DataFacet>
+        //{
+        //   new DataFacet(RtrbauFacetForm.source, DataFacets.TextFacet4),
+        //   new DataFacet(RtrbauFacetForm.required, DataFacets.TextFacet5),
+        //   new DataFacet(RtrbauFacetForm.optional, DataFacets.TextFacet6),
+        //   new DataFacet(RtrbauFacetForm.optional, DataFacets.TextFacet7),
+        //   new DataFacet(RtrbauFacetForm.optional, DataFacets.TextFacet8)
+        //});
         #endregion TEXT_FORMATS
 
         #region ICON_FORMATS

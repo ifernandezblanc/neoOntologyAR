@@ -224,6 +224,50 @@ namespace Rtrbau
             "pair"
         };
 
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired 
+        /// </summary>
+        public static List<string> MessageType = new List<string>
+        {
+            "Message", "Type"
+        };
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired 
+        /// </summary>
+        public static List<string> MessageAction = new List<string>
+        {
+            "Message", "Action"
+        };
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired 
+        /// </summary>
+        public static List<string> MessageObject = new List<string>
+        {
+            "Message", "Object"
+        };
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired 
+        /// </summary>
+        public static List<string> MessageValue = new List<string>
+        {
+            "Message", "Value"
+        };
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired 
+        /// </summary>
+        public static List<string> MessageUnit = new List<string>
+        {
+            "Message", "Unit"
+        };
         #endregion NAME_LIBRARIES
 
         #region RANGE_LIBRARIES

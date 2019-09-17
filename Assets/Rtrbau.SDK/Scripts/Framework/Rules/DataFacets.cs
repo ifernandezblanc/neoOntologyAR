@@ -42,6 +42,11 @@ namespace Rtrbau
         public static DataFacetRules TextFacet1 = new DataFacetRules(All, null, Any, Libraries.TextLibrary, Any, null);
         public static DataFacetRules TextFacet2 = new DataFacetRules(All, null, Any, null, Any, Libraries.IndividualLibrary);
         public static DataFacetRules TextFacet3 = new DataFacetRules(All, null, Any, Libraries.SetLibrary, Any, null); // Error in here, see above to solve
+        //public static DataFacetRules TextFacet4 = new DataFacetRules(All, Libraries.MessageType, Any, Libraries.TextLibrary, Any, null);
+        //public static DataFacetRules TextFacet5 = new DataFacetRules(All, Libraries.MessageAction, Any, Libraries.TextLibrary, Any, null);
+        //public static DataFacetRules TextFacet6 = new DataFacetRules(All, Libraries.MessageObject, Any, Libraries.TextLibrary, Any, null);
+        //public static DataFacetRules TextFacet7 = new DataFacetRules(All, Libraries.MessageValue, Any, Libraries.NumericLibrary, Any, null);
+        //public static DataFacetRules TextFacet8 = new DataFacetRules(All, Libraries.MessageUnit, Any, Libraries.TextLibrary, Any, null);
         #endregion TEXT_FACETS
 
         #region ICON_FACETS

@@ -44,6 +44,7 @@ namespace Rtrbau
 
         #region TEXT_FORMATS
         public static EnvironmentFormat TextNone1 = new EnvironmentFormat(RtrbauFabricationName.TextNone1, EnvironmentFacets.text, EnvironmentFacets.none);
+        //public static EnvironmentFormat TextNone2 = new EnvironmentFormat(RtrbauFabricationName.TextNone2, EnvironmentFacets.text, EnvironmentFacets.none);
         #endregion TEXT_FORMATS
 
         #region ICON_FORMATS
