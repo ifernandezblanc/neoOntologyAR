@@ -442,7 +442,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.51629597}
   m_AnchorMax: {x: 0, y: 0.51629597}
-  m_AnchoredPosition: {x: 28.503916, y: 0.045642912}
+  m_AnchoredPosition: {x: 28.503916, y: 0.045642853}
   m_SizeDelta: {x: 57.01105, y: 15.998908}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5508257578939637713
@@ -1664,8 +1664,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5508257579919130960}
-  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: -2}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -2, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5508257580679750716}
@@ -1690,7 +1690,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 792b42462a218914bb6b763afda540f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offsetToCamera: {x: 0, y: 0, z: -2}
+  offsetToCamera: {x: -2, y: 0, z: 0}
 --- !u!114 &5508257579919130962
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1997,7 +1997,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.6587085}
   m_AnchorMax: {x: 0, y: 0.6587085}
-  m_AnchoredPosition: {x: 28.509983, y: -0.23479313}
+  m_AnchoredPosition: {x: 28.509983, y: -0.23479271}
   m_SizeDelta: {x: 57.023155, y: 5.5556793}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5508257580505650981
@@ -2060,7 +2060,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.73800004}
   m_AnchorMax: {x: 0, y: 0.73800004}
-  m_AnchoredPosition: {x: 28.511852, y: 0.13287693}
+  m_AnchoredPosition: {x: 28.511852, y: 0.13287735}
   m_SizeDelta: {x: 57.027157, y: 6.490574}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5508257580583831034

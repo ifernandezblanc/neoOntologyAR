@@ -174,10 +174,11 @@ namespace Rtrbau
             {
                 if (primaryElement != null)
                 {
+                    // Destroy game object
                     Destroy(primaryElement);
                     // Find in list of loaded elements and remove
                     loadedElements.Remove(loadedElements.Find(x => x.Value == primaryElement));
-                    // Assign primary element as null
+                    // Remove from primary location
                     primaryElement = null;
                     
                 }
@@ -187,7 +188,9 @@ namespace Rtrbau
             {
                 if (primaryElement != null)
                 {
+                    // Destroy game object
                     Destroy(primaryElement);
+                    // Find in list of loaded elements and remove
                     loadedElements.Remove(loadedElements.Find(x => x.Value == primaryElement));
                 }
 
@@ -223,8 +226,12 @@ namespace Rtrbau
             GameObject elementSameClass;
             if (locationElements.TryGetValue(element.GetComponent<ElementConsult>().classElement.URL(), out elementSameClass))
             {
+                // Find class index to locate in location
                 int classLocation = locationElements.Values.ToList().IndexOf(elementSameClass);
+                // Destroy game object
                 Destroy(elementSameClass);
+                // Find in list of loaded elements and remove
+                loadedElements.Remove(loadedElements.Find(x => x.Value == elementSameClass));
                 // Update element of class in location
                 locationElements[element.GetComponent<ElementConsult>().classElement.URL()] = element;
                 // Alocate element to its position, scale and rotation
@@ -239,7 +246,11 @@ namespace Rtrbau
                     GameObject firstElementLocation;
                     if (locationElements.TryGetValue(locationElements.Keys.First(), out firstElementLocation))
                     {
+                        // Destroy game object
                         Destroy(firstElementLocation);
+                        // Find in list of loaded elements and remove
+                        loadedElements.Remove(loadedElements.Find(x => x.Value == firstElementLocation));
+                        // Remove first element from location dicationary (may cause issues)
                         locationElements.Remove(locationElements.Keys.First());
                     }
                 }

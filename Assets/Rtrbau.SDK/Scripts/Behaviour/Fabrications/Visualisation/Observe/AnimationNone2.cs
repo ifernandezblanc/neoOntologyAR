@@ -303,6 +303,11 @@ namespace Rtrbau
             if (componentPair != null)
             // { movementTranslation = component.GetComponentInChildren<MeshRenderer>().bounds.center - componentPair.GetComponentInChildren<MeshRenderer>().bounds.center; }
             { movementTranslation = component.transform.position - componentPair.transform.position; }
+            //{
+            //    // Necessary to implement inverse directions because of asset rotation of 180 degrees over y-axis (x and z axis then inverted)
+            //    if (freeTranslation.x > 0 || freeTranslation.z > 0) { movementTranslation =  componentPair.transform.position - component.transform.position; }
+            //    else { movementTranslation = component.transform.position - componentPair.transform.position; }
+            //}
             else
             { movementTranslation = new Vector3(1, 1, 1); }
             // Calculate movement inversion
@@ -333,9 +338,11 @@ namespace Rtrbau
 
         void ModelMove(GameObject model, GameObject component)
         {
-            model.transform.position += Vector3.Scale(directionTranslation, magnitudeTranslation);
+            // model.transform.position += Vector3.Scale(directionTranslation, magnitudeTranslation);
+            model.transform.localPosition += Vector3.Scale(directionTranslation, magnitudeTranslation);
             // model.transform.RotateAround(model.transform.GetChild(0).position, directionRotation.eulerAngles, magnitudeRotation);
-            model.transform.rotation *= directionRotation;
+            // model.transform.rotation *= directionRotation;
+            model.transform.localRotation *= directionRotation;
         }
 
         void ModelToOrigin(GameObject model, Vector3 originPosition, Quaternion originRotation)
