@@ -81,7 +81,7 @@ Transform:
   m_GameObject: {fileID: 7700541984139623025}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.0047}
-  m_LocalScale: {x: 0.20507812, y: 0.048828125, z: 0.0048828125}
+  m_LocalScale: {x: 0.20507812, y: 0.05126953, z: 0.0048828125}
   m_Children:
   - {fileID: 9104622813583571802}
   m_Father: {fileID: 7698741921088134495}
@@ -160,7 +160,7 @@ MonoBehaviour:
   BasePixelScale: 2048
   AnchorTransform: {fileID: 7698745363752349471}
   Scale: {x: 1, y: 1, z: 1}
-  Offset: {x: -20, y: -20, z: 0}
+  Offset: {x: -20, y: -45, z: 0}
   OnlyInEditMode: 0
 --- !u!1 &7700969814251297947
 GameObject:
@@ -337,7 +337,7 @@ Transform:
   m_GameObject: {fileID: 7701136452503354639}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.21484375, y: 0.05859375, z: 0.0048828125}
+  m_LocalScale: {x: 0.21484375, y: 0.07324219, z: 0.0048828125}
   m_Children: []
   m_Father: {fileID: 7698741921088134495}
   m_RootOrder: 1
@@ -413,7 +413,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BasePixelScale: 2048
-  ItemSize: {x: 440, y: 120, z: 10}
+  ItemSize: {x: 440, y: 150, z: 10}
   OnlyInEditMode: 0
 --- !u!1 &9104622813583571803
 GameObject:
@@ -555,7 +555,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 21.85
+  m_fontSize: 21.9
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -596,13 +596,13 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 9104622813583571805}
-    characterCount: 0
+    characterCount: 11
     spriteCount: 0
-    spaceCount: 0
-    wordCount: 0
+    spaceCount: 1
+    wordCount: 2
     linkCount: 0
-    lineCount: 0
-    pageCount: 0
+    lineCount: 1
+    pageCount: 1
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0

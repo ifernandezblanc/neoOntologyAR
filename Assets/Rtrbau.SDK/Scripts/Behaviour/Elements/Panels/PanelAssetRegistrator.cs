@@ -220,6 +220,8 @@ namespace Rtrbau
             string ontologiesURI = Rtrbauer.instance.ontology.ontologyURI.AbsoluteUri + "/" + "ontologies#ontologies";
             OntologyEntity ontologies = new OntologyEntity(ontologiesURI);
             PanellerEvents.TriggerEvent("LoadOperationOntologies", ontologies);
+
+            Destroy(this.gameObject);
         }
 
         #endregion IELEMENTABLE_METHODS

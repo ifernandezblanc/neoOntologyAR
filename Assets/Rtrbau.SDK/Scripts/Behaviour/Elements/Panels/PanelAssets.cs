@@ -213,6 +213,8 @@ namespace Rtrbau
             // InputIntoReport()
             Reporter.instance.ReportElement(entity);
             PanellerEvents.TriggerEvent("LoadAssetRegistrator", entity);
+
+            Destroy(this.gameObject);
         }
 
         /// <summary>

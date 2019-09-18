@@ -46,7 +46,7 @@ MonoBehaviour:
   Columns: 1
   TileSize: {x: 0.2, y: 0.15, z: 0}
   Gutters: {x: 0, y: 0, z: 0}
-  LayoutDireciton: {x: 0, y: -1, z: 0}
+  LayoutDireciton: {x: 0, y: -1.1, z: 0}
   StartPosition: {x: 0, y: 0, z: 0}
   Centered: 0
   DepthCalculatedBy: 0
@@ -205,7 +205,7 @@ MonoBehaviour:
   Columns: 1
   TileSize: {x: 0.2, y: 0.15, z: 0}
   Gutters: {x: 0, y: 0, z: 0}
-  LayoutDireciton: {x: 0, y: -1, z: 0}
+  LayoutDireciton: {x: 0, y: -1.1, z: 0}
   StartPosition: {x: 0, y: 0, z: 0}
   Centered: 0
   DepthCalculatedBy: 0

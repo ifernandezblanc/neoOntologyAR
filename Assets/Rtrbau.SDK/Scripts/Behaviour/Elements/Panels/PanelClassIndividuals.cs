@@ -215,6 +215,8 @@ namespace Rtrbau
             OntologyElement element = new OntologyElement(entity.URI(), OntologyElementType.IndividualProperties);
             // Make sure the element is of correct RtrbauElementType
             RtrbauerEvents.TriggerEvent("LoadElement", element, Rtrbauer.instance.user.procedure);
+
+            Destroy(this.gameObject);
         }
 
         /// <summary>

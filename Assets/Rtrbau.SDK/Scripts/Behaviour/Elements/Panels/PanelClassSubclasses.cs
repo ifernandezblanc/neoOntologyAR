@@ -462,6 +462,8 @@ namespace Rtrbau
                             // Remember to add operation to configuration
                             Rtrbauer.instance.operation.operationURI = entity.URI();
                             PanellerEvents.TriggerEvent("LoadOperationIndividuals", entity);
+
+                            Destroy(this.gameObject);
                         }
                         else
                         {
@@ -483,6 +485,8 @@ namespace Rtrbau
                             // Remember to add operation to configuration
                             Rtrbauer.instance.operation.operationURI = entity.URI();
                             PanellerEvents.TriggerEvent("LoadOperationIndividuals", entity);
+
+                            Destroy(this.gameObject);
                         }
                         else
                         {

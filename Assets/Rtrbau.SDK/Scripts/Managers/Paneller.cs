@@ -141,7 +141,8 @@ namespace Rtrbau
             // Destroy objects and events
             Debug.Log("Paneller: LoadAssets " + entity.URI());
             PanellerEvents.StopListening("LoadAssets", LoadAssets);
-            Destroy(panelConfiguration);
+            // Modified game objects to destroy their selves after calling for next panel
+            // Destroy(panelConfiguration);
 
             // Declare initialisation variables
             OntologyElement assetClass = new OntologyElement(entity.URI(), OntologyElementType.ClassIndividuals);
@@ -156,7 +157,7 @@ namespace Rtrbau
             // Destroy objects and events
             Debug.Log("Paneller: LoadAssetRegistrator " + entity.URI());
             PanellerEvents.StopListening("LoadAssetRegistrator", LoadAssetRegistrator);
-            Destroy(panelAssets);
+            // Destroy(panelAssets);
 
             // Declare initialisation variables
 
@@ -171,7 +172,7 @@ namespace Rtrbau
             Debug.Log("Paneller: LoadOperationOntologies " + entity.URI());
             // Disabled stop listening for new incoming reports (same user and time)
             // PanellerEvents.StopListening("LoadOperationOntologies", LoadOperationOntologies);
-            Destroy(panelAssetRegistrator);
+            // Destroy(panelAssetRegistrator);
 
             // Declare initialisation variables
             OntologyElement ontologies = new OntologyElement(entity.URI(), OntologyElementType.Ontologies);
@@ -187,7 +188,7 @@ namespace Rtrbau
             Debug.Log("Paneller: LoadOperationSubclasses " + entity.URI());
             // Disabled stop listening for new incoming reports (same user and time)
             // PanellerEvents.StopListening("LoadOperationSubclasses", LoadOperationSubclasses);
-            Destroy(panelOntologies);
+            // Destroy(panelOntologies);
 
             // Declare initialisation variables
             // Remember that first trigger to subclasses comes from class with same name as ontology
@@ -205,7 +206,7 @@ namespace Rtrbau
             Debug.Log("Paneller: LoadOperationIndividuals " + entity.URI());
             // Disabled stop listening for new incoming reports (same user and time)
             // PanellerEvents.StopListening("LoadOperationIndividuals", LoadOperationIndividuals);
-            Destroy(panelClasses);
+            // Destroy(panelClasses);
 
             // Declare initialisation variables
             OntologyElement classIndividuals = new OntologyElement(entity.URI(), OntologyElementType.ClassIndividuals);
@@ -221,7 +222,7 @@ namespace Rtrbau
             Debug.Log("Paneller: LoadVisualiser " + entity.URI());
             // Disabled stop listening for new incoming reports (same user and time)
             // PanellerEvents.StopListening("UnloadPaneller", UnloadPaneller);
-            Destroy(panelIndividuals);
+            // Destroy(panelIndividuals);
 
             // The rationale ends here for now. Please send report.
             // Reporter.instance.SendReport();

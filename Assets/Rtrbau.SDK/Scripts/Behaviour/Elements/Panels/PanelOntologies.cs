@@ -215,6 +215,8 @@ namespace Rtrbau
             // InputIntoReport()
             Reporter.instance.ReportElement(entity);
             PanellerEvents.TriggerEvent("LoadOperationSubclasses", entity);
+
+            Destroy(this.gameObject);
         }
 
         /// <summary>

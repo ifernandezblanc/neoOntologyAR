@@ -168,6 +168,8 @@ namespace Rtrbau
             OntologyEntity assetsClass = new OntologyEntity(assetsURI);
 
             PanellerEvents.TriggerEvent("LoadAssets", assetsClass);
+
+            Destroy(this.gameObject);
         }
         #endregion IELEMENTABLE_METHODS
 
