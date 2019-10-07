@@ -55,7 +55,7 @@ namespace Rtrbau
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
-
+        public bool modelCreated;
         #endregion CLASS_EVENTS
 
         #region MONOBEHVAIOUR_METHODS
@@ -69,9 +69,23 @@ namespace Rtrbau
 
         void Update() { }
 
-        void OnEnable() { }
+        void OnEnable()
+        {
+            // For efficient use when parent fabrication is activated
+            if (modelCreated)
+            {
+                model.SetActive(true);
+            }
+        }
 
-        void OnDisable() { }
+        void OnDisable()
+        {
+            // For efficient use when parent fabrication is deactivated
+            if (modelCreated)
+            {
+                model.SetActive(false);
+            }
+        }
 
         void OnDestroy() { DestroyIt(); }
         #endregion MONOBEHVAIOUR_METHODS
@@ -131,6 +145,7 @@ namespace Rtrbau
                 model = Instantiate(component);
                 UpdateComponentModel();
                 AddManipulationHandler();
+                modelCreated = true;
             }
             else
             {

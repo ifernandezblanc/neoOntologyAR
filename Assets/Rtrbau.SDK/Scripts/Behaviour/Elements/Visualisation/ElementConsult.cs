@@ -729,6 +729,7 @@ namespace Rtrbau
         #region PUBLIC
         public void ActivateFabrications()
         {
+            // For fabrications with additional unparented fabrications, remember to add behaviour OnEnable and OnDisable
             if (fabricationsActive)
             {
                 //foreach(GameObject fabrication in childFabrications)

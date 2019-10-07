@@ -67,7 +67,7 @@ namespace Rtrbau
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
-
+        public bool movementCalculated;
         #endregion CLASS_EVENTS
 
         #region MONOBEHVAIOUR_METHODS
@@ -100,9 +100,27 @@ namespace Rtrbau
             }
         }
 
-        void OnEnable() { }
+        void OnEnable()
+        {
+            // For efficient use when parent fabrication is activated
+            if (movementCalculated)
+            {
+                model.SetActive(true);
+                modelPair.SetActive(true);
+                text.SetActive(true);
+            }
+        }
 
-        void OnDisable() { }
+        void OnDisable()
+        {
+            // For efficient use when parent fabrication is deactivated
+            if (movementCalculated)
+            {
+                model.SetActive(false);
+                modelPair.SetActive(false);
+                textPair.SetActive(false);
+            }
+        }
 
         void OnDestroy() { DestroyIt(); }
         #endregion MONOBEHVAIOUR_METHODS
@@ -313,6 +331,8 @@ namespace Rtrbau
                     Debug.LogError("AnimationNone1 script does not implement this movement: " + movementName);
                     break;
             }
+
+            movementCalculated = true;
         }
 
         void CalculateTranslationAndRotation()

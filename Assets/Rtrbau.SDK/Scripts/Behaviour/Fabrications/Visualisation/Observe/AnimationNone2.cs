@@ -124,9 +124,25 @@ namespace Rtrbau
             }
         }
 
-        void OnEnable() { }
+        void OnEnable()
+        {
+            // For efficient use when parent fabrication is activated
+            if (movementCalculated)
+            {
+                model.SetActive(true);
+                modelPair.SetActive(true);
+            }
+        }
 
-        void OnDisable() { }
+        void OnDisable()
+        {
+            // For efficient use when parent fabrication is deactivated
+            if (movementCalculated)
+            {
+                model.SetActive(false);
+                modelPair.SetActive(false);
+            }
+        }
 
         void OnDestroy() { DestroyIt(); }
         #endregion MONOBEHVAIOUR_METHODS

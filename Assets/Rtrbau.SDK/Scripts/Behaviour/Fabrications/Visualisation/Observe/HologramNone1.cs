@@ -62,7 +62,7 @@ namespace Rtrbau
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
-
+        public bool hologramCreated;
         #endregion CLASS_EVENTS
 
         #region MONOBEHVAIOUR_METHODS
@@ -82,9 +82,25 @@ namespace Rtrbau
             // UpdateLineRenderer();
         }
 
-        void OnEnable() { }
+        void OnEnable()
+        {
+            // For efficient use when parent fabrication is activated
+            if (hologramCreated)
+            {
+                model.SetActive(true);
+                hologram.SetActive(true);
+            }
+        }
 
-        void OnDisable() { }
+        void OnDisable()
+        {
+            // For efficient use when parent fabrication is deactivated
+            if (hologramCreated)
+            {
+                model.SetActive(false);
+                hologram.SetActive(false);
+            }
+        }
 
         void OnDestroy() { DestroyIt(); }
         #endregion MONOBEHVAIOUR_METHODS
@@ -158,6 +174,7 @@ namespace Rtrbau
 
             SetModel();
             SetHologram();
+            hologramCreated = true;
             fabricationText.text = "Hologram available, follow line to view.";
             // AddLineRenderer();
         }
