@@ -51,6 +51,7 @@ namespace Rtrbau
         private Material HandleMaterial;
         private Material HandleGrabbedMaterial;
         private GameObject RotationHandleSlatePrefab;
+        private GameObject ScaleHandleSlatePrefab;
         #endregion GAMEOBJECT_PREFABS
 
         #region INITIALISATION_METHODS
@@ -173,6 +174,7 @@ namespace Rtrbau
             HandleMaterial = Resources.Load("MRTK/BoundingBoxHandleWhite") as Material;
             HandleGrabbedMaterial = Resources.Load("MRTK/BoundingBoxHandleBlueGrabbed") as Material;
             RotationHandleSlatePrefab = Resources.Load("MRTK/MRTK_BoundingBox_RotateWidget") as GameObject;
+            ScaleHandleSlatePrefab = Resources.Load("MRTK/MRTK_BoundingBox_ScaleWidget") as GameObject;
 
             // Load Box Collider
             // https://answers.unity.com/questions/22019/auto-sizing-primitive-collider-based-on-child-mesh.html
@@ -190,7 +192,9 @@ namespace Rtrbau
             assetRegistrator.GetComponent<BoundingBox>().HandleMaterial = HandleMaterial;
             assetRegistrator.GetComponent<BoundingBox>().HandleGrabbedMaterial = HandleGrabbedMaterial;
             assetRegistrator.GetComponent<BoundingBox>().RotationHandleSlatePrefab = RotationHandleSlatePrefab;
-            assetRegistrator.GetComponent<BoundingBox>().ShowScaleHandles = false;
+            assetRegistrator.GetComponent<BoundingBox>().ScaleHandlePrefab = ScaleHandleSlatePrefab;
+            // assetRegistrator.GetComponent<BoundingBox>().ShowScaleHandles = false;
+            assetRegistrator.GetComponent<BoundingBox>().ShowScaleHandles = true;
             assetRegistrator.GetComponent<BoundingBox>().ShowRotationHandleForX = true;
             assetRegistrator.GetComponent<BoundingBox>().ShowRotationHandleForY = true;
             assetRegistrator.GetComponent<BoundingBox>().ShowRotationHandleForZ = true;

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: aa850fece50142e4688d7142f191af99
+guid: 4cee36602666eab439260d4b3c70d21c
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
@@ -9,7 +9,7 @@ ModelImporter:
     2100002: No Name
     2300000: //RootNode
     3300000: //RootNode
-    4300000: shl_adjustBoxRotateWidget_Sq_16mmx2mm
+    4300000: shl_adjustBoxScaleWidget_16mmx2mm
   externalObjects: {}
   materials:
     importMaterials: 1
