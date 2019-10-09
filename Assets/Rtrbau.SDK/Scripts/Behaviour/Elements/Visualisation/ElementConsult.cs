@@ -166,7 +166,7 @@ namespace Rtrbau
         /// </summary>
         public void DownloadElement()
         {
-            Debug.Log("VisualiserConsult: DownloadElement");
+            Debug.Log("ElementConsult: DownloadElement: start downloading individual element:" + individualElement.entity.Entity());
 
             LoaderEvents.StartListening(individualElement.EventName(), DownloadedIndividual);
             Loader.instance.StartOntElementDownload(individualElement);
@@ -177,11 +177,14 @@ namespace Rtrbau
         /// </summary>
         public void EvaluateElement()
         {
+            Debug.Log("ElementConsult: EvaluateElement: Number of attribute classes downloadable: " + objectClassesNumber);
+            Debug.Log("ElementConsult: EvaluateElement: Number of attribute classes downloaded: " + objectClassesAttributes.Count);
+
             if (objectClassesAttributes.Count == objectClassesNumber)
             {
-                Debug.Log("VisualiserConsult: CreateElement: download completed");
+                Debug.Log("ElementConsult: EvaluateElement: all individual-related classes downloaded:" + individualElement.entity.Entity());
                 rtrbauElement = new RtrbauElement(visualiser.manager, individualAttributes, classAttributes, objectClassesAttributes);
-                Debug.Log("ElementConsult: CreateElement: rtrbauElement created");
+                Debug.Log("ElementConsult: EvaluateElement: rtrbauElement created:" + individualElement.entity.Entity());
                 SelectFabrications();
             }
             else { }
@@ -207,21 +210,21 @@ namespace Rtrbau
                 if (envFacets != null && userFacets != null)
                 {
                     availableFormats.Add(format);
-                    Debug.Log("EvaluateElement: fabrication available: " + format.Item1);
+                    Debug.Log("ElementConsult: SelectFabrications: Fabrication available: " + format.Item1);
                 }
                 else { }
             }
 
             foreach (Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat> format in availableFormats)
             {
-                Debug.Log("ElementConsult: EvaluateElement: " + format.Item2.formatName + " required facets: " + format.Item2.formatRequiredFacets);
+                Debug.Log("ElementConsult: SelectFabrications: " + format.Item2.formatName + " required facets: " + format.Item2.formatRequiredFacets);
                 List<RtrbauFabrication> formatAssignedFabrications = format.Item2.EvaluateFormat(rtrbauElement);
 
                 if (formatAssignedFabrications != null)
                 {
                     foreach (RtrbauFabrication fabrication in formatAssignedFabrications)
                     {
-                        Debug.Log("EvaluateElement: fabrication assigned: " + fabrication.fabricationName);
+                        Debug.Log("ElementConsult: SelectFabrications: Fabrication assigned: " + fabrication.fabricationName);
                         // Add environment and user features to fabrication
                         // UPG: since environment and user formats are being evaluated before, there is no need to add them to RtrbauFabrication class?
                         fabrication.fabricationAugmentation = format.Item3.formatAugmentation.facetAugmentation;
@@ -320,7 +323,7 @@ namespace Rtrbau
                 }
                 else
                 {
-                    throw new ArgumentException("Default fabrications not implemented for fabrication type: " + attribute.attributeType);
+                    throw new ArgumentException("ElementConsult: SelectFabrications: Default fabrications not implemented for fabrication type: " + attribute.attributeType);
                 }
             }
 
@@ -379,7 +382,7 @@ namespace Rtrbau
             individualText.text = individualElement.entity.name;
             classText.text = classElement.entity.name;
 
-            Debug.Log("Reached point: fabrications to be created.");
+            Debug.Log("ElementConsult: CreateFabrications: Starting to create fabrications for: " + individualElement.entity.Entity());
 
             foreach (RtrbauFabrication fabrication in assignedFabrications)
             {
@@ -400,7 +403,7 @@ namespace Rtrbau
                 }
                 else
                 {
-                    Debug.LogError("ElementConsult: " + fabrication.fabricationName + " is not implemented");
+                    Debug.LogError("ElementConsult: CreateFabrications: " + fabrication.fabricationName + " is not implemented");
                 }
             }
 
@@ -471,38 +474,8 @@ namespace Rtrbau
                 }
                 else
                 {
-                    throw new ArgumentException("Fabrication type not implemented");
+                    throw new ArgumentException("ElementConsult: LocateIt: Fabrication type not implemented");
                 }
-
-                //if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Text ||
-                //    fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Icon ||
-                //    fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Audio)
-                //{
-                //    fabrication.Value.transform.SetParent(fabricationsPanel, false);
-                //    fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
-                //    childFabrications.Add(fabrication.Value);
-                //}
-                //else if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Image ||
-                //    fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Video)
-                //{
-                //    fabrication.Value.transform.SetParent(fabricationsSidePanel, false);
-                //    fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
-                //    childFabrications.Add(fabrication.Value);
-                //}
-
-                //else if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Model ||
-                //    fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Hologram ||
-                //    fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Animation)
-                //{
-                //    // fabrication.Value.transform.SetParent(visualiser.transform, true);
-                //    fabrication.Value.transform.SetParent(visualiser.transform, false);
-                //    fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, fabrication.Value.transform);
-                //    noChildFabrications.Add(fabrication.Value);
-                //}
-                //else
-                //{
-                //    throw new ArgumentException("Fabrication type not implemented");
-                //}
             }
 
             // ElementConsult location is managed by its visualiser.
@@ -535,16 +508,6 @@ namespace Rtrbau
                     fabrication.Value.GetComponent<IVisualisable>().ModifyMaterial();
                 }
 
-                //// Modify material for all child fabrications
-                //foreach (GameObject fabrication in childFabrications)
-                //{
-                //    fabrication.GetComponent<IVisualisable>().ModifyMaterial();
-                //}
-                //// Modify material for all no-child fabrications
-                //foreach (GameObject fabrication in noChildFabrications)
-                //{
-                //    fabrication.GetComponent<IVisualisable>().ModifyMaterial();
-                //}
                 // Modify material change event
                 materialChanged = true;
             }
@@ -586,7 +549,7 @@ namespace Rtrbau
             }
             else
             {
-                Debug.LogError("File not found: " + individualElement.FilePath());
+                Debug.LogError("ElementConsult: DownloadedIndividual: File not found: " + individualElement.FilePath());
             }
         }
 
@@ -609,39 +572,54 @@ namespace Rtrbau
                 // UPG: To check if object property class has already been asked to be downloaded
                 // List<string> objectPropertiesClasses = new List<string>();
 
+                // Check if object property class has already been evaluated (next foreach loop)
+                List<string> objectPropertiesClasses = new List<string>();
+
                 // Download classes from class object properties
                 foreach (JsonValue attributeIndividual in individualAttributes.ontProperties)
                 {
+                    // UPG: handle error when individual attribute range do not coincide in class with class attribute
                     if (attributeIndividual.ontType.Contains(OntologyPropertyType.ObjectProperty.ToString()))
                     {
+                        // Identify class property to be 
                         JsonProperty attribute = classAttributes.ontProperties.Find(delegate (JsonProperty attClass) {return attClass.ontName == attributeIndividual.ontName;});
 
-                        OntologyElement attributeClass = new OntologyElement(attribute.ontRange, OntologyElementType.ClassProperties);
-
-                        LoaderEvents.StartListening(attributeClass.EventName(), DownloadedAttribute);
-                        Loader.instance.StartOntElementDownload(attributeClass);
-
-                        // UPG: do not download repeated properties
-                        objectClassesNumber += 1;
+                        // Check if object property class has not already been evaluated
+                        if (!objectPropertiesClasses.Contains(attribute.ontRange))
+                        {
+                            // Create OntologyElement necessary to download attribute class
+                            OntologyElement attributeClass = new OntologyElement(attribute.ontRange, OntologyElementType.ClassProperties);
+                            // Download attribute (relationship) class to objectClassesAttributes
+                            LoaderEvents.StartListening(attributeClass.EventName(), DownloadedAttribute);
+                            Loader.instance.StartOntElementDownload(attributeClass);
+                            // Add non-repeated attribute to downloadable classes
+                            objectPropertiesClasses.Add(attribute.ontRange);
+                            // Note non-repeated property as downloadable classes
+                            // objectClassesNumber += 1;
+                        }
+                        else { }
                     }
                     else { }
                 }
 
-                // Download distances from class to component and operation classes
+                // Note non-repeated property as downloadable classes: in case the foreach loop is slower than loader events or viceversa
+                objectClassesNumber = objectPropertiesClasses.Count;
+
+                // Download distance from class to component class
                 OntologyDistance componentDistance = new OntologyDistance(elementClass.entity.URI(), RtrbauDistanceType.Component);
                 LoaderEvents.StartListening(componentDistance.EventName(), DownloadedComponentDistance);
                 Loader.instance.StartOntDistanceDownload(componentDistance);
-
+                // Download distance from class to operation class
                 OntologyDistance operationDistance = new OntologyDistance(elementClass.entity.URI(), RtrbauDistanceType.Operation);
                 LoaderEvents.StartListening(operationDistance.EventName(), DownloadedOperationDistance);
                 Loader.instance.StartOntDistanceDownload(operationDistance);
 
-                // Go to next step
+                // Go to next step: in case the foreach loop is slower than loader events or viceversa
                 EvaluateElement();
             }
             else
             {
-                Debug.LogError("File not found: " + classElement.FilePath());
+                Debug.LogError("ElementConsult: DownloadedClass: File not found: " + classElement.FilePath());
             }
 
         }
@@ -664,7 +642,7 @@ namespace Rtrbau
             }
             else
             {
-                Debug.LogError("File not found: " + elementAttribute.FilePath());
+                Debug.LogError("ElementConsult: DownloadedAttribute: File not found: " + elementAttribute.FilePath());
             }
         }
 
@@ -688,7 +666,7 @@ namespace Rtrbau
             }
             else
             {
-                Debug.LogError("File not found: " + componentDistance.FilePath());
+                Debug.LogError("ElementConsult: DownloadedComponentDistance: File not found: " + componentDistance.FilePath());
             }
 
         }
@@ -713,7 +691,7 @@ namespace Rtrbau
             }
             else
             {
-                Debug.LogError("File not found: " + operationDistance.FilePath());
+                Debug.LogError("ElementConsult: DownloadedOperationDistance: File not found: " + operationDistance.FilePath());
             }
         }
 

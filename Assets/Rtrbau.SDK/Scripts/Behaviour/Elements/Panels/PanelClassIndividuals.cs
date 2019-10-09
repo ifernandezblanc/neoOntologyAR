@@ -208,8 +208,8 @@ namespace Rtrbau
             Debug.Log("NominatedIndividual: Button Clicked " + entity.name);
 
             // InputIntoReport()
-            // Complete paneller behaviour
             Reporter.instance.ReportElement(entity);
+            // Complete paneller behaviour
             PanellerEvents.TriggerEvent("UnloadPaneller", entity);
             // Start visualiser behaviour (pre-loaded with the asset registrator)
             OntologyElement element = new OntologyElement(entity.URI(), OntologyElementType.IndividualProperties);

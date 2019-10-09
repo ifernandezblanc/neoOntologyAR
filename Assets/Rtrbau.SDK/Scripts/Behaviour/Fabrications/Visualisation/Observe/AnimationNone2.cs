@@ -130,7 +130,7 @@ namespace Rtrbau
             if (movementCalculated)
             {
                 model.SetActive(true);
-                modelPair.SetActive(true);
+                if (componentPair != null) { modelPair.SetActive(true); }
             }
         }
 
@@ -140,7 +140,7 @@ namespace Rtrbau
             if (movementCalculated)
             {
                 model.SetActive(false);
-                modelPair.SetActive(false);
+                if (componentPair != null) { modelPair.SetActive(false); }
             }
         }
 

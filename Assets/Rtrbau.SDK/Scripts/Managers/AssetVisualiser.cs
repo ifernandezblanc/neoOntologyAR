@@ -58,6 +58,7 @@ namespace Rtrbau
 
         #region GAMEOBJECT_PREFABS
         public GameObject consultElement;
+        public GameObject reportElement;
         // public GameObject reportElement;
         #endregion GAMEOBJECT_PREFABS
 
@@ -71,6 +72,9 @@ namespace Rtrbau
         {
             if (consultElement == null)
             { consultElement = Resources.Load("Rtrbau/Prefabs/Elements/Visualisations/ConsultElement") as GameObject; }
+
+            if (reportElement == null)
+            { reportElement = Resources.Load("Rtrbau/Prefabs/Elements/Visualisations/ReportElement") as GameObject; }
 
             // Reference to the asset manager
             manager = assetManager;

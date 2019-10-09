@@ -129,8 +129,8 @@ namespace Rtrbau
                                 // It is dependent on visualiser being unique in the scene
                                 // UPG: to adapt for when visualiser won't be unique
                                 string componentName = assetManager.FindAssetComponent(individualValue.name);
-                                Debug.Log(componentName);
-                                Debug.Log(individualValue.name);
+                                Debug.Log("RtrbauData: " + componentName);
+                                Debug.Log("RtrbauData: " + individualValue.name);
                                 // But only when the component is found in the scene
                                 // In that case, it is assumed the obj file was taken from the current server
                                 // Otherwise, it is already now the attribute is of object type
@@ -163,10 +163,10 @@ namespace Rtrbau
                                 // Unless the individual being pointed belongs to an empty class, which is then meant to observe
                                 // This specific case is to control object properties that are used as pre-defined datasets
                                 JsonClassProperties objectPropertyClass = relationshipClassesElements.Find(delegate (JsonClassProperties objectProperty) { return objectProperty.ontClass == classAttribute.ontRange; });
-
+                                Debug.Log("RtrbauData: Event error:" + classAttribute.ontRange);
                                 if (objectPropertyClass.ontProperties.Count != 0)
                                 {
-                                    Debug.Log(objectPropertyClass.ontClass);
+                                    Debug.Log("RtrbauData: " + objectPropertyClass.ontClass);
                                     attributeRange = new OntologyEntity(classAttribute.ontRange);
                                     attributeValue = individualAttribute.ontValue;
                                     attributeType = RtrbauFabricationType.Inspect;
@@ -184,7 +184,7 @@ namespace Rtrbau
                             }
                             else
                             {
-                                throw new ArgumentException("Attribute format is not implemented in Rtrbau");
+                                throw new ArgumentException("RtrbauData: Attribute format is not implemented in Rtrbau");
                             }
 
                             elementAttributes.Add(new RtrbauAttribute(attributeName, attributeRange, attributeValue, attributeType));
@@ -192,14 +192,14 @@ namespace Rtrbau
                         }
                         else
                         {
-                            throw new ArgumentException("Attribute type does not coincide");
+                            throw new ArgumentException("RtrbauData: Attribute type does not coincide");
                         }
                     }
                 }
             }
             else
             {
-                throw new ArgumentException("Individual does not belong to Class");
+                throw new ArgumentException("RtrbauData: Individual does not belong to Class");
             }
         }
         #endregion CONSTRUCTOR

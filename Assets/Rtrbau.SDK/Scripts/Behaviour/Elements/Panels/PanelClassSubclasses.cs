@@ -454,15 +454,32 @@ namespace Rtrbau
                         Debug.Log("Evaluate next step: " + entity.name + " can be reported and consulted");
                         panelUsage.GetComponent<TextMeshProUGUI>().text = entity.name + " can be reported and consulted";
 
-                        // Check if user wants to do procedure available
-                        if (Rtrbauer.instance.user.procedure == RtrbauElementType.Consult || Rtrbauer.instance.user.procedure == RtrbauElementType.Report)
+                        // Check if user wants to do procedure(s) available
+                        if (Rtrbauer.instance.user.procedure == RtrbauElementType.Consult)
                         {
                             // InputIntoReport()
                             Reporter.instance.ReportElement(entity);
                             // Remember to add operation to configuration
                             Rtrbauer.instance.operation.operationURI = entity.URI();
+                            // Complete paneller behaviour
                             PanellerEvents.TriggerEvent("LoadOperationIndividuals", entity);
-
+                            // Complete paneller behaviour: destroy this game object
+                            Destroy(this.gameObject);
+                        }
+                        else if (Rtrbauer.instance.user.procedure == RtrbauElementType.Report)
+                        {
+                            // WIP: CARAR
+                            // InputIntoReport()
+                            Reporter.instance.ReportElement(entity);
+                            // Remember to add operation to configuration
+                            Rtrbauer.instance.operation.operationURI = entity.URI();
+                            // Complete paneller behaviour
+                            PanellerEvents.TriggerEvent("UnloadPaneller", entity);
+                            // Start visualiser behaviour (pre-loaded with the asset registrator)
+                            OntologyElement element = new OntologyElement(entity.URI(), OntologyElementType.ClassProperties);
+                            // Make sure the element is of correct RtrbauElementType
+                            RtrbauerEvents.TriggerEvent("LoadElement", element, Rtrbauer.instance.user.procedure);
+                            // Complete paneller behaviour: destroy this game object
                             Destroy(this.gameObject);
                         }
                         else
@@ -477,15 +494,21 @@ namespace Rtrbau
                         Debug.Log("Evaluate next step: " + entity.name + " can only be reported");
                         panelUsage.GetComponent<TextMeshProUGUI>().text = entity.name + " can only be reported";
 
-                        // Check if user wants to do procedure available
+                        // Check if user wants to do procedure(s) available
                         if (Rtrbauer.instance.user.procedure == RtrbauElementType.Report)
                         {
+                            // WIP: CARAR
                             // InputIntoReport()
                             Reporter.instance.ReportElement(entity);
                             // Remember to add operation to configuration
                             Rtrbauer.instance.operation.operationURI = entity.URI();
-                            PanellerEvents.TriggerEvent("LoadOperationIndividuals", entity);
-
+                            // Complete paneller behaviour
+                            PanellerEvents.TriggerEvent("UnloadPaneller", entity);
+                            // Start visualiser behaviour (pre-loaded with the asset registrator)
+                            OntologyElement element = new OntologyElement(entity.URI(), OntologyElementType.ClassProperties);
+                            // Make sure the element is of correct RtrbauElementType
+                            RtrbauerEvents.TriggerEvent("LoadElement", element, Rtrbauer.instance.user.procedure);
+                            // Complete paneller behaviour: destroy this game object
                             Destroy(this.gameObject);
                         }
                         else
