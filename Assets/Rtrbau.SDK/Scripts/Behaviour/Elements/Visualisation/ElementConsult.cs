@@ -196,6 +196,7 @@ namespace Rtrbau
         /// </summary>
         public void SelectFabrications()
         {
+            // RTRBAU ALGORITHM: new extension (which original loop number is?)
             // RTRBAU ALGORITHM: previous two loops to reduce available formats merged into a single one
             // Checks if format is acceptable
             // If so, then evaluates the format agains the element to determine if it is assignable
@@ -309,6 +310,10 @@ namespace Rtrbau
             }
 
             // RTRBAU ALGORITHM: Identify non-assigned attributes and create default fabrications for them (new extension)
+            // UPG: Merge with following foreach loop to increase speed, long loops for very few cases
+            // UPG: An idea to reduce loops is as follows: List<RtrbauAttribute> nonAssAtt = rtrbauElement.elementAttributes.Where(x => assignedFabrications.All(y => y.fabricationData.Values.ToList().All(z => z.attributeValue != x.attributeValue))).ToList();
+            // UPG: This extension could be discarded in case it is ensured by design that non-assigned attributes won't exist
+
             // Identify attributes assigned to generated fabrications
             List<RtrbauAttribute> assignedAttributes = new List<RtrbauAttribute>();
 
@@ -324,6 +329,7 @@ namespace Rtrbau
 
             // Identify attributes that have not been assigned to generated fabrications
             List<RtrbauAttribute> nonAssignedAttributes = rtrbauElement.elementAttributes.Where(x => assignedAttributes.All(y => y.attributeValue != x.attributeValue)).ToList();
+
             // Generate default fabrications for non-assigned attributes
             foreach (RtrbauAttribute attribute in nonAssignedAttributes)
             {
