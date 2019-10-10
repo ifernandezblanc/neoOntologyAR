@@ -394,12 +394,14 @@ namespace Rtrbau
                 Debug.Log(fabricationPath);
 
                 // Make sure this goes correctly, otherwise it can create big issues
-                GameObject goFabrication = Resources.Load(fabricationPath) as GameObject;
+                GameObject fabricationGO = Resources.Load(fabricationPath) as GameObject;
 
-                if (goFabrication != null)
+                if (fabricationGO != null)
                 {
-                    GameObject newFabrication = Instantiate(goFabrication);
-                    elementFabrications.Add(new KeyValuePair<RtrbauFabrication, GameObject>(fabrication, newFabrication));
+                    GameObject goFabrication = Instantiate(fabricationGO);
+                    KeyValuePair<RtrbauFabrication, GameObject> fabricationPair = new KeyValuePair<RtrbauFabrication, GameObject>(fabrication, goFabrication);
+                    elementFabrications.Add(fabricationPair);
+                    LocateFabrication(fabricationPair);
                 }
                 else
                 {
@@ -433,50 +435,49 @@ namespace Rtrbau
         /// </summary>
         public void LocateIt()
         {
-            // Transform fabricationsPanel = this.transform.GetChild(3);
-            // Transform fabricationsSidePanel = this.transform.GetChild(4);
+            // Modified to reduce foreach loop by connecting with CreateFabrications
+            // Foreach loop now implemented as LocateFabrication function within CreateFabrications loop
+            // Rest of functionality remains
+            // UPG: Add ordering for tiled fabrications (buttons, icons, text).
 
-            // UPG: add ordering for tiled fabrications (buttons, icons, text).
-            foreach (KeyValuePair<RtrbauFabrication, GameObject> fabrication in elementFabrications)
-            {
-                if (fabrication.Key.fabricationType == RtrbauFabricationType.Observe)
-                {
-                    if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Text ||
-                    fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Icon ||
-                    fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Audio)
-                    {
-                        fabrication.Value.transform.SetParent(fabricationsObserveRest, false);
-                        fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
-                        // childFabrications.Add(fabrication.Value);
-                    }
-                    else if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Image ||
-                    fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Video)
-                    {
-                        fabrication.Value.transform.SetParent(fabricationsObserveImageVideo, false);
-                        fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
-                        // childFabrications.Add(fabrication.Value);
-                    }
-                    else if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Model ||
-                    fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Hologram ||
-                    fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Animation)
-                    {
-                        fabrication.Value.transform.SetParent(fabricationsObserveRest, false);
-                        fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, visualiser.transform);
-                        // childFabrications.Add(fabrication.Value);
-                        unparentedFabrications.Add(fabrication.Value);
-                    }
-                }
-                else if (fabrication.Key.fabricationType == RtrbauFabricationType.Inspect)
-                {
-                    fabrication.Value.transform.SetParent(fabricationsInspect, false);
-                    fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
-                    // childFabrications.Add(fabrication.Value);
-                }
-                else
-                {
-                    throw new ArgumentException("ElementConsult: LocateIt: Fabrication type not implemented");
-                }
-            }
+            //foreach (KeyValuePair<RtrbauFabrication, GameObject> fabrication in elementFabrications)
+            //{
+            //    if (fabrication.Key.fabricationType == RtrbauFabricationType.Observe)
+            //    {
+            //        if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Text ||
+            //        fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Icon ||
+            //        fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Audio)
+            //        {
+            //            fabrication.Value.transform.SetParent(fabricationsObserveRest, false);
+            //            fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
+            //            // childFabrications.Add(fabrication.Value);
+            //        }
+            //        else if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Image ||
+            //        fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Video)
+            //        {
+            //            fabrication.Value.transform.SetParent(fabricationsObserveImageVideo, false);
+            //            fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
+            //            // childFabrications.Add(fabrication.Value);
+            //        }
+            //        else if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Model ||
+            //        fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Hologram ||
+            //        fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Animation)
+            //        {
+            //            fabrication.Value.transform.SetParent(fabricationsObserveRest, false);
+            //            fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, visualiser.transform);
+            //            unparentedFabrications.Add(fabrication.Value);
+            //        }
+            //    }
+            //    else if (fabrication.Key.fabricationType == RtrbauFabricationType.Inspect)
+            //    {
+            //        fabrication.Value.transform.SetParent(fabricationsInspect, false);
+            //        fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
+            //    }
+            //    else
+            //    {
+            //        throw new ArgumentException("ElementConsult: LocateIt: Fabrication type not implemented");
+            //    }
+            //}
 
             // ElementConsult location is managed by its visualiser.
             RtrbauerEvents.TriggerEvent("LocateElement", this.gameObject, rtrbauLocation);
@@ -695,11 +696,57 @@ namespace Rtrbau
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         void AddLineRenderer()
         {
             if (previousElement != null)
             {
                 this.gameObject.AddComponent<ElementsLine>().Initialise(this.gameObject, previousElement, lineMaterial);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void LocateFabrication (KeyValuePair<RtrbauFabrication, GameObject> fabrication)
+        {
+            // UPG: Add ordering for tiled fabrications (buttons, icons, text).
+            if (fabrication.Key.fabricationType == RtrbauFabricationType.Observe)
+            {
+                if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Text ||
+                fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Icon ||
+                fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Audio)
+                {
+                    fabrication.Value.transform.SetParent(fabricationsObserveRest, false);
+                    fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
+                    // childFabrications.Add(fabrication.Value);
+                }
+                else if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Image ||
+                fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Video)
+                {
+                    fabrication.Value.transform.SetParent(fabricationsObserveImageVideo, false);
+                    fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
+                    // childFabrications.Add(fabrication.Value);
+                }
+                else if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Model ||
+                fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Hologram ||
+                fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Animation)
+                {
+                    fabrication.Value.transform.SetParent(fabricationsObserveRest, false);
+                    fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, visualiser.transform);
+                    unparentedFabrications.Add(fabrication.Value);
+                }
+            }
+            else if (fabrication.Key.fabricationType == RtrbauFabricationType.Inspect)
+            {
+                fabrication.Value.transform.SetParent(fabricationsInspect, false);
+                fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
+            }
+            else
+            {
+                throw new ArgumentException("ElementConsult: LocateIt: Fabrication type not implemented");
             }
         }
         #endregion PRIVATE
@@ -710,16 +757,6 @@ namespace Rtrbau
             // For fabrications with additional unparented fabrications, remember to add behaviour OnEnable and OnDisable
             if (fabricationsActive)
             {
-                //foreach(GameObject fabrication in childFabrications)
-                //{
-                //    fabrication.SetActive(false);
-                //}
-
-                //foreach(GameObject fabrication in noChildFabrications)
-                //{
-                //    fabrication.SetActive(false);
-                //}
-
                 foreach(KeyValuePair<RtrbauFabrication, GameObject> fabrication in elementFabrications)
                 {
                     fabrication.Value.SetActive(false);
@@ -732,16 +769,6 @@ namespace Rtrbau
             }
             else
             {
-                //foreach (GameObject fabrication in childFabrications)
-                //{
-                //    fabrication.SetActive(true);
-                //}
-
-                //foreach (GameObject fabrication in noChildFabrications)
-                //{
-                //    fabrication.SetActive(true);
-                //}
-
                 foreach (KeyValuePair<RtrbauFabrication, GameObject> fabrication in elementFabrications)
                 {
                     fabrication.Value.SetActive(true);
