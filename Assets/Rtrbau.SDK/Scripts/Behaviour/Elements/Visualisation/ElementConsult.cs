@@ -196,11 +196,10 @@ namespace Rtrbau
         /// </summary>
         public void SelectFabrications()
         {
-            // Return list of acceptable formats according to user and environment configuration
-            // These formats to be used in the following loop
-            // This new loop to replace second loop below
-            List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>> availableFormats = new List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>>();
-
+            // RTRBAU ALGORITHM: previous two loops to reduce available formats merged into a single one
+            // Checks if format is acceptable
+            // If so, then evaluates the format agains the element to determine if it is assignable
+            // Replaces the toogled foreach loops below
             foreach (Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat> format in Dictionaries.ConsultFormats)
             {
                 // Check environment and user formats
@@ -209,33 +208,72 @@ namespace Rtrbau
 
                 if (envFacets != null && userFacets != null)
                 {
-                    availableFormats.Add(format);
                     Debug.Log("ElementConsult: SelectFabrications: Fabrication available: " + format.Item1);
+                    Debug.Log("ElementConsult: SelectFabrications: " + format.Item2.formatName + " required facets: " + format.Item2.formatRequiredFacets);
+                    
+                    // Determine if format is assignable as fabrications to the element
+                    List<RtrbauFabrication> formatAssignedFabrications = format.Item2.EvaluateFormat(rtrbauElement);
+
+                    // Assign fabrications
+                    if (formatAssignedFabrications != null)
+                    {
+                        foreach (RtrbauFabrication fabrication in formatAssignedFabrications)
+                        {
+                            Debug.Log("ElementConsult: SelectFabrications: Fabrication assigned: " + fabrication.fabricationName);
+                            // Add environment and user features to fabrication
+                            // UPG: since environment and user formats are being evaluated before, there is no need to add them to RtrbauFabrication class?
+                            fabrication.fabricationAugmentation = format.Item3.formatAugmentation.facetAugmentation;
+                            fabrication.fabricationInteraction = format.Item3.formatInteraction.facetInteraction;
+                            fabrication.fabricationComprehension = format.Item4.formatComprehension;
+                            fabrication.fabricationDescription = format.Item4.formatDescription;
+                            // Add fabrication to assigned fabrications list
+                            assignedFabrications.Add(fabrication);
+                        }
+                    }
                 }
                 else { }
             }
 
-            foreach (Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat> format in availableFormats)
-            {
-                Debug.Log("ElementConsult: SelectFabrications: " + format.Item2.formatName + " required facets: " + format.Item2.formatRequiredFacets);
-                List<RtrbauFabrication> formatAssignedFabrications = format.Item2.EvaluateFormat(rtrbauElement);
+            //// Return list of acceptable formats according to user and environment configuration
+            //// These formats to be used in the following loop
+            //// This new loop to replace second loop below
+            //List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>> availableFormats = new List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>>();
 
-                if (formatAssignedFabrications != null)
-                {
-                    foreach (RtrbauFabrication fabrication in formatAssignedFabrications)
-                    {
-                        Debug.Log("ElementConsult: SelectFabrications: Fabrication assigned: " + fabrication.fabricationName);
-                        // Add environment and user features to fabrication
-                        // UPG: since environment and user formats are being evaluated before, there is no need to add them to RtrbauFabrication class?
-                        fabrication.fabricationAugmentation = format.Item3.formatAugmentation.facetAugmentation;
-                        fabrication.fabricationInteraction = format.Item3.formatInteraction.facetInteraction;
-                        fabrication.fabricationComprehension = format.Item4.formatComprehension;
-                        fabrication.fabricationDescription = format.Item4.formatDescription;
-                        // Add fabrication to assigned fabrications list
-                        assignedFabrications.Add(fabrication);
-                    }
-                }
-            }
+            //foreach (Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat> format in Dictionaries.ConsultFormats)
+            //{
+            //    // Check environment and user formats
+            //    Tuple<RtrbauAugmentation, RtrbauInteraction> envFacets = format.Item3.EvaluateFormat();
+            //    Tuple<RtrbauComprehensiveness, RtrbauDescriptiveness> userFacets = format.Item4.EvaluateFormat();
+
+            //    if (envFacets != null && userFacets != null)
+            //    {
+            //        availableFormats.Add(format);
+            //        Debug.Log("ElementConsult: SelectFabrications: Fabrication available: " + format.Item1);
+            //    }
+            //    else { }
+            //}
+
+            //foreach (Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat> format in availableFormats)
+            //{
+            //    Debug.Log("ElementConsult: SelectFabrications: " + format.Item2.formatName + " required facets: " + format.Item2.formatRequiredFacets);
+            //    List<RtrbauFabrication> formatAssignedFabrications = format.Item2.EvaluateFormat(rtrbauElement);
+
+            //    if (formatAssignedFabrications != null)
+            //    {
+            //        foreach (RtrbauFabrication fabrication in formatAssignedFabrications)
+            //        {
+            //            Debug.Log("ElementConsult: SelectFabrications: Fabrication assigned: " + fabrication.fabricationName);
+            //            // Add environment and user features to fabrication
+            //            // UPG: since environment and user formats are being evaluated before, there is no need to add them to RtrbauFabrication class?
+            //            fabrication.fabricationAugmentation = format.Item3.formatAugmentation.facetAugmentation;
+            //            fabrication.fabricationInteraction = format.Item3.formatInteraction.facetInteraction;
+            //            fabrication.fabricationComprehension = format.Item4.formatComprehension;
+            //            fabrication.fabricationDescription = format.Item4.formatDescription;
+            //            // Add fabrication to assigned fabrications list
+            //            assignedFabrications.Add(fabrication);
+            //        }
+            //    }
+            //}
 
             // RTRBAU ALGORITHM: Eliminate duplicated fabrications (Loop 5 modified)
             // Eliminate duplicated formats with lower number of attributes
