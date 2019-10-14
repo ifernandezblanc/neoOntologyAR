@@ -1553,6 +1553,7 @@ MonoBehaviour:
     type: 3}
   activationButtonMinimise: {fileID: 21300000, guid: 174bbdf809352fc42a45fd5412d60920,
     type: 3}
+  lineMaterial: {fileID: 2100000, guid: 067135b03b686574eb53fb59456a7a64, type: 2}
   objectClassesNumber: 0
   fabricationsSelected: 0
   componentDistanceDownloaded: 0

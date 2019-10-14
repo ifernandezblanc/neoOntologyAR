@@ -70,6 +70,7 @@ namespace Rtrbau
         public Operation operation;
         public User user;
         public Environment environment;
+        public GameObject viewer;
         #endregion CLASS_MEMBERS
 
         #region GAMEOBJECT_PREFABS
@@ -109,6 +110,8 @@ namespace Rtrbau
                 environment.AssignSense(RtrbauSense.hearing, true);
                 environment.AssignSense(RtrbauSense.sight, true);
                 environment.AssignSense(RtrbauSense.kinaesthetic, true);
+                // Viewer camera
+                viewer = GameObject.FindGameObjectWithTag("MainCamera");
                 // Start scene
                 LoadPaneller();
             }

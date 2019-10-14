@@ -37,7 +37,7 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
-    public class ElementConsult : MonoBehaviour, IElementable, IVisualisable
+    public class ElementReport : MonoBehaviour, IElementable, IVisualisable
     {
         #region INITIALISATION_VARIABLES
         public AssetVisualiser visualiser;
