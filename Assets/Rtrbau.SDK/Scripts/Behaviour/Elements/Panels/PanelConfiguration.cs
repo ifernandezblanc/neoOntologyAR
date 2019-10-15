@@ -83,7 +83,7 @@ namespace Rtrbau
             else
             {
                 serverDefaultURI = serverURI;
-                userDefaultName = "User" + "_" + DateTime.Now.ToString("dd-MM-yy_hh-mm-ss");
+                userDefaultName = "User" + "_" + DateTime.Now.ToString("dd-MM-yy_HH-mm-ss");
 
                 userWriteButton.SetActive(true);
                 userSelectReportButton.SetActive(true);

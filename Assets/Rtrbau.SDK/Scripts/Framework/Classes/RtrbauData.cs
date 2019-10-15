@@ -142,13 +142,12 @@ namespace Rtrbau
 
                             if (individualAttribute.ontType == classAttribute.ontType)
                             {
-                                OntologyEntity attributeName;
+                                // Assign variables to generate a new RtrbauAttribute
+                                OntologyEntity attributeName = new OntologyEntity(classAttribute.ontName);
                                 OntologyEntity attributeRange;
                                 string attributeValue;
                                 OntologyEntity attributeType;
                                 RtrbauFabricationType fabricationType;
-
-                                attributeName = new OntologyEntity(classAttribute.ontName);
 
                                 // When component distance = 0, then assign individual as obj file
                                 if (classAttribute.ontRange == Rtrbauer.instance.component.componentURI)
@@ -268,7 +267,7 @@ namespace Rtrbau
                 {
                     // Generate initial element name: using class name and datetime; to be updated afterwards
                     elementName = new OntologyEntity(classElement.ontClass);
-                    elementName.name += DateTime.Now;
+                    elementName.name += "_" + DateTime.Now.ToString("dd-MM-yy_HH-mm-ss");
                     // Initialise rest of element variables
                     elementClass = new OntologyEntity(classElement.ontClass);
                     elementAttributes = new List<RtrbauAttribute>();
@@ -277,28 +276,38 @@ namespace Rtrbau
                     foreach (JsonProperty classAttribute in classElement.ontProperties)
                     {
                         Debug.Log("RtrbauData::RtrbauElement: classAttributeName is " + classAttribute.ontName);
+
                         // Find value to assign to class Attribute to generate fabrications: to be updated with user interactions
                         JsonValue exampleAttributeValue = exampleElement.ontProperties.Find(delegate (JsonValue exampleValue) { return exampleValue.ontName == classAttribute.ontName; });
+
+                        // Check if value attribute exists for class attribute, otherwise give example default
                         Debug.Log("RtrbauData::RtrbauElement: exampleAttributeValue exists: " + Equals(exampleAttributeValue, default(JsonValue)));
+
+                        // ErrorHandling: when example attribute value does not exist, leave value empty
+                        if (Equals(exampleAttributeValue, default(JsonValue)))
+                        {
+                            exampleAttributeValue = new JsonValue
+                            {
+                                ontName = classAttribute.ontName,
+                                // UPG: to modify according to exampleAttributeValue.ontType
+                                ontValue = "example",
+                                ontType = classAttribute.ontType
+                            };
+                        }
+
+                        // Assign variables to generate a new RtrbauAttribute
+                        // UPG: to modify assignment if necessary as for consult element fabrications
+                        OntologyEntity attributeName = new OntologyEntity(classAttribute.ontName);
+                        OntologyEntity attributeRange = new OntologyEntity(classAttribute.ontRange);
+                        string attributeValue = exampleAttributeValue.ontValue;
+                        OntologyEntity attributeType = new OntologyEntity(classAttribute.ontType);
+                        RtrbauFabricationType fabricationType;
+
                         // Class and example attributes coincide by name: already checked above
                         // Check if class and example attributes also coincide in type
                         if (exampleAttributeValue.ontType == classAttribute.ontType)
                         {
-                            // Declare variables to generate a new RtrbauAttribute
-                            OntologyEntity attributeName;
-                            OntologyEntity attributeRange;
-                            string attributeValue;
-                            OntologyEntity attributeType;
-                            RtrbauFabricationType fabricationType;
-
-                            // Assign attribute features
-                            // UPG: to modify assignment if necessary as for consult element fabrications
-                            attributeName = new OntologyEntity(classAttribute.ontName);
-                            attributeRange = new OntologyEntity(classAttribute.ontRange);
-                            attributeValue = exampleAttributeValue.ontValue;
-                            attributeType = new OntologyEntity(classAttribute.ontType);
-
-                            // Assign attribute fabrication type
+                            // Assign attribute fabrication type and re-assign other features when necessary
                             // When attribute class coincides when component class, then assign individual as obj file
                             if (classAttribute.ontRange == Rtrbauer.instance.component.componentURI)
                             {
@@ -330,7 +339,6 @@ namespace Rtrbau
                         }
                         else
                         {
-                            // UPG::ErrorHandling: it can happen that there is no example value with that attribute
                             throw new ArgumentException("RtrbauData::RtrbauElement: Attribute type does not coincide");
                         }
                     }

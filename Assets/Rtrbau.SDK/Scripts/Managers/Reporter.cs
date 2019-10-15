@@ -124,7 +124,7 @@ namespace Rtrbau
             reportDictionary = new List<KeyValuePair<DateTime, OntologyEntity>>();
 
             // Update user
-            Rtrbauer.instance.user.name = "User" + "_" + DateTime.Now.ToString("dd-MM-yy_hh-mm-ss");
+            Rtrbauer.instance.user.name = "User" + "_" + DateTime.Now.ToString("dd-MM-yy_HH-mm-ss");
 
             // Re-initialise dictionary elements: server, user and asset
             string serverReport = Rtrbauer.instance.server.serverURI + "server" + "#" + "connected";
@@ -153,7 +153,7 @@ namespace Rtrbau
             reportedElement.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = entity.ontology;
             reportedElement.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = entity.name;
 
-            Debug.Log("Reporter: ReportElement: " + DateTime.Now + "_" + entity.ToString());
+            Debug.Log("Reporter: ReportElement: " + DateTime.Now.ToString("dd-MM-yy_HH-mm-ss") + "_" + entity.ToString());
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace Rtrbau
             for (int i = 0; i < reportDictionary.Count; i++)
             {
                 reportWriter.WriteLine("{");
-                reportWriter.WriteLine("\"time\": " + "\"" + reportDictionary[i].Key.ToLongTimeString() + "\",");
+                reportWriter.WriteLine("\"dateTime\": " + "\"" + reportDictionary[i].Key.ToString("dd-MM-yy_HH-mm-ss") + "\",");
                 // reportWriter.WriteLine("\"entity\": " + JsonUtility.ToJson(reportDictionary[i].Value));
                 reportWriter.WriteLine("\"entity\": " + "\"" + reportDictionary[i].Value.URI() + "\"");
                 if (i != reportDictionary.Count - 1) { reportWriter.WriteLine("},"); }
