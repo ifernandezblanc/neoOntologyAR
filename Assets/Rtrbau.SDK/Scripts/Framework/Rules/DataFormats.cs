@@ -54,7 +54,7 @@ namespace Rtrbau
 
         public static DataFormat DefaultNominate = new DataFormat(RtrbauFabricationName.DefaultNominate, RtrbauFabricationType.Nominate, new List<DataFacet>
         {
-            new DataFacet(RtrbauFacetForm.source, DataFacets.TextFacet3)
+            new DataFacet(RtrbauFacetForm.source, DataFacets.TextFacet2)
         });
         #endregion DEFAULT_FORMATS
 
@@ -202,13 +202,13 @@ namespace Rtrbau
         #endregion MODELRECORD_FORMATS
 
         #region ANIMATIONRECORD_FORMATS
-        // UPG
+        // UPG: to generate animations using bare-hand interactions
         #endregion ANIMATIONRECORD_FORMATS
 
         #region DICTATION_FORMATS
         public static DataFormat TextDictation1 = new DataFormat(RtrbauFabricationName.TextDictation1, RtrbauFabricationType.Record, new List<DataFacet>
         {
-            new DataFacet(RtrbauFacetForm.source, DataFacets.TextFacet1)
+            new DataFacet(RtrbauFacetForm.source, DataFacets.TextFacet3)
         });
         #endregion DICTATION_FORMATS
 
@@ -218,24 +218,24 @@ namespace Rtrbau
             new DataFacet(RtrbauFacetForm.source, DataFacets.TextFacet1)
         });
         #endregion TEXTRECORD_FORMATS
-
-        #region MODELPANEL_FORMATS
-        // UPG
-        #endregion MODELPANEL_FORMATS
-
+        
         #region TEXTPANEL_FORMATS
         public static DataFormat TextPanelTap1 = new DataFormat(RtrbauFabricationName.TextPanelTap1, RtrbauFabricationType.Nominate, new List<DataFacet>
         {
-            new DataFacet(RtrbauFacetForm.source, DataFacets.TextFacet3)
+            new DataFacet(RtrbauFacetForm.source, DataFacets.TextFacet2)
         });
         #endregion TEXTPANEL_FORMATS
 
         #region ICONPANEL_FORMATS
         public static DataFormat IconPanelTap1 = new DataFormat(RtrbauFabricationName.IconPanelTap1, RtrbauFabricationType.Nominate, new List<DataFacet>
         {
-            new DataFacet(RtrbauFacetForm.source, DataFacets.IconFacet3)
+            new DataFacet(RtrbauFacetForm.source, DataFacets.IconFacet2)
         });
         #endregion ICONPANEL_FORMATS
+
+        #region MODELPANEL_FORMATS
+        // UPG: to modify ModelRecordHold1 once changes for component class being made
+        #endregion MODELPANEL_FORMATS
         #endregion FORMATS
     }
 }

@@ -120,7 +120,7 @@ namespace Rtrbau
         #endregion TEXTRECORD_FORMATS
 
         #region MODELPANEL_FORMATS
-        // UPG
+        // UPG: to modify ModelRecordHold1 once changes for component class being made
         #endregion MODELPANEL_FORMATS
 
         #region TEXTPANEL_FORMATS

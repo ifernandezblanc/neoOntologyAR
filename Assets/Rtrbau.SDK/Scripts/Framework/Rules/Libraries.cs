@@ -409,9 +409,18 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> IndividualLibrary = new List<string>
+        public static List<string> DatatypePropertyLibrary = new List<string>
         {
-            "#"
+            OntologyPropertyType.DatatypeProperty.ToString()
+        };
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public static List<string> ObjectPropertyLibrary = new List<string>
+        {
+            OntologyPropertyType.ObjectProperty.ToString()
         };
         #endregion VALUE_LIBRARIES
         #endregion LIBRARIES

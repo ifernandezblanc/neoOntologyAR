@@ -43,6 +43,7 @@ namespace Rtrbau
         #region MEMBERS
         [SerializeField]
         public string XSD = "http://www.w3.org/2001/XMLSchema";
+        public string OWL = "http://www.w3.org/2002/07/owl";
         #endregion MEMBERS
 
         #region CONSTRUCTOR

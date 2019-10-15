@@ -401,6 +401,10 @@ namespace Rtrbau
             else if (type == RtrbauElementType.Report)
             {
                 Debug.LogError("Report Element not implemented yet.");
+                // TRIAL WHILE DEVELOPING ELEMENTREPORT
+                GameObject newElement = new GameObject(element.entity.Entity());
+                newElement.AddComponent<ElementReport>().Initialise(this, element, lastElement);
+
             }
             else
             {

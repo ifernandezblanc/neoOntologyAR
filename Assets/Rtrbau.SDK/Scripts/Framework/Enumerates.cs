@@ -24,7 +24,7 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
-    public enum OntologyElementType : int { Ontologies, ClassSubclasses, ClassIndividuals, ClassProperties, IndividualProperties }
+    public enum OntologyElementType : int { Ontologies, ClassSubclasses, ClassIndividuals, ClassProperties, ClassExample, IndividualProperties }
 
     /// <summary>
     /// Describe script purpose

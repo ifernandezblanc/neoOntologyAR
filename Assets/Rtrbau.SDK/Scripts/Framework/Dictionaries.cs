@@ -94,6 +94,7 @@ namespace Rtrbau
             {OntologyElementType.ClassSubclasses, Application.persistentDataPath + "/Rtrbau/ontologies/classes-subclasses" },
             {OntologyElementType.ClassIndividuals, Application.persistentDataPath + "/Rtrbau/ontologies/classes-individuals" },
             {OntologyElementType.ClassProperties, Application.persistentDataPath + "/Rtrbau/ontologies/classes-properties" },
+            {OntologyElementType.ClassExample, Application.persistentDataPath + "/Rtrbau/ontologies/classes-example" },
             {OntologyElementType.IndividualProperties, Application.persistentDataPath + "/Rtrbau/ontologies/individuals-properties" }
         };
         /// <summary>

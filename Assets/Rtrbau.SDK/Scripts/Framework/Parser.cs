@@ -136,6 +136,10 @@ namespace Rtrbau
             {
                 return Rtrbauer.instance.server.serverURI + "api/ontologies/" + ontology + "/class/" + name + "/properties/";
             }
+            else if (type == OntologyElementType.ClassExample)
+            {
+                return Rtrbauer.instance.server.serverURI + "api/ontologies/" + ontology + "/class/" + name + "/example/";
+            }
             else if (type == OntologyElementType.IndividualProperties)
             {
                 return Rtrbauer.instance.server.serverURI + "api/ontologies/" + ontology + "/individual/" + name + "/properties/";

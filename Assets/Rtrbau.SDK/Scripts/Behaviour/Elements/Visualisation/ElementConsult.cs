@@ -114,7 +114,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public void Initialise(AssetVisualiser assetVisualiser, OntologyElement elementIndividual, GameObject previous)
+        public void Initialise(AssetVisualiser assetVisualiser, OntologyElement elementOntology, GameObject elementPrevious)
         {
             if (individualText == null || classText == null || statusText == null || fabricationsObserveRest == null || fabricationsObserveImageVideo == null || fabricationsInspect == null || panelPrimary == null || panelSecondary == null || seenMaterial == null || activationButton == null || activationButtonMaximise == null || activationButtonMinimise == null || lineMaterial == null) 
             {
@@ -122,14 +122,14 @@ namespace Rtrbau
             }
             else
             {
-                if (elementIndividual.type == OntologyElementType.IndividualProperties)
+                if (elementOntology.type == OntologyElementType.IndividualProperties)
                 {
                     // lineMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardBlue") as Material;
                     // viewer = GameObject.FindGameObjectWithTag("MainCamera");
 
                     visualiser = assetVisualiser;
-                    individualElement = elementIndividual;
-                    previousElement = previous;
+                    individualElement = elementOntology;
+                    previousElement = elementPrevious;
 
                     objectClassesAttributes = new List<JsonClassProperties>();
                     objectClassesNumber = 0;
@@ -183,7 +183,7 @@ namespace Rtrbau
             if (objectClassesAttributes.Count == objectClassesNumber)
             {
                 Debug.Log("ElementConsult::EvaluateElement: All individual-related classes downloaded:" + individualElement.entity.Entity());
-                rtrbauElement = new RtrbauElement(visualiser.manager, individualAttributes, classAttributes, objectClassesAttributes);
+                rtrbauElement = new RtrbauElement(Rtrbauer.instance.user.procedure, visualiser.manager, individualAttributes, classAttributes, objectClassesAttributes);
                 Debug.Log("ElementConsult::EvaluateElement: rtrbauElement created:" + individualElement.entity.Entity());
                 SelectFabrications();
             }
@@ -197,7 +197,7 @@ namespace Rtrbau
         public void SelectFabrications()
         {
             // RTRBAU ALGORITHM: new extension (which original loop number is?)
-            // RTRBAU ALGORITHM: previous two loops to reduce available formats merged into a single one
+            // RTRBAU ALGORITHM: elementPrevious two loops to reduce available formats merged into a single one
             // Checks if format is acceptable
             // If so, then evaluates the format agains the element to determine if it is assignable
             // Replaces the toogled foreach loops below
@@ -335,7 +335,7 @@ namespace Rtrbau
             {
                 // Debug.Log("EvaluateElement: non assignedAttribute: " + attribute.attributeName.name + " : " + attribute.attributeValue);
 
-                if (attribute.attributeType == RtrbauFabricationType.Observe)
+                if (attribute.fabricationType == RtrbauFabricationType.Observe)
                 {
                     // Create new fabrication for non-assigned attribute
                     RtrbauFabrication fabrication = new RtrbauFabrication(RtrbauFabricationName.DefaultObserve, RtrbauFabricationType.Observe, new Dictionary<DataFacet, RtrbauAttribute>
@@ -350,7 +350,7 @@ namespace Rtrbau
                     // Assign fabrication to assignedFabrications
                     assignedFabrications.Add(fabrication);
                 }
-                else if (attribute.attributeType == RtrbauFabricationType.Inspect)
+                else if (attribute.fabricationType == RtrbauFabricationType.Inspect)
                 {
                     // Create new fabrication for non-assigned attribute
                     RtrbauFabrication fabrication = new RtrbauFabrication(RtrbauFabricationName.DefaultInspect, RtrbauFabricationType.Inspect, new Dictionary<DataFacet, RtrbauAttribute>

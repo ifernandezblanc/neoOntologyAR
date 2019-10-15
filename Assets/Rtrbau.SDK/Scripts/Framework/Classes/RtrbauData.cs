@@ -33,8 +33,9 @@ namespace Rtrbau
     {
         public OntologyEntity attributeName;
         public OntologyEntity attributeRange;
-        public string attributeValue;        
-        public RtrbauFabricationType attributeType;
+        public string attributeValue;
+        public OntologyEntity attributeType;
+        public RtrbauFabricationType fabricationType;
 
         #region CONSTRUCTOR
         /// <summary>
@@ -45,12 +46,13 @@ namespace Rtrbau
         /// <param name="range"></param>
         /// <param name="value"></param>
         /// <param name="type"></param>
-        public RtrbauAttribute (OntologyEntity name, OntologyEntity range, string value, RtrbauFabricationType type)
+        public RtrbauAttribute (OntologyEntity name, OntologyEntity range, string value, OntologyEntity type, RtrbauFabricationType fabrication)
         {
             attributeName = name;
             attributeRange = range;
             attributeValue = value;
             attributeType = type;
+            fabricationType = fabrication;
         }
         #endregion CONSTRUCTOR
 
@@ -86,120 +88,241 @@ namespace Rtrbau
         }
 
         /// <summary>
-        /// IMP: to merge both class and invidual ontology elements into a single one to evaluate attributes for augmentation
-        /// IMP: drops all properties that cannot be found in the matching class
-        /// IMP: evaluates attributes and adapts them according to algorithm if necessary
-        /// IMP: this assumes user.procedure == RtrbauElementType.Consult
-        /// UPG: improve server to find properties ranges on its own so there is no need to match with a class
+        /// Assumes <see cref="RtrbauElementType.Consult"/> for <see cref="User.procedure"/>.
+        /// Discards properties in <paramref name="individualElement"/> not found in <paramref name="classElement"/>.
+        /// Evaluates properties in <paramref name="individualElement"/> and adapts them accordingly to algorithm.
         /// </summary>
         /// <param name="individualElement"></param>
         /// <param name="classElement"></param>
         /// <param name="relationshipClassesElements"></param>
-        public RtrbauElement (AssetManager assetManager, JsonIndividualValues individualElement, JsonClassProperties classElement, List<JsonClassProperties> relationshipClassesElements)
+        public RtrbauElement (RtrbauElementType elementType, AssetManager assetManager, JsonIndividualValues individualElement, JsonClassProperties classElement, List<JsonClassProperties> relationshipClassesElements)
         {
-            // RTRBAU ALGORITHM: Loops 1 and 2 combined
-            if (classElement.ontClass == individualElement.ontClass)
+            // IMP: to merge both class and invidual ontology elements into a single one to evaluate attributes for augmentation
+            // IMP: drops all properties that cannot be found in the matching class
+            // IMP: evaluates attributes and adapts them according to algorithm if necessary
+            // IMP: this assumes user.procedure == RtrbauElementType.Consult
+            // UPG: improve server to find properties ranges on its own so there is no need to match with a class
+
+            if (elementType == RtrbauElementType.Consult)
             {
-                elementName = new OntologyEntity(individualElement.ontIndividual);
-                elementClass = new OntologyEntity(classElement.ontClass);
-                elementAttributes = new List<RtrbauAttribute>();
-
-                foreach (JsonProperty classAttribute in classElement.ontProperties)
+                // RTRBAU ALGORITHM: Loops 1 and 2 combined
+                if (classElement.ontClass == individualElement.ontClass)
                 {
-                    List<JsonValue> individualAttributes = individualElement.ontProperties.FindAll(delegate (JsonValue individualValue) { return individualValue.ontName == classAttribute.ontName; });
+                    elementName = new OntologyEntity(individualElement.ontIndividual);
+                    elementClass = new OntologyEntity(classElement.ontClass);
+                    elementAttributes = new List<RtrbauAttribute>();
 
-                    foreach (JsonValue individualAttribute in individualAttributes)
+                    foreach (JsonProperty classAttribute in classElement.ontProperties)
                     {
-                        // Avoid checking names, that was checked before
+                        List<JsonValue> individualAttributes = individualElement.ontProperties.FindAll(delegate (JsonValue individualValue) { return individualValue.ontName == classAttribute.ontName; });
 
-                        if (individualAttribute.ontType == classAttribute.ontType)
+                        foreach (JsonValue individualAttribute in individualAttributes)
                         {
-                            OntologyEntity attributeName;
-                            OntologyEntity attributeRange;
-                            string attributeValue;
-                            RtrbauFabricationType attributeType;
+                            // Avoid checking names, that was checked before
 
-                            attributeName = new OntologyEntity(classAttribute.ontName);
-
-                            // When component distance = 1, then assign individual as obj file
-                            if (classAttribute.ontRange == Rtrbauer.instance.component.componentURI)
+                            if (individualAttribute.ontType == classAttribute.ontType)
                             {
-                                OntologyEntity individualValue = new OntologyEntity(individualAttribute.ontValue);
-                                // Changed way in which components are found in the scene
-                                // It is dependent on visualiser being unique in the scene
-                                // UPG: to adapt for when visualiser won't be unique
-                                string componentName = assetManager.FindAssetComponent(individualValue.name);
-                                Debug.Log("RtrbauData: " + componentName);
-                                Debug.Log("RtrbauData: " + individualValue.name);
-                                // But only when the component is found in the scene
-                                // In that case, it is assumed the obj file was taken from the current server
-                                // Otherwise, it is already now the attribute is of object type
-                                // if (GameObject.Find(individualValue.name) != null)
-                                if (componentName == individualValue.name)
+                                OntologyEntity attributeName;
+                                OntologyEntity attributeRange;
+                                string attributeValue;
+                                OntologyEntity attributeType;
+                                RtrbauFabricationType fabricationType;
+
+                                attributeName = new OntologyEntity(classAttribute.ontName);
+
+                                // When component distance = 0, then assign individual as obj file
+                                if (classAttribute.ontRange == Rtrbauer.instance.component.componentURI)
                                 {
-                                    attributeRange = new OntologyEntity(Rtrbauer.instance.uris.XSD + "#anyURI");
-                                    attributeValue = Rtrbauer.instance.server.serverURI + "api/files/obj/" + individualValue.name + ".obj";
-                                    attributeType = RtrbauFabricationType.Observe;
+                                    OntologyEntity individualValue = new OntologyEntity(individualAttribute.ontValue);
+                                    // Changed way in which components are found in the scene
+                                    // It is dependent on visualiser being unique in the scene
+                                    // UPG: to adapt for when visualiser won't be unique
+                                    string componentName = assetManager.FindAssetComponent(individualValue.name);
+                                    Debug.Log("RtrbauData::RtrbauElement: " + componentName);
+                                    Debug.Log("RtrbauData::RtrbauElement: " + individualValue.name);
+                                    // But only when the component is found in the scene
+                                    // In that case, it is assumed the obj file was taken from the current server
+                                    // Otherwise, it is already known the attribute is of object type: so fabrication type should be inspect
+                                    // if (GameObject.Find(individualValue.name) != null)
+                                    if (componentName == individualValue.name)
+                                    {
+                                        attributeRange = new OntologyEntity(Rtrbauer.instance.uris.XSD + "#anyURI");
+                                        attributeValue = Rtrbauer.instance.server.serverURI + "api/files/obj/" + individualValue.name + ".obj";
+                                        attributeType = new OntologyEntity(Rtrbauer.instance.uris.OWL + "#DatatypeProperty");
+                                        fabricationType = RtrbauFabricationType.Observe;
+                                    }
+                                    else
+                                    {
+                                        attributeRange = new OntologyEntity(classAttribute.ontRange);
+                                        attributeValue = individualAttribute.ontValue;
+                                        attributeType = new OntologyEntity(classAttribute.ontType);
+                                        fabricationType = RtrbauFabricationType.Inspect;
+                                        // Modified as per stated above: components unless found in scene should be of inspect type
+                                        // attributeValue = individualValue.ToString();
+                                        // attributeType = RtrbauFabricationType.Observe;
+                                    }
                                 }
-                                else
+                                else if (classAttribute.ontType.Contains(OntologyPropertyType.DatatypeProperty.ToString()))
                                 {
-                                    attributeRange = new OntologyEntity(classAttribute.ontRange);
-                                    attributeValue = individualValue.ToString();
-                                    attributeType = RtrbauFabricationType.Observe;
-                                }
-                            }
-                            else if (classAttribute.ontType.Contains(OntologyPropertyType.DatatypeProperty.ToString()))
-                            {
-                                // Declare attribute as to observe when property of datatype
-                                // Those object properties that point to empty classes, declare as to observe
-                                attributeRange = new OntologyEntity(classAttribute.ontRange);
-                                attributeValue = individualAttribute.ontValue;
-                                attributeType = RtrbauFabricationType.Observe;
-
-                            }
-                            else if (classAttribute.ontType.Contains(OntologyPropertyType.ObjectProperty.ToString()))
-                            {
-                                // Declare attribute as to inspect when property of object type
-                                // Unless the individual being pointed belongs to an empty class, which is then meant to observe
-                                // This specific case is to control object properties that are used as pre-defined datasets
-                                JsonClassProperties objectPropertyClass = relationshipClassesElements.Find(delegate (JsonClassProperties objectProperty) { return objectProperty.ontClass == classAttribute.ontRange; });
-                                Debug.Log("RtrbauData: Event error:" + classAttribute.ontRange);
-                                if (objectPropertyClass.ontProperties.Count != 0)
-                                {
-                                    Debug.Log("RtrbauData: " + objectPropertyClass.ontClass);
+                                    // Declare attribute as to observe when property of datatype
+                                    // Those object properties that point to empty classes, declare as to observe
                                     attributeRange = new OntologyEntity(classAttribute.ontRange);
                                     attributeValue = individualAttribute.ontValue;
-                                    attributeType = RtrbauFabricationType.Inspect;
+                                    attributeType = new OntologyEntity(classAttribute.ontType);
+                                    fabricationType = RtrbauFabricationType.Observe;
+
+                                }
+                                else if (classAttribute.ontType.Contains(OntologyPropertyType.ObjectProperty.ToString()))
+                                {
+                                    // Declare attribute as to inspect when property of object type
+                                    // Unless the individual being pointed belongs to an empty class, which is then meant to observe
+                                    // This specific case is to control object properties that are used as pre-defined datasets
+                                    JsonClassProperties objectPropertyClass = relationshipClassesElements.Find(delegate (JsonClassProperties objectProperty) { return objectProperty.ontClass == classAttribute.ontRange; });
+                                    Debug.Log("RtrbauData::RtrbauElement: Event error:" + classAttribute.ontRange);
+                                    if (objectPropertyClass.ontProperties.Count != 0)
+                                    {
+                                        Debug.Log("RtrbauData::RtrbauElement: " + objectPropertyClass.ontClass);
+                                        attributeRange = new OntologyEntity(classAttribute.ontRange);
+                                        attributeValue = individualAttribute.ontValue;
+                                        attributeType = new OntologyEntity(classAttribute.ontType);
+                                        fabricationType = RtrbauFabricationType.Inspect;
+                                    }
+                                    else
+                                    {
+                                        // IMPORTANT: this changes the attribute range to string to allow icon creation
+                                        // However, this only applies to consult elements
+                                        // Report elements may require a new consult type
+                                        attributeRange = new OntologyEntity(Rtrbauer.instance.uris.XSD + "#string");
+                                        // attributeRange = new OntologyEntity(classAttribute.ontRange);
+                                        attributeValue = Parser.ParseURI(individualAttribute.ontValue, '#', RtrbauParser.post);
+                                        attributeType = new OntologyEntity(Rtrbauer.instance.uris.OWL + "#DatatypeProperty");
+                                        fabricationType = RtrbauFabricationType.Observe;
+                                    }
                                 }
                                 else
                                 {
-                                    // IMPORTANT: this changes the attribute range to string to allow icon creation
-                                    // However, this only applies to consult elements
-                                    // Report elements may require a new consult type
-                                    attributeRange = new OntologyEntity(Rtrbauer.instance.uris.XSD + "#string");
-                                    // attributeRange = new OntologyEntity(classAttribute.ontRange);
-                                    attributeValue = Parser.ParseURI(individualAttribute.ontValue, '#', RtrbauParser.post);
-                                    attributeType = RtrbauFabricationType.Observe;
+                                    throw new ArgumentException("RtrbauData::RtrbauElement: Attribute type is not implemented in Rtrbau");
                                 }
+
+                                elementAttributes.Add(new RtrbauAttribute(attributeName, attributeRange, attributeValue, attributeType, fabricationType));
+                                Debug.Log("RtrbauData::RtrbauElement: " + attributeName.name + " " + attributeRange.name + " " + attributeValue + " " + attributeType);
                             }
                             else
                             {
-                                throw new ArgumentException("RtrbauData: Attribute format is not implemented in Rtrbau");
+                                throw new ArgumentException("RtrbauData::RtrbauElement: Attribute type does not coincide");
                             }
-
-                            elementAttributes.Add(new RtrbauAttribute(attributeName, attributeRange, attributeValue, attributeType));
-                            Debug.Log("RtrbauData: " + attributeName.name + " " + attributeRange.name + " " + attributeValue + " " + attributeType);
-                        }
-                        else
-                        {
-                            throw new ArgumentException("RtrbauData: Attribute type does not coincide");
                         }
                     }
+                }
+                else
+                {
+                    throw new ArgumentException("RtrbauData::RtrbauElement: Individual does not belong to Class");
                 }
             }
             else
             {
-                throw new ArgumentException("RtrbauData: Individual does not belong to Class");
+                throw new ArgumentException("RtrbauData::RtrbauElement: this declaration does not implement " + elementType.ToString() + " elements");
+            }
+            
+        }
+
+        /// <summary>
+        /// Assumes <see cref="RtrbauElementType.Report"/> for <see cref="User.procedure"/>.
+        /// Evaluates properties in <paramref name="classElement"/> according to <paramref name="exampleElement"/> and adapts them accordingly to algorithm.
+        /// Additional evaluation according to individuals referenced through object properties are made directly by fabrications and consequent rationale.
+        /// Maintains <see cref="RtrbauAttribute"/> class invariable.
+        /// </summary>
+        /// <param name="assetManager"></param>
+        /// <param name="classElement"></param>
+        /// <param name="exampleElement"></param>
+        public RtrbauElement (RtrbauElementType elementType, AssetManager assetManager, JsonClassProperties classElement, JsonIndividualValues exampleElement)
+        {
+            if (elementType == RtrbauElementType.Report)
+            {
+                // Remember to add in here the new individual name: so far: className + dateTime
+                // To be possible to change it afterwards, also attributes: to be deleted and re-updated using fabrications
+
+                // RTRBAU ALGORITHM: Loops 1 and 2 combined
+                // UPG::ErrorHandling: modify to cope with the possibility that example does not exist or covers all attributes
+                if (classElement.ontClass == exampleElement.ontClass)
+                {
+                    // Generate initial element name: using class name and datetime; to be updated afterwards
+                    elementName = new OntologyEntity(classElement.ontClass);
+                    elementName.name += DateTime.Now;
+                    // Initialise rest of element variables
+                    elementClass = new OntologyEntity(classElement.ontClass);
+                    elementAttributes = new List<RtrbauAttribute>();
+
+                    // UPG: modify RtrbauElement to ensure aligns with nominating components as models if found on the scene
+                    foreach (JsonProperty classAttribute in classElement.ontProperties)
+                    {
+                        Debug.Log("RtrbauData::RtrbauElement: classAttributeName is " + classAttribute.ontName);
+                        // Find value to assign to class Attribute to generate fabrications: to be updated with user interactions
+                        JsonValue exampleAttributeValue = exampleElement.ontProperties.Find(delegate (JsonValue exampleValue) { return exampleValue.ontName == classAttribute.ontName; });
+                        Debug.Log("RtrbauData::RtrbauElement: exampleAttributeValue exists: " + exampleAttributeValue.ontName == null);
+                        // Class and example attributes coincide by name: already checked above
+                        // Check if class and example attributes also coincide in type
+                        if (exampleAttributeValue.ontType == classAttribute.ontType)
+                        {
+                            // Declare variables to generate a new RtrbauAttribute
+                            OntologyEntity attributeName;
+                            OntologyEntity attributeRange;
+                            string attributeValue;
+                            OntologyEntity attributeType;
+                            RtrbauFabricationType fabricationType;
+
+                            // Assign attribute features
+                            // UPG: to modify assignment if necessary as for consult element fabrications
+                            attributeName = new OntologyEntity(classAttribute.ontName);
+                            attributeRange = new OntologyEntity(classAttribute.ontRange);
+                            attributeValue = exampleAttributeValue.ontValue;
+                            attributeType = new OntologyEntity(classAttribute.ontType);
+
+                            // Assign attribute fabrication type
+                            // When attribute class coincides when component class, then assign individual as obj file
+                            if (classAttribute.ontRange == Rtrbauer.instance.component.componentURI)
+                            {
+                                OntologyEntity exampleValue = new OntologyEntity(exampleAttributeValue.ontValue);
+                                // For ElementReport any component can be accepted as an example value
+                                // It only requires the obj format to be detected by data facets
+                                // Only scene-found models would be selectable, so server location is assumed
+                                // UPG: to find a better way to automatically generate obj files for model record
+                                // UPG: when found, add a secondary fabrication for model nomination
+                                attributeValue = Rtrbauer.instance.server.serverURI + "api/files/obj/" + exampleValue.name + ".obj";
+                                attributeType = new OntologyEntity(Rtrbauer.instance.uris.OWL + "#DatatypeProperty");
+                                fabricationType = RtrbauFabricationType.Record;
+                            }
+                            else if (classAttribute.ontType.Contains(OntologyPropertyType.DatatypeProperty.ToString()))
+                            {
+                                fabricationType = RtrbauFabricationType.Record;
+                            }
+                            else if (classAttribute.ontType.Contains(OntologyPropertyType.ObjectProperty.ToString()))
+                            {
+                                fabricationType = RtrbauFabricationType.Nominate;
+                            }
+                            else
+                            {
+                                throw new ArgumentException("RtrbauData::RtrbauElement: Attribute type is not implemented in Rtrbau");
+                            }
+
+                            // Assign attribute to list of element attributes as determined by rtrbau algorithm
+                            elementAttributes.Add(new RtrbauAttribute(attributeName, attributeRange, attributeValue, attributeType, fabricationType));
+                        }
+                        else
+                        {
+                            // UPG::ErrorHandling: it can happen that there is no example value with that attribute
+                            throw new ArgumentException("RtrbauData::RtrbauElement: Attribute type does not coincide");
+                        }
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException("RtrbauData::RtrbauElement: Example does not belong to Class");
+                }
+            }
+            else
+            {
+                throw new ArgumentException("RtrbauData::RtrbauElement: this declaration does not implement " + elementType.ToString() + " elements");
             }
         }
         #endregion CONSTRUCTOR
@@ -251,6 +374,8 @@ namespace Rtrbau
         public List<string> facetRangeRule;
         public RtrbauFacetRuleType facetValueType;
         public List<string> facetValueRule;
+        public RtrbauFacetRuleType facetTypeType;
+        public List<string> facetTypeRule;
         public int facetRestrictivity;
 
         #region CONSTRUCTOR
@@ -262,12 +387,13 @@ namespace Rtrbau
         /// <param name="nameRules"></param>
         /// <param name="rangeRules"></param>
         /// <param name="valueRules"></param>
-        public DataFacetRules(RtrbauFacetRuleType nameRuleType, List<string> nameRules, RtrbauFacetRuleType rangeRuleType, List<string> rangeRules, RtrbauFacetRuleType valueRuleType, List<string> valueRules)
+        public DataFacetRules(RtrbauFacetRuleType nameRuleType, List<string> nameRules, RtrbauFacetRuleType rangeRuleType, List<string> rangeRules, RtrbauFacetRuleType valueRuleType, List<string> valueRules, RtrbauFacetRuleType typeRuleType, List<string> typeRules)
         {
             facetRestrictivity = 0;
             if (nameRules != null) facetRestrictivity += 1;
             if (rangeRules != null) facetRestrictivity += 1;
             if (valueRules != null) facetRestrictivity += 1;
+            if (typeRules != null) facetRestrictivity += 1;
 
             facetNameType = nameRuleType;
             facetNameRule = nameRules;
@@ -275,6 +401,8 @@ namespace Rtrbau
             facetRangeRule = rangeRules;
             facetValueType = valueRuleType;
             facetValueRule = valueRules;
+            facetTypeType = typeRuleType;
+            facetTypeRule = typeRules;
         }
         #endregion CONSTRUCTOR
 
@@ -287,19 +415,20 @@ namespace Rtrbau
         /// <param name="attributeRange"></param>
         /// <param name="attributeValue"></param>
         /// <returns></returns>
-        public bool EvaluateFacet(string attributeName, string attributeRange, string attributeValue)
+        public bool EvaluateFacet(string attributeName, string attributeRange, string attributeValue, string attributeType)
         {
             // RTRBAU ALGORITHM: Rules in loop 3
             bool nameMet = EvaluateRule(facetNameType, facetNameRule, attributeName);
             bool rangeMet = EvaluateRule(facetRangeType, facetRangeRule, attributeRange);
             bool valueMet = EvaluateRule(facetValueType, facetValueRule, attributeValue);
+            bool typeMet = EvaluateRule(facetTypeType, facetTypeRule, attributeType);
 
             //// RTRBAU ALGORITHM: Rules in loop 3
             //bool nameMet = EvaluateAllRules(facetNameRule, attributeName);
             //bool rangeMet = EvaluateAnyRule(facetRangeRule, attributeRange);
             //bool valueMet = EvaluateAnyRule(facetValueRule, attributeValue);
 
-            if (nameMet && rangeMet && valueMet)
+            if (nameMet && rangeMet && valueMet && typeMet)
             {
                 return true;
             }
@@ -458,13 +587,13 @@ namespace Rtrbau
             // Assign attribute to the most restrictive facet
             foreach (RtrbauAttribute attribute in element.elementAttributes)
             {
-                if (attribute.attributeType == formatType)
+                if (attribute.fabricationType == formatType)
                 {
                     List<KeyValuePair<DataFacet, RtrbauAttribute>> assignableAttributes = new List<KeyValuePair<DataFacet, RtrbauAttribute>>();
 
                     foreach (DataFacet facet in formatFacets)
                     {
-                        if (facet.facetRules.EvaluateFacet(attribute.attributeName.name, attribute.attributeRange.name, attribute.attributeValue))
+                        if (facet.facetRules.EvaluateFacet(attribute.attributeName.name, attribute.attributeRange.name, attribute.attributeValue, attribute.attributeType.name))
                         {
                             // assignableFacets.Add(new KeyValuePair<KeyValuePair<RtrbauFacetForm, DataFacetRules>, RtrbauAttribute>(new KeyValuePair<RtrbauFacetForm, DataFacetRules>(facet.Key, facet.Value), attribute));
                             assignableAttributes.Add(new KeyValuePair<DataFacet, RtrbauAttribute>(facet, attribute));

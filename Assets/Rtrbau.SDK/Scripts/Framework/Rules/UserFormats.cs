@@ -115,10 +115,6 @@ namespace Rtrbau
         public static UserFormat TextKeyboard1 = new UserFormat(RtrbauFabricationName.TextKeyboard1, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
         #endregion TEXTRECORD_FORMATS
 
-        #region MODELPANEL_FORMATS
-        // UPG
-        #endregion MODELPANEL_FORMATS
-
         #region TEXTPANEL_FORMATS
         public static UserFormat TextPanelTap1 = new UserFormat(RtrbauFabricationName.TextPanelTap1, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
         #endregion TEXTPANEL_FORMATS
@@ -126,6 +122,10 @@ namespace Rtrbau
         #region ICONPANEL_FORMATS
         public static UserFormat IconPanelTap1 = new UserFormat(RtrbauFabricationName.IconPanelTap1, RtrbauComprehensiveness.twoD, RtrbauDescriptiveness.symbolic);
         #endregion ICONPANEL_FORMATS
+
+        #region MODELPANEL_FORMATS
+        // UPG: to modify ModelRecordHold1 once changes for component class being made
+        #endregion MODELPANEL_FORMATS
         #endregion FORMATS
     }
 }
