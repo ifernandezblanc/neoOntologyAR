@@ -42,12 +42,17 @@ namespace Rtrbau
         // public static string XSD = "http://www.w3.org/2001/XMLSchema";
         #region MEMBERS
         [SerializeField]
-        public string XSD = "http://www.w3.org/2001/XMLSchema";
-        public string OWL = "http://www.w3.org/2002/07/owl";
+        public string XSD;
+        public string OWL;
         #endregion MEMBERS
 
-        #region CONSTRUCTOR
-        #endregion CONSTRUCTOR
+        #region CONSTRUCTORS
+        public URIS()
+        {
+            XSD = "http://www.w3.org/2001/XMLSchema";
+            OWL = "http://www.w3.org/2002/07/owl";
+        }
+        #endregion CONSTRUCTORS
 
         #region METHODS
         #endregion METHODS
@@ -62,11 +67,15 @@ namespace Rtrbau
         // public static Uri ontologyURI { get; set; }
         #region MEMBERS
         [SerializeField]
-        public Uri ontologyURI = new Uri("http://138.250.108.1:3003/api/files/owl");
+        public Uri ontologyURI;
         #endregion MEMBERS
 
-        #region CONSTRUCTOR
-        #endregion CONSTRUCTOR
+        #region CONSTRUCTORS
+        public Ontology()
+        {
+            ontologyURI = new Uri("http://138.250.108.1:3003/api/files/owl");
+        }
+        #endregion CONSTRUCTORS
 
         #region METHODS
         #endregion METHODS
@@ -81,11 +90,15 @@ namespace Rtrbau
         // public static Uri serverURI { get; set; }
         #region MEMBERS
         [SerializeField]
-        public Uri serverURI = new Uri("http://138.250.108.1:3003");
+        public Uri serverURI;
         #endregion MEMBERS
 
-        #region CONSTRUCTOR
-        #endregion CONSTRUCTOR
+        #region CONSTRUCTORS
+        public Server()
+        {
+            serverURI = new Uri("http://138.250.108.1:3003");
+        }
+        #endregion CONSTRUCTORS
 
         #region METHODS
         #endregion METHODS
@@ -103,8 +116,12 @@ namespace Rtrbau
         public string assetURI;
         #endregion MEMBERS
 
-        #region CONSTRUCTOR
-        #endregion CONSTRUCTOR
+        #region CONSTRUCTORS
+        public Asset()
+        {
+            assetURI = null;
+        }
+        #endregion CONSTRUCTORS
 
         #region METHODS
         #endregion METHODS
@@ -120,11 +137,15 @@ namespace Rtrbau
         // public static string componentURI { get; set; }
         #region MEMBERS
         [SerializeField]
-        public string componentURI = "http://138.250.108.1:3003/api/files/owl/orgont#Component";
+        public string componentURI;
         #endregion MEMBERS
 
-        #region CONSTRUCTOR
-        #endregion CONSTRUCTOR
+        #region CONSTRUCTORS
+        public Component()
+        {
+            componentURI = "http://138.250.108.1:3003/api/files/owl/orgont#Component";
+        }
+        #endregion CONSTRUCTORS
 
         #region METHODS
         #endregion METHODS
@@ -143,8 +164,12 @@ namespace Rtrbau
         public string operationURI;
         #endregion MEMBERS
 
-        #region CONSTRUCTOR
-        #endregion CONSTRUCTOR
+        #region CONSTRUCTORS
+        public Operation()
+        {
+            operationURI = null;
+        }
+        #endregion CONSTRUCTORS
 
         #region METHODS
         #endregion METHODS
@@ -172,7 +197,7 @@ namespace Rtrbau
         private Dictionary<RtrbauDescriptiveness, bool> description;
         #endregion MEMBERS
 
-        #region CONSTRUCTOR
+        #region CONSTRUCTORS
         public User()
         {
             comprehension = new Dictionary<RtrbauComprehensiveness, bool>();
@@ -189,7 +214,7 @@ namespace Rtrbau
             }
 
         }
-        #endregion CONSTRUCTOR
+        #endregion CONSTRUCTORS
 
         #region METHODS
         public void AssignComprehensiveness(RtrbauComprehensiveness comprehensiveness, bool availability)
@@ -242,7 +267,7 @@ namespace Rtrbau
         private Dictionary<RtrbauSense, bool> senses;
         #endregion MEMBERS
 
-        #region CONSTRUCTOR
+        #region CONSTRUCTORS
         public Environment()
         {
             senses = new Dictionary<RtrbauSense, bool>();
@@ -252,7 +277,7 @@ namespace Rtrbau
                 senses.Add(sense, false);
             }
         }
-        #endregion CONSTRUCTOR
+        #endregion CONSTRUCTORS
 
         #region METHODS
         public void AssignSense(RtrbauSense sense, bool availability)

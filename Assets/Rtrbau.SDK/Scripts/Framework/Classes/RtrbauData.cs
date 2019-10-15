@@ -31,13 +31,24 @@ namespace Rtrbau
     [Serializable]
     public class RtrbauAttribute
     {
+        #region MEMBERS
         public OntologyEntity attributeName;
         public OntologyEntity attributeRange;
         public string attributeValue;
         public OntologyEntity attributeType;
         public RtrbauFabricationType fabricationType;
+        #endregion MEMBERS
 
-        #region CONSTRUCTOR
+        #region CONSTRUCTORS
+        public RtrbauAttribute()
+        {
+            attributeName = new OntologyEntity();
+            attributeRange = new OntologyEntity();
+            attributeValue = null;
+            attributeType = new OntologyEntity();
+            fabricationType = RtrbauFabricationType.Observe;
+        }
+
         /// <summary>
         /// Describe script purpose
         /// Add links when code has been inspired
@@ -54,7 +65,7 @@ namespace Rtrbau
             attributeType = type;
             fabricationType = fabrication;
         }
-        #endregion CONSTRUCTOR
+        #endregion CONSTRUCTORS
 
         #region METHODS
 
@@ -68,11 +79,20 @@ namespace Rtrbau
     [Serializable]
     public class RtrbauElement
     {
+        #region MEMBERS
         public OntologyEntity elementName;
         public OntologyEntity elementClass;
         public List<RtrbauAttribute> elementAttributes;
+        #endregion MEMBERS
 
-        #region CONSTRUCTOR
+        #region CONSTRUCTORS
+        public RtrbauElement()
+        {
+            elementName = new OntologyEntity();
+            elementClass = new OntologyEntity();
+            elementAttributes = new List<RtrbauAttribute>();
+        }
+
         /// <summary>
         /// Describe script purpose
         /// Add links when code has been inspired
@@ -259,7 +279,7 @@ namespace Rtrbau
                         Debug.Log("RtrbauData::RtrbauElement: classAttributeName is " + classAttribute.ontName);
                         // Find value to assign to class Attribute to generate fabrications: to be updated with user interactions
                         JsonValue exampleAttributeValue = exampleElement.ontProperties.Find(delegate (JsonValue exampleValue) { return exampleValue.ontName == classAttribute.ontName; });
-                        Debug.Log("RtrbauData::RtrbauElement: exampleAttributeValue exists: " + exampleAttributeValue.ontName == null);
+                        Debug.Log("RtrbauData::RtrbauElement: exampleAttributeValue exists: " + Equals(exampleAttributeValue, default(JsonValue)));
                         // Class and example attributes coincide by name: already checked above
                         // Check if class and example attributes also coincide in type
                         if (exampleAttributeValue.ontType == classAttribute.ontType)
@@ -325,7 +345,7 @@ namespace Rtrbau
                 throw new ArgumentException("RtrbauData::RtrbauElement: this declaration does not implement " + elementType.ToString() + " elements");
             }
         }
-        #endregion CONSTRUCTOR
+        #endregion CONSTRUCTORS
 
         #region METHODS
 
@@ -339,6 +359,7 @@ namespace Rtrbau
     [Serializable]
     public class RtrbauFabrication
     {
+        #region MEMBERS
         public RtrbauFabricationName fabricationName;
         public RtrbauFabricationType fabricationType;
         public Dictionary<DataFacet, RtrbauAttribute> fabricationData;
@@ -346,15 +367,27 @@ namespace Rtrbau
         public RtrbauInteraction fabricationInteraction;
         public RtrbauComprehensiveness fabricationComprehension;
         public RtrbauDescriptiveness fabricationDescription;
+        #endregion MEMBERS
 
-        #region CONSTRUCTOR
+        #region CONSTRUCTORS
+        public RtrbauFabrication()
+        {
+            fabricationName = RtrbauFabricationName.DefaultObserve;
+            fabricationType = RtrbauFabricationType.Observe;
+            fabricationData = new Dictionary<DataFacet, RtrbauAttribute>();
+            fabricationAugmentation = RtrbauAugmentation.Audio;
+            fabricationInteraction = RtrbauInteraction.GestureTap;
+            fabricationComprehension = RtrbauComprehensiveness.oneD;
+            fabricationDescription = RtrbauDescriptiveness.literal;
+        }
+
         public RtrbauFabrication (RtrbauFabricationName name, RtrbauFabricationType type, Dictionary<DataFacet, RtrbauAttribute> data)
         {
             fabricationName = name;
             fabricationType = type;
             fabricationData = data;
         }
-        #endregion CONSTRUCTOR
+        #endregion CONSTRUCTORS
 
     }
     #endregion RTRBAU_ELEMENTS
@@ -368,6 +401,7 @@ namespace Rtrbau
     [Serializable]
     public class DataFacetRules
     {
+        #region MEMBERS
         public RtrbauFacetRuleType facetNameType;
         public List<string> facetNameRule;
         public RtrbauFacetRuleType facetRangeType;
@@ -377,8 +411,22 @@ namespace Rtrbau
         public RtrbauFacetRuleType facetTypeType;
         public List<string> facetTypeRule;
         public int facetRestrictivity;
+        #endregion MEMBERS
 
-        #region CONSTRUCTOR
+        #region CONSTRUCTORS
+        public DataFacetRules()
+        {
+            facetNameType = RtrbauFacetRuleType.Any;
+            facetNameRule = new List<string>();
+            facetRangeType = RtrbauFacetRuleType.Any;
+            facetRangeRule = new List<string>();
+            facetValueType = RtrbauFacetRuleType.Any;
+            facetValueRule = new List<string>();
+            facetTypeType = RtrbauFacetRuleType.Any;
+            facetTypeRule = new List<string>();
+            facetRestrictivity = 0;
+        }
+
         /// <summary>
         /// Describe script purpose
         /// Add links when code has been inspired
@@ -404,7 +452,7 @@ namespace Rtrbau
             facetTypeType = typeRuleType;
             facetTypeRule = typeRules;
         }
-        #endregion CONSTRUCTOR
+        #endregion CONSTRUCTORS
 
         #region METHODS
         /// <summary>
@@ -502,10 +550,18 @@ namespace Rtrbau
     [Serializable]
     public class DataFacet
     {
+        #region MEMBERS
         public RtrbauFacetForm facetForm;
         public DataFacetRules facetRules;
+        #endregion MEMBERS
 
         #region CONSTRUCTOR
+        public DataFacet()
+        {
+            facetForm = RtrbauFacetForm.source;
+            facetRules = new DataFacetRules();
+        }
+
         /// <summary>
         /// Generates a facet for a specific format independently
         /// of the combination of facet rules being used.
@@ -527,13 +583,23 @@ namespace Rtrbau
     [Serializable]
     public class DataFormat
     {
+        #region MEMBERS
         public RtrbauFabricationName formatName;
         public RtrbauFabricationType formatType;
         public List<DataFacet> formatFacets;
         public int formatRequiredFacets;
         // public List<KeyValuePair<RtrbauFacetForm, DataFacetRules>> formatFacets;
+        #endregion MEMBERS
 
-        #region CONSTRUCTOR
+        #region CONSTRUCTORS
+        public DataFormat()
+        {
+            formatName = RtrbauFabricationName.DefaultObserve;
+            formatType = RtrbauFabricationType.Observe;
+            formatFacets = new List<DataFacet>();
+            formatRequiredFacets = 0;
+        }
+
         /// <summary>
         /// Describe script purpose
         /// Add links when code has been inspired
@@ -557,7 +623,7 @@ namespace Rtrbau
                 }
             }
         }
-        #endregion CONSTRUCTOR
+        #endregion CONSTRUCTORS
 
         #region METHODS
         /// <summary>
@@ -731,10 +797,18 @@ namespace Rtrbau
     [Serializable]
     public class AugmentationFacet
     {
+        #region MEMBERS
         public RtrbauAugmentation facetAugmentation;
         public List<RtrbauSense> facetSenses;
+        #endregion MEMBERS
 
-        #region CONSTRUCTOR
+        #region CONSTRUCTORS
+        public AugmentationFacet()
+        {
+            facetAugmentation = RtrbauAugmentation.Audio;
+            facetSenses = new List<RtrbauSense>();
+        }
+
         /// <summary>
         /// Lists the <paramref name="senses"/> that apply to an <paramref name="augmentation"/>.
         /// </summary>
@@ -745,7 +819,7 @@ namespace Rtrbau
             facetAugmentation = augmentation;
             facetSenses = senses;
         }
-        #endregion CONSTRUCTOR
+        #endregion CONSTRUCTORS
 
         #region METHODS
 
@@ -759,10 +833,18 @@ namespace Rtrbau
     [Serializable]
     public class InteractionFacet
     {
+        #region MEMBERS
         public RtrbauInteraction facetInteraction;
         public List<RtrbauSense> facetSenses;
+        #endregion MEMBERS
 
-        #region CONSTRUCTOR
+        #region CONSTRUCTORS
+        public InteractionFacet()
+        {
+            facetInteraction = RtrbauInteraction.GestureTap;
+            facetSenses = new List<RtrbauSense>();
+        }
+
         /// <summary>
         /// List the <paramref name="senses"/> that apply to an <paramref name="interaction"/>
         /// </summary>
@@ -773,7 +855,11 @@ namespace Rtrbau
             facetInteraction = interaction;
             facetSenses = senses;
         }
-        #endregion CONSTRUCTOR
+        #endregion CONSTRUCTORS
+
+        #region METHODS
+
+        #endregion METHODS
     }
 
     /// <summary>
@@ -783,11 +869,20 @@ namespace Rtrbau
     [Serializable]
     public class EnvironmentFormat
     {
+        #region MEMBERS
         public RtrbauFabricationName formatName;
         public AugmentationFacet formatAugmentation;
         public InteractionFacet formatInteraction;
+        #endregion MEMBERS
 
-        #region CONSTRUCTOR
+        #region CONSTRUCTORS
+        public EnvironmentFormat()
+        {
+            formatName = RtrbauFabricationName.DefaultObserve;
+            formatAugmentation = new AugmentationFacet();
+            formatInteraction = new InteractionFacet();
+        }
+
         /// <summary>
         /// Describes the environmental attributes of a fabrication format <paramref name="name"/>.
         /// </summary>
@@ -800,7 +895,7 @@ namespace Rtrbau
             formatAugmentation = augmentation;
             formatInteraction = interaction;
         }
-        #endregion CONSTRUCTOR
+        #endregion CONSTRUCTORS
 
         #region METHODS
         /// <summary>
@@ -835,8 +930,12 @@ namespace Rtrbau
     //[Serializable]
     //public class ComprehensionFacet
     //{
-    //    #region CONSTRUCTOR
-    //    #endregion CONSTRUCTOR
+    //    #region MEMBERS
+    //    #endregion MEMBERS   
+    //    #region CONSTRUCTORS
+    //    #endregion CONSTRUCTORS
+    //    #region METHODS
+    //    #endregion METHODS
     //}
 
     /// <summary>
@@ -846,8 +945,12 @@ namespace Rtrbau
     //[Serializable]
     //public class DescriptionFacet
     //{
-    //    #region CONSTRUCTOR
-    //    #endregion CONSTRUCTOR
+    //    #region MEMBERS
+    //    #endregion MEMBERS   
+    //    #region CONSTRUCTORS
+    //    #endregion CONSTRUCTORS
+    //    #region METHODS
+    //    #endregion METHODS
     //}
 
     /// <summary>
@@ -857,18 +960,27 @@ namespace Rtrbau
     [Serializable]
     public class UserFormat
     {
+        #region MEMBERS
         public RtrbauFabricationName formatName;
         public RtrbauComprehensiveness formatComprehension;
         public RtrbauDescriptiveness formatDescription;
+        #endregion MEMBERS
 
-        #region CONSTRUCTOR
+        #region CONSTRUCTORS
+        public UserFormat()
+        {
+            formatName = RtrbauFabricationName.DefaultObserve;
+            formatComprehension = RtrbauComprehensiveness.oneD;
+            formatDescription = RtrbauDescriptiveness.literal;
+        }
+
         public UserFormat (RtrbauFabricationName name, RtrbauComprehensiveness comprehension, RtrbauDescriptiveness description)
         {
             formatName = name;
             formatComprehension = comprehension;
             formatDescription = description;
         }
-        #endregion CONSTRUCTOR
+        #endregion CONSTRUCTORS
 
         #region METHODS
         /// <summary>

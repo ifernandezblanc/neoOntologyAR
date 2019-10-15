@@ -39,11 +39,20 @@ namespace Rtrbau
     [Serializable]
     public class OntologyEntity
     {
+        #region MEMBERS
         public string name;
         public string ontology;
         private string url;
+        #endregion MEMBERS
 
         #region CONSTRUCTOR
+        public OntologyEntity()
+        {
+            name = null;
+            ontology = null;
+            url = null;
+        }
+
         public OntologyEntity(string entityURI)
         {
             string entity = Parser.ParseURI(entityURI, '/', RtrbauParser.post);
@@ -72,10 +81,18 @@ namespace Rtrbau
     [Serializable]
     public class OntologyElement : ILoadable
     {
+        #region MEMBERS
         public OntologyEntity entity;
         public OntologyElementType type;
+        #endregion MEMBERS
 
         #region CONSTRUCTOR
+        public OntologyElement()
+        {
+            entity = new OntologyEntity();
+            type = OntologyElementType.Ontologies;
+        }
+
         public OntologyElement(string entityURI, OntologyElementType elementType)
         {
             entity = new OntologyEntity(entityURI);
@@ -113,11 +130,20 @@ namespace Rtrbau
     [Serializable]
     public class OntologyDistance : ILoadable
     {
+        #region MEMBERS
         public OntologyEntity startClass;
         public OntologyEntity endClass;
         public RtrbauDistanceType distanceType;
+        #endregion MEMBERS
 
         #region CONSTRUCTOR
+        public OntologyDistance()
+        {
+            startClass = new OntologyEntity();
+            endClass = new OntologyEntity();
+            distanceType = RtrbauDistanceType.Component;
+        }
+
         public OntologyDistance (string startClassURI, RtrbauDistanceType distance)
         {
             startClass = new OntologyEntity(startClassURI);
@@ -183,13 +209,22 @@ namespace Rtrbau
     /// </summary> 
     public class RtrbauFile : ILoadable
     {
+        #region MEMBERS
         public string name;
         public RtrbauFileType type;
         public RtrbauAugmentation augmentation;
-
         private string url;
+        #endregion MEMBERS
 
         #region CONSTRUCTOR
+        public RtrbauFile()
+        {
+            name = null;
+            type = RtrbauFileType.wav;
+            augmentation = RtrbauAugmentation.Audio;
+            url = null;
+        }
+
         public RtrbauFile(string fileName, string fileType)
         {
             name = fileName;
