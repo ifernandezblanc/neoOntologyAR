@@ -84,7 +84,7 @@ namespace Rtrbau
         ModelRecordHold1,
         TextDictation1,
         TextKeyboard1,
-        TextPanelTap1,
+        TextPanelTap1, TextPanelTap2,
         IconPanelTap1
     }
 
@@ -105,8 +105,11 @@ namespace Rtrbau
     /// Add links when code has been inspired
     /// </summary>
     public enum RtrbauAugmentation : int {
-        Registration, Text, Icon, Image, Audio, Video,
-        Hologram, Model, Animation
+        Registration,
+        Text, Icon, Image,
+        Audio, Video,
+        Hologram, Model,
+        Animation
     }
 
     /// <summary>
@@ -114,8 +117,9 @@ namespace Rtrbau
     /// Add links when code has been inspired
     /// </summary>
     public enum RtrbauInteraction : int {
-        None, GestureTap, GestureDoubleTap, GestureHold,
-        GestureNavigation, GestureManipulation, GestureKeyboard,
+        None, GestureKeyboard,
+        GestureTap, GestureDoubleTap, GestureHold,
+        GestureNavigation, GestureManipulation,
         Command, Dictation
     }
 

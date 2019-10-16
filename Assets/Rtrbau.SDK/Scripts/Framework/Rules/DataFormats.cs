@@ -234,6 +234,11 @@ namespace Rtrbau
         {
             new DataFacet(RtrbauFacetForm.source, DataFacets.TextFacet2)
         });
+
+        public static DataFormat TextPanelTap2 = new DataFormat(RtrbauFabricationName.TextPanelTap2, RtrbauFabricationType.Record, new List<DataFacet>
+        {
+            new DataFacet(RtrbauFacetForm.source, DataFacets.TextFacet6)
+        });
         #endregion TEXTPANEL_FORMATS
 
         #region ICONPANEL_FORMATS

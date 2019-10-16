@@ -284,6 +284,7 @@ namespace Rtrbau
                 // Find similar source attribute fabrications with similar augmentation method
                 List<RtrbauFabrication> similarAugmentationFabrications = assignedFabrications.FindAll(x => x.fabricationAugmentation == augmentation);
 
+                // In case there is more than one similar fabrication
                 if (similarAugmentationFabrications.Count > 1)
                 {
                     foreach (RtrbauAttribute attribute in rtrbauElement.elementAttributes)
@@ -293,9 +294,45 @@ namespace Rtrbau
 
                         if (similarSourceFabrications.Count > 1)
                         {
+                            // UPG: consider where no. of attribute equals 1, then modify according to user and environment formats
                             // Order similar fabrications by number of attributes
                             similarSourceFabrications.Sort((x, y) => x.fabricationData.Count.CompareTo(y.fabricationData.Count));
-                            // Remove as duplicated the fabrication with the highest number of attributes
+
+                            // If highest-attributes-number fabrication has only one, then compare facet restrictivity
+                            if (similarSourceFabrications[similarSourceFabrications.Count() - 1].fabricationData.Count() == 1)
+                            {
+                                // It assumes all fabrications have only one facet
+                                // Order similar fabrications by facet restrictivity on single attribute
+                                similarSourceFabrications.Sort((x, y) => x.fabricationData.First().Key.facetRules.facetRestrictivity.CompareTo(y.fabricationData.First().Key.facetRules.facetRestrictivity));
+
+                                foreach (RtrbauFabrication fabrication in similarSourceFabrications)
+                                {
+                                    Debug.Log("ElementReport::SelectFabrications: similar fabrication restrictiviy-ordered is " + fabrication.fabricationName + " for attribute " + attribute.attributeName.name);
+                                }
+
+                                // If facet restrictivity is equal, then compare format senses
+                                if (similarSourceFabrications[similarSourceFabrications.Count() - 1].fabricationData.First().Key.facetRules.facetRestrictivity == similarSourceFabrications[similarSourceFabrications.Count() - 2].fabricationData.First().Key.facetRules.facetRestrictivity)
+                                {
+                                    // UPG: to ensure senses are treated accordingly to proper rules rather than enum comparison (declaration order)
+                                    similarSourceFabrications.Sort((x, y) => x.fabricationInteraction.CompareTo(y.fabricationInteraction));
+
+                                    foreach (RtrbauFabrication fabrication in similarSourceFabrications)
+                                    {
+                                        Debug.Log("ElementReport::SelectFabrications: similar fabrication interaction-ordered is " + fabrication.fabricationName + " for attribute " + attribute.attributeName.name);
+                                    }
+                                }
+                                else
+                                {
+                                    // UPG: to ensure all facet restrictivities are considered, not only first two fabrications on attributes-sorted list
+                                }
+                            }
+                            else
+                            {
+                                // UPG: to ensure similar fabrications are re-sorted when number of attributes are equal but different to 1
+                                // UPG: for cases when there is more than one attribute, but number of attributes still equal for more than one similar fabrication
+                            }
+
+                            // Remove as duplicated the fabrication with the highest number of attributes or by facet restrictivity when number of attributes equals 1
                             similarSourceFabrications.RemoveAt(similarSourceFabrications.Count() - 1);
                             // Remove rest of duplicated fabrications from assignedFabrications
                             for (int i = 0; i < similarSourceFabrications.Count; i++)
@@ -307,6 +344,31 @@ namespace Rtrbau
                     }
                 }
                 else { }
+
+                //if (similarAugmentationFabrications.Count > 1)
+                //{
+                //    foreach (RtrbauAttribute attribute in rtrbauElement.elementAttributes)
+                //    {
+                //        // Find fabrications with similar source attributes
+                //        List<RtrbauFabrication> similarSourceFabrications = similarAugmentationFabrications.FindAll(x => x.fabricationData.Any(y => y.Key.facetForm == RtrbauFacetForm.source && y.Value.attributeName == attribute.attributeName && y.Value.attributeValue == attribute.attributeValue));
+
+                //        if (similarSourceFabrications.Count > 1)
+                //        {
+                //            // Order similar fabrications by number of attributes
+                //            similarSourceFabrications.Sort((x, y) => x.fabricationData.Count.CompareTo(y.fabricationData.Count));
+                //            // Remove as duplicated the fabrication with the highest number of attributes
+                //            similarSourceFabrications.RemoveAt(similarSourceFabrications.Count() - 1);
+                //            // Remove rest of duplicated fabrications from assignedFabrications
+                //            for (int i = 0; i < similarSourceFabrications.Count; i++)
+                //            {
+                //                assignedFabrications.Remove(similarSourceFabrications[i]);
+                //            }
+                //        }
+                //        else { }
+                //    }
+                //}
+                //else { }
+
             }
 
             // RTRBAU ALGORITHM: Identify non-assigned attributes and create default fabrications for them (new extension)
@@ -367,7 +429,7 @@ namespace Rtrbau
                 }
                 else
                 {
-                    throw new ArgumentException("ElementConsult::SelectFabrications: Default fabrications not implemented for fabrication type: " + attribute.attributeType);
+                    throw new ArgumentException("ElementConsult::SelectFabrications: Default fabrications not implemented for fabrication type: " + attribute.fabricationType);
                 }
             }
 

@@ -317,6 +317,7 @@ namespace Rtrbau
                                 // Only scene-found models would be selectable, so server location is assumed
                                 // UPG: to find a better way to automatically generate obj files for model record
                                 // UPG: when found, add a secondary fabrication for model nomination
+                                attributeRange = new OntologyEntity(Rtrbauer.instance.uris.XSD + "#anyURI");
                                 attributeValue = Rtrbauer.instance.server.serverURI + "api/files/obj/" + exampleValue.name + ".obj";
                                 attributeType = new OntologyEntity(Rtrbauer.instance.uris.OWL + "#DatatypeProperty");
                                 fabricationType = RtrbauFabricationType.Record;

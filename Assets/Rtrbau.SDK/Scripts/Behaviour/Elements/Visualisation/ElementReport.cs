@@ -220,11 +220,51 @@ namespace Rtrbau
         public void SelectFabrications()
         {
             Debug.Log("ElementConsult::SelectFabrications: rtrbau attributes to be evaluated against formats");
-            //// RTRBAU ALGORITHM: new extension (which original loop number is?)
-            //// RTRBAU ALGORITHM: previous two loops to reduce available formats merged into a single one
-            //// Checks if format is acceptable
-            //// If so, then evaluates the format agains the element to determine if it is assignable
-            //// Replaces the toogled foreach loops below
+            // RTRBAU ALGORITHM: new extension (which original loop number is?)
+            // RTRBAU ALGORITHM: previous two loops to reduce available formats merged into a single one
+            // Checks if format is acceptable
+            // If so, then evaluates the format agains the element to determine if it is assignable
+            // Replaces the toogled foreach loops below
+            // UPG: similar to ElementConsult: make one single script for consult and report
+            foreach (Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat> format in Dictionaries.ReportFormats)
+            {
+                // Check environment and user formats
+                Tuple<RtrbauAugmentation, RtrbauInteraction> envFacets = format.Item3.EvaluateFormat();
+                Tuple<RtrbauComprehensiveness, RtrbauDescriptiveness> userFacets = format.Item4.EvaluateFormat();
+
+                if (envFacets != null && userFacets != null)
+                {
+                    Debug.Log("ElementConsult::SelectFabrications: Fabrication available: " + format.Item1);
+                    Debug.Log("ElementConsult::SelectFabrications: " + format.Item2.formatName + " required facets: " + format.Item2.formatRequiredFacets);
+
+                    // Determine if format is assignable as fabrications to the element
+                    List<RtrbauFabrication> formatAssignedFabrications = format.Item2.EvaluateFormat(rtrbauElement);
+
+                    // Assign fabrications
+                    if (formatAssignedFabrications != null)
+                    {
+                        foreach (RtrbauFabrication fabrication in formatAssignedFabrications)
+                        {
+                            Debug.Log("ElementConsult::SelectFabrications: Fabrication assigned: " + fabrication.fabricationName);
+                            // Add environment and user features to fabrication
+                            // UPG: since environment and user formats are being evaluated before, there is no need to add them to RtrbauFabrication class?
+                            fabrication.fabricationAugmentation = format.Item3.formatAugmentation.facetAugmentation;
+                            fabrication.fabricationInteraction = format.Item3.formatInteraction.facetInteraction;
+                            fabrication.fabricationComprehension = format.Item4.formatComprehension;
+                            fabrication.fabricationDescription = format.Item4.formatDescription;
+                            // Add fabrication to assigned fabrications list
+                            assignedFabrications.Add(fabrication);
+                        }
+                    }
+                }
+                else { }
+            }
+
+            //// Return list of acceptable formats according to user and environment configuration
+            //// These formats to be used in the following loop
+            //// This new loop to replace second loop below
+            //List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>> availableFormats = new List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>>();
+
             //foreach (Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat> format in Dictionaries.ConsultFormats)
             //{
             //    // Check environment and user formats
@@ -233,175 +273,175 @@ namespace Rtrbau
 
             //    if (envFacets != null && userFacets != null)
             //    {
-            //        Debug.Log("ElementConsult::SelectFabrications: Fabrication available: " + format.Item1);
-            //        Debug.Log("ElementConsult::SelectFabrications: " + format.Item2.formatName + " required facets: " + format.Item2.formatRequiredFacets);
-                    
-            //        // Determine if format is assignable as fabrications to the element
-            //        List<RtrbauFabrication> formatAssignedFabrications = format.Item2.EvaluateFormat(rtrbauElement);
-
-            //        // Assign fabrications
-            //        if (formatAssignedFabrications != null)
-            //        {
-            //            foreach (RtrbauFabrication fabrication in formatAssignedFabrications)
-            //            {
-            //                Debug.Log("ElementConsult::SelectFabrications: Fabrication assigned: " + fabrication.fabricationName);
-            //                // Add environment and user features to fabrication
-            //                // UPG: since environment and user formats are being evaluated before, there is no need to add them to RtrbauFabrication class?
-            //                fabrication.fabricationAugmentation = format.Item3.formatAugmentation.facetAugmentation;
-            //                fabrication.fabricationInteraction = format.Item3.formatInteraction.facetInteraction;
-            //                fabrication.fabricationComprehension = format.Item4.formatComprehension;
-            //                fabrication.fabricationDescription = format.Item4.formatDescription;
-            //                // Add fabrication to assigned fabrications list
-            //                assignedFabrications.Add(fabrication);
-            //            }
-            //        }
+            //        availableFormats.Add(format);
+            //        Debug.Log("ElementConsult: SelectFabrications: Fabrication available: " + format.Item1);
             //    }
             //    else { }
             //}
 
-            ////// Return list of acceptable formats according to user and environment configuration
-            ////// These formats to be used in the following loop
-            ////// This new loop to replace second loop below
-            ////List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>> availableFormats = new List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>>();
-
-            ////foreach (Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat> format in Dictionaries.ConsultFormats)
-            ////{
-            ////    // Check environment and user formats
-            ////    Tuple<RtrbauAugmentation, RtrbauInteraction> envFacets = format.Item3.EvaluateFormat();
-            ////    Tuple<RtrbauComprehensiveness, RtrbauDescriptiveness> userFacets = format.Item4.EvaluateFormat();
-
-            ////    if (envFacets != null && userFacets != null)
-            ////    {
-            ////        availableFormats.Add(format);
-            ////        Debug.Log("ElementConsult: SelectFabrications: Fabrication available: " + format.Item1);
-            ////    }
-            ////    else { }
-            ////}
-
-            ////foreach (Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat> format in availableFormats)
-            ////{
-            ////    Debug.Log("ElementConsult: SelectFabrications: " + format.Item2.formatName + " required facets: " + format.Item2.formatRequiredFacets);
-            ////    List<RtrbauFabrication> formatAssignedFabrications = format.Item2.EvaluateFormat(rtrbauElement);
-
-            ////    if (formatAssignedFabrications != null)
-            ////    {
-            ////        foreach (RtrbauFabrication fabrication in formatAssignedFabrications)
-            ////        {
-            ////            Debug.Log("ElementConsult: SelectFabrications: Fabrication assigned: " + fabrication.fabricationName);
-            ////            // Add environment and user features to fabrication
-            ////            // UPG: since environment and user formats are being evaluated before, there is no need to add them to RtrbauFabrication class?
-            ////            fabrication.fabricationAugmentation = format.Item3.formatAugmentation.facetAugmentation;
-            ////            fabrication.fabricationInteraction = format.Item3.formatInteraction.facetInteraction;
-            ////            fabrication.fabricationComprehension = format.Item4.formatComprehension;
-            ////            fabrication.fabricationDescription = format.Item4.formatDescription;
-            ////            // Add fabrication to assigned fabrications list
-            ////            assignedFabrications.Add(fabrication);
-            ////        }
-            ////    }
-            ////}
-
-            //// RTRBAU ALGORITHM: Eliminate duplicated fabrications (Loop 5 modified)
-            //// Eliminate duplicated formats with lower number of attributes
-            //// Duplicates are those with similar source attributes and augmentation method
-            //foreach (RtrbauAugmentation augmentation in Enum.GetValues(typeof(RtrbauAugmentation)))
+            //foreach (Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat> format in availableFormats)
             //{
-            //    // Find similar source attribute fabrications with similar augmentation method
-            //    List<RtrbauFabrication> similarAugmentationFabrications = assignedFabrications.FindAll(x => x.fabricationAugmentation == augmentation);
+            //    Debug.Log("ElementConsult: SelectFabrications: " + format.Item2.formatName + " required facets: " + format.Item2.formatRequiredFacets);
+            //    List<RtrbauFabrication> formatAssignedFabrications = format.Item2.EvaluateFormat(rtrbauElement);
 
-            //    if (similarAugmentationFabrications.Count > 1)
+            //    if (formatAssignedFabrications != null)
             //    {
-            //        foreach (RtrbauAttribute attribute in rtrbauElement.elementAttributes)
+            //        foreach (RtrbauFabrication fabrication in formatAssignedFabrications)
             //        {
-            //            // Find fabrications with similar source attributes
-            //            List<RtrbauFabrication> similarSourceFabrications = similarAugmentationFabrications.FindAll(x => x.fabricationData.Any(y => y.Key.facetForm == RtrbauFacetForm.source && y.Value.attributeName == attribute.attributeName && y.Value.attributeValue == attribute.attributeValue));
-
-            //            if (similarSourceFabrications.Count > 1)
-            //            {
-            //                // UPG: consider where no. of attribute equals 1, then modify according to user and environment formats
-            //                // Order similar fabrications by number of attributes
-            //                similarSourceFabrications.Sort((x, y) => x.fabricationData.Count.CompareTo(y.fabricationData.Count));
-            //                // Remove as duplicated the fabrication with the highest number of attributes
-            //                similarSourceFabrications.RemoveAt(similarSourceFabrications.Count() - 1);
-            //                // Remove rest of duplicated fabrications from assignedFabrications
-            //                for (int i = 0; i < similarSourceFabrications.Count; i++)
-            //                {
-            //                    assignedFabrications.Remove(similarSourceFabrications[i]);
-            //                }
-            //            }
-            //            else { }
+            //            Debug.Log("ElementConsult: SelectFabrications: Fabrication assigned: " + fabrication.fabricationName);
+            //            // Add environment and user features to fabrication
+            //            // UPG: since environment and user formats are being evaluated before, there is no need to add them to RtrbauFabrication class?
+            //            fabrication.fabricationAugmentation = format.Item3.formatAugmentation.facetAugmentation;
+            //            fabrication.fabricationInteraction = format.Item3.formatInteraction.facetInteraction;
+            //            fabrication.fabricationComprehension = format.Item4.formatComprehension;
+            //            fabrication.fabricationDescription = format.Item4.formatDescription;
+            //            // Add fabrication to assigned fabrications list
+            //            assignedFabrications.Add(fabrication);
             //        }
             //    }
-            //    else { }
             //}
 
-            //// RTRBAU ALGORITHM: Identify non-assigned attributes and create default fabrications for them (new extension)
-            //// UPG: Merge with following foreach loop to increase speed, long loops for very few cases
-            //// UPG: An idea to reduce loops is as follows: List<RtrbauAttribute> nonAssAtt = rtrbauElement.elementAttributes.Where(x => assignedFabrications.All(y => y.fabricationData.Values.ToList().All(z => z.attributeValue != x.attributeValue))).ToList();
-            //// UPG: This extension could be discarded in case it is ensured by design that non-assigned attributes won't exist
+            // RTRBAU ALGORITHM: Eliminate duplicated fabrications (Loop 5 modified)
+            // Eliminate duplicated formats with lower number of attributes
+            // Duplicates are those with similar source attributes and augmentation method
+            foreach (RtrbauAugmentation augmentation in Enum.GetValues(typeof(RtrbauAugmentation)))
+            {
+                // Find similar source attribute fabrications with similar augmentation method
+                List<RtrbauFabrication> similarAugmentationFabrications = assignedFabrications.FindAll(x => x.fabricationAugmentation == augmentation);
 
-            //// Identify attributes assigned to generated fabrications
-            //List<RtrbauAttribute> assignedAttributes = new List<RtrbauAttribute>();
+                // In case there is more than one similar fabrication
+                if (similarAugmentationFabrications.Count > 1)
+                {
+                    foreach (RtrbauAttribute attribute in rtrbauElement.elementAttributes)
+                    {
+                        // Find fabrications with similar source attributes
+                        List<RtrbauFabrication> similarSourceFabrications = similarAugmentationFabrications.FindAll(x => x.fabricationData.Any(y => y.Key.facetForm == RtrbauFacetForm.source && y.Value.attributeName == attribute.attributeName && y.Value.attributeValue == attribute.attributeValue));
 
-            //foreach (RtrbauFabrication fabrication in assignedFabrications)
-            //{
-            //    assignedAttributes.AddRange(fabrication.fabricationData.Values.ToList());
-            //}
+                        if (similarSourceFabrications.Count > 1)
+                        {
+                            // UPG: consider where no. of attribute equals 1, then modify according to user and environment formats
+                            // Order similar fabrications by number of attributes
+                            similarSourceFabrications.Sort((x, y) => x.fabricationData.Count.CompareTo(y.fabricationData.Count));
+                            
+                            // If highest-attributes-number fabrication has only one, then compare facet restrictivity
+                            if (similarSourceFabrications[similarSourceFabrications.Count() - 1].fabricationData.Count() == 1)
+                            {
+                                // It assumes all fabrications have only one facet
+                                // Order similar fabrications by facet restrictivity on single attribute
+                                similarSourceFabrications.Sort((x, y) => x.fabricationData.First().Key.facetRules.facetRestrictivity.CompareTo(y.fabricationData.First().Key.facetRules.facetRestrictivity));
 
-            ////foreach (RtrbauAttribute attribute in assignedAttributes)
-            ////{
-            ////    Debug.Log("EvaluateElement: assigned attributes: " + attribute.attributeName.name + " : " + attribute.attributeValue);
-            ////}
+                                foreach (RtrbauFabrication fabrication in similarSourceFabrications)
+                                {
+                                    Debug.Log("ElementReport::SelectFabrications: similar fabrication restrictiviy-ordered is " + fabrication.fabricationName + " for attribute " + attribute.attributeName.name);
+                                }
 
-            //// Identify attributes that have not been assigned to generated fabrications
-            //List<RtrbauAttribute> nonAssignedAttributes = rtrbauElement.elementAttributes.Where(x => assignedAttributes.All(y => y.attributeValue != x.attributeValue)).ToList();
+                                // If facet restrictivity is equal, then compare format senses
+                                if (similarSourceFabrications[similarSourceFabrications.Count() - 1].fabricationData.First().Key.facetRules.facetRestrictivity == similarSourceFabrications[similarSourceFabrications.Count() - 2].fabricationData.First().Key.facetRules.facetRestrictivity)
+                                {
+                                    // UPG: to ensure senses are treated accordingly to proper rules rather than enum comparison (declaration order)
+                                    similarSourceFabrications.Sort((x, y) => x.fabricationInteraction.CompareTo(y.fabricationInteraction));
 
-            //// Generate default fabrications for non-assigned attributes
-            //foreach (RtrbauAttribute attribute in nonAssignedAttributes)
-            //{
-            //    // Debug.Log("EvaluateElement: non assignedAttribute: " + attribute.attributeName.name + " : " + attribute.attributeValue);
+                                    foreach (RtrbauFabrication fabrication in similarSourceFabrications)
+                                    {
+                                        Debug.Log("ElementReport::SelectFabrications: similar fabrication interaction-ordered is " + fabrication.fabricationName + " for attribute " + attribute.attributeName.name);
+                                    }
+                                }
+                                else
+                                {
+                                    // UPG: to ensure all facet restrictivities are considered, not only first two fabrications on attributes-sorted list
+                                }
+                            }
+                            else
+                            {
+                                // UPG: to ensure similar fabrications are re-sorted when number of attributes are equal but different to 1
+                                // UPG: for cases when there is more than one attribute, but number of attributes still equal for more than one similar fabrication
+                            }
 
-            //    if (attribute.attributeType == RtrbauFabricationType.Observe)
-            //    {
-            //        // Create new fabrication for non-assigned attribute
-            //        RtrbauFabrication fabrication = new RtrbauFabrication(RtrbauFabricationName.DefaultObserve, RtrbauFabricationType.Observe, new Dictionary<DataFacet, RtrbauAttribute>
-            //        {
-            //            { DataFormats.DefaultObserve.formatFacets[0], attribute }
-            //        });
-            //        // UPG: since environment and user formats are being evaluated before, there is no need to add them to RtrbauFabrication class?
-            //        fabrication.fabricationAugmentation = EnvironmentFormats.DefaultObserve.formatAugmentation.facetAugmentation;
-            //        fabrication.fabricationInteraction = EnvironmentFormats.DefaultObserve.formatInteraction.facetInteraction;
-            //        fabrication.fabricationComprehension = UserFormats.DefaultObserve.formatComprehension;
-            //        fabrication.fabricationDescription = UserFormats.DefaultObserve.formatDescription;
-            //        // Assign fabrication to assignedFabrications
-            //        assignedFabrications.Add(fabrication);
-            //    }
-            //    else if (attribute.attributeType == RtrbauFabricationType.Inspect)
-            //    {
-            //        // Create new fabrication for non-assigned attribute
-            //        RtrbauFabrication fabrication = new RtrbauFabrication(RtrbauFabricationName.DefaultInspect, RtrbauFabricationType.Inspect, new Dictionary<DataFacet, RtrbauAttribute>
-            //        {
-            //            { DataFormats.DefaultInspect.formatFacets[0], attribute }
-            //        });
-            //        // UPG: since environment and user formats are being evaluated before, there is no need to add them to RtrbauFabrication class?
-            //        fabrication.fabricationAugmentation = EnvironmentFormats.DefaultInspect.formatAugmentation.facetAugmentation;
-            //        fabrication.fabricationInteraction = EnvironmentFormats.DefaultInspect.formatInteraction.facetInteraction;
-            //        fabrication.fabricationComprehension = UserFormats.DefaultInspect.formatComprehension;
-            //        fabrication.fabricationDescription = UserFormats.DefaultInspect.formatDescription;
-            //        // Assign fabrication to assignedFabrications
-            //        assignedFabrications.Add(fabrication);
-            //    }
-            //    else
-            //    {
-            //        throw new ArgumentException("ElementConsult::SelectFabrications: Default fabrications not implemented for fabrication type: " + attribute.attributeType);
-            //    }
-            //}
+                            // Remove as duplicated the fabrication with the highest number of attributes or by facet restrictivity when number of attributes equals 1
+                            similarSourceFabrications.RemoveAt(similarSourceFabrications.Count() - 1);
+                            // Remove rest of duplicated fabrications from assignedFabrications
+                            for (int i = 0; i < similarSourceFabrications.Count; i++)
+                            {
+                                assignedFabrications.Remove(similarSourceFabrications[i]);
+                            }
+                        }
+                        else { }
+                    }
+                }
+                else { }
+            }
 
-            ////foreach (RtrbauFabrication fab in assignedFabrications)
-            ////{
-            ////    Debug.Log("EvaluateElement: fabrication evaluated: " + fab.fabricationName);
-            ////}
+            // RTRBAU ALGORITHM: Identify non-assigned attributes and create default fabrications for them (new extension)
+            // UPG: Merge with following foreach loop to increase speed, long loops for very few cases
+            // UPG: An idea to reduce loops is as follows: List<RtrbauAttribute> nonAssAtt = rtrbauElement.elementAttributes.Where(x => assignedFabrications.All(y => y.fabricationData.Values.ToList().All(z => z.attributeValue != x.attributeValue))).ToList();
+            // UPG: This extension could be discarded in case it is ensured by design that non-assigned attributes won't exist
 
-            //fabricationsSelected = true;
+            // Identify attributes assigned to generated fabrications
+            List<RtrbauAttribute> assignedAttributes = new List<RtrbauAttribute>();
+
+            foreach (RtrbauFabrication fabrication in assignedFabrications)
+            {
+                assignedAttributes.AddRange(fabrication.fabricationData.Values.ToList());
+            }
+
+            foreach (RtrbauAttribute attribute in assignedAttributes)
+            {
+                Debug.Log("EvaluateElement: assigned attributes: " + attribute.attributeName.name + " : " + attribute.attributeValue);
+            }
+
+            // Identify attributes that have not been assigned to generated fabrications
+            List<RtrbauAttribute> nonAssignedAttributes = rtrbauElement.elementAttributes.Where(x => assignedAttributes.All(y => y.attributeValue != x.attributeValue)).ToList();
+
+            // Generate default fabrications for non-assigned attributes
+            // UPG: similar to ElementConsult: make one single script for consult and report
+            foreach (RtrbauAttribute attribute in nonAssignedAttributes)
+            {
+                // Debug.Log("EvaluateElement: non assignedAttribute: " + attribute.attributeName.name + " : " + attribute.attributeValue);
+
+                if (attribute.fabricationType == RtrbauFabricationType.Record)
+                {
+                    // Create new fabrication for non-assigned attribute
+                    RtrbauFabrication fabrication = new RtrbauFabrication(RtrbauFabricationName.DefaultRecord, RtrbauFabricationType.Record, new Dictionary<DataFacet, RtrbauAttribute>
+                    {
+                        { DataFormats.DefaultRecord.formatFacets[0], attribute }
+                    });
+                    // UPG: since environment and user formats are being evaluated before, there is no need to add them to RtrbauFabrication class?
+                    fabrication.fabricationAugmentation = EnvironmentFormats.DefaultRecord.formatAugmentation.facetAugmentation;
+                    fabrication.fabricationInteraction = EnvironmentFormats.DefaultRecord.formatInteraction.facetInteraction;
+                    fabrication.fabricationComprehension = UserFormats.DefaultRecord.formatComprehension;
+                    fabrication.fabricationDescription = UserFormats.DefaultRecord.formatDescription;
+                    // Assign fabrication to assignedFabrications
+                    assignedFabrications.Add(fabrication);
+                    Debug.Log("ElementReport::SelectFabrications: attribute with DefaultRecord is: " + attribute.attributeName.name);
+                }
+                else if (attribute.fabricationType == RtrbauFabricationType.Nominate)
+                {
+                    // Create new fabrication for non-assigned attribute
+                    RtrbauFabrication fabrication = new RtrbauFabrication(RtrbauFabricationName.DefaultNominate, RtrbauFabricationType.Nominate, new Dictionary<DataFacet, RtrbauAttribute>
+                    {
+                        { DataFormats.DefaultInspect.formatFacets[0], attribute }
+                    });
+                    // UPG: since environment and user formats are being evaluated before, there is no need to add them to RtrbauFabrication class?
+                    fabrication.fabricationAugmentation = EnvironmentFormats.DefaultNominate.formatAugmentation.facetAugmentation;
+                    fabrication.fabricationInteraction = EnvironmentFormats.DefaultNominate.formatInteraction.facetInteraction;
+                    fabrication.fabricationComprehension = UserFormats.DefaultNominate.formatComprehension;
+                    fabrication.fabricationDescription = UserFormats.DefaultNominate.formatDescription;
+                    // Assign fabrication to assignedFabrications
+                    assignedFabrications.Add(fabrication);
+                    Debug.Log("ElementReport::SelectFabrications: attribute with DefaultNominate is: " + attribute.attributeName.name);
+                }
+                else
+                {
+                    throw new ArgumentException("ElementConsult::SelectFabrications: Default fabrications not implemented for fabrication type: " + attribute.fabricationType);
+                }
+            }
+
+            foreach (RtrbauFabrication fab in assignedFabrications)
+            {
+                Debug.Log("EvaluateElement: fabrication evaluated: " + fab.fabricationName);
+            }
+
+            fabricationsSelected = true;
             //LocateElement();
         }
 

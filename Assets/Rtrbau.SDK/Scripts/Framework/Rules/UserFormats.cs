@@ -118,6 +118,7 @@ namespace Rtrbau
 
         #region TEXTPANEL_FORMATS
         public static UserFormat TextPanelTap1 = new UserFormat(RtrbauFabricationName.TextPanelTap1, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
+        public static UserFormat TextPanelTap2 = new UserFormat(RtrbauFabricationName.TextPanelTap2, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
         #endregion TEXTPANEL_FORMATS
 
         #region ICONPANEL_FORMATS
