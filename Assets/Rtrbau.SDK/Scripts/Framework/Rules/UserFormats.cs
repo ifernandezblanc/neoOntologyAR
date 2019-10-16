@@ -40,6 +40,7 @@ namespace Rtrbau
 
         #region TEXT_FORMATS
         public static UserFormat TextNone1 = new UserFormat(RtrbauFabricationName.TextNone1, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
+        public static UserFormat TextNone2 = new UserFormat(RtrbauFabricationName.TextNone2, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
         //public static UserFormat TextNone2 = new UserFormat(RtrbauFabricationName.TextNone2, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
         #endregion TEXT_FORMATS
 
@@ -76,6 +77,7 @@ namespace Rtrbau
 
         #region TEXTBUTTON_FORMATS
         public static UserFormat TextButtonTap1 = new UserFormat(RtrbauFabricationName.TextButtonTap1, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
+        public static UserFormat TextButtonTap2 = new UserFormat(RtrbauFabricationName.TextButtonTap2, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
         #endregion TEXTBUTTON_FORMATS
 
         #region ICONBUTTON_FORMATS
@@ -108,11 +110,10 @@ namespace Rtrbau
 
         #region DICTATION_FORMATS
         public static UserFormat TextDictation1 = new UserFormat(RtrbauFabricationName.TextDictation1, RtrbauComprehensiveness.fourD, RtrbauDescriptiveness.literal);
-        // oneD or twoD??
         #endregion DICTATION_FORMATS
 
         #region TEXTRECORD_FORMATS
-        public static UserFormat TextKeyboard1 = new UserFormat(RtrbauFabricationName.TextKeyboard1, RtrbauComprehensiveness.oneD, RtrbauDescriptiveness.literal);
+        public static UserFormat TextKeyboard1 = new UserFormat(RtrbauFabricationName.TextKeyboard1, RtrbauComprehensiveness.twoD, RtrbauDescriptiveness.literal);
         #endregion TEXTRECORD_FORMATS
 
         #region TEXTPANEL_FORMATS

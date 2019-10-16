@@ -33,7 +33,7 @@ namespace Rtrbau
     {
         #region FORMATS
         /// <summary>
-        /// 
+        /// UPG: to list more than one facet for augmentation and interaction in case a format has more than one (e.g. TextButtonTap2)
         /// </summary>
         #region DEFAULT_FORMATS
         public static EnvironmentFormat DefaultObserve = new EnvironmentFormat(RtrbauFabricationName.DefaultObserve, EnvironmentFacets.text, EnvironmentFacets.none);
@@ -44,6 +44,7 @@ namespace Rtrbau
 
         #region TEXT_FORMATS
         public static EnvironmentFormat TextNone1 = new EnvironmentFormat(RtrbauFabricationName.TextNone1, EnvironmentFacets.text, EnvironmentFacets.none);
+        public static EnvironmentFormat TextNone2 = new EnvironmentFormat(RtrbauFabricationName.TextNone2, EnvironmentFacets.text, EnvironmentFacets.none);
         //public static EnvironmentFormat TextNone2 = new EnvironmentFormat(RtrbauFabricationName.TextNone2, EnvironmentFacets.text, EnvironmentFacets.none);
         #endregion TEXT_FORMATS
 
@@ -80,7 +81,7 @@ namespace Rtrbau
 
         #region TEXTBUTTON_FORMATS
         public static EnvironmentFormat TextButtonTap1 = new EnvironmentFormat(RtrbauFabricationName.TextButtonTap1, EnvironmentFacets.text, EnvironmentFacets.gesturetap);
-
+        public static EnvironmentFormat TextButtonTap2 = new EnvironmentFormat(RtrbauFabricationName.TextButtonTap2, EnvironmentFacets.text, EnvironmentFacets.gesturetap);
         #endregion TEXTBUTTON_FORMATS
 
         #region ICONBUTTON_FORMATS

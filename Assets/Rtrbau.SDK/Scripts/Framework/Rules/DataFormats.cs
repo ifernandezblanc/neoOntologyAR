@@ -64,6 +64,11 @@ namespace Rtrbau
            new DataFacet(RtrbauFacetForm.source, DataFacets.TextFacet1)
         });
 
+        public static DataFormat TextNone2 = new DataFormat(RtrbauFabricationName.TextNone2, RtrbauFabricationType.Record, new List<DataFacet>
+        {
+            new DataFacet(RtrbauFacetForm.source, DataFacets.TextFacet5)
+        });
+
         //public static DataFormat TextNone2 = new DataFormat(RtrbauFabricationName.TextNone2, RtrbauFabricationType.Observe, new List<DataFacet>
         //{
         //   new DataFacet(RtrbauFacetForm.source, DataFacets.TextFacet4),
@@ -159,6 +164,11 @@ namespace Rtrbau
         public static DataFormat TextButtonTap1 = new DataFormat(RtrbauFabricationName.TextButtonTap1, RtrbauFabricationType.Inspect, new List<DataFacet>
         {
             new DataFacet(RtrbauFacetForm.source, DataFacets.TextFacet2)
+        });
+
+        public static DataFormat TextButtonTap2 = new DataFormat(RtrbauFabricationName.TextButtonTap2, RtrbauFabricationType.Record, new List<DataFacet>
+        {
+            new DataFacet(RtrbauFacetForm.source, DataFacets.TextFacet4)
         });
         #endregion TEXTBUTTON_FORMATS
 

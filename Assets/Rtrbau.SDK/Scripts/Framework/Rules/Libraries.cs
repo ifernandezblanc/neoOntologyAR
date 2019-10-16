@@ -39,7 +39,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> PositionXLibrary = new List<string>
+        public static List<string> PositionX = new List<string>
         {
             "X","Location"
         };
@@ -48,7 +48,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> PositionYLibrary = new List<string>
+        public static List<string> PositionY = new List<string>
         {
             "Y", "Location"
         };
@@ -57,7 +57,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> PositionZLibrary = new List<string>
+        public static List<string> PositionZ = new List<string>
         {
             "Z", "Location"
         };
@@ -66,7 +66,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> RotationXLibrary = new List<string>
+        public static List<string> RotationX = new List<string>
         {
             "X","Rotation"
         };
@@ -75,7 +75,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> RotationYLibrary = new List<string>
+        public static List<string> RotationY = new List<string>
         {
             "Y","Rotation"
         };
@@ -84,7 +84,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> RotationZLibrary = new List<string>
+        public static List<string> RotationZ = new List<string>
         {
             "Z","Rotation"
         };
@@ -93,7 +93,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> MovementTranslationXLibrary = new List<string>
+        public static List<string> MovementTranslationX = new List<string>
         {
             "X", "Translation", "Movement"
         };
@@ -102,7 +102,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> FreedomDegreeTranslationXLibrary = new List<string>
+        public static List<string> FreedomDegreeTranslationX = new List<string>
         {
             "X", "Translation", "FreedomDegree"
         };
@@ -111,7 +111,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> MovementTranslationYLibrary = new List<string>
+        public static List<string> MovementTranslationY = new List<string>
         {
             "Y", "Translation", "Movement"
         };
@@ -120,7 +120,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> FreedomDegreeTranslationYLibrary = new List<string>
+        public static List<string> FreedomDegreeTranslationY = new List<string>
         {
             "Y", "Translation", "FreedomDegree"
         };
@@ -129,7 +129,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> MovementTranslationZLibrary = new List<string>
+        public static List<string> MovementTranslationZ = new List<string>
         {
             "Z", "Translation", "Movement"
         };
@@ -138,7 +138,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> FreedomDegreeTranslationZLibrary = new List<string>
+        public static List<string> FreedomDegreeTranslationZ = new List<string>
         {
             "Z", "Translation", "FreedomDegree"
         };
@@ -147,7 +147,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> MovementRotationXLibrary = new List<string>
+        public static List<string> MovementRotationX = new List<string>
         {
             "X", "Rotation", "Movement"
         };
@@ -156,7 +156,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> FreedomDegreeRotationXLibrary = new List<string>
+        public static List<string> FreedomDegreeRotationX = new List<string>
         {
             "X", "Rotation", "FreedomDegree"
         };
@@ -165,7 +165,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> MovementRotationYLibrary = new List<string>
+        public static List<string> MovementRotationY = new List<string>
         {
             "Y", "Rotation", "Movement"
         };
@@ -174,7 +174,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> FreedomDegreeRotationYLibrary = new List<string>
+        public static List<string> FreedomDegreeRotationY = new List<string>
         {
             "Y", "Rotation", "FreedomDegree"
         };
@@ -183,7 +183,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> MovementRotationZLibrary = new List<string>
+        public static List<string> MovementRotationZ = new List<string>
         {
             "Z", "Rotation", "Movement"
         };
@@ -192,7 +192,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> FreedomDegreeRotationZLibrary = new List<string>
+        public static List<string> FreedomDegreeRotationZ = new List<string>
         {
             "Z", "Rotation", "FreedomDegree"
         };
@@ -201,7 +201,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> MovementSpeedLibrary = new List<string>
+        public static List<string> MovementSpeed = new List<string>
         {
             "Movement", "Speed"
         };
@@ -210,7 +210,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> MovementInverseLibrary = new List<string>
+        public static List<string> MovementInverse = new List<string>
         {
             "Movement", "Inverse"
         };
@@ -219,7 +219,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> MovementPairLibrary = new List<string>
+        public static List<string> MovementPair = new List<string>
         {
             "pair"
         };
@@ -268,6 +268,15 @@ namespace Rtrbau
         {
             "Message", "Unit"
         };
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired 
+        /// </summary>
+        public static List<string> TimeRecord = new List<string>
+        {
+            "Start", "End"
+        };
         #endregion NAME_LIBRARIES
 
         #region RANGE_LIBRARIES
@@ -313,16 +322,25 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> TextLibrary = StringLibrary.Concat(NumericLibrary).Concat(BooleanLibrary).ToList();
+        public static List<string> DateTimeLibrary = new List<string>
+        {
+            "dateTime","dateTimeStamp"
+        };
 
         /// <summary>
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> SetLibrary = new List<string>
-        {
-            OntologyElementType.ClassIndividuals.ToString()
-        };
+        public static List<string> TextLibrary = StringLibrary.Concat(NumericLibrary).Concat(BooleanLibrary).Concat(DateTimeLibrary).ToList();
+
+        ///// <summary>
+        ///// Describe script purpose
+        ///// Add links when code has been inspired
+        ///// </summary>
+        //public static List<string> SetLibrary = new List<string>
+        //{
+        //    OntologyElementType.ClassIndividuals.ToString()
+        //};
 
         
         #endregion RANGE_LIBRARIES
@@ -332,7 +350,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> AudioFileLibrary = new List<string>
+        public static List<string> AudioFile = new List<string>
         {
             RtrbauFileType.wav.ToString()
         };
@@ -341,7 +359,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> ModelFileLibrary = new List<string>
+        public static List<string> ModelFile = new List<string>
         {
             RtrbauFileType.obj.ToString()
         };
@@ -350,7 +368,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> PictureFileLibrary = new List<string>
+        public static List<string> PictureFile = new List<string>
         {
             RtrbauFileType.jpg.ToString(), RtrbauFileType.png.ToString()
         };
@@ -359,7 +377,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static List<string> VideoFileLibrary = new List<string>
+        public static List<string> VideoFile = new List<string>
         {
             RtrbauFileType.mp4.ToString()
         };
