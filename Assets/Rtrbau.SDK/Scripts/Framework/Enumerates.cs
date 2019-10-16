@@ -105,8 +105,8 @@ namespace Rtrbau
     /// Add links when code has been inspired
     /// </summary>
     public enum RtrbauAugmentation : int {
-        Audio, Image, Video, Model,
-        Text, Icon, Hologram, Animation, Registration
+        Registration, Text, Icon, Image, Audio, Video,
+        Hologram, Model, Animation
     }
 
     /// <summary>
@@ -114,9 +114,9 @@ namespace Rtrbau
     /// Add links when code has been inspired
     /// </summary>
     public enum RtrbauInteraction : int {
-        GestureTap, GestureDoubleTap, GestureHold,
+        None, GestureTap, GestureDoubleTap, GestureHold,
         GestureNavigation, GestureManipulation, GestureKeyboard,
-        Command, Dictation, None
+        Command, Dictation
     }
 
     /// <summary>

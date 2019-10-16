@@ -383,8 +383,8 @@ namespace Rtrbau
             fabricationName = RtrbauFabricationName.DefaultObserve;
             fabricationType = RtrbauFabricationType.Observe;
             fabricationData = new Dictionary<DataFacet, RtrbauAttribute>();
-            fabricationAugmentation = RtrbauAugmentation.Audio;
-            fabricationInteraction = RtrbauInteraction.GestureTap;
+            fabricationAugmentation = RtrbauAugmentation.Registration;
+            fabricationInteraction = RtrbauInteraction.None;
             fabricationComprehension = RtrbauComprehensiveness.oneD;
             fabricationDescription = RtrbauDescriptiveness.literal;
         }
@@ -813,7 +813,7 @@ namespace Rtrbau
         #region CONSTRUCTORS
         public AugmentationFacet()
         {
-            facetAugmentation = RtrbauAugmentation.Audio;
+            facetAugmentation = RtrbauAugmentation.Registration;
             facetSenses = new List<RtrbauSense>();
         }
 
@@ -849,7 +849,7 @@ namespace Rtrbau
         #region CONSTRUCTORS
         public InteractionFacet()
         {
-            facetInteraction = RtrbauInteraction.GestureTap;
+            facetInteraction = RtrbauInteraction.None;
             facetSenses = new List<RtrbauSense>();
         }
 

@@ -221,7 +221,7 @@ namespace Rtrbau
         {
             name = null;
             type = RtrbauFileType.wav;
-            augmentation = RtrbauAugmentation.Audio;
+            augmentation = RtrbauAugmentation.Registration;
             url = null;
         }
 
