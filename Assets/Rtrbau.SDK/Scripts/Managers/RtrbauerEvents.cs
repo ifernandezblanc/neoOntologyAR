@@ -37,7 +37,7 @@ namespace Rtrbau
         #endregion RTRBAU
         #region VISUALISATION
         private Dictionary<string, Action<OntologyElement, RtrbauElementType>> loadElementsEventsDictionary;
-        private Dictionary<string, Action<GameObject, RtrbauElementLocation>> locateElementsEventsDictionary;
+        private Dictionary<string, Action<GameObject, RtrbauElementType, RtrbauElementLocation>> locateElementsEventsDictionary;
         #endregion VISUALISATION
         #endregion EVENTS_DICTIONARIES
 
@@ -74,7 +74,7 @@ namespace Rtrbau
             { loadElementsEventsDictionary = new Dictionary<string, Action<OntologyElement, RtrbauElementType>>(); }
 
             if (locateElementsEventsDictionary == null)
-            { locateElementsEventsDictionary = new Dictionary<string, Action<GameObject, RtrbauElementLocation>>(); }
+            { locateElementsEventsDictionary = new Dictionary<string, Action<GameObject, RtrbauElementType, RtrbauElementLocation>>(); }
 
         }
         #endregion SINGLETON_INITIALISATION
@@ -191,9 +191,9 @@ namespace Rtrbau
         /// </summary>
         /// <param name="eventName"></param>
         /// <param name="eventListener"></param>
-        public static void StartListening(string eventName, Action<GameObject, RtrbauElementLocation> eventListener)
+        public static void StartListening(string eventName, Action<GameObject, RtrbauElementType, RtrbauElementLocation> eventListener)
         {
-            Action<GameObject, RtrbauElementLocation> thisEvent = null;
+            Action<GameObject, RtrbauElementType, RtrbauElementLocation> thisEvent = null;
 
             if (instance.locateElementsEventsDictionary.TryGetValue(eventName, out thisEvent))
             {
@@ -212,12 +212,12 @@ namespace Rtrbau
         /// </summary>
         /// <param name="eventName"></param>
         /// <param name="eventListener"></param>
-        public static void StopListening(string eventName, Action<GameObject, RtrbauElementLocation> eventListener)
+        public static void StopListening(string eventName, Action<GameObject, RtrbauElementType, RtrbauElementLocation> eventListener)
         {
             if (rtrbauerEventsManager == null) { return; }
             else { }
 
-            Action<GameObject, RtrbauElementLocation> thisEvent = null;
+            Action<GameObject, RtrbauElementType, RtrbauElementLocation> thisEvent = null;
 
             if (instance.locateElementsEventsDictionary.TryGetValue(eventName, out thisEvent))
             {
@@ -232,13 +232,13 @@ namespace Rtrbau
         /// </summary>
         /// <param name="eventName"></param>
         /// <param name="eventEntity"></param>
-        public static void TriggerEvent(string eventName, GameObject element, RtrbauElementLocation location)
+        public static void TriggerEvent(string eventName, GameObject element, RtrbauElementType type, RtrbauElementLocation location)
         {
-            Action<GameObject, RtrbauElementLocation> thisEvent = null;
+            Action<GameObject, RtrbauElementType, RtrbauElementLocation> thisEvent = null;
 
             if (instance.locateElementsEventsDictionary.TryGetValue(eventName, out thisEvent))
             {
-                thisEvent.Invoke(element, location);
+                thisEvent.Invoke(element, type, location);
                 /// instance.selectionEventsDictionary[eventName]();
             }
         }

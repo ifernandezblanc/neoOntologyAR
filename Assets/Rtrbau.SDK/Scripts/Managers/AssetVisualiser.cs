@@ -59,7 +59,6 @@ namespace Rtrbau
         #region GAMEOBJECT_PREFABS
         public GameObject consultElement;
         public GameObject reportElement;
-        // public GameObject reportElement;
         #endregion GAMEOBJECT_PREFABS
 
         #region INITIALISATION_METHODS
@@ -213,7 +212,7 @@ namespace Rtrbau
         /// <param name="location"></param>
         /// <param name="locationElements"></param>
         /// <param name="locationCounter"></param>
-        void AddElement (GameObject element, RtrbauElementLocation location, ref Dictionary<string,GameObject> locationElements, ref int locationCounter)
+        void AddElement (GameObject element, RtrbauElementType type, RtrbauElementLocation location, ref Dictionary<string,GameObject> locationElements, ref int locationCounter)
         {
             // Calculate number of elements per location
             int locationElementsNo;
@@ -226,9 +225,16 @@ namespace Rtrbau
             // Remove primary element
             AddPrimaryElement(null);
 
+            // Determine dictionary key according to element type
+            string elementKey;
+            // Check element type to return proper key
+            if (type == RtrbauElementType.Consult) { elementKey = element.GetComponent<ElementConsult>().classElement.URL(); }
+            else if (type == RtrbauElementType.Report) { elementKey = element.GetComponent<ElementReport>().classElement.URL(); }
+            else { throw new ArgumentException("AssetVisualiser::AddElement: RtrbauElementType not implemented"); }
+
             // Remove element from same class if exist in same location
             GameObject elementSameClass;
-            if (locationElements.TryGetValue(element.GetComponent<ElementConsult>().classElement.URL(), out elementSameClass))
+            if (locationElements.TryGetValue(elementKey, out elementSameClass))
             {
                 // Find class index to locate in location
                 int classLocation = locationElements.Values.ToList().IndexOf(elementSameClass);
@@ -237,7 +243,7 @@ namespace Rtrbau
                 // Find in list of loaded elements and remove
                 loadedElements.Remove(loadedElements.Find(x => x.Value == elementSameClass));
                 // Update element of class in location
-                locationElements[element.GetComponent<ElementConsult>().classElement.URL()] = element;
+                locationElements[elementKey] = element;
                 // Alocate element to its position, scale and rotation
                 SetElement(element, location, classLocation);
             }
@@ -259,7 +265,7 @@ namespace Rtrbau
                     }
                 }
                 // Assign element to location
-                locationElements.Add(element.GetComponent<ElementConsult>().classElement.URL(), element);
+                locationElements.Add(elementKey, element);
                 // Alocate element to its position, scale and rotation
                 SetElement(element, location, locationCounter);
                 // Iterate over location element counter
@@ -387,28 +393,32 @@ namespace Rtrbau
         /// <param name="type"></param>
         void LoadElement(OntologyElement element, RtrbauElementType type)
         {
-            if (type == RtrbauElementType.Consult)
-            {
-                Debug.Log("LoadElement: loaded already:" + ElementLoaded(element));
+            Debug.Log("AssetVisualiser::LoadElement: element loaded already: " + ElementLoaded(element));
 
-                if (!ElementLoaded(element))
+            if (!ElementLoaded(element))
+            {
+                if (type == RtrbauElementType.Consult)
                 {
                     GameObject newElement = GameObject.Instantiate(consultElement);
                     newElement.GetComponent<ElementConsult>().Initialise(this, element, lastElement);
                     loadedElements.Add(new KeyValuePair<OntologyElement, GameObject>(element, newElement));
                 }
-            }
-            else if (type == RtrbauElementType.Report)
-            {
-                Debug.LogError("Report Element not implemented yet.");
-                // TRIAL WHILE DEVELOPING ELEMENTREPORT
-                GameObject newElement = new GameObject(element.entity.Entity());
-                newElement.AddComponent<ElementReport>().Initialise(this, element, lastElement);
-
+                else if (type == RtrbauElementType.Report)
+                {
+                    // UPG: add consideration when loading element is that element of class?
+                    // UPG: same functionality as if clause above, should it be the same?
+                    GameObject newElement = GameObject.Instantiate(reportElement);
+                    newElement.GetComponent<ElementReport>().Initialise(this, element, lastElement);
+                    loadedElements.Add(new KeyValuePair<OntologyElement, GameObject>(element, newElement));
+                }
+                else
+                {
+                    throw new ArgumentException("AssetVisualiser::LoadElement: RtrbauElementType not implemented");
+                }
             }
             else
             {
-                throw new ArgumentException("Rtrbau Element type not implemented");
+                // UPG: ErrorHandling
             }
         }
 
@@ -417,7 +427,7 @@ namespace Rtrbau
         /// </summary>
         /// <param name="element"></param>
         /// <param name="location"></param>
-        void LocateElement(GameObject element, RtrbauElementLocation location)
+        void LocateElement(GameObject element, RtrbauElementType type, RtrbauElementLocation location)
         {
             if (location == RtrbauElementLocation.Primary)
             {
@@ -425,11 +435,11 @@ namespace Rtrbau
             }
             else if (location == RtrbauElementLocation.Secondary)
             {
-                AddElement(element, location, ref secondaryElements, ref secondaryCounter);
+                AddElement(element, type, location, ref secondaryElements, ref secondaryCounter);
             }
             else if (location == RtrbauElementLocation.Tertiary)
             {
-                AddElement(element, location, ref tertiaryElements, ref tertiaryCounter);
+                AddElement(element, type, location, ref tertiaryElements, ref tertiaryCounter);
             }
             else
             {

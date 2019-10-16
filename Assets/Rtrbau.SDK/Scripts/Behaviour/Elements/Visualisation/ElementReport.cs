@@ -47,6 +47,7 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
+        public RtrbauElementType elementType;
         public JsonClassProperties classAttributes;
         public JsonIndividualValues exampleAttributes;
         public List<JsonClassProperties> objectClassesAttributes;
@@ -57,9 +58,8 @@ namespace Rtrbau
         public List<RtrbauFabrication> assignedFabrications;
         public List<KeyValuePair<RtrbauFabrication,GameObject>> elementFabrications;
         public RtrbauElementLocation rtrbauLocation;
-        // public List<GameObject> noChildFabrications;
-        // public List<GameObject> childFabrications;
         public List<GameObject> unparentedFabrications;
+        public float originalElementScaleX;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
@@ -68,14 +68,13 @@ namespace Rtrbau
         public TextMeshPro statusText;
         public MeshRenderer panelPrimary;
         public MeshRenderer panelSecondary;
-        public Transform fabricationsObserveRest;
-        public Transform fabricationsObserveImageVideo;
-        public Transform fabricationsInspect;
+        public Transform fabricationsRecordRest;
+        public Transform fabricationsRecordImageVideo;
+        public Transform fabricationsNominate;
         public Material seenMaterial;
         public SpriteRenderer activationButton;
         public Sprite activationButtonMaximise;
         public Sprite activationButtonMinimise;
-        // private GameObject viewer;
         public Material lineMaterial;
         #endregion GAMEOBJECT_PREFABS
 
@@ -119,8 +118,7 @@ namespace Rtrbau
         /// </summary>
         public void Initialise(AssetVisualiser assetVisualiser, OntologyElement elementOntology, GameObject elementPrevious)
         {
-            //if (individualText == null || classText == null || statusText == null || fabricationsObserveRest == null || fabricationsObserveImageVideo == null || fabricationsInspect == null || panelPrimary == null || panelSecondary == null || seenMaterial == null || activationButton == null || activationButtonMaximise == null || activationButtonMinimise == null || lineMaterial == null) 
-            if (!true)
+            if (individualText == null || classText == null || statusText == null || fabricationsRecordRest == null || fabricationsRecordImageVideo == null || fabricationsNominate == null || panelPrimary == null || panelSecondary == null || seenMaterial == null || activationButton == null || activationButtonMaximise == null || activationButtonMinimise == null || lineMaterial == null) 
             {
                 Debug.LogError("ElementConsult::Initialise: Fabrication not found. Please assign them in ElementConsult script.");
             }
@@ -128,8 +126,7 @@ namespace Rtrbau
             {
                 if (elementOntology.type == OntologyElementType.ClassProperties)
                 {
-                    // lineMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardBlue") as Material;
-                    // viewer = GameObject.FindGameObjectWithTag("MainCamera");
+                    elementType = RtrbauElementType.Report;
 
                     visualiser = assetVisualiser;
                     classElement = elementOntology;
@@ -154,9 +151,9 @@ namespace Rtrbau
 
                     assignedFabrications = new List<RtrbauFabrication>();
                     elementFabrications = new List<KeyValuePair<RtrbauFabrication,GameObject>>();
-                    //noChildFabrications = new List<GameObject>();
-                    //childFabrications = new List<GameObject>();
                     unparentedFabrications = new List<GameObject>();
+
+                    originalElementScaleX = this.transform.localScale.x;
 
                     AddLineRenderer();
                     DownloadElement();
@@ -195,12 +192,7 @@ namespace Rtrbau
         /// </summary>
         public void EvaluateElement()
         {
-            Debug.Log("ElementConsult::EvaluateElement: Number of attributes downloadable: " + objectPropertiesNumber);
-            Debug.Log("ElementConsult::EvaluateElement: Number of attribute classes downloaded: " + objectClassesAttributes.Count);
-            Debug.Log("ElementConsult::EvaluateElement: Number of attribute individuals downloaded: " + objectClassesIndividuals.Count);
-
-            // UPG: to modify as object classes attributes and individuals are not required until CreateFabrications
-            if (classDownloaded == true && exampleDownloaded == true && objectClassesAttributes.Count == objectPropertiesNumber && objectClassesIndividuals.Count == objectPropertiesNumber)
+            if (classDownloaded == true && exampleDownloaded == true)
             {
                 Debug.Log("ElementConsult::EvaluateElement: All class-related elements downloaded:" + classElement.entity.Entity());
                 // New RtrbauElement declaration form to define report elements
@@ -221,7 +213,6 @@ namespace Rtrbau
         {
             Debug.Log("ElementConsult::SelectFabrications: rtrbau attributes to be evaluated against formats");
             // RTRBAU ALGORITHM: new extension (which original loop number is?)
-            // RTRBAU ALGORITHM: previous two loops to reduce available formats merged into a single one
             // Checks if format is acceptable
             // If so, then evaluates the format agains the element to determine if it is assignable
             // Replaces the toogled foreach loops below
@@ -259,47 +250,6 @@ namespace Rtrbau
                 }
                 else { }
             }
-
-            //// Return list of acceptable formats according to user and environment configuration
-            //// These formats to be used in the following loop
-            //// This new loop to replace second loop below
-            //List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>> availableFormats = new List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>>();
-
-            //foreach (Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat> format in Dictionaries.ConsultFormats)
-            //{
-            //    // Check environment and user formats
-            //    Tuple<RtrbauAugmentation, RtrbauInteraction> envFacets = format.Item3.EvaluateFormat();
-            //    Tuple<RtrbauComprehensiveness, RtrbauDescriptiveness> userFacets = format.Item4.EvaluateFormat();
-
-            //    if (envFacets != null && userFacets != null)
-            //    {
-            //        availableFormats.Add(format);
-            //        Debug.Log("ElementConsult: SelectFabrications: Fabrication available: " + format.Item1);
-            //    }
-            //    else { }
-            //}
-
-            //foreach (Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat> format in availableFormats)
-            //{
-            //    Debug.Log("ElementConsult: SelectFabrications: " + format.Item2.formatName + " required facets: " + format.Item2.formatRequiredFacets);
-            //    List<RtrbauFabrication> formatAssignedFabrications = format.Item2.EvaluateFormat(rtrbauElement);
-
-            //    if (formatAssignedFabrications != null)
-            //    {
-            //        foreach (RtrbauFabrication fabrication in formatAssignedFabrications)
-            //        {
-            //            Debug.Log("ElementConsult: SelectFabrications: Fabrication assigned: " + fabrication.fabricationName);
-            //            // Add environment and user features to fabrication
-            //            // UPG: since environment and user formats are being evaluated before, there is no need to add them to RtrbauFabrication class?
-            //            fabrication.fabricationAugmentation = format.Item3.formatAugmentation.facetAugmentation;
-            //            fabrication.fabricationInteraction = format.Item3.formatInteraction.facetInteraction;
-            //            fabrication.fabricationComprehension = format.Item4.formatComprehension;
-            //            fabrication.fabricationDescription = format.Item4.formatDescription;
-            //            // Add fabrication to assigned fabrications list
-            //            assignedFabrications.Add(fabrication);
-            //        }
-            //    }
-            //}
 
             // RTRBAU ALGORITHM: Eliminate duplicated fabrications (Loop 5 modified)
             // Eliminate duplicated formats with lower number of attributes
@@ -442,7 +392,8 @@ namespace Rtrbau
             }
 
             fabricationsSelected = true;
-            //LocateElement();
+            // LocateElement();
+            CreateFabrications();
         }
 
         /// <summary>
@@ -451,35 +402,36 @@ namespace Rtrbau
         /// </summary>
         public void LocateElement()
         {
-            //// RTRBAU ALGORITHM: Select element location (Loop 8 final)
-            //if (componentDistanceDownloaded && operationDistanceDownloaded && fabricationsSelected)
-            //{
-            //    int componentDistance = int.Parse(elementComponentDistance.ontDistance);
-            //    int operationDistance = int.Parse(elementOperationDistance.ontDistance);
+            // RTRBAU ALGORITHM: Select element location (Loop 8 final)
+            if (componentDistanceDownloaded && operationDistanceDownloaded)
+            {
+                int componentDistance = int.Parse(elementComponentDistance.ontDistance);
+                int operationDistance = int.Parse(elementOperationDistance.ontDistance);
 
-            //    Debug.Log("ElementConsult::LocateElement: component distance is " + componentDistance);
-            //    Debug.Log("ElementConsult::LocateElement: operation distance is " + operationDistance);
+                Debug.Log("ElementConsult::LocateElement: component distance is " + componentDistance);
+                Debug.Log("ElementConsult::LocateElement: operation distance is " + operationDistance);
 
-            //    if (componentDistance <= 1)
-            //    {
-            //        rtrbauLocation = RtrbauElementLocation.Primary;
-            //    }
-            //    else if (operationDistance >= 1)
-            //    {
-            //        rtrbauLocation = RtrbauElementLocation.Secondary;
-            //    }
-            //    else
-            //    {
-            //        rtrbauLocation = RtrbauElementLocation.Tertiary;
-            //    }
+                if (componentDistance <= 1)
+                {
+                    rtrbauLocation = RtrbauElementLocation.Primary;
+                }
+                else if (operationDistance >= 1)
+                {
+                    rtrbauLocation = RtrbauElementLocation.Secondary;
+                }
+                else
+                {
+                    rtrbauLocation = RtrbauElementLocation.Tertiary;
+                }
 
-            //    Debug.Log("ElementConsult::LocateElement: rtrbau location is " + rtrbauLocation);
+                Debug.Log("ElementConsult::LocateElement: rtrbau location is " + rtrbauLocation);
 
-            //    // RtrbauerEvents.TriggerEvent("LocateElement", this.gameObject, rtrbauLocation);
-            //    // To launch element location through visualiser
-            //    CreateFabrications();
-            //}
-            //else { }
+                // RtrbauerEvents.TriggerEvent("LocateElement", this.gameObject, rtrbauLocation);
+                // To launch element location through visualiser
+                // CreateFabrications();
+                LocateIt();
+            }
+            else { }
         }
 
         /// <summary>
@@ -488,41 +440,65 @@ namespace Rtrbau
         /// </summary>
         public void CreateFabrications()
         {
-            //individualText.text = individualElement.entity.name;
-            //classText.text = classElement.entity.name;
+            Debug.Log("ElementConsult::EvaluateElement: Number of attributes downloadable: " + objectPropertiesNumber);
+            Debug.Log("ElementConsult::EvaluateElement: Number of attribute classes downloaded: " + objectClassesAttributes.Count);
+            Debug.Log("ElementConsult::EvaluateElement: Number of attribute individuals downloaded: " + objectClassesIndividuals.Count);
+            Debug.Log("ElementConsult::EvaluateElement: Fabrications selected is: " + fabricationsSelected);
 
-            //Debug.Log("ElementConsult::CreateFabrications: Starting to create fabrications for: " + individualElement.entity.Entity());
 
-            //foreach (RtrbauFabrication fabrication in assignedFabrications)
-            //{
-            //    // UPG: list to know which script (class) to get component for
-            //    // UPG: create a list maybe with prefabs pre-loaded to save time?
-            //    // UPG: where to create list? would it be a dynamic dictionary?
-            //    string fabricationPath = "Rtrbau/Prefabs/Fabrications/Visualisations/" + fabrication.fabricationName;
+            // Check fabrications selected as well as object classes attributes and individuals have been downloaded
+            if (objectClassesAttributes.Count == objectPropertiesNumber && objectClassesIndividuals.Count == objectPropertiesNumber && fabricationsSelected)
+            {
+                //individualText.text = individualElement.entity.name;
+                //classText.text = classElement.entity.name;
 
-            //    Debug.Log(fabricationPath);
+                //Debug.Log("ElementConsult::CreateFabrications: Starting to create fabrications for: " + individualElement.entity.Entity());
 
-            //    // Make sure this goes correctly, otherwise it can create big issues
-            //    GameObject fabricationGO = Resources.Load(fabricationPath) as GameObject;
+                // UPG: if(objectClassesAttributes.Count == objectPropertiesNumber && objectClassesIndividuals.Count == objectPropertiesNumber)
+                // UPG: to synchronise object classes download with fabrications creation rather than element creation
 
-            //    if (fabricationGO != null)
-            //    {
-            //        GameObject goFabrication = Instantiate(fabricationGO);
-            //        KeyValuePair<RtrbauFabrication, GameObject> fabricationPair = new KeyValuePair<RtrbauFabrication, GameObject>(fabrication, goFabrication);
-            //        elementFabrications.Add(fabricationPair);
-            //        LocateFabrication(fabricationPair);
-            //    }
-            //    else
-            //    {
-            //        Debug.LogError("ElementConsult::CreateFabrications: " + fabrication.fabricationName + " is not implemented");
-            //    }
-            //}
 
-            //InputIntoReport();
-            //LocateIt();
-            //// End sending loaded element to visualiser to locate it appropriately
-            //// Modified: to ensure non-panel fabrications have the right size and location
-            //// Modified: fabrications are located afterwards
+                //foreach (RtrbauFabrication fabrication in assignedFabrications)
+                //{
+                //    // UPG: list to know which script (class) to get component for
+                //    // UPG: create a list maybe with prefabs pre-loaded to save time?
+                //    // UPG: where to create list? would it be a dynamic dictionary?
+                //    string fabricationPath = "Rtrbau/Prefabs/Fabrications/Visualisations/" + fabrication.fabricationName;
+
+                //    Debug.Log(fabricationPath);
+
+                //    // Make sure this goes correctly, otherwise it can create big issues
+                //    GameObject fabricationGO = Resources.Load(fabricationPath) as GameObject;
+
+                //    if (fabricationGO != null)
+                //    {
+                //        GameObject goFabrication = Instantiate(fabricationGO);
+                //        KeyValuePair<RtrbauFabrication, GameObject> fabricationPair = new KeyValuePair<RtrbauFabrication, GameObject>(fabrication, goFabrication);
+                //        elementFabrications.Add(fabricationPair);
+                //        LocateFabrication(fabricationPair);
+                //    }
+                //    else
+                //    {
+                //        Debug.LogError("ElementConsult::CreateFabrications: " + fabrication.fabricationName + " is not implemented");
+                //    }
+                //}
+
+                //// Set fabrications as active
+                //fabricationsActive = true;
+                //statusText.text = "Element maximised, click to hide information";
+
+                //// Disable tile grid object collection from side panel to allow image manipulation
+                //// Maybe do it with other fabrication panel as well?
+                //// fabricationsSidePanel.GetComponent<TileGridObjectCollection>().enabled = false;
+                //fabricationsRecordImageVideo.GetComponent<TileGridObjectCollection>().enabled = false;
+
+                ////InputIntoReport();
+                ////LocateIt();
+            }
+            else
+            {
+                // UPG: ErrorHandling: Fabrications couldn't be selected, return to previous element and destroy this one
+            }
         }
 
 
@@ -549,56 +525,8 @@ namespace Rtrbau
             // Rest of functionality remains
             // UPG: Add ordering for tiled fabrications (buttons, icons, text).
 
-            //foreach (KeyValuePair<RtrbauFabrication, GameObject> fabrication in elementFabrications)
-            //{
-            //    if (fabrication.Key.fabricationType == RtrbauFabricationType.Observe)
-            //    {
-            //        if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Text ||
-            //        fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Icon ||
-            //        fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Audio)
-            //        {
-            //            fabrication.Value.transform.SetParent(fabricationsObserveRest, false);
-            //            fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
-            //            // childFabrications.Add(fabrication.Value);
-            //        }
-            //        else if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Image ||
-            //        fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Video)
-            //        {
-            //            fabrication.Value.transform.SetParent(fabricationsObserveImageVideo, false);
-            //            fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
-            //            // childFabrications.Add(fabrication.Value);
-            //        }
-            //        else if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Model ||
-            //        fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Hologram ||
-            //        fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Animation)
-            //        {
-            //            fabrication.Value.transform.SetParent(fabricationsObserveRest, false);
-            //            fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, visualiser.transform);
-            //            unparentedFabrications.Add(fabrication.Value);
-            //        }
-            //    }
-            //    else if (fabrication.Key.fabricationType == RtrbauFabricationType.Inspect)
-            //    {
-            //        fabrication.Value.transform.SetParent(fabricationsInspect, false);
-            //        fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
-            //    }
-            //    else
-            //    {
-            //        throw new ArgumentException("ElementConsult: LocateIt: Fabrication type not implemented");
-            //    }
-            //}
-
             // ElementConsult location is managed by its visualiser.
-            RtrbauerEvents.TriggerEvent("LocateElement", this.gameObject, rtrbauLocation);
-
-            // Set fabrications as active
-            fabricationsActive = true;
-            statusText.text = "Element maximised, click to hide information";
-
-            // Disable tile grid object collection from side panel to allow image manipulation
-            // Maybe do it with other fabrication panel as well?
-            // fabricationsSidePanel.GetComponent<TileGridObjectCollection>().enabled = false;
-            fabricationsObserveImageVideo.GetComponent<TileGridObjectCollection>().enabled = false;
+            RtrbauerEvents.TriggerEvent("LocateElement", this.gameObject, RtrbauElementType.Report, rtrbauLocation);
         }
 
         /// <summary>
@@ -743,7 +671,7 @@ namespace Rtrbau
 
                 objectClassesAttributes.Add(JsonUtility.FromJson<JsonClassProperties>(jsonFile));
 
-                EvaluateElement();
+                CreateFabrications();
             }
             else
             {
@@ -765,7 +693,7 @@ namespace Rtrbau
 
                 objectClassesIndividuals.Add(JsonUtility.FromJson<JsonClassIndividuals>(jsonFile));
 
-                EvaluateElement();
+                CreateFabrications();
             }
             else
             {
@@ -839,41 +767,55 @@ namespace Rtrbau
         void LocateFabrication (KeyValuePair<RtrbauFabrication, GameObject> fabrication)
         {
             // UPG: Add ordering for tiled fabrications (buttons, icons, text).
-            if (fabrication.Key.fabricationType == RtrbauFabricationType.Observe)
+            if (fabrication.Key.fabricationType == RtrbauFabricationType.Record)
             {
                 if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Text ||
                 fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Icon ||
                 fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Audio)
                 {
-                    fabrication.Value.transform.SetParent(fabricationsObserveRest, false);
+                    fabrication.Value.transform.SetParent(fabricationsRecordRest, false);
                     fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
-                    // childFabrications.Add(fabrication.Value);
                 }
                 else if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Image ||
                 fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Video)
                 {
-                    fabrication.Value.transform.SetParent(fabricationsObserveImageVideo, false);
+                    fabrication.Value.transform.SetParent(fabricationsRecordImageVideo, false);
                     fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
-                    // childFabrications.Add(fabrication.Value);
                 }
                 else if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Model ||
                 fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Hologram ||
                 fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Animation)
                 {
-                    fabrication.Value.transform.SetParent(fabricationsObserveRest, false);
+                    fabrication.Value.transform.SetParent(fabricationsRecordRest, false);
                     fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, visualiser.transform);
                     unparentedFabrications.Add(fabrication.Value);
                 }
             }
-            else if (fabrication.Key.fabricationType == RtrbauFabricationType.Inspect)
+            else if (fabrication.Key.fabricationType == RtrbauFabricationType.Nominate)
             {
-                fabrication.Value.transform.SetParent(fabricationsInspect, false);
+                fabrication.Value.transform.SetParent(fabricationsNominate, false);
                 fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
             }
             else
             {
                 throw new ArgumentException("ElementConsult::LocateIt: Fabrication type not implemented");
             }
+        }
+
+        /// <summary>
+        /// Adapts <paramref name="fabrication"/> scale (only x and y) to adapt to element size
+        /// </summary>
+        /// <param name="fabrication"></param>
+        void ScaleFabrication(GameObject fabrication)
+        {
+            // Re-scale fabrication to match horizontal element scale (x-axis) after being re-scaled
+            // It assumes original fabrication and element were already scaled properly
+            float sM = this.transform.localScale.x / originalElementScaleX;
+            float sX = fabrication.transform.localScale.x * sM;
+            float sY = fabrication.transform.localScale.y * sM;
+            float sZ = fabrication.transform.localScale.z;
+
+            fabrication.transform.localScale = new Vector3(sX, sY, sZ);
         }
         #endregion PRIVATE
 
