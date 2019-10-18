@@ -2520,7 +2520,7 @@ GameObject:
   - component: {fileID: 5508257580901422412}
   - component: {fileID: 5508257580901422413}
   m_Layer: 0
-  m_Name: ReportElements
+  m_Name: ReporterElements
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

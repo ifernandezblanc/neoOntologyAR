@@ -36,7 +36,7 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
 #elif UNITY_IOS || UNITY_ANDROID
             // non-Windows mixed reality keyboard initialization goes here
 #else
-            // debugMessage.text = "Keyboard not supported on this platform.";
+            debugMessage.text = "Keyboard not supported on this platform.";
 #endif
         }
 
@@ -56,18 +56,18 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
             KeyboardText = wmrKeyboard.Text;
             if (wmrKeyboard.Visible)
             {
-                // debugMessage.text = "typing... " + KeyboardText;
+                debugMessage.text = "typing... " + KeyboardText;
                 debugMessage.text = KeyboardText;
             }
             else
             {
                 if (KeyboardText == null || KeyboardText.Length == 0)
                 {
-                    // debugMessage.text = "open keyboard to type text";
+                    debugMessage.text = "open keyboard to type text";
                 }
                 else
                 {
-                    // debugMessage.text = "typed " + KeyboardText;
+                    debugMessage.text = "typed " + KeyboardText;
                 }
             }
 #elif UNITY_IOS || UNITY_ANDROID

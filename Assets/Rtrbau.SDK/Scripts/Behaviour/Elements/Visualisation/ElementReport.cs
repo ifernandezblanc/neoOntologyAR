@@ -68,6 +68,7 @@ namespace Rtrbau
         public TextMeshPro statusText;
         public MeshRenderer panelPrimary;
         public MeshRenderer panelSecondary;
+        public MeshRenderer panelTertiary;
         public Transform fabricationsRecordRest;
         public Transform fabricationsRecordImageVideo;
         public Transform fabricationsNominate;
@@ -118,9 +119,9 @@ namespace Rtrbau
         /// </summary>
         public void Initialise(AssetVisualiser assetVisualiser, OntologyElement elementOntology, GameObject elementPrevious)
         {
-            if (individualText == null || classText == null || statusText == null || fabricationsRecordRest == null || fabricationsRecordImageVideo == null || fabricationsNominate == null || panelPrimary == null || panelSecondary == null || seenMaterial == null || activationButton == null || activationButtonMaximise == null || activationButtonMinimise == null || lineMaterial == null) 
+            if (individualText == null || classText == null || statusText == null || fabricationsRecordRest == null || fabricationsRecordImageVideo == null || fabricationsNominate == null || panelPrimary == null || panelSecondary == null || panelTertiary == null || seenMaterial == null || activationButton == null || activationButtonMaximise == null || activationButtonMinimise == null || lineMaterial == null) 
             {
-                Debug.LogError("ElementConsult::Initialise: Fabrication not found. Please assign them in ElementConsult script.");
+                Debug.LogError("ElementReport::Initialise: Fabrication not found. Please assign them in ElementReport script.");
             }
             else
             {
@@ -449,8 +450,8 @@ namespace Rtrbau
             // Check fabrications selected as well as object classes attributes and individuals have been downloaded
             if (objectClassesAttributes.Count == objectPropertiesNumber && objectClassesIndividuals.Count == objectPropertiesNumber && fabricationsSelected)
             {
-                //individualText.text = individualElement.entity.name;
-                //classText.text = classElement.entity.name;
+                individualText.text = rtrbauElement.elementName.name;
+                classText.text = rtrbauElement.elementClass.name;
 
                 //Debug.Log("ElementConsult::CreateFabrications: Starting to create fabrications for: " + individualElement.entity.Entity());
 
@@ -509,8 +510,11 @@ namespace Rtrbau
         public void InputIntoReport()
         {
             // Function called after generating fabrications
-            // Input into report
-            // Reporter.instance.ReportElement(individualElement.entity);
+            // Input into report function from ElementConsult
+            // Reporter.instance.ReportElement(rtrbauElement.elementName);
+            // REMEMBER TO UPDATE RTRBAUELEMENT BEFORE REPORTING
+            // rtrbauElement.elementName.name = individualText.text;
+            // REMEMBER TO FILE RTRBAUELEMENT
         }
         #endregion IELEMENTABLE_METHODS
 
@@ -539,6 +543,7 @@ namespace Rtrbau
                 // Set material of element panels
                 panelPrimary.material = seenMaterial;
                 panelSecondary.material = seenMaterial;
+                panelTertiary.material = seenMaterial;
 
                 // Set material of fabrication panels
                 foreach (KeyValuePair<RtrbauFabrication, GameObject> fabrication in elementFabrications)

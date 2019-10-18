@@ -431,8 +431,8 @@ namespace Rtrbau
         {
             if (fabricationsSelected)
             {
-                individualText.text = individualElement.entity.name;
-                classText.text = classElement.entity.name;
+                individualText.text = rtrbauElement.elementName.name;
+                classText.text = rtrbauElement.elementClass.name;
 
                 Debug.Log("ElementConsult::CreateFabrications: Starting to create fabrications for: " + individualElement.entity.Entity());
 
@@ -488,7 +488,7 @@ namespace Rtrbau
         {
             // Function called after generating fabrications
             // Input into report
-            Reporter.instance.ReportElement(individualElement.entity);
+            Reporter.instance.ReportElement(rtrbauElement.elementName);
         }
         #endregion IELEMENTABLE_METHODS
 
