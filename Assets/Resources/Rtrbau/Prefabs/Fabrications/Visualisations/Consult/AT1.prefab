@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 404323018043677718}
   - component: {fileID: 404323018043677719}
   m_Layer: 0
-  m_Name: AudioTap1
+  m_Name: AT1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

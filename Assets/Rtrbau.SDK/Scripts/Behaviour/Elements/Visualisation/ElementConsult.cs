@@ -60,7 +60,7 @@ namespace Rtrbau
         // public List<GameObject> noChildFabrications;
         // public List<GameObject> childFabrications;
         public List<GameObject> unparentedFabrications;
-        public float originalElementScaleX;
+        // public float originalElementScaleX;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
@@ -153,7 +153,7 @@ namespace Rtrbau
                     //childFabrications = new List<GameObject>();
                     unparentedFabrications = new List<GameObject>();
 
-                    originalElementScaleX = this.transform.localScale.x;
+                    //originalElementScaleX = this.transform.localScale.x;
 
                     AddLineRenderer();
                     DownloadElement();
@@ -438,15 +438,16 @@ namespace Rtrbau
 
                 foreach (RtrbauFabrication fabrication in assignedFabrications)
                 {
-                    // UPG: list to know which script (class) to get component for
-                    // UPG: create a list maybe with prefabs pre-loaded to save time?
-                    // UPG: where to create list? would it be a dynamic dictionary?
-                    string fabricationPath = "Rtrbau/Prefabs/Fabrications/Visualisations/" + fabrication.fabricationName;
+                    //// UPG: list to know which script (class) to get component for
+                    //// UPG: create a list maybe with prefabs pre-loaded to save time?
+                    //// UPG: where to create list? would it be a dynamic dictionary?
+                    //string fabricationPath = "Rtrbau/Prefabs/Fabrications/Visualisations/" + fabrication.fabricationName;
+                    //Debug.Log(fabricationPath);
+                    //// Make sure this goes correctly, otherwise it can create big issues
+                    //GameObject fabricationGO = Resources.Load(fabricationPath) as GameObject;
 
-                    Debug.Log(fabricationPath);
-
-                    // Make sure this goes correctly, otherwise it can create big issues
-                    GameObject fabricationGO = Resources.Load(fabricationPath) as GameObject;
+                    // Find fabrication GO by name in Rtrbauer dynamic library
+                    GameObject fabricationGO = Rtrbauer.instance.FindFabrication(fabrication.fabricationName, RtrbauElementType.Consult);
 
                     if (fabricationGO != null)
                     {
@@ -769,12 +770,17 @@ namespace Rtrbau
         {
             // Re-scale fabrication to match horizontal element scale (x-axis) after being re-scaled
             // It assumes original fabrication and element were already scaled properly
-            float sM = this.transform.localScale.x / originalElementScaleX;
-            float sX = fabrication.transform.localScale.x * sM;
-            float sY = fabrication.transform.localScale.y * sM;
-            float sZ = fabrication.transform.localScale.z;
+            if (this.transform.localScale.x > fabrication.transform.localScale.x)
+            {
+                // float sM = originalElementScaleX / fabrication.transform.localScale.x;
+                float sM = this.transform.localScale.x / fabrication.transform.localScale.x;
+                float sX = fabrication.transform.localScale.x * sM;
+                float sY = fabrication.transform.localScale.y * sM;
+                float sZ = fabrication.transform.localScale.z;
 
-            fabrication.transform.localScale = new Vector3(sX, sY, sZ);
+                fabrication.transform.localScale = new Vector3(sX, sY, sZ);
+            }
+            else { }
         }
         #endregion PRIVATE
 

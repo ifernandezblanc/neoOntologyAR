@@ -136,7 +136,7 @@ namespace Rtrbau
                 sprite.sprite = icon;
                 // Set correct size to sprite according to prefab configuration
                 // UPG: modify for auto-sizing
-                sprite.size = new Vector2(2.0f, 2.0f);
+                sprite.size = new Vector2(0.04f, 0.04f);
             }
             else
             {

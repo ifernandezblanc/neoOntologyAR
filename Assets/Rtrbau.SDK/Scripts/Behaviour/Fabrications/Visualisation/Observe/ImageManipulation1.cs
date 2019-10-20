@@ -220,7 +220,7 @@ namespace Rtrbau
                     image.sprite = imageSource;
                     image.drawMode = SpriteDrawMode.Sliced;
                     // According to fabrication current size
-                    image.size = new Vector2(0.2f, 0.19f);
+                    image.size = new Vector2(0.15f, 0.15f);
                 }
             }
             else

@@ -358,12 +358,17 @@ namespace Rtrbau
             Bounds asset = manager.ReturnAssetBoundsLocal();
 
             // Re-scale element to match horizontal asset extents (x-axis)
-            float sM = asset.extents.x / element.transform.localScale.x;
-            float sX = element.transform.localScale.x * sM;
-            float sY = element.transform.localScale.y * sM;
-            float sZ = element.transform.localScale.z;
+            // But only in the case asset extents are bigger than element
+            if (asset.extents.x > element.transform.localScale.x)
+            {
+                float sM = asset.extents.x / element.transform.localScale.x;
+                float sX = element.transform.localScale.x * sM;
+                float sY = element.transform.localScale.y * sM;
+                float sZ = element.transform.localScale.z;
 
-            element.transform.localScale = new Vector3(sX, sY, sZ);
+                element.transform.localScale = new Vector3(sX, sY, sZ);
+            }
+            else { }
         }
 
         bool ElementLoaded(OntologyElement element)

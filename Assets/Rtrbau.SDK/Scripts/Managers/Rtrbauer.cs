@@ -71,6 +71,8 @@ namespace Rtrbau
         public User user;
         public Environment environment;
         public GameObject viewer;
+        private Dictionary<RtrbauFabricationName, GameObject> ConsultFabrications;
+        private Dictionary<RtrbauFabricationName, GameObject> ReportFabrications;
         #endregion CLASS_MEMBERS
 
         #region GAMEOBJECT_PREFABS
@@ -89,7 +91,7 @@ namespace Rtrbau
             else
             {
                 // Declare configuration classes
-                // IMPORTANT! This is default, however, thins may change afterwards.
+                // IMPORTANT! This is default, however, things may change afterwards.
                 server.serverURI = new Uri("http://138.250.108.1:3003");
                 ontology.ontologyURI = new Uri(server.serverURI, "api/files/owl");
                 asset.assetURI = ontology.ontologyURI.AbsoluteUri + "/" + "orgont#Asset";
@@ -112,6 +114,9 @@ namespace Rtrbau
                 environment.AssignSense(RtrbauSense.kinaesthetic, true);
                 // Viewer camera
                 viewer = GameObject.FindGameObjectWithTag("MainCamera");
+                // Fabrications
+                ConsultFabrications = LoadFabrications(RtrbauElementType.Consult);
+                ReportFabrications = LoadFabrications(RtrbauElementType.Report);
                 // Start scene
                 LoadPaneller();
             }
@@ -124,16 +129,10 @@ namespace Rtrbau
 
         #region CLASS_METHODS
         #region PRIVATE
-        #endregion PRIVATE
-
-        #region PUBLIC
-        #endregion PUBLIC
-        #endregion CLASS_METHODS
-
         /// <summary>
         /// 
         /// </summary>
-        void Initialise()
+        private void Initialise()
         {
             // GameObject.Find("RtrbauPanels").GetComponent<Paneller>().Initialise();
         }
@@ -141,8 +140,38 @@ namespace Rtrbau
         /// <summary>
         /// 
         /// </summary>
-        
+        private Dictionary<RtrbauFabricationName, GameObject> LoadFabrications(RtrbauElementType type)
+        {
+            if (type == RtrbauElementType.Consult || type == RtrbauElementType.Report)
+            {
+                Dictionary<RtrbauFabricationName, GameObject> fabrications = new Dictionary<RtrbauFabricationName, GameObject>();
 
+                GameObject[] loaded = Resources.LoadAll<GameObject>("Rtrbau/Prefabs/Fabrications/Visualisations/" + type.ToString());
+
+                Debug.Log("Rtrbauer::LoadFabrications: Rtrbau/Prefabs/Fabrications/Visualisations/" + type.ToString());
+
+                foreach(GameObject fabrication in loaded)
+                {
+                    RtrbauFabricationName fabricationName;
+
+                    if (Enum.TryParse<RtrbauFabricationName>(fabrication.name, out fabricationName))
+                    {
+                        fabrications.Add(fabricationName, fabrication);
+                        // Debug.Log("Rtrbauer::LoadFabrications: preloaded fabrication is " + fabrication.name);
+                    }
+                    else { }
+                }
+
+                return fabrications;
+            }
+            else
+            {
+                throw new ArgumentException("Rtrbauer::LoadFabrications: RtrbauElementType not implemented.");
+            }
+        }
+        #endregion PRIVATE
+
+        #region PUBLIC
         /// <summary>
         /// Generates the RtrbauPaneller object to start 
         /// </summary>
@@ -158,6 +187,11 @@ namespace Rtrbau
             // Paneller.instance.Initialise();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parentManager"></param>
+        /// <returns></returns>
         public GameObject LoadVisualiser(AssetManager parentManager)
         {
             assetManager = parentManager.gameObject;
@@ -167,6 +201,9 @@ namespace Rtrbau
             return assetVisualiser;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void ReloadVisualiser()
         {
             if (assetManager != null)
@@ -175,9 +212,38 @@ namespace Rtrbau
             }
             else
             {
-                throw new ArgumentException("Asset manager not loaded");
+                throw new ArgumentException("Rtrbauer::ReloadVisualiser: AssetManager not loaded.");
             }
         }
 
+        /// <summary>
+        /// Returns a fabrication by <paramref name="name"/> of <paramref name="type"/>, otherwise returns null.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public GameObject FindFabrication(RtrbauFabricationName name, RtrbauElementType type)
+        {
+            GameObject fabrication;
+
+            if (type == RtrbauElementType.Consult)
+            {
+                if (ConsultFabrications.TryGetValue(name, out fabrication)) { }
+                else { fabrication = null; throw new ArgumentException("Rtrbauer::FindFabrications: Fabrication not found."); }
+            }
+            else if (type == RtrbauElementType.Report)
+            {
+                if (ReportFabrications.TryGetValue(name, out fabrication)) { }
+                else { fabrication = null; throw new ArgumentException("Rtrbauer::FindFabrications: Fabrication not found."); }
+            }
+            else
+            {
+                throw new ArgumentException("Rtrbauer::FindFabrications: RtrbauElementType not implemented.");
+            }
+
+            return fabrication;
+        }
+        #endregion PUBLIC
+        #endregion CLASS_METHODS
     }
 }
