@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Microsoft.MixedReality.Toolkit.UI;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -45,9 +44,8 @@ namespace Rtrbau
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
-        public TextMeshPro text;
-        public MeshRenderer panel;
-        public Material seenMaterial;
+        public TextMeshPro fabricationText;
+        public MeshRenderer fabricationSeenPanel;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -57,7 +55,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (text == null || panel == null || seenMaterial == null)
+            if (fabricationText == null || fabricationSeenPanel == null)
             {
                 throw new ArgumentException("TextNone1 script requires some prefabs to work.");
             }
@@ -149,7 +147,7 @@ namespace Rtrbau
 
             if (textType != null || textAction != null)
             {
-                text.text = textType + " " + textAction + " " + textObject + " " + textValue + " " + textUnit;
+                fabricationText.text = textType + " " + textAction + " " + textObject + " " + textValue + " " + textUnit;
             }
             else
             {
@@ -185,17 +183,22 @@ namespace Rtrbau
         #region IVISUALISABLE_METHODS
         public void LocateIt()
         {
-            // Fabrication location is managed by its element.
+            /// Fabrication location is managed by <see cref="ElementConsult"/>.
         }
 
-        public void ModifyMaterial()
+        public void ActivateIt()
         {
-            panel.material = seenMaterial;
+            /// Fabrication activation is managed by <see cref="ElementConsult"/>.
         }
 
         public void DestroyIt()
         {
             Destroy(this.gameObject);
+        }
+
+        public void ModifyMaterial(Material material)
+        {
+            fabricationSeenPanel.material = material;
         }
         #endregion IVISUALISABLE_METHODS
 

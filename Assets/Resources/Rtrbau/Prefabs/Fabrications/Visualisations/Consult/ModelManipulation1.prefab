@@ -24,11 +24,12 @@ MonoBehaviour:
   scale: {fileID: 0}
   component: {fileID: 0}
   model: {fileID: 0}
-  fabricationPanel: {fileID: 4727080567508116154}
   fabricationText: {fileID: 6595659212055466050}
+  fabricationSeenPanel: {fileID: 4727080567508116154}
+  fabricationSeenMaterial: {fileID: 2100000, guid: c1ecea20ac7df7042b4aa15f1d240875,
+    type: 2}
   lineMaterial: {fileID: 2100000, guid: a7e0d8f908f5a9944aae7356c5e4bbb3, type: 2}
   modelMaterial: {fileID: 2100000, guid: a7e0d8f908f5a9944aae7356c5e4bbb3, type: 2}
-  seenMaterial: {fileID: 2100000, guid: a8de2758c4b4460cae694f0d50d94fbb, type: 2}
   modelCreated: 0
 --- !u!1001 &5653998116630448440
 PrefabInstance:

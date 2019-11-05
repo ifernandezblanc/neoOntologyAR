@@ -79,6 +79,35 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2470500746981582980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7218514808441855436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06f72bf193b73dd4caf108db9c68ea0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  visualiser: {fileID: 0}
+  data:
+    fabricationName: 0
+    fabricationType: 0
+    fabricationAugmentation: 0
+    fabricationInteraction: 0
+    fabricationComprehension: 0
+    fabricationDescription: 0
+  element: {fileID: 0}
+  scale: {fileID: 0}
+  imageSource: {fileID: 0}
+  fabricationText: {fileID: 2726981246541748918}
+  fabricationSprite: {fileID: 1361458772983571217}
+  fabricationSeenPanel: {fileID: 4596386719290730574}
+  fabricationSeenMaterial: {fileID: 2100000, guid: c1ecea20ac7df7042b4aa15f1d240875,
+    type: 2}
+  lineMaterial: {fileID: 2100000, guid: a7e0d8f908f5a9944aae7356c5e4bbb3, type: 2}
 --- !u!114 &8883553291886701575
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,34 +151,6 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: Microsoft.MixedReality.Toolkit.UI.ManipulationEvent, Microsoft.MixedReality.Toolkit.SDK,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
---- !u!114 &2470500746981582980
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7218514808441855436}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06f72bf193b73dd4caf108db9c68ea0e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  visualiser: {fileID: 0}
-  data:
-    fabricationName: 0
-    fabricationType: 0
-    fabricationAugmentation: 0
-    fabricationInteraction: 0
-    fabricationComprehension: 0
-    fabricationDescription: 0
-  element: {fileID: 0}
-  scale: {fileID: 0}
-  imageSource: {fileID: 0}
-  text: {fileID: 2726981246541748918}
-  image: {fileID: 1361458772983571217}
-  lineMaterial: {fileID: 2100000, guid: a7e0d8f908f5a9944aae7356c5e4bbb3, type: 2}
-  panel: {fileID: 4596386719290730574}
-  seenMaterial: {fileID: 2100000, guid: a8de2758c4b4460cae694f0d50d94fbb, type: 2}
 --- !u!1001 &3469841757408117708
 PrefabInstance:
   m_ObjectHideFlags: 0

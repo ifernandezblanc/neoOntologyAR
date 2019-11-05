@@ -52,7 +52,6 @@ MonoBehaviour:
   assignedFabrications: []
   rtrbauLocation: 0
   unparentedFabrications: []
-  originalElementScaleX: 0
   classText: {fileID: 7976910728143890828}
   individualText: {fileID: 4440280282876874411}
   statusText: {fileID: 3075127127800621898}
@@ -61,7 +60,7 @@ MonoBehaviour:
   fabricationsObserveRest: {fileID: 342975890442189119}
   fabricationsObserveImageVideo: {fileID: 3990523973396405946}
   fabricationsInspect: {fileID: 7332681423777907476}
-  seenMaterial: {fileID: 2100000, guid: a8de2758c4b4460cae694f0d50d94fbb, type: 2}
+  seenMaterial: {fileID: 2100000, guid: c1ecea20ac7df7042b4aa15f1d240875, type: 2}
   activationButton: {fileID: 7475292298197805726}
   activationButtonMaximise: {fileID: 21300000, guid: 3c5008f828db4904f887aef29a9807ba,
     type: 3}
@@ -141,6 +140,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5501903256191660008, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1518043886720504873}
+    - target: {fileID: 5501903256191660008, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ActivateIt
+      objectReference: {fileID: 0}
+    - target: {fileID: 9101133647686229675, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 718438295965587664, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
         type: 3}
       propertyPath: m_Mesh
@@ -150,21 +164,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 9101133647686229675, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
-        type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5501903256191660008, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
-        type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1518043886720504873}
-    - target: {fileID: 5501903256191660008, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
-        type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ActivateFabrications
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 359c98b88c0dbcc43bbeb495f59d17c5, type: 3}

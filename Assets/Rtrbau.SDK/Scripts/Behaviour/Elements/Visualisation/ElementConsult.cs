@@ -57,10 +57,7 @@ namespace Rtrbau
         public List<RtrbauFabrication> assignedFabrications;
         public List<KeyValuePair<RtrbauFabrication,GameObject>> elementFabrications;
         public RtrbauElementLocation rtrbauLocation;
-        // public List<GameObject> noChildFabrications;
-        // public List<GameObject> childFabrications;
         public List<GameObject> unparentedFabrications;
-        // public float originalElementScaleX;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
@@ -72,11 +69,9 @@ namespace Rtrbau
         public Transform fabricationsObserveRest;
         public Transform fabricationsObserveImageVideo;
         public Transform fabricationsInspect;
-        public Material seenMaterial;
         public SpriteRenderer activationButton;
         public Sprite activationButtonMaximise;
         public Sprite activationButtonMinimise;
-        // private GameObject viewer;
         public Material lineMaterial;
         #endregion GAMEOBJECT_PREFABS
 
@@ -85,7 +80,7 @@ namespace Rtrbau
         public bool fabricationsSelected;
         public bool componentDistanceDownloaded;
         public bool operationDistanceDownloaded;
-        public bool materialChanged;
+        public int elementUpdated;
         public bool fabricationsActive;
         #endregion CLASS_EVENTS
 
@@ -118,7 +113,7 @@ namespace Rtrbau
         /// </summary>
         public void Initialise(AssetVisualiser assetVisualiser, OntologyElement elementOntology, GameObject elementPrevious)
         {
-            if (individualText == null || classText == null || statusText == null || fabricationsObserveRest == null || fabricationsObserveImageVideo == null || fabricationsInspect == null || panelPrimary == null || panelSecondary == null || seenMaterial == null || activationButton == null || activationButtonMaximise == null || activationButtonMinimise == null || lineMaterial == null) 
+            if (individualText == null || classText == null || statusText == null || fabricationsObserveRest == null || fabricationsObserveImageVideo == null || fabricationsInspect == null || panelPrimary == null || panelSecondary == null || activationButton == null || activationButtonMaximise == null || activationButtonMinimise == null || lineMaterial == null) 
             {
                 Debug.LogError("ElementConsult::Initialise: Fabrication not found. Please assign them in ElementConsult script.");
             }
@@ -143,7 +138,7 @@ namespace Rtrbau
                     componentDistanceDownloaded = false;
                     operationDistanceDownloaded = false;
 
-                    materialChanged = false;
+                    elementUpdated = 0;
 
                     fabricationsActive = false;
 
@@ -495,7 +490,7 @@ namespace Rtrbau
 
         #region IVISUALISABLE_METHODS
         /// <summary>
-        /// Locates fabrications created by this element.
+        /// Locates <see cref="IFabricationable"/> elements created by <see cref="ElementConsult"/>.
         /// </summary>
         public void LocateIt()
         {
@@ -508,30 +503,39 @@ namespace Rtrbau
         }
 
         /// <summary>
-        /// Modifies material 
+        /// Activates or deactivates <see cref="IFabricationable"/> elements managed by <see cref="ElementConsult"/> according to current state.
         /// </summary>
-        public void ModifyMaterial()
+        public void ActivateIt()
         {
-            if (!materialChanged)
+            // For fabrications with additional unparented fabrications, remember to add behaviour OnEnable and OnDisable
+            if (fabricationsActive)
             {
-                // Set material of element panels
-                panelPrimary.material = seenMaterial;
-                panelSecondary.material = seenMaterial;
-
-                // Set material of fabrication panels
                 foreach (KeyValuePair<RtrbauFabrication, GameObject> fabrication in elementFabrications)
                 {
-                    fabrication.Value.GetComponent<IVisualisable>().ModifyMaterial();
+                    fabrication.Value.SetActive(false);
                 }
 
-                // Modify material change event
-                materialChanged = true;
+                fabricationsActive = false;
+                statusText.text = "Element minimised, click to show information";
+                activationButton.sprite = activationButtonMaximise;
+                activationButton.size = new Vector2(0.75f, 0.75f);
             }
-            else { }
+            else
+            {
+                foreach (KeyValuePair<RtrbauFabrication, GameObject> fabrication in elementFabrications)
+                {
+                    fabrication.Value.SetActive(true);
+                }
+
+                fabricationsActive = true;
+                statusText.text = "Element maximised, click to hide information";
+                activationButton.sprite = activationButtonMinimise;
+                activationButton.size = new Vector2(0.75f, 0.75f);
+            }
         }
 
         /// <summary>
-        /// Destroys fabrications created by this element.
+        /// Destroys <see cref="IFabricationable"/> elements created by <see cref="ElementConsult"/>.
         /// </summary>
         public void DestroyIt()
         {
@@ -539,6 +543,29 @@ namespace Rtrbau
             {
                 Destroy(fabrication);
             }
+        }
+
+        /// <summary>
+        /// Modifies <see cref="ElementConsult"/> materials as well as those <see cref="IFabricationable"/> managed elements.
+        /// </summary>
+        public void ModifyMaterial(Material material)
+        {
+            if (elementUpdated < 1)
+            {
+                // Set material of element panels
+                panelPrimary.material = material;
+                panelSecondary.material = material;
+
+                // Set material of fabrication panels
+                foreach (KeyValuePair<RtrbauFabrication, GameObject> fabrication in elementFabrications)
+                {
+                    fabrication.Value.GetComponent<IVisualisable>().ModifyMaterial(material);
+                }
+
+                // Modify material change event, it can only occur once (seen)
+                elementUpdated += 1;
+            }
+            else { }
         }
         #endregion IVISUALISABLE_METHODS
 
@@ -785,34 +812,6 @@ namespace Rtrbau
         #endregion PRIVATE
 
         #region PUBLIC
-        public void ActivateFabrications()
-        {
-            // For fabrications with additional unparented fabrications, remember to add behaviour OnEnable and OnDisable
-            if (fabricationsActive)
-            {
-                foreach(KeyValuePair<RtrbauFabrication, GameObject> fabrication in elementFabrications)
-                {
-                    fabrication.Value.SetActive(false);
-                }
-
-                fabricationsActive = false;
-                statusText.text = "Element minimised, click to show information";
-                activationButton.sprite = activationButtonMaximise;
-                activationButton.size = new Vector2(0.75f, 0.75f);
-            }
-            else
-            {
-                foreach (KeyValuePair<RtrbauFabrication, GameObject> fabrication in elementFabrications)
-                {
-                    fabrication.Value.SetActive(true);
-                }
-
-                fabricationsActive = true;
-                statusText.text = "Element maximised, click to hide information";
-                activationButton.sprite = activationButtonMinimise;
-                activationButton.size = new Vector2(0.75f, 0.75f);
-            }
-        }
         #endregion PUBLIC
         #endregion CLASS_METHODS
     }

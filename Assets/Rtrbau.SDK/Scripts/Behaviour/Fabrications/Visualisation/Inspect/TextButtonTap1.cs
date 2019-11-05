@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Microsoft.MixedReality.Toolkit.UI;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -49,9 +48,9 @@ namespace Rtrbau
         #endregion FACETS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
-        public TextMeshPro text;
-        public MeshRenderer panel;
-        public Material seenMaterial;
+        public TextMeshPro fabricationText;
+        public MeshRenderer fabricationSeenPanel;
+        public Material fabricationSeenMaterial;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -61,7 +60,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (text == null)
+            if (fabricationText == null)
             {
                 throw new ArgumentException("TextButtonTap1 script requires some prefabs to work.");
             }
@@ -123,7 +122,7 @@ namespace Rtrbau
             {
                 // string attributeValue = Parser.ParseURI(attribute.attributeValue, '#', RtrbauParser.post);
                 // text.text = attribute.attributeName.name + ": " + attributeValue;
-                text.text = attribute.attributeName.name;
+                fabricationText.text = attribute.attributeName.name;
                 nextIndividual = attribute.attributeValue;
                 relationshipAttribute = new OntologyEntity(attribute.attributeName.URI());
             }
@@ -151,7 +150,7 @@ namespace Rtrbau
             else
             {
                 // Element parent to modify material in expectance of a new element
-                element.GetComponent<ElementConsult>().ModifyMaterial();
+                element.GetComponent<ElementConsult>().ModifyMaterial(fabricationSeenMaterial);
                 // Trigger event to load a new element
                 RtrbauerEvents.TriggerEvent("LoadElement", individual, Rtrbauer.instance.user.procedure);
             }
@@ -161,17 +160,22 @@ namespace Rtrbau
         #region IVISUALISABLE_METHODS
         public void LocateIt()
         {
-            // Fabrication location is managed by its element.
+            /// Fabrication location is managed by <see cref="ElementConsult"/>.
         }
 
-        public void ModifyMaterial()
+        public void ActivateIt()
         {
-            panel.material = seenMaterial;
+            /// Fabrication activation is managed by <see cref="ElementConsult"/>.
         }
 
         public void DestroyIt()
         {
             Destroy(this.gameObject);
+        }
+
+        public void ModifyMaterial(Material material)
+        {
+            fabricationSeenPanel.material = material;
         }
         #endregion IVISUALISABLE_METHODS
 

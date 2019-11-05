@@ -68,10 +68,8 @@ namespace Rtrbau
         #endregion FACET_VARIABLES
 
         #region GAMEOBJECT_PREFABS
-        //public GameObject textPanel;
-        public MeshRenderer fabricationPanel;
         public TextMeshPro fabricationText;
-        public Material seenMaterial;
+        public MeshRenderer fabricationSeenPanel;
         public Material lineMaterial;
         public Material modelMaterial;
         #endregion GAMEOBJECT_PREFABS
@@ -83,8 +81,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            //if (textPanel == null || material == null)
-            if (fabricationPanel == null || fabricationText == null || seenMaterial == null || lineMaterial == null || modelMaterial == null )
+            if (fabricationSeenPanel == null || fabricationText == null || lineMaterial == null || modelMaterial == null )
             {
                 throw new ArgumentException("AnimationNone2 script requires some prefabs to work.");
             }
@@ -282,13 +279,12 @@ namespace Rtrbau
         #region IVISUALISABLE_METHODS
         public void LocateIt()
         {
-            // Fabrication location is managed by its element.
+            /// Fabrication location is managed by <see cref="ElementConsult"/>.
         }
 
-        public void ModifyMaterial()
+        public void ActivateIt()
         {
-            // Nothing to do in this case
-            fabricationPanel.material = seenMaterial;
+            /// Fabrication activation is managed by <see cref="ElementConsult"/>.
         }
 
         public void DestroyIt()
@@ -298,6 +294,10 @@ namespace Rtrbau
             Destroy(modelPair);
         }
 
+        public void ModifyMaterial(Material material)
+        {
+            fabricationSeenPanel.material = material;
+        }
         #endregion IVISUALISABLE_METHODS
 
         #region CLASS_METHODS

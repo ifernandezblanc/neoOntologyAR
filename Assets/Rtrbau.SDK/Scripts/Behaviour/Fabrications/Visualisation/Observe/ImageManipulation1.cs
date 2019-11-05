@@ -25,7 +25,6 @@ using System.Collections;
 using System.IO;
 using UnityEngine.Networking;
 using TMPro;
-using Microsoft.MixedReality.Toolkit.UI;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -52,11 +51,10 @@ namespace Rtrbau
         #endregion FACET_VARIABLES
 
         #region GAMEOBJECT_PREFABS
-        public TextMeshPro text;
-        public SpriteRenderer image;
+        public TextMeshPro fabricationText;
+        public SpriteRenderer fabricationSprite;
+        public MeshRenderer fabricationSeenPanel;
         public Material lineMaterial;
-        public MeshRenderer panel;
-        public Material seenMaterial;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -65,19 +63,11 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (text == null || image == null || lineMaterial == null || panel == null || seenMaterial == null)
+            if (fabricationText == null || fabricationSprite == null || fabricationSeenPanel == null || lineMaterial == null)
             {
                 throw new ArgumentException("ImageManipulation1 script requires some prefabs to work.");
             }
-            else
-            {
-                //string attributeValue = "http://138.250.108.1:3003/api/files/jpg/error_1-1-2-2-2_3.jpg";
-                //text.text = "Image: ";
-                //imageFile = new RtrbauFile(attributeValue);
-                //LoaderEvents.StartListening(imageFile.EventName(), DownloadedImage);
-                //Loader.instance.StartFileDownload(imageFile);
-                //Debug.Log("AudioTap1: InferFromText: Started audio download " + imageFile.URL());
-            }
+            else { }
         }
 
         void Update() { }
@@ -134,7 +124,7 @@ namespace Rtrbau
             // Check data received meets fabrication requirements
             if (data.fabricationData.TryGetValue(imagefacet1, out attribute))
             {
-                text.text = attribute.attributeName.name + ": ";
+                fabricationText.text = attribute.attributeName.name + ": ";
                 imageFile = new RtrbauFile(attribute.attributeValue);
                 LoaderEvents.StartListening(imageFile.EventName(), DownloadedImage);
                 Loader.instance.StartFileDownload(imageFile);
@@ -161,17 +151,22 @@ namespace Rtrbau
         #region IVISUALISABLE_METHODS
         public void LocateIt()
         {
-            // Fabrication location is managed by its element.
+            /// Fabrication location is managed by <see cref="ElementConsult"/>.
         }
 
-        public void ModifyMaterial()
+        public void ActivateIt()
         {
-            panel.material = seenMaterial;
+            /// Fabrication activation is managed by <see cref="ElementConsult"/>.
         }
 
         public void DestroyIt()
         {
             Destroy(this.gameObject);
+        }
+
+        public void ModifyMaterial(Material material)
+        {
+            fabricationSeenPanel.material = material;
         }
         #endregion IVISUALISABLE_METHODS
 
@@ -217,10 +212,10 @@ namespace Rtrbau
                     Texture2D imageTexture = DownloadHandlerTexture.GetContent(imageRequest);
                     // According to unity documentation
                     imageSource = Sprite.Create(imageTexture, new Rect(0.0f, 0.0f, imageTexture.width, imageTexture.height), new Vector2(0.5f, 0.5f), 100.0f);
-                    image.sprite = imageSource;
-                    image.drawMode = SpriteDrawMode.Sliced;
+                    fabricationSprite.sprite = imageSource;
+                    fabricationSprite.drawMode = SpriteDrawMode.Sliced;
                     // According to fabrication current size
-                    image.size = new Vector2(0.15f, 0.15f);
+                    fabricationSprite.size = new Vector2(0.15f, 0.15f);
                 }
             }
             else

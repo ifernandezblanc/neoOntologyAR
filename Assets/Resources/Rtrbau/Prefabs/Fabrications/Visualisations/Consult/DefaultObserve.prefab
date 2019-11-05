@@ -22,9 +22,10 @@ MonoBehaviour:
     fabricationDescription: 0
   element: {fileID: 0}
   scale: {fileID: 0}
-  text: {fileID: 5770060908479351019}
-  panel: {fileID: 5333058502210877971}
-  seenMaterial: {fileID: 2100000, guid: a8de2758c4b4460cae694f0d50d94fbb, type: 2}
+  fabricationText: {fileID: 5770060908479351019}
+  fabricationSeenPanel: {fileID: 5333058502210877971}
+  fabricationSeenMaterial: {fileID: 2100000, guid: c1ecea20ac7df7042b4aa15f1d240875,
+    type: 2}
 --- !u!1001 &5038450032708325777
 PrefabInstance:
   m_ObjectHideFlags: 0

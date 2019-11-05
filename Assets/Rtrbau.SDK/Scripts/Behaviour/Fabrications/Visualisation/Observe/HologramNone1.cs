@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Microsoft.MixedReality.Toolkit.UI;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -44,7 +43,6 @@ namespace Rtrbau
         public GameObject component;
         public GameObject model;
         public GameObject hologram;
-        // public GameObject text;
         #endregion CLASS_VARIABLES
 
         #region FACET_VARIABLES
@@ -54,10 +52,8 @@ namespace Rtrbau
         #endregion FACET_VARIABLES
 
         #region GAMEOBJECT_PREFABS
-        // public GameObject textPanel;
-        public MeshRenderer fabricationPanel;
         public TextMeshPro fabricationText;
-        public Material seenMaterial;
+        public MeshRenderer fabricationSeenPanel;
         public Material modelMaterial;
         #endregion GAMEOBJECT_PREFABS
 
@@ -68,8 +64,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            // if (textPanel == null || material == null)
-            if (fabricationPanel == null || fabricationText == null || seenMaterial == null || modelMaterial == null)
+            if (fabricationText == null || fabricationSeenPanel == null || modelMaterial == null)
             {
                 throw new ArgumentException("HologramNone1 script requires some prefabs to work.");
             }
@@ -192,12 +187,12 @@ namespace Rtrbau
         #region IVISUALISABLE_METHODS
         public void LocateIt()
         {
-            // Fabrication location is managed by its element.
+            /// Fabrication location is managed by <see cref="ElementConsult"/>.
         }
 
-        public void ModifyMaterial()
+        public void ActivateIt()
         {
-            fabricationPanel.material = seenMaterial;
+            /// Fabrication activation is managed by <see cref="ElementConsult"/>.
         }
 
         public void DestroyIt()
@@ -205,6 +200,11 @@ namespace Rtrbau
             Destroy(this.gameObject);
             Destroy(model);
             Destroy(hologram);
+        }
+
+        public void ModifyMaterial(Material material)
+        {
+            fabricationSeenPanel.material = material;
         }
         #endregion IVISUALISABLE_METHODS
 

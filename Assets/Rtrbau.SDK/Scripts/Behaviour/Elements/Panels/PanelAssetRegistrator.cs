@@ -345,7 +345,7 @@ namespace Rtrbau
         void LoadAssetModel(GameObject gameObject, string absolutePath)
         {
             // Load transparent material for asset components models
-            Material componentMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardTransparentBlue") as Material;
+            Material componentMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardBlueTransparent") as Material;
             // Find mesh renderers for asset components models
             MeshRenderer[] components = assetModel.transform.GetChild(0).GetComponentsInChildren<MeshRenderer>();
             // Assign manipulator and material to components models meshes renderers

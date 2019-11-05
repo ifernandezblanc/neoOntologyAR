@@ -542,9 +542,10 @@ MonoBehaviour:
   element: {fileID: 0}
   scale: {fileID: 0}
   audioSource: {fileID: 0}
-  text: {fileID: 482660010196856113}
-  panel: {fileID: 2063575622326788041}
-  seenMaterial: {fileID: 2100000, guid: a8de2758c4b4460cae694f0d50d94fbb, type: 2}
+  fabricationText: {fileID: 482660010196856113}
+  fabricationSeenPanel: {fileID: 2063575622326788041}
+  fabricationSeenMaterial: {fileID: 2100000, guid: c1ecea20ac7df7042b4aa15f1d240875,
+    type: 2}
   audioLoaded: 0
   audioPlaying: 0
 --- !u!1 &6322866858086007526
@@ -852,6 +853,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1585113476985330042, guid: 3350dc152b9f81947bea5918af783399,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 27.25
+      objectReference: {fileID: 0}
     - target: {fileID: 1630914676894993450, guid: 3350dc152b9f81947bea5918af783399,
         type: 3}
       propertyPath: m_SizeDelta.x
@@ -866,11 +872,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1585113476985330042, guid: 3350dc152b9f81947bea5918af783399,
-        type: 3}
-      propertyPath: m_fontSize
-      value: 27.25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3350dc152b9f81947bea5918af783399, type: 3}

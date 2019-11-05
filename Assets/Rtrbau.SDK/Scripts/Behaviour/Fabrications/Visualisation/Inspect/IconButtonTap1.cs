@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Microsoft.MixedReality.Toolkit.UI;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -51,8 +50,10 @@ namespace Rtrbau
         #endregion FACET_VARIABLES
 
         #region GAMEOBJECT_PREFABS
-        public TextMeshPro text;
-        public SpriteRenderer sprite;
+        public TextMeshPro fabricationText;
+        public SpriteRenderer fabricationSprite;
+        public MeshRenderer fabricationSeenPanel;
+        public Material fabricationSeenMaterial;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -62,7 +63,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (text == null || sprite == null)
+            if (fabricationText == null || fabricationSprite == null || fabricationSeenPanel == null || fabricationSeenMaterial == null)
             {
                 throw new ArgumentException("IconButtonTap1 script requires some prefabs to work.");
             }
@@ -124,14 +125,14 @@ namespace Rtrbau
             {
                 // Add text for attributes name
                 string attributeName = Parser.ParseURI(attribute.attributeValue, '#', RtrbauParser.post);
-                text.text = attribute.attributeName.name + ":";
+                fabricationText.text = attribute.attributeName.name + ":";
                 // Find icon that retrieves value
                 // iconName = Libraries.IconLibrary.Find(x => x.Contains(attribute.attributeValue));
                 iconName = Libraries.IconLibrary.Find(x => attribute.attributeValue.Contains(x));
                 string iconPath = "Rtrbau/Icons/" + iconName;
 
                 
-                text.text = attribute.attributeName.name + ": " + attribute.attributeValue;
+                fabricationText.text = attribute.attributeName.name + ": " + attribute.attributeValue;
                 nextIndividual = attribute.attributeValue;
 
                 relationshipAttribute = new OntologyEntity(attribute.attributeName.URI());
@@ -169,17 +170,22 @@ namespace Rtrbau
         #region IVISUALISABLE_METHODS
         public void LocateIt()
         {
-            // Fabrication location is managed by its element.
+            /// Fabrication location is managed by <see cref="ElementConsult"/>.
         }
 
-        public void ModifyMaterial()
+        public void ActivateIt()
         {
-            // To complete
+            /// Fabrication activation is managed by <see cref="ElementConsult"/>.
         }
 
         public void DestroyIt()
         {
             Destroy(this.gameObject);
+        }
+
+        public void ModifyMaterial(Material material)
+        {
+            // To complete
         }
         #endregion IVISUALISABLE_METHODS
 

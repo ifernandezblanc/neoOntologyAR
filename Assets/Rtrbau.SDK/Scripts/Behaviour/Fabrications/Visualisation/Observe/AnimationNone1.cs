@@ -62,8 +62,8 @@ namespace Rtrbau
         #endregion FACET_VARIABLES
 
         #region GAMEOBJECT_PREFABS
-        public GameObject textPanel;
-        public Material material;
+        public GameObject fabricationTextPanel;
+        public Material fabricationModelMaterial;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -73,7 +73,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (textPanel == null || material == null)
+            if (fabricationTextPanel == null || fabricationModelMaterial == null)
             {
                 throw new ArgumentException("AnimationNone1 script requires some prefabs to work.");
             }
@@ -171,10 +171,10 @@ namespace Rtrbau
                     model = Instantiate(component);
                     model.name = this.name + componentName + this.GetHashCode();
                     model.transform.SetParent(scale, true);
-                    model.GetComponent<MeshRenderer>().material = material;
+                    model.GetComponent<MeshRenderer>().material = fabricationModelMaterial;
 
                     // Create model text panel
-                    text = Instantiate(textPanel);
+                    text = Instantiate(fabricationTextPanel);
                     // Attach to model manipulator
                     text.transform.SetParent(model.transform.GetChild(0), false);
                     // Re-scale text panel
@@ -193,7 +193,7 @@ namespace Rtrbau
                     float width = element.localScale.x * 0.01f;
                     text.AddComponent<LineRenderer>();
                     text.GetComponent<LineRenderer>().useWorldSpace = true;
-                    text.GetComponent<LineRenderer>().material = material;
+                    text.GetComponent<LineRenderer>().material = fabricationModelMaterial;
                     text.GetComponent<LineRenderer>().startWidth = width;
                     text.GetComponent<LineRenderer>().endWidth = width;
                     UpdateLineRenderer(text);
@@ -209,10 +209,10 @@ namespace Rtrbau
                     modelPair = Instantiate(componentPair);
                     modelPair.name = this.name + componentPairName + this.GetHashCode();
                     modelPair.transform.SetParent(scale, true);
-                    modelPair.GetComponent<MeshRenderer>().material = material;
+                    modelPair.GetComponent<MeshRenderer>().material = fabricationModelMaterial;
 
                     // Create model text panel
-                    textPair = Instantiate(textPanel);
+                    textPair = Instantiate(fabricationTextPanel);
                     // Attach to model manipulator
                     textPair.transform.SetParent(modelPair.transform.GetChild(0), false);
                     // Re-scale text panel
@@ -231,7 +231,7 @@ namespace Rtrbau
                     float width = element.localScale.x * 0.01f;
                     textPair.AddComponent<LineRenderer>();
                     textPair.GetComponent<LineRenderer>().useWorldSpace = true;
-                    textPair.GetComponent<LineRenderer>().material = material;
+                    textPair.GetComponent<LineRenderer>().material = fabricationModelMaterial;
                     textPair.GetComponent<LineRenderer>().startWidth = width;
                     textPair.GetComponent<LineRenderer>().endWidth = width;
                     UpdateLineRenderer(textPair);
@@ -267,12 +267,12 @@ namespace Rtrbau
         #region IVISUALISABLE_METHODS
         public void LocateIt()
         {
-            // Fabrication location is managed by its element.
+            /// Fabrication location is managed by <see cref="ElementConsult"/>.
         }
 
-        public void ModifyMaterial()
+        public void ActivateIt()
         {
-            // Nothing to do in this case
+            /// Fabrication activation is managed by <see cref="ElementConsult"/>.
         }
 
         public void DestroyIt()
@@ -280,6 +280,10 @@ namespace Rtrbau
             Destroy(this.gameObject);
         }
 
+        public void ModifyMaterial(Material material)
+        {
+            // UPG: to be updated when fabrication created.
+        }
         #endregion IVISUALISABLE_METHODS
 
         #region CLASS_METHODS

@@ -59,6 +59,7 @@ namespace Rtrbau
         #region GAMEOBJECT_PREFABS
         public GameObject consultElement;
         public GameObject reportElement;
+        public Material elementSeenMaterial;
         #endregion GAMEOBJECT_PREFABS
 
         #region INITIALISATION_METHODS
@@ -74,6 +75,9 @@ namespace Rtrbau
 
             if (reportElement == null)
             { reportElement = Resources.Load("Rtrbau/Prefabs/Elements/Visualisations/ReportElement") as GameObject; }
+
+            if (elementSeenMaterial == null)
+            { elementSeenMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardGreyDark") as Material; }
 
             // Reference to the asset manager
             manager = assetManager;
@@ -127,11 +131,12 @@ namespace Rtrbau
             // Rtrbauer.instance.visualiser = this.gameObject;
         }
 
-        public void ModifyMaterial() { }
+        public void ActivateIt() { }
 
         /// <summary>
-        /// Identifies all rtrbau elements visualised and destroys them, and reinitialise their managers.
-        /// But does not destroy itself.
+        /// Identifies all <see cref="RtrbauElement"/> visualised and destroys them.
+        /// Then reinitialises <see cref="AssetVisualiser"/> manager behaviour.
+        /// Does not destroy <see cref="AssetVisualiser"/>.
         /// </summary>
         public void DestroyIt()
         {
@@ -161,6 +166,8 @@ namespace Rtrbau
             tertiaryElements = new Dictionary<string, GameObject>();
             tertiaryCounter = 0;
         }
+
+        public void ModifyMaterial(Material material) { }
         #endregion IVISUALISABLE_METHODS
 
         #region CLASS_METHODS
@@ -282,7 +289,7 @@ namespace Rtrbau
         void SetElement(GameObject element, RtrbauElementLocation location, int locationCounter)
         {
             // Modify material of last element (in case it hasn't been the one which drove the new element)
-            if (lastElement != null) { lastElement.GetComponent<IVisualisable>().ModifyMaterial(); }
+            if (lastElement != null) { lastElement.GetComponent<IVisualisable>().ModifyMaterial(elementSeenMaterial); }
             // Assign element as child of visualiser
             element.transform.SetParent(this.transform, false);
             // Set position of element according to location

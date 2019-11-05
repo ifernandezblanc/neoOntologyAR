@@ -99,26 +99,23 @@ namespace Rtrbau
         #endregion MONOBEHAVIOUR_METHODS
 
         #region IVISUALISABLE_METHODS
-        /// <summary>
-        /// Initialises and locate visualisation game objects
-        /// </summary>
         public void LocateIt()
         {
-            // Managed in creation at PanelAssetRegistrator
+            /// <see cref="AssetManager"/> location managed by <see cref="PanelAssetRegistrator"/>.
         }
 
-        public void ModifyMaterial() { }
+        public void ActivateIt() { }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public void DestroyIt() { }
+
+        public void ModifyMaterial(Material material) { }
         #endregion IVISUALISABLE_METHODS
 
         #region CLASS_METHODS
         #region INITIALISERS
 
         #endregion INITIALISERS
+
         #region PRIVATE
         List<GameObject> ReturnModels(GameObject assetModel)
         {

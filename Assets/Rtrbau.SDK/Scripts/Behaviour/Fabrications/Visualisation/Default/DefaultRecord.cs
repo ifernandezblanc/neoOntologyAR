@@ -10,7 +10,7 @@ Copyright (c) 2019 Babcock International Group. All Rights Reserved.
 All Rights Reserved.
 Confidential and Proprietary - Protected under copyright and other laws.
 
-Date: 25/08/2019
+Date: 04/11/2019
 ==============================================================================*/
 
 /// <summary>
@@ -21,10 +21,8 @@ Date: 25/08/2019
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
-using System.IO;
-using UnityEngine.Networking;
 using TMPro;
+using Microsoft.MixedReality.Toolkit.UI;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -33,7 +31,7 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
-    public class AudioTap1 : MonoBehaviour, IFabricationable, IVisualisable
+    public class DefaultRecord : MonoBehaviour, IFabricationable, IVisualisable
     {
         #region INITIALISATION_VARIABLES
         public AssetVisualiser visualiser;
@@ -43,32 +41,33 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
-        public AudioClip audioSource;
+        // public OntologyEntity relationshipAttribute;
         #endregion CLASS_VARIABLES
 
-        #region FACET_VARIABLES
-        public RtrbauFile audioFile;
-        #endregion FACET_VARIABLES
+        #region FACETS_VARIABLES
+        // public string nextIndividual;
+        #endregion FACETS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
         public TextMeshPro fabricationText;
         public MeshRenderer fabricationSeenPanel;
+        public MeshRenderer fabricationConfirmedPanel;
         public Material fabricationSeenMaterial;
+        public Material fabricationConfirmedMaterial;
+        public GameObject recordButton;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
-        public bool audioLoaded;
-        public bool audioPlaying;
+
         #endregion CLASS_EVENTS
 
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSeenPanel == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationConfirmedPanel == null || fabricationSeenMaterial == null || fabricationConfirmedMaterial == null || recordButton == null)
             {
-                throw new ArgumentException("AudioTap1 script requires some prefabs to work.");
+                throw new ArgumentException("DefaultRecord::Start: Script requires some prefabs to work.");
             }
-            else { }
         }
 
         void Update() { }
@@ -77,7 +76,7 @@ namespace Rtrbau
 
         void OnDisable() { }
 
-        void OnDestroy () { DestroyIt(); }
+        void OnDestroy() { DestroyIt(); }
         #endregion MONOBEHVAIOUR_METHODS
 
         #region IFABRICATIONABLE_METHODS
@@ -95,7 +94,6 @@ namespace Rtrbau
             data = fabrication;
             element = elementParent;
             scale = fabricationParent;
-            audioPlaying = false;
             // loc = location;
             Scale();
             InferFromText();
@@ -120,17 +118,15 @@ namespace Rtrbau
         /// </summary>
         public void InferFromText()
         {
-            DataFacet audiofacet1 = DataFormats.AudioTap1.formatFacets[0];
+            DataFacet textfacet0 = DataFormats.DefaultRecord.formatFacets[0];
             RtrbauAttribute attribute;
 
             // Check data received meets fabrication requirements
-            if (data.fabricationData.TryGetValue(audiofacet1, out attribute))
+            if (data.fabricationData.TryGetValue(textfacet0, out attribute))
             {
-                fabricationText.text = attribute.attributeName.name + ": ";
-                audioFile = new RtrbauFile(attribute.attributeValue);
-                LoaderEvents.StartListening(audioFile.EventName(), DownloadedAudio);
-                Loader.instance.StartFileDownload(audioFile);
-                Debug.Log("AudioTap1: InferFromText: Started audio download " + audioFile.URL());
+                fabricationText.text = attribute.attributeName.name;
+                //nextIndividual = attribute.attributeValue;
+                //relationshipAttribute = new OntologyEntity(attribute.attributeName.URI());
             }
             else
             {
@@ -143,20 +139,57 @@ namespace Rtrbau
         /// </summary>
         public void OnNextVisualisation()
         {
-            // Do nothing
-            // Activation / de-activation is managed by
+            // UPG: Implement method to check when ElementReport has been completed
+
+            DataFacet textfacet0 = DataFormats.DefaultRecord.formatFacets[0];
+            RtrbauAttribute attribute;
+
+            // Check data received meets fabrication requirements
+            if (data.fabricationData.TryGetValue(textfacet0, out attribute))
+            {
+                // Update attribute value according to what user recorded
+                attribute.attributeValue = recordButton.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<TextMeshPro>().text;
+                // Update attribute value in corresponding RtrbauElement
+                if (element.gameObject.GetComponent<ElementReport>().UpdateAttributeValue(attribute))
+                {
+                    // Change button colour for user confirmation
+                    fabricationConfirmedPanel.material = fabricationConfirmedMaterial;
+                    // Check if all attribute values have been recorded
+                    element.gameObject.GetComponent<ElementReport>().CheckAttributesReported();
+                }
+            }
+            else { }
+
+
+            //// Send relationship used to connect to the following individual to the report
+            //Reporter.instance.ReportElement(relationshipAttribute);
+            //// IMPORTANT: this button is set up for individuals in consult mode (IndividualProperties)
+            //OntologyElement individual = new OntologyElement(nextIndividual, OntologyElementType.IndividualProperties);
+            //GameObject nextElement = visualiser.FindElement(individual);
+            //if (nextElement != null)
+            //{
+            //    Debug.Log("OnNextVisualisation: " + nextElement.name);
+            //    element.gameObject.GetComponent<ElementsLine>().UpdateLineEnd(nextElement);
+            //}
+            //else
+            //{
+            //    // Element parent to modify material in expectance of a new element
+            //    element.GetComponent<ElementConsult>().ModifyMaterial();
+            //    // Trigger event to load a new element
+            //    RtrbauerEvents.TriggerEvent("LoadElement", individual, Rtrbauer.instance.user.procedure);
+            //}
         }
         #endregion IFABRICATIONABLE_METHODS
 
         #region IVISUALISABLE_METHODS
         public void LocateIt()
         {
-            /// Fabrication location is managed by <see cref="ElementConsult"/>.
+            /// Fabrication location is managed by <see cref="ElementReport"/>.
         }
 
         public void ActivateIt()
         {
-            /// Fabrication activation is managed by <see cref="ElementConsult"/>.
+            /// Fabrication activation is managed by <see cref="ElementReport"/>.
         }
 
         public void DestroyIt()
@@ -172,73 +205,19 @@ namespace Rtrbau
 
         #region CLASS_METHODS
         #region PRIVATE
-        void DownloadedAudio(RtrbauFile file)
-        {
-            LoaderEvents.StopListening(audioFile.EventName(), DownloadedAudio);
-            Debug.Log("AudioTap1: LoadAudio: downloaded " + audioFile.URL());
-
-            if (audioFile != null)
-            {
-                if (File.Exists(audioFile.FilePath()))
-                {
-                    audioFile = file;
-                    StartCoroutine(LoadAudio(audioFile));
-                }
-                else
-                {
-                    Debug.LogError("AudioTap1: DownloadedAudio: " + audioFile.name + "not found.");
-                }
-            }
-            else
-            {
-                Debug.LogError("AudioTap1: DownloadedAudio: " + audioFile.name + "not found.");
-            }
-
-        }
-
-        IEnumerator LoadAudio(RtrbauFile audioFile)
-        {
-            if(audioFile.type == RtrbauFileType.wav)
-            {
-                UnityWebRequest audioRequest = UnityWebRequestMultimedia.GetAudioClip(audioFile.FilePath(), AudioType.WAV);
-
-                yield return audioRequest.SendWebRequest();
-
-                if (audioRequest.isNetworkError || audioRequest.isHttpError)
-                {
-                    Debug.LogError(audioRequest.error);
-                }
-                else
-                {
-                    audioSource = DownloadHandlerAudioClip.GetContent(audioRequest);
-                    this.transform.GetChild(1).GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(true);
-                    this.gameObject.GetComponent<AudioSource>().clip = audioSource;
-                    audioLoaded = true;
-                }
-            }
-            else
-            {
-                Debug.LogError("AudioTap1: LoadAudio: " + audioFile.type + "not implemented for AudioTap1.");
-            }
-        }
         #endregion PRIVATE
 
         #region PUBLIC
-        public void PlayAudio()
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ActivateRecordButton()
         {
-            if (audioLoaded)
+            if (recordButton.activeSelf != true)
             {
-                if (!audioPlaying)
-                {
-                    audioPlaying = true;
-                    this.gameObject.GetComponent<AudioSource>().Play();
-                }
-                else
-                {
-                    audioPlaying = false;
-                    this.gameObject.GetComponent<AudioSource>().Stop();
-                }
+                recordButton.SetActive(true);
             }
+            else { }
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS

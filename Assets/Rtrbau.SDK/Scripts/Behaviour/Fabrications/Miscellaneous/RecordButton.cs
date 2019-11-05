@@ -10,7 +10,7 @@ Copyright (c) 2019 Babcock International Group. All Rights Reserved.
 All Rights Reserved.
 Confidential and Proprietary - Protected under copyright and other laws.
 
-Date: 25/07/2019
+Date: 04/11/2019
 ==============================================================================*/
 
 /// <summary>
@@ -22,17 +22,14 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-#endregion
-
+#endregion NAMESPACES
 
 namespace Rtrbau
 {
-    /// <summary>
-    /// Describe script purpose
-    /// Add links when code has been inspired
-    /// </summary>
-    public class ReportingButton : MonoBehaviour
+    public class RecordButton: MonoBehaviour
     {
+        #region INITIALISATION_VARIABLES
+        #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
         #endregion CLASS_VARIABLES
@@ -40,20 +37,20 @@ namespace Rtrbau
         #region GAMEOBJECT_PREFABS
         #endregion GAMEOBJECT_PREFABS
 
+        #region CLASS_EVENTS
+        #endregion CLASS_EVENTS
+
+        #region MONOBEHAVIOUR_METHODS
+        #endregion MONOBEHAVIOUR_METHODS
+
         #region CLASS_METHODS
-        public void SendReport()
-        {
-            // Send report
-            Reporter.instance.SendReport();
-            // Reinitialise report
-            Reporter.instance.ReinitialiseReport();
-            // Reinitialise visualiser
-            Rtrbauer.instance.ReloadVisualiser();
-            // Reinitialise paneller at ontologies level
-            string ontologiesURI = Rtrbauer.instance.ontology.ontologyURI.AbsoluteUri + "/" + "ontologies#ontologies";
-            OntologyEntity ontologies = new OntologyEntity(ontologiesURI);
-            PanellerEvents.TriggerEvent("LoadOperationOntologies", ontologies);
-        }
+        #region PRIVATE
+        #endregion PRIVATE
+        #region PUBLIC
+        #endregion PUBLIC
         #endregion CLASS_METHODS
+
     }
+
+
 }

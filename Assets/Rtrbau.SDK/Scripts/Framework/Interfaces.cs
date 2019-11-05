@@ -78,8 +78,9 @@ namespace Rtrbau
     public interface IVisualisable
     {
         void LocateIt();
-        void ModifyMaterial();
+        void ActivateIt();
         void DestroyIt();
+        void ModifyMaterial(Material material);
     }
     #endregion INTERFACES
 }

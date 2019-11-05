@@ -24,10 +24,11 @@ MonoBehaviour:
   scale: {fileID: 0}
   iconName: 
   icon: {fileID: 0}
-  text: {fileID: 527786129712965376}
-  sprite: {fileID: 1850909997728093058}
-  panel: {fileID: 2108415872816846328}
-  seenMaterial: {fileID: 2100000, guid: a8de2758c4b4460cae694f0d50d94fbb, type: 2}
+  fabricationText: {fileID: 527786129712965376}
+  fabricationSprite: {fileID: 1850909997728093058}
+  fabricationSeenPanel: {fileID: 2108415872816846328}
+  fabricationSeenMaterial: {fileID: 2100000, guid: c1ecea20ac7df7042b4aa15f1d240875,
+    type: 2}
 --- !u!1 &7047309786359156375
 GameObject:
   m_ObjectHideFlags: 0
@@ -174,6 +175,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1585113476985330042, guid: 3350dc152b9f81947bea5918af783399,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 27.25
+      objectReference: {fileID: 0}
     - target: {fileID: 1630914676894993450, guid: 3350dc152b9f81947bea5918af783399,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -188,11 +194,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1585113476985330042, guid: 3350dc152b9f81947bea5918af783399,
-        type: 3}
-      propertyPath: m_fontSize
-      value: 27.25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3350dc152b9f81947bea5918af783399, type: 3}
