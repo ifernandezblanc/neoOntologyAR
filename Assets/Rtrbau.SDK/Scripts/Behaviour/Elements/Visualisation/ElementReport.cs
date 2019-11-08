@@ -59,6 +59,8 @@ namespace Rtrbau
         public List<KeyValuePair<RtrbauFabrication,GameObject>> elementFabrications;
         public RtrbauElementLocation rtrbauLocation;
         public List<GameObject> unparentedFabrications;
+        public List<GameObject> recordFabrications;
+        public List<GameObject> nominateFabrications;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
@@ -152,6 +154,7 @@ namespace Rtrbau
                     assignedFabrications = new List<RtrbauFabrication>();
                     elementFabrications = new List<KeyValuePair<RtrbauFabrication,GameObject>>();
                     unparentedFabrications = new List<GameObject>();
+                    nominateFabrications = new List<GameObject>();
 
                     //originalElementScaleX = this.transform.localScale.x;
 
@@ -371,7 +374,7 @@ namespace Rtrbau
                     // Create new fabrication for non-assigned attribute
                     RtrbauFabrication fabrication = new RtrbauFabrication(RtrbauFabricationName.DefaultNominate, RtrbauFabricationType.Nominate, new Dictionary<DataFacet, RtrbauAttribute>
                     {
-                        { DataFormats.DefaultInspect.formatFacets[0], attribute }
+                        { DataFormats.DefaultNominate.formatFacets[0], attribute }
                     });
                     // UPG: since environment and user formats are being evaluated before, there is no need to add them to RtrbauFabrication class?
                     fabrication.fabricationAugmentation = EnvironmentFormats.DefaultNominate.formatAugmentation.facetAugmentation;
@@ -394,7 +397,6 @@ namespace Rtrbau
             }
 
             fabricationsSelected = true;
-            // LocateElement();
             CreateFabrications();
         }
 
@@ -428,9 +430,6 @@ namespace Rtrbau
 
                 Debug.Log("ElementConsult::LocateElement: rtrbau location is " + rtrbauLocation);
 
-                // RtrbauerEvents.TriggerEvent("LocateElement", this.gameObject, rtrbauLocation);
-                // To launch element location through visualiser
-                // CreateFabrications();
                 LocateIt();
             }
             else { }
@@ -447,62 +446,48 @@ namespace Rtrbau
             Debug.Log("ElementConsult::EvaluateElement: Number of attribute individuals downloaded: " + objectClassesIndividuals.Count);
             Debug.Log("ElementConsult::EvaluateElement: Fabrications selected is: " + fabricationsSelected);
 
-
             // Check fabrications selected as well as object classes attributes and individuals have been downloaded
             if (objectClassesAttributes.Count == objectPropertiesNumber && objectClassesIndividuals.Count == objectPropertiesNumber && fabricationsSelected)
             {
                 individualText.text = rtrbauElement.elementName.name;
                 classText.text = rtrbauElement.elementClass.name;
 
-                // TRIAL: Clean RtrbauElement attributes values when fabrications created for further update on user report
+                Debug.Log("ElementConsult::CreateFabrications: Starting to create fabrications for: " + rtrbauElement.elementName.name);
+
+                foreach (RtrbauFabrication fabrication in assignedFabrications)
+                {
+                    // UPG: list to know which script (class) to get component for
+                    // UPG: create a list maybe with prefabs pre-loaded to save time?
+                    // UPG: where to create list? would it be a dynamic dictionary?
+
+                    // Find fabrication GO by name in Rtrbauer dynamic library
+                    GameObject fabricationGO = Rtrbauer.instance.FindFabrication(fabrication.fabricationName, RtrbauElementType.Report);
+
+                    if (fabricationGO != null)
+                    {
+                        GameObject goFabrication = Instantiate(fabricationGO);
+                        KeyValuePair<RtrbauFabrication, GameObject> fabricationPair = new KeyValuePair<RtrbauFabrication, GameObject>(fabrication, goFabrication);
+                        elementFabrications.Add(fabricationPair);
+                        ScaleFabrication(goFabrication);
+                        LocateFabrication(fabricationPair);
+                    }
+                    else
+                    {
+                        Debug.LogError("ElementConsult::CreateFabrications: " + fabrication.fabricationName + " is not implemented");
+                    }
+                }
+
+                // Set fabrications as active
+                fabricationsActive = true;
+                statusText.text = "Element maximised, click to hide information";
+
+                // Disable tile grid object collection from side panel to allow image manipulation
+                // UPG: do it with other fabrication panel as well?
+                fabricationsRecordImageVideo.GetComponent<TileGridObjectCollection>().enabled = false;
+
+                // Clean RtrbauElement attributes values when fabrications created for further update on user report
+                Debug.Log("ElementConsult::CreateFabrications: fabrications created for: " + rtrbauElement.elementName.name + " and values emptied");
                 CleanRtrbauElement();
-
-                //Debug.Log("ElementConsult::CreateFabrications: Starting to create fabrications for: " + individualElement.entity.Entity());
-
-                // UPG: if(objectClassesAttributes.Count == objectPropertiesNumber && objectClassesIndividuals.Count == objectPropertiesNumber)
-                // UPG: to synchronise object classes download with fabrications creation rather than element creation
-
-
-                //foreach (RtrbauFabrication fabrication in assignedFabrications)
-                //{
-                ////    // UPG: list to know which script (class) to get component for
-                ////    // UPG: create a list maybe with prefabs pre-loaded to save time?
-                ////    // UPG: where to create list? would it be a dynamic dictionary?
-                ////    string fabricationPath = "Rtrbau/Prefabs/Fabrications/Visualisations/" + fabrication.fabricationName;
-
-                ////    Debug.Log(fabricationPath);
-
-                ////    // Make sure this goes correctly, otherwise it can create big issues
-                ////    GameObject fabricationGO = Resources.Load(fabricationPath) as GameObject;
-                
-                //      // Find fabrication GO by name in Rtrbauer dynamic library
-                //      GameObject fabricationGO = Rtrbauer.instance.FindFabrication(fabrication.fabricationName, RtrbauElementType.Report);
-
-                //    if (fabricationGO != null)
-                //    {
-                //        GameObject goFabrication = Instantiate(fabricationGO);
-                //        KeyValuePair<RtrbauFabrication, GameObject> fabricationPair = new KeyValuePair<RtrbauFabrication, GameObject>(fabrication, goFabrication);
-                //        elementFabrications.Add(fabricationPair);
-                //        ScaleFabrication(goFabrication);
-                //        LocateFabrication(fabricationPair);
-                //    }
-                //    else
-                //    {
-                //        Debug.LogError("ElementConsult::CreateFabrications: " + fabrication.fabricationName + " is not implemented");
-                //    }
-                //}
-
-                //// Set fabrications as active
-                //fabricationsActive = true;
-                //statusText.text = "Element maximised, click to hide information";
-
-                //// Disable tile grid object collection from side panel to allow image manipulation
-                //// Maybe do it with other fabrication panel as well?
-                //// fabricationsSidePanel.GetComponent<TileGridObjectCollection>().enabled = false;
-                //fabricationsRecordImageVideo.GetComponent<TileGridObjectCollection>().enabled = false;
-
-                ////InputIntoReport();
-                ////LocateIt();
             }
             else
             {
@@ -517,7 +502,35 @@ namespace Rtrbau
         /// </summary>
         public void InputIntoReport()
         {
-            // Function called after generating fabrications
+            Debug.Log("ElementReport::InputIntoReport: starting report of invidual created...");
+
+            // Create JsonIndividual from RtrbauElement
+            JsonIndividualValues reportedIndividual = new JsonIndividualValues();
+
+            reportedIndividual.ontIndividual = rtrbauElement.elementName.URI();
+            reportedIndividual.ontClass = rtrbauElement.elementClass.URI();
+
+            foreach (RtrbauAttribute attribute in rtrbauElement.elementAttributes)
+            {
+                JsonValue attributeValue = new JsonValue();
+                attributeValue.ontName = attribute.attributeName.URI();
+                attributeValue.ontValue = attribute.attributeValue;
+                attributeValue.ontType = attribute.attributeType.URI();
+                reportedIndividual.ontProperties.Add(attributeValue);
+            }
+
+            // Write JsonIndividual as JsonFile
+            OntologyElement individualElement = new OntologyElement(rtrbauElement.elementName.URI(),OntologyElementType.IndividualProperties);
+
+            File.WriteAllText(individualElement.FilePath(), JsonUtility.ToJson(reportedIndividual));
+
+            // Report rtrbauElement to reporter
+            Reporter.instance.ReportElement(rtrbauElement.elementName);
+
+            // UPG: what to do with moving towards next element to report?
+
+            // Function called after all attribute values reported
+            // IMPORTANT TO ADD: submit individual to report and save as json file
             // Input into report function from ElementConsult
             // Reporter.instance.ReportElement(rtrbauElement.elementName);
             // REMEMBER TO UPDATE RTRBAUELEMENT BEFORE REPORTING
@@ -837,11 +850,14 @@ namespace Rtrbau
                     fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, visualiser.transform);
                     unparentedFabrications.Add(fabrication.Value);
                 }
+                else { }
+                recordFabrications.Add(fabrication.Value);
             }
             else if (fabrication.Key.fabricationType == RtrbauFabricationType.Nominate)
             {
                 fabrication.Value.transform.SetParent(fabricationsNominate, false);
                 fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
+                nominateFabrications.Add(fabrication.Value);
             }
             else
             {
@@ -881,7 +897,7 @@ namespace Rtrbau
                 attribute.attributeValue = null;
             }
 
-            Debug.Log("ElementReport::CleanRtrbauElement: individual emptied is:" + rtrbauElement.elementName.name);
+            Debug.Log("ElementReport::CleanRtrbauElement: individual emptied is: " + rtrbauElement.elementName.name);
 
             foreach(RtrbauAttribute attribute in rtrbauElement.elementAttributes)
             {
@@ -892,31 +908,31 @@ namespace Rtrbau
 
         #region PUBLIC
         /// <summary>
-        /// Updates <see cref="RtrbauAttribute"/> in <see cref="RtrbauElement"/> from <see cref="ElementReport"/>.
-        /// It assumes attribute values are set to null before.
+        /// Deactivates record buttons from all other record fabrications that are not active.
         /// </summary>
-        /// <returns>
-        /// Returns true if <see cref="RtrbauAttribute.attributeValue"/> has been succesfully updated.
-        /// Otherwise returns false.
-        /// </returns>
-        /// <param name="updatedAttribute"></param>
-        public bool UpdateAttributeValue(RtrbauAttribute updatedAttribute)
+        /// <param name="activeRecord"></param>
+        public void DeactivateRecords(GameObject activeRecord)
         {
-            // UPG: does not consider what happens if attribute value needs to be re-written
-            // Evaluate list of attribute to find first that matches which has not been changed yet
-            foreach(RtrbauAttribute attribute in rtrbauElement.elementAttributes)
+            List<GameObject> deactivateRecords = recordFabrications.FindAll(x => x != activeRecord);
+
+            foreach (GameObject record in deactivateRecords)
             {
-                // Since attributes values have been cleaned in advance, discard those that are not null
-                if (attribute.attributeName == updatedAttribute.attributeName && attribute.attributeRange == updatedAttribute.attributeRange && attribute.attributeValue == null)
-                {
-                    attribute.attributeValue = updatedAttribute.attributeValue;
-                    // Stop loop when value updated for optimisation purposes
-                    return true;
-                }
-                else { }
+                record.GetComponent<IRecordable>().DeactivateRecords();
             }
-            // Return false in case attribute value has not been updated
-            return false;
+        }
+
+        /// <summary>
+        /// Deactivates nominate buttons from all other nominate fabrications that are not active.
+        /// </summary>
+        /// <param name="activeNominate"></param>
+        public void DeactivateNominates(GameObject activeNominate)
+        {
+            List<GameObject> deactivateNominates = nominateFabrications.FindAll(x => x != activeNominate);
+
+            foreach (GameObject nominate in deactivateNominates)
+            {
+                nominate.GetComponent<INominatable>().DeactivateNominates();
+            }
         }
 
         /// <summary>
@@ -929,17 +945,31 @@ namespace Rtrbau
         /// </returns>
         public bool CheckAttributesReported()
         {
+            // Identify attributes whose values have not been reported
             List<RtrbauAttribute> nonReportedAttributes = rtrbauElement.elementAttributes.FindAll(x => x.attributeValue == null);
 
+            Debug.Log("ElementReport::CheckAttributesReport: checking if all attribute values reported...");
+
+            // If there are attributes with non-reported values
             if (nonReportedAttributes.Count == 0)
             {
+                // Modify element panels materials to reported
                 panelPrimary.material = reportedMaterial;
                 panelSecondary.material = reportedMaterial;
                 panelTertiary.material = reportedMaterial;
+                // Modify fabrications panels materials to reported
+                ModifyMaterial(reportedMaterial);
+                // Update status text to show all attributes have been reported
+                statusText.text = "All attributes reported, please click on the next attribute to report.";
+                // Submit reported rtrbauElement for reporting
+                Debug.Log("ElementReport::CheckAttributesReport: all values reported, inputting new individual into report");
+                InputIntoReport();
                 return true;
             }
             else
             {
+                // Update status text to show all attributes have not been reported
+                statusText.text = "Not all attributes reported, please complete them and click again for reporting.";
                 return false;
             }
         }

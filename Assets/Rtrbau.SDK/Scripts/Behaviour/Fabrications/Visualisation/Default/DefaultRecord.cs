@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Microsoft.MixedReality.Toolkit.UI;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -31,7 +30,7 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
-    public class DefaultRecord : MonoBehaviour, IFabricationable, IVisualisable
+    public class DefaultRecord : MonoBehaviour, IFabricationable, IVisualisable, IRecordable
     {
         #region INITIALISATION_VARIABLES
         public AssetVisualiser visualiser;
@@ -41,30 +40,27 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
-        // public OntologyEntity relationshipAttribute;
         #endregion CLASS_VARIABLES
 
         #region FACETS_VARIABLES
-        // public string nextIndividual;
         #endregion FACETS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
         public TextMeshPro fabricationText;
         public MeshRenderer fabricationSeenPanel;
-        public MeshRenderer fabricationConfirmedPanel;
-        public Material fabricationSeenMaterial;
-        public Material fabricationConfirmedMaterial;
+        public MeshRenderer fabricationReportedPanel;
+        public Material fabricationReportedMaterial;
         public GameObject recordButton;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
-
+        private bool fabricationCreated;
         #endregion CLASS_EVENTS
 
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSeenPanel == null || fabricationConfirmedPanel == null || fabricationSeenMaterial == null || fabricationConfirmedMaterial == null || recordButton == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || recordButton == null)
             {
                 throw new ArgumentException("DefaultRecord::Start: Script requires some prefabs to work.");
             }
@@ -85,16 +81,15 @@ namespace Rtrbau
         /// </summary>
         /// <param name="assetVisualiser"></param>
         /// <param name="fabrication"></param>
-        /// <param name="scale"></param>
+        /// <param name="elementParent"></param>
+        /// <param name="fabricationParent"></param>
         public void Initialise(AssetVisualiser assetVisualiser, RtrbauFabrication fabrication, Transform elementParent, Transform fabricationParent)
         {
-            // Is location necessary?
-            // Maybe change inferfromtext by initialise in IFabricationable?
             visualiser = assetVisualiser;
             data = fabrication;
             element = elementParent;
             scale = fabricationParent;
-            // loc = location;
+            fabricationCreated = false;
             Scale();
             InferFromText();
         }
@@ -104,8 +99,6 @@ namespace Rtrbau
         /// </summary>
         public void Scale()
         {
-            // Debug.Log("Root: " + this.transform.root.name);
-
             float sX = this.transform.localScale.x / scale.transform.localScale.x;
             float sY = this.transform.localScale.y / scale.transform.localScale.y;
             float sZ = this.transform.localScale.z / scale.transform.localScale.z;
@@ -125,8 +118,7 @@ namespace Rtrbau
             if (data.fabricationData.TryGetValue(textfacet0, out attribute))
             {
                 fabricationText.text = attribute.attributeName.name;
-                //nextIndividual = attribute.attributeValue;
-                //relationshipAttribute = new OntologyEntity(attribute.attributeName.URI());
+                fabricationCreated = true;
             }
             else
             {
@@ -139,8 +131,6 @@ namespace Rtrbau
         /// </summary>
         public void OnNextVisualisation()
         {
-            // UPG: Implement method to check when ElementReport has been completed
-
             DataFacet textfacet0 = DataFormats.DefaultRecord.formatFacets[0];
             RtrbauAttribute attribute;
 
@@ -148,36 +138,19 @@ namespace Rtrbau
             if (data.fabricationData.TryGetValue(textfacet0, out attribute))
             {
                 // Update attribute value according to what user recorded
-                attribute.attributeValue = recordButton.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<TextMeshPro>().text;
-                // Update attribute value in corresponding RtrbauElement
-                if (element.gameObject.GetComponent<ElementReport>().UpdateAttributeValue(attribute))
-                {
-                    // Change button colour for user confirmation
-                    fabricationConfirmedPanel.material = fabricationConfirmedMaterial;
-                    // Check if all attribute values have been recorded
-                    element.gameObject.GetComponent<ElementReport>().CheckAttributesReported();
-                }
+                // This assigns to RtrbauElement from ElementReport through RtrbauFabrication
+                // TextMeshPro - InputField creates an extra child that is assigned
+                attribute.attributeValue = recordButton.transform.GetChild(0).GetChild(0).GetChild(1).GetChild(0).GetChild(0).GetChild(2).GetComponent<TextMeshProUGUI>().text;
+                // Change button colour for user confirmation
+                fabricationReportedPanel.material = fabricationReportedMaterial;
+                // Check if all attribute values have been recorded
+                // If true, then ElementReport will input reported element into report
+                // If true, then ElementReport will change colour to reported
+                element.gameObject.GetComponent<ElementReport>().CheckAttributesReported();
+                // Deactivate record button
+                DeactivateRecords();
             }
             else { }
-
-
-            //// Send relationship used to connect to the following individual to the report
-            //Reporter.instance.ReportElement(relationshipAttribute);
-            //// IMPORTANT: this button is set up for individuals in consult mode (IndividualProperties)
-            //OntologyElement individual = new OntologyElement(nextIndividual, OntologyElementType.IndividualProperties);
-            //GameObject nextElement = visualiser.FindElement(individual);
-            //if (nextElement != null)
-            //{
-            //    Debug.Log("OnNextVisualisation: " + nextElement.name);
-            //    element.gameObject.GetComponent<ElementsLine>().UpdateLineEnd(nextElement);
-            //}
-            //else
-            //{
-            //    // Element parent to modify material in expectance of a new element
-            //    element.GetComponent<ElementConsult>().ModifyMaterial();
-            //    // Trigger event to load a new element
-            //    RtrbauerEvents.TriggerEvent("LoadElement", individual, Rtrbauer.instance.user.procedure);
-            //}
         }
         #endregion IFABRICATIONABLE_METHODS
 
@@ -203,22 +176,42 @@ namespace Rtrbau
         }
         #endregion IVISUALISABLE_METHODS
 
-        #region CLASS_METHODS
-        #region PRIVATE
-        #endregion PRIVATE
-
-        #region PUBLIC
+        #region IRECORDABLE_METHODS
         /// <summary>
-        /// 
+        /// Activates record buttons when attribute name button is <see cref="OnFocus"/>.
+        /// It also triggers deactivation of other record buttons fabrications.
         /// </summary>
-        public void ActivateRecordButton()
+        public void ActivateRecords()
         {
-            if (recordButton.activeSelf != true)
+            // Call ElementReport to deactivate buttons from other record fabrications
+            element.GetComponent<ElementReport>().DeactivateRecords(this.gameObject);
+
+            if (fabricationCreated == true && recordButton.activeSelf == false)
             {
                 recordButton.SetActive(true);
             }
             else { }
         }
+
+        /// <summary>
+        /// Deactivates record buttons.
+        /// It is also called by <see cref="ElementReport"/> to deactivate record buttons when others are to become active.
+        /// </summary>
+        public void DeactivateRecords()
+        {
+            if (fabricationCreated == true && recordButton.activeSelf == true)
+            {
+                recordButton.SetActive(false);
+            }
+            else { }
+        }
+        #endregion IRECORDABLE_METHODS
+
+        #region CLASS_METHODS
+        #region PRIVATE
+        #endregion PRIVATE
+
+        #region PUBLIC
         #endregion PUBLIC
         #endregion CLASS_METHODS
     }

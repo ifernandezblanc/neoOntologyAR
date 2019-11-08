@@ -82,5 +82,18 @@ namespace Rtrbau
         void DestroyIt();
         void ModifyMaterial(Material material);
     }
+
+    public interface IRecordable
+    {
+        void ActivateRecords();
+        void DeactivateRecords();
+    }
+
+    public interface INominatable
+    {
+        void ActivateNominates();
+        void DeactivateNominates();
+        // void CreateNewNominateElement();
+    }
     #endregion INTERFACES
 }

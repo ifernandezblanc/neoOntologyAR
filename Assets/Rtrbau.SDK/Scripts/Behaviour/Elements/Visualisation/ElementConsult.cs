@@ -375,7 +375,6 @@ namespace Rtrbau
             //}
 
             fabricationsSelected = true;
-            // LocateElement();
             CreateFabrications();
         }
 
@@ -410,9 +409,6 @@ namespace Rtrbau
 
                 Debug.Log("ElementConsult::LocateElement: rtrbau location is " + rtrbauLocation);
 
-                // RtrbauerEvents.TriggerEvent("LocateElement", this.gameObject, rtrbauLocation);
-                // To launch element location through visualiser
-                // CreateFabrications();
                 LocateIt();
             }
             else { }
@@ -433,13 +429,9 @@ namespace Rtrbau
 
                 foreach (RtrbauFabrication fabrication in assignedFabrications)
                 {
-                    //// UPG: list to know which script (class) to get component for
-                    //// UPG: create a list maybe with prefabs pre-loaded to save time?
-                    //// UPG: where to create list? would it be a dynamic dictionary?
-                    //string fabricationPath = "Rtrbau/Prefabs/Fabrications/Visualisations/" + fabrication.fabricationName;
-                    //Debug.Log(fabricationPath);
-                    //// Make sure this goes correctly, otherwise it can create big issues
-                    //GameObject fabricationGO = Resources.Load(fabricationPath) as GameObject;
+                    // UPG: list to know which script (class) to get component for
+                    // UPG: create a list maybe with prefabs pre-loaded to save time?
+                    // UPG: where to create list? would it be a dynamic dictionary?
 
                     // Find fabrication GO by name in Rtrbauer dynamic library
                     GameObject fabricationGO = Rtrbauer.instance.FindFabrication(fabrication.fabricationName, RtrbauElementType.Consult);
@@ -463,12 +455,10 @@ namespace Rtrbau
                 statusText.text = "Element maximised, click to hide information";
 
                 // Disable tile grid object collection from side panel to allow image manipulation
-                // Maybe do it with other fabrication panel as well?
-                // fabricationsSidePanel.GetComponent<TileGridObjectCollection>().enabled = false;
+                // UPG: do it with other fabrication panels as well?
                 fabricationsObserveImageVideo.GetComponent<TileGridObjectCollection>().enabled = false;
 
                 InputIntoReport();
-                // LocateIt();
             }
             else
             {

@@ -169,126 +169,34 @@ namespace Rtrbau
         public static List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>> ReportFormats
             = new List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>>
             {
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.TextDictation1, DataFormats.TextDictation1, EnvironmentFormats.TextDictation1, UserFormats.TextDictation1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.TextKeyboard1, DataFormats.TextKeyboard1, EnvironmentFormats.TextKeyboard1, UserFormats.TextKeyboard1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.AudioRecordHold1, DataFormats.AudioRecordHold1, EnvironmentFormats.AudioRecordHold1, UserFormats.AudioRecordHold1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.ImageRecordHold1, DataFormats.ImageRecordHold1, EnvironmentFormats.ImageRecordHold1, UserFormats.ImageRecordHold1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.VideoRecordHold1, DataFormats.VideoRecordHold1, EnvironmentFormats.VideoRecordHold1, UserFormats.VideoRecordHold1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.ModelRecordHold1, DataFormats.ModelRecordHold1, EnvironmentFormats.ModelRecordHold1, UserFormats.ModelRecordHold1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.TextPanelTap1, DataFormats.TextPanelTap1, EnvironmentFormats.TextPanelTap1, UserFormats.TextPanelTap1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.IconPanelTap1, DataFormats.IconPanelTap1, EnvironmentFormats.IconPanelTap1, UserFormats.IconPanelTap1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.TextNone2, DataFormats.TextNone2, EnvironmentFormats.TextNone2, UserFormats.TextNone2),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.TextButtonTap2, DataFormats.TextButtonTap2, EnvironmentFormats.TextButtonTap2, UserFormats.TextButtonTap2),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.TextPanelTap2, DataFormats.TextPanelTap2, EnvironmentFormats.TextPanelTap2, UserFormats.TextPanelTap2)
+                // TRIAL: to ensure DefaultRecord and DefaultNominate work correctly
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.TextDictation1, DataFormats.TextDictation1, EnvironmentFormats.TextDictation1, UserFormats.TextDictation1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.TextKeyboard1, DataFormats.TextKeyboard1, EnvironmentFormats.TextKeyboard1, UserFormats.TextKeyboard1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.AudioRecordHold1, DataFormats.AudioRecordHold1, EnvironmentFormats.AudioRecordHold1, UserFormats.AudioRecordHold1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.ImageRecordHold1, DataFormats.ImageRecordHold1, EnvironmentFormats.ImageRecordHold1, UserFormats.ImageRecordHold1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.VideoRecordHold1, DataFormats.VideoRecordHold1, EnvironmentFormats.VideoRecordHold1, UserFormats.VideoRecordHold1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.ModelRecordHold1, DataFormats.ModelRecordHold1, EnvironmentFormats.ModelRecordHold1, UserFormats.ModelRecordHold1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.TextPanelTap1, DataFormats.TextPanelTap1, EnvironmentFormats.TextPanelTap1, UserFormats.TextPanelTap1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.IconPanelTap1, DataFormats.IconPanelTap1, EnvironmentFormats.IconPanelTap1, UserFormats.IconPanelTap1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.TextNone2, DataFormats.TextNone2, EnvironmentFormats.TextNone2, UserFormats.TextNone2),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.TextButtonTap2, DataFormats.TextButtonTap2, EnvironmentFormats.TextButtonTap2, UserFormats.TextButtonTap2),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.TextPanelTap2, DataFormats.TextPanelTap2, EnvironmentFormats.TextPanelTap2, UserFormats.TextPanelTap2)
             };
         #endregion REPORT_FORMATS
-
-
-        // UPG: Add new formats to both dictionaries
-        //#region DATA_FORMATS
-        //public static List<DataFormat> DataFormatsConsult = new List<DataFormat>
-        //{
-        //    { DataFormats.TextNone1 },
-        //    { DataFormats.IconNone1 },
-        //    { DataFormats.AudioTap1 },
-        //    { DataFormats.ImageManipulation1 },
-        //    { DataFormats.VideoManipulation1 },
-        //    { DataFormats.ModelManipulation1 },
-        //    { DataFormats.HologramNone1 },
-        //    { DataFormats.HologramNone2 },
-        //    { DataFormats.AnimationNone1 },
-        //    { DataFormats.AnimationNone2 },
-        //    { DataFormats.TextButtonTap1 },
-        //    { DataFormats.IconButtonTap1 }
-        //};
-
-        //public static List<DataFormat> DataFormatsReport = new List<DataFormat>
-        //{
-        //    { DataFormats.TextDictation1 },
-        //    { DataFormats.TextKeyboard1 },
-        //    { DataFormats.AudioRecordHold1 },
-        //    { DataFormats.ImageRecordHold1 },
-        //    { DataFormats.VideoRecordHold1 },
-        //    { DataFormats.ModelRecordHold1 },
-        //    { DataFormats.TextPanelTap1 },
-        //    { DataFormats.IconPanelTap1 }
-        //};
-        //#endregion DATA_FORMATS
-
-        //#region ENVIRONMENT_FORMATS
-        //public static List<EnvironmentFormat> EnvironmentFormatsConsult = new List<EnvironmentFormat>
-        //{
-        //    { EnvironmentFormats.TextNone1 },
-        //    { EnvironmentFormats.IconNone1 },
-        //    { EnvironmentFormats.AudioTap1 },
-        //    { EnvironmentFormats.ImageManipulation1 },
-        //    { EnvironmentFormats.VideoManipulation1 },
-        //    { EnvironmentFormats.ModelManipulation1 },
-        //    { EnvironmentFormats.HologramNone1 },
-        //    { EnvironmentFormats.HologramNone2 },
-        //    { EnvironmentFormats.AnimationNone1 },
-        //    { EnvironmentFormats.AnimationNone2 },
-        //    { EnvironmentFormats.TextButtonTap1 },
-        //    { EnvironmentFormats.IconButtonTap1 }
-        //};
-
-        //public static List<EnvironmentFormat> EnvironmentFormatsReport = new List<EnvironmentFormat>
-        //{
-        //    { EnvironmentFormats.TextKeyboard1 },
-        //    { EnvironmentFormats.TextDictation1 },
-        //    { EnvironmentFormats.AudioRecordHold1 },
-        //    { EnvironmentFormats.ImageRecordHold1 },
-        //    { EnvironmentFormats.VideoRecordHold1 },
-        //    { EnvironmentFormats.ModelRecordHold1 },
-        //    { EnvironmentFormats.TextPanelTap1 },
-        //    { EnvironmentFormats.IconPanelTap1 }
-        //};
-        //#endregion ENVIRONMENT_FORMATS
-
-        //#region USER_FORMATS
-        //public static List<UserFormat> UserFormatsConsult = new List<UserFormat>
-        //{
-        //    { UserFormats.TextNone1 },
-        //    { UserFormats.IconNone1 },
-        //    { UserFormats.AudioTap1 },
-        //    { UserFormats.ImageManipulation1 },
-        //    { UserFormats.VideoManipulation1 },
-        //    { UserFormats.ModelManipulation1 },
-        //    { UserFormats.HologramNone1 },
-        //    { UserFormats.HologramNone2 },
-        //    { UserFormats.AnimationNone1 },
-        //    { UserFormats.AnimationNone2 },
-        //    { UserFormats.TextButtonTap1 },
-        //    { UserFormats.IconButtonTap1 }
-        //};
-
-        //public static List<UserFormat> UserFormatsReport = new List<UserFormat>
-        //{
-        //    { UserFormats.TextKeyboard1 },
-        //    { UserFormats.TextDictation1 },
-        //    { UserFormats.AudioRecordHold1 },
-        //    { UserFormats.ImageRecordHold1 },
-        //    { UserFormats.VideoRecordHold1 },
-        //    { UserFormats.ModelRecordHold1 },
-        //    { UserFormats.TextPanelTap1 },
-        //    { UserFormats.IconPanelTap1 }
-        //};
-        //#endregion USER_FORMATS
         #endregion DICTIONARIES_FORMATS
 
         #region DICTIONARIES_CONFIGURATION
-        
         #endregion DICTIONARIES_CONFIGURATION
 
         /// <summary>
@@ -332,7 +240,6 @@ namespace Rtrbau
         ///// </summary>
         //public static Dictionary<RtrbauFabricationName, RtrbauAttributeType> Fabrications = new Dictionary<RtrbauFabricationName, RtrbauAttributeType>();
         //    // To read from prefabs and assign accordingly (either on run-time or editor)
-
         #endregion DICTIONARIES_DYNAMIC
 
     }
