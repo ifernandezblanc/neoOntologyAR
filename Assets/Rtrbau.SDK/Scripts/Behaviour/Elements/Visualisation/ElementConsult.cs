@@ -50,14 +50,15 @@ namespace Rtrbau
         public RtrbauElementType elementType;
         public JsonIndividualValues individualAttributes;
         public JsonClassProperties classAttributes;
-        public List<JsonClassProperties> objectClassesAttributes;
+        public List<JsonClassProperties> objectPropertyAttributes;
         public JsonDistance elementComponentDistance;
         public JsonDistance elementOperationDistance;
         public RtrbauElement rtrbauElement;
         public List<RtrbauFabrication> assignedFabrications;
         public List<KeyValuePair<RtrbauFabrication,GameObject>> elementFabrications;
         public RtrbauElementLocation rtrbauLocation;
-        public List<GameObject> unparentedFabrications;
+        public List<GameObject> observeFabrications;
+        public List<GameObject> inspectFabrications;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
@@ -76,12 +77,16 @@ namespace Rtrbau
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
-        public int objectClassesNumber;
-        public bool fabricationsSelected;
+        public bool individualDownloaded;
+        public bool classDownloaded;
+        public bool objectPropertiesDownloaded;
+        public int objectPropertiesNumber;
         public bool componentDistanceDownloaded;
         public bool operationDistanceDownloaded;
-        public int elementUpdated;
+        public bool fabricationsSelected;
+        public bool fabricationsCreated;
         public bool fabricationsActive;
+        public bool elementReported;
         #endregion CLASS_EVENTS
 
         #region MONOBEHAVIOUR_METHODS
@@ -111,7 +116,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public void Initialise(AssetVisualiser assetVisualiser, OntologyElement elementOntology, GameObject elementPrevious)
+        public void Initialise(AssetVisualiser assetVisualiser, OntologyElement elementIndividual, OntologyElement elementClass, GameObject elementPrevious)
         {
             if (individualText == null || classText == null || statusText == null || fabricationsObserveRest == null || fabricationsObserveImageVideo == null || fabricationsInspect == null || panelPrimary == null || panelSecondary == null || activationButton == null || activationButtonMaximise == null || activationButtonMinimise == null || lineMaterial == null) 
             {
@@ -119,7 +124,7 @@ namespace Rtrbau
             }
             else
             {
-                if (elementOntology.type == OntologyElementType.IndividualProperties)
+                if (elementIndividual.type == OntologyElementType.IndividualProperties)
                 {
                     // lineMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardBlue") as Material;
                     // viewer = GameObject.FindGameObjectWithTag("MainCamera");
@@ -127,28 +132,30 @@ namespace Rtrbau
                     elementType = RtrbauElementType.Consult;
 
                     visualiser = assetVisualiser;
-                    individualElement = elementOntology;
+                    individualElement = elementIndividual;
+                    classElement = elementClass;
                     previousElement = elementPrevious;
 
-                    objectClassesAttributes = new List<JsonClassProperties>();
-                    objectClassesNumber = 0;
+                    objectPropertyAttributes = new List<JsonClassProperties>();
 
-                    fabricationsSelected = false;
-
+                    individualDownloaded = false;
+                    classDownloaded = false;
+                    objectPropertiesDownloaded = false;
+                    objectPropertiesNumber = 0;
                     componentDistanceDownloaded = false;
                     operationDistanceDownloaded = false;
 
-                    elementUpdated = 0;
+                    fabricationsSelected = false;
+                    fabricationsCreated = false;
 
                     fabricationsActive = false;
 
+                    elementReported = false;
+
                     assignedFabrications = new List<RtrbauFabrication>();
                     elementFabrications = new List<KeyValuePair<RtrbauFabrication,GameObject>>();
-                    //noChildFabrications = new List<GameObject>();
-                    //childFabrications = new List<GameObject>();
-                    unparentedFabrications = new List<GameObject>();
-
-                    //originalElementScaleX = this.transform.localScale.x;
+                    observeFabrications = new List<GameObject>();
+                    inspectFabrications = new List<GameObject>();
 
                     AddLineRenderer();
                     DownloadElement();
@@ -168,10 +175,25 @@ namespace Rtrbau
         /// </summary>
         public void DownloadElement()
         {
-            Debug.Log("ElementConsult::DownloadElement: start downloading individual element:" + individualElement.entity.Entity());
-
+            Debug.Log("ElementConsult::DownloadElement: download individual element:" + individualElement.entity.Entity());
+            // Download individual values
             LoaderEvents.StartListening(individualElement.EventName(), DownloadedIndividual);
             Loader.instance.StartOntElementDownload(individualElement);
+
+            Debug.Log("ElementConsult::DownloadElement: download class element:" + classElement.entity.Entity());
+            // Download class properties
+            LoaderEvents.StartListening(classElement.EventName(), DownloadedClass);
+            Loader.instance.StartOntElementDownload(classElement);
+
+            // Download distance from class to component class
+            OntologyDistance componentDistance = new OntologyDistance(classElement.entity.URI(), RtrbauDistanceType.Component);
+            LoaderEvents.StartListening(componentDistance.EventName(), DownloadedComponentDistance);
+            Loader.instance.StartOntDistanceDownload(componentDistance);
+
+            // Download distance from class to operation class
+            OntologyDistance operationDistance = new OntologyDistance(classElement.entity.URI(), RtrbauDistanceType.Operation);
+            LoaderEvents.StartListening(operationDistance.EventName(), DownloadedOperationDistance);
+            Loader.instance.StartOntDistanceDownload(operationDistance);
         }
         /// <summary>
         /// Describe script purpose
@@ -179,13 +201,13 @@ namespace Rtrbau
         /// </summary>
         public void EvaluateElement()
         {
-            Debug.Log("ElementConsult::EvaluateElement: Number of attribute classes downloadable: " + objectClassesNumber);
-            Debug.Log("ElementConsult::EvaluateElement: Number of attribute classes downloaded: " + objectClassesAttributes.Count);
+            Debug.Log("ElementConsult::EvaluateElement: Number of attribute classes downloadable: " + objectPropertiesNumber);
+            Debug.Log("ElementConsult::EvaluateElement: Number of attribute classes downloaded: " + objectPropertyAttributes.Count);
 
-            if (objectClassesAttributes.Count == objectClassesNumber)
+            if (objectPropertiesDownloaded == true && objectPropertyAttributes.Count == objectPropertiesNumber)
             {
                 Debug.Log("ElementConsult::EvaluateElement: All individual-related classes downloaded:" + individualElement.entity.Entity());
-                rtrbauElement = new RtrbauElement(Rtrbauer.instance.user.procedure, visualiser.manager, individualAttributes, classAttributes, objectClassesAttributes);
+                rtrbauElement = new RtrbauElement(Rtrbauer.instance.user.procedure, visualiser.manager, individualAttributes, classAttributes, objectPropertyAttributes);
                 Debug.Log("ElementConsult::EvaluateElement: rtrbauElement created:" + individualElement.entity.Entity());
                 SelectFabrications();
             }
@@ -385,8 +407,7 @@ namespace Rtrbau
         public void LocateElement()
         {
             // RTRBAU ALGORITHM: Select element location (Loop 8 final)
-            // if (componentDistanceDownloaded && operationDistanceDownloaded && fabricationsSelected)
-            if (componentDistanceDownloaded && operationDistanceDownloaded)
+            if (componentDistanceDownloaded == true && operationDistanceDownloaded == true && fabricationsCreated == true)
             {
                 int componentDistance = int.Parse(elementComponentDistance.ontDistance);
                 int operationDistance = int.Parse(elementOperationDistance.ontDistance);
@@ -418,9 +439,26 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
+        /// <returns>Describe script outcomes</returns>
+        public bool DestroyElement()
+        {
+            if (elementReported == true)
+            {
+                // Destroy game object
+                Destroy(this.gameObject);
+                // Return game object was destroyed
+                return true;
+            }
+            else { return false; }
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
         public void CreateFabrications()
         {
-            if (fabricationsSelected)
+            if (fabricationsSelected == true)
             {
                 individualText.text = rtrbauElement.elementName.name;
                 classText.text = rtrbauElement.elementClass.name;
@@ -458,7 +496,9 @@ namespace Rtrbau
                 // UPG: do it with other fabrication panels as well?
                 fabricationsObserveImageVideo.GetComponent<TileGridObjectCollection>().enabled = false;
 
-                InputIntoReport();
+                // Set fabrications as created
+                fabricationsCreated = true;
+                LocateElement();
             }
             else
             {
@@ -475,6 +515,8 @@ namespace Rtrbau
             // Function called after generating fabrications
             // Input into report
             Reporter.instance.ReportElement(rtrbauElement.elementName);
+            // Assign element as reported
+            elementReported = true;
         }
         #endregion IELEMENTABLE_METHODS
 
@@ -489,7 +531,9 @@ namespace Rtrbau
             // Rest of functionality remains
             
             // ElementConsult location is managed by its visualiser.
-            RtrbauerEvents.TriggerEvent("LocateElement", this.gameObject, RtrbauElementType.Consult, rtrbauLocation);
+            RtrbauerEvents.TriggerEvent("AssetVisualiser_LocateElement", this.gameObject, RtrbauElementType.Consult, rtrbauLocation);
+            // Report element once it has been created and without the need to update data
+            InputIntoReport();
         }
 
         /// <summary>
@@ -529,7 +573,12 @@ namespace Rtrbau
         /// </summary>
         public void DestroyIt()
         {
-            foreach (GameObject fabrication in unparentedFabrications)
+            foreach (GameObject fabrication in observeFabrications)
+            {
+                Destroy(fabrication);
+            }
+
+            foreach (GameObject fabrication in inspectFabrications)
             {
                 Destroy(fabrication);
             }
@@ -540,7 +589,8 @@ namespace Rtrbau
         /// </summary>
         public void ModifyMaterial(Material material)
         {
-            if (elementUpdated < 1)
+            // Check if element has already been reported
+            if (elementReported == true)
             {
                 // Set material of element panels
                 panelPrimary.material = material;
@@ -551,9 +601,6 @@ namespace Rtrbau
                 {
                     fabrication.Value.GetComponent<IVisualisable>().ModifyMaterial(material);
                 }
-
-                // Modify material change event, it can only occur once (seen)
-                elementUpdated += 1;
             }
             else { }
         }
@@ -575,10 +622,9 @@ namespace Rtrbau
 
                 individualAttributes = JsonUtility.FromJson<JsonIndividualValues>(jsonFile);
 
-                classElement = new OntologyElement(individualAttributes.ontClass, OntologyElementType.ClassProperties);
+                individualDownloaded = true;
 
-                LoaderEvents.StartListening(classElement.EventName(), DownloadedClass);
-                Loader.instance.StartOntElementDownload(classElement);
+                DownloadAttributes();
             }
             else
             {
@@ -594,17 +640,29 @@ namespace Rtrbau
         {
             LoaderEvents.StopListening(elementClass.EventName(), DownloadedClass);
 
-            classElement = elementClass;
-
             if (File.Exists(classElement.FilePath()))
             {
                 string jsonFile = File.ReadAllText(classElement.FilePath());
 
                 classAttributes = JsonUtility.FromJson<JsonClassProperties>(jsonFile);
 
-                // UPG: To check if object property class has already been asked to be downloaded
-                // List<string> objectPropertiesClasses = new List<string>();
+                classDownloaded = true;
+                
+                DownloadAttributes();
+            }
+            else
+            {
+                Debug.LogError("ElementConsult::DownloadedClass: File not found: " + classElement.FilePath());
+            }
+        }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        void DownloadAttributes()
+        {
+            if (individualDownloaded == true && classDownloaded == true)
+            {
                 // Check if object property class has already been evaluated (next foreach loop)
                 List<string> objectPropertiesClasses = new List<string>();
 
@@ -615,7 +673,7 @@ namespace Rtrbau
                     if (attributeIndividual.ontType.Contains(OntologyPropertyType.ObjectProperty.ToString()))
                     {
                         // Identify class property to be 
-                        JsonProperty attribute = classAttributes.ontProperties.Find(delegate (JsonProperty attClass) {return attClass.ontName == attributeIndividual.ontName;});
+                        JsonProperty attribute = classAttributes.ontProperties.Find(x => x.ontName == attributeIndividual.ontName);
 
                         // Check if object property class has not already been evaluated
                         if (!objectPropertiesClasses.Contains(attribute.ontRange))
@@ -627,8 +685,6 @@ namespace Rtrbau
                             Loader.instance.StartOntElementDownload(attributeClass);
                             // Add non-repeated attribute to downloadable classes
                             objectPropertiesClasses.Add(attribute.ontRange);
-                            // Note non-repeated property as downloadable classes
-                            // objectClassesNumber += 1;
                         }
                         else { }
                     }
@@ -636,25 +692,14 @@ namespace Rtrbau
                 }
 
                 // Note non-repeated property as downloadable classes: in case the foreach loop is slower than loader events or viceversa
-                objectClassesNumber = objectPropertiesClasses.Count;
+                objectPropertiesNumber = objectPropertiesClasses.Count;
+                objectPropertiesDownloaded = true;
 
-                // Download distance from class to component class
-                OntologyDistance componentDistance = new OntologyDistance(elementClass.entity.URI(), RtrbauDistanceType.Component);
-                LoaderEvents.StartListening(componentDistance.EventName(), DownloadedComponentDistance);
-                Loader.instance.StartOntDistanceDownload(componentDistance);
-                // Download distance from class to operation class
-                OntologyDistance operationDistance = new OntologyDistance(elementClass.entity.URI(), RtrbauDistanceType.Operation);
-                LoaderEvents.StartListening(operationDistance.EventName(), DownloadedOperationDistance);
-                Loader.instance.StartOntDistanceDownload(operationDistance);
-
-                // Go to next step: in case the foreach loop is slower than loader events or viceversa
                 EvaluateElement();
             }
-            else
-            {
-                Debug.LogError("ElementConsult::DownloadedClass: File not found: " + classElement.FilePath());
-            }
+            else { }
         }
+
 
         /// <summary>
         /// 
@@ -668,7 +713,7 @@ namespace Rtrbau
             {
                 string jsonFile = File.ReadAllText(elementAttribute.FilePath());
 
-                objectClassesAttributes.Add(JsonUtility.FromJson<JsonClassProperties>(jsonFile));
+                objectPropertyAttributes.Add(JsonUtility.FromJson<JsonClassProperties>(jsonFile));
 
                 EvaluateElement();
             }
@@ -765,13 +810,16 @@ namespace Rtrbau
                 {
                     fabrication.Value.transform.SetParent(fabricationsObserveRest, false);
                     fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, visualiser.transform);
-                    unparentedFabrications.Add(fabrication.Value);
+                    // unparentedFabrications.Add(fabrication.Value);
                 }
+                else { }
+                observeFabrications.Add(fabrication.Value);
             }
             else if (fabrication.Key.fabricationType == RtrbauFabricationType.Inspect)
             {
                 fabrication.Value.transform.SetParent(fabricationsInspect, false);
                 fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
+                inspectFabrications.Add(fabrication.Value);
             }
             else
             {

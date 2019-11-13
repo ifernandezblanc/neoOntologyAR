@@ -172,7 +172,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public void SelectFabrications()
+        public void LocateElement()
         {
 
         }
@@ -181,7 +181,20 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public void LocateElement()
+        /// <returns>Describe script outcomes</returns>
+        public bool DestroyElement()
+        {
+            // Destroy game object
+            Destroy(this.gameObject);
+            // Return game object was destroyed
+            return true;
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public void SelectFabrications()
         {
 
         }
@@ -221,7 +234,8 @@ namespace Rtrbau
             OntologyEntity ontologies = new OntologyEntity(ontologiesURI);
             PanellerEvents.TriggerEvent("LoadOperationOntologies", ontologies);
 
-            Destroy(this.gameObject);
+            // Destroy panel
+            DestroyElement();
         }
 
         #endregion IELEMENTABLE_METHODS

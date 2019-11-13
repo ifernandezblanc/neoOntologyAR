@@ -27,7 +27,7 @@ using Microsoft.MixedReality.Toolkit.UI;
 
 namespace Rtrbau
 {
-    public class NominateButton : MonoBehaviour
+    public class NominateButton : MonoBehaviour, IVisualisable
     {
         #region INITIALISATION_VARIABLES
         public Action<OntologyEntity> nominate;
@@ -55,7 +55,31 @@ namespace Rtrbau
                 throw new ArgumentException("NominateButton::Start: Script requires some prefabs to work.");
             }
         }
+
+        void OnDestroy() { DestroyIt(); }
         #endregion MONOBEHAVIOUR_METHODS
+
+        #region IVISUALISABLE_METHODS
+        public void LocateIt() 
+        {
+            /// Fabrication location is managed by <see cref="INominatable"/>.
+        }
+
+        public void ActivateIt() 
+        {
+            /// Fabrication activation is managed by <see cref="INominatable"/>.
+        }
+
+        public void DestroyIt() 
+        { 
+            Destroy(this.gameObject);
+        }
+
+        public void ModifyMaterial(Material material)
+        {
+            /// Fabrication material modification is managed by <see cref="INominatable"/>.
+        }
+        #endregion IVISUALISABLE_METHODS
 
         #region CLASS_METHODS
         #region PRIVATE
@@ -63,7 +87,7 @@ namespace Rtrbau
         #endregion PRIVATE
 
         #region PUBLIC
-        public void Initialise(Action<OntologyEntity> nominateIndividual, OntologyEntity relationshipValue)
+        public void Initialise(Action<OntologyEntity> nominateIndividual, OntologyEntity relationshipValue, OntologyEntity relationshipRange)
         {
             // Assign button variables
             nominate = nominateIndividual;
@@ -78,6 +102,7 @@ namespace Rtrbau
         {
             if (buttonCreated == true)
             {
+                // Trigger the nominate individual action for this button
                 nominate.Invoke(individual);
             }
         }

@@ -35,9 +35,10 @@ namespace Rtrbau
     /// </summary>
     public class LoaderEvents : MonoBehaviour
     {
-        private Dictionary<string, Action<OntologyElement>> elementsDictionary;
-        private Dictionary<string, Action<OntologyDistance>> distancesDictionary;
-        private Dictionary<string, Action<RtrbauFile>> filesDictionary;
+        private Dictionary<string, Action<OntologyElement>> downloadElementsDictionary;
+        private Dictionary<string, Action<OntologyUpload>> uploadElementsDictionary;
+        private Dictionary<string, Action<OntologyDistance>> downloadDistancesDictionary;
+        private Dictionary<string, Action<RtrbauFile>> downloadFilesDictionary;
 
         private static LoaderEvents loaderEventsManager;
 
@@ -64,39 +65,46 @@ namespace Rtrbau
             }
         }
 
+        #region CLASS_METHODS
         void Initialise()
         {
-            if (elementsDictionary == null)
+            if (downloadElementsDictionary == null)
             {
-                elementsDictionary = new Dictionary<string, Action<OntologyElement>>();
+                downloadElementsDictionary = new Dictionary<string, Action<OntologyElement>>();
             } else { }
 
-            if (distancesDictionary == null)
+            if (uploadElementsDictionary == null)
             {
-                distancesDictionary = new Dictionary<string, Action<OntologyDistance>>();
+                uploadElementsDictionary = new Dictionary<string, Action<OntologyUpload>>();
             } else { }
 
-            if (filesDictionary == null)
+            if (downloadDistancesDictionary == null)
             {
-                filesDictionary = new Dictionary<string, Action<RtrbauFile>>();
-            }
-            else { }
+                downloadDistancesDictionary = new Dictionary<string, Action<OntologyDistance>>();
+            } else { }
+
+            if (downloadFilesDictionary == null)
+            {
+                downloadFilesDictionary = new Dictionary<string, Action<RtrbauFile>>();
+            } else { }
         }
+        #endregion CLASS_METHODS
 
+        #region DOWNLOAD_EVENTS
         #region ONTOLOGY_EVENTS
         public static void StartListening(string eventName, Action<OntologyElement> eventListener)
         {
             Action<OntologyElement> thisEvent = null;
 
-            if (instance.elementsDictionary.TryGetValue(eventName, out thisEvent))
+            if (instance.downloadElementsDictionary.TryGetValue(eventName, out thisEvent))
             {
                 thisEvent += eventListener;
-                instance.elementsDictionary[eventName] = thisEvent;
+                instance.downloadElementsDictionary[eventName] = thisEvent;
             }
             else
             {
                 thisEvent += eventListener;
-                instance.elementsDictionary.Add(eventName, thisEvent);
+                instance.downloadElementsDictionary.Add(eventName, thisEvent);
             }
         }
 
@@ -106,10 +114,10 @@ namespace Rtrbau
 
             Action<OntologyElement> thisEvent = null;
 
-            if (instance.elementsDictionary.TryGetValue(eventName, out thisEvent))
+            if (instance.downloadElementsDictionary.TryGetValue(eventName, out thisEvent))
             {
                 thisEvent -= eventListener;
-                instance.elementsDictionary[eventName] = thisEvent;
+                instance.downloadElementsDictionary[eventName] = thisEvent;
             }
         }
 
@@ -117,7 +125,7 @@ namespace Rtrbau
         {
             Action<OntologyElement> thisEvent = null;
 
-            if (instance.elementsDictionary.TryGetValue(eventName, out thisEvent))
+            if (instance.downloadElementsDictionary.TryGetValue(eventName, out thisEvent))
             {
                 thisEvent.Invoke(ontElement);
             }
@@ -129,15 +137,15 @@ namespace Rtrbau
         {
             Action<OntologyDistance> thisEvent = null;
 
-            if (instance.distancesDictionary.TryGetValue(eventName, out thisEvent))
+            if (instance.downloadDistancesDictionary.TryGetValue(eventName, out thisEvent))
             {
                 thisEvent += eventListener;
-                instance.distancesDictionary[eventName] = thisEvent;
+                instance.downloadDistancesDictionary[eventName] = thisEvent;
             }
             else
             {
                 thisEvent += eventListener;
-                instance.distancesDictionary.Add(eventName, thisEvent);
+                instance.downloadDistancesDictionary.Add(eventName, thisEvent);
             }
         }
 
@@ -147,10 +155,10 @@ namespace Rtrbau
 
             Action<OntologyDistance> thisEvent = null;
 
-            if (instance.distancesDictionary.TryGetValue(eventName, out thisEvent))
+            if (instance.downloadDistancesDictionary.TryGetValue(eventName, out thisEvent))
             {
                 thisEvent -= eventListener;
-                instance.distancesDictionary[eventName] = thisEvent;
+                instance.downloadDistancesDictionary[eventName] = thisEvent;
             }
         }
 
@@ -158,7 +166,7 @@ namespace Rtrbau
         {
             Action<OntologyDistance> thisEvent = null;
 
-            if (instance.distancesDictionary.TryGetValue(eventName, out thisEvent))
+            if (instance.downloadDistancesDictionary.TryGetValue(eventName, out thisEvent))
             {
                 thisEvent.Invoke(ontDistance);
             }
@@ -170,15 +178,15 @@ namespace Rtrbau
         {
             Action<RtrbauFile> thisEvent = null;
 
-            if (instance.filesDictionary.TryGetValue(eventName, out thisEvent))
+            if (instance.downloadFilesDictionary.TryGetValue(eventName, out thisEvent))
             {
                 thisEvent += eventListener;
-                instance.filesDictionary[eventName] = thisEvent;
+                instance.downloadFilesDictionary[eventName] = thisEvent;
             }
             else
             {
                 thisEvent += eventListener;
-                instance.filesDictionary.Add(eventName, thisEvent);
+                instance.downloadFilesDictionary.Add(eventName, thisEvent);
             }
         }
 
@@ -188,10 +196,10 @@ namespace Rtrbau
 
             Action<RtrbauFile> thisEvent = null;
 
-            if (instance.filesDictionary.TryGetValue(eventName, out thisEvent))
+            if (instance.downloadFilesDictionary.TryGetValue(eventName, out thisEvent))
             {
                 thisEvent -= eventListener;
-                instance.filesDictionary[eventName] = thisEvent;
+                instance.downloadFilesDictionary[eventName] = thisEvent;
             }
         }
 
@@ -199,12 +207,58 @@ namespace Rtrbau
         {
             Action<RtrbauFile> thisEvent = null;
 
-            if (instance.filesDictionary.TryGetValue(eventName, out thisEvent))
+            if (instance.downloadFilesDictionary.TryGetValue(eventName, out thisEvent))
             {
                 thisEvent.Invoke(fileElement);
             }
         }
         #endregion FILE_EVENTS
+        #endregion DOWNLOAD_EVENTS
 
+        #region UPLOAD_EVENTS
+        #region ONTOLOGY_EVENTS
+        public static void StartListening(string eventName, Action<OntologyUpload> eventListener)
+        {
+            Action<OntologyUpload> thisEvent = null;
+
+            if (instance.uploadElementsDictionary.TryGetValue(eventName, out thisEvent))
+            {
+                thisEvent += eventListener;
+                instance.uploadElementsDictionary[eventName] = thisEvent;
+            }
+            else
+            {
+                thisEvent += eventListener;
+                instance.uploadElementsDictionary.Add(eventName, thisEvent);
+            }
+        }
+
+        public static void StopListening(string eventName, Action<OntologyUpload> eventListener)
+        {
+            if (loaderEventsManager == null) { return; }
+
+            Action<OntologyUpload> thisEvent = null;
+
+            if (instance.uploadElementsDictionary.TryGetValue(eventName, out thisEvent))
+            {
+                thisEvent -= eventListener;
+                instance.uploadElementsDictionary[eventName] = thisEvent;
+            }
+        }
+
+        public static void TriggerEvent(string eventName, OntologyUpload ontElement)
+        {
+            Action<OntologyUpload> thisEvent = null;
+
+            if (instance.uploadElementsDictionary.TryGetValue(eventName, out thisEvent))
+            {
+                thisEvent.Invoke(ontElement);
+            }
+        }
+        #endregion ONTOLOGY_EVENTS
+
+        #region FILE_EVENTS
+        #endregion FILE_EVENTS
+        #endregion UPLOAD_EVENTS
     }
 }

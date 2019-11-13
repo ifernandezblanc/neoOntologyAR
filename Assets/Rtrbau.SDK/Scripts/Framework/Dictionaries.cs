@@ -96,7 +96,8 @@ namespace Rtrbau
             {OntologyElementType.ClassIndividuals, Application.persistentDataPath + "/Rtrbau/ontologies/classes-individuals" },
             {OntologyElementType.ClassProperties, Application.persistentDataPath + "/Rtrbau/ontologies/classes-properties" },
             {OntologyElementType.ClassExample, Application.persistentDataPath + "/Rtrbau/ontologies/classes-example" },
-            {OntologyElementType.IndividualProperties, Application.persistentDataPath + "/Rtrbau/ontologies/individuals-properties" }
+            {OntologyElementType.IndividualProperties, Application.persistentDataPath + "/Rtrbau/ontologies/individuals-properties" },
+            {OntologyElementType.IndividualUpload, Application.persistentDataPath + "/Rtrbau/ontologies/individuals-uploads" }
         };
         /// <summary>
         /// Describe script purpose

@@ -52,6 +52,7 @@ namespace Rtrbau
         void DownloadElement();
         void EvaluateElement();
         void LocateElement();
+        bool DestroyElement();
         void SelectFabrications();
         void CreateFabrications();
         void InputIntoReport();
@@ -93,7 +94,7 @@ namespace Rtrbau
     {
         void ActivateNominates();
         void DeactivateNominates();
-        // void CreateNewNominateElement();
+        bool NominatesNewReportElement();
     }
     #endregion INTERFACES
 }

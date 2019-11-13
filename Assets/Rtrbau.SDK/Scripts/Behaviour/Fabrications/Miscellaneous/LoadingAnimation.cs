@@ -31,7 +31,7 @@ namespace Rtrbau
     public class LoadingAnimation : MonoBehaviour
     {
         #region CLASS_VARIABLES
-        private float loadingSpeed = 3;
+        public float loadingSpeed = 90f;
         #endregion CLASS_VARIABLES 
 
         #region MONOBEHAVIOUR_VARIABLES
@@ -42,7 +42,8 @@ namespace Rtrbau
 
         void Update()
         {
-            this.transform.Rotate(new Vector3(0, 0, loadingSpeed), Space.Self);
+            // this.transform.Rotate(new Vector3(0, 0, loadingSpeed), Space.Self);
+            this.transform.RotateAround(this.transform.position, this.transform.forward, Time.deltaTime * loadingSpeed);
         }
         #endregion MONOBEHAVIOUR_VARIABLES
     }

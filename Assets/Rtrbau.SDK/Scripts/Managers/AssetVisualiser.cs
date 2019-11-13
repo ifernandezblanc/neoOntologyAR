@@ -54,6 +54,9 @@ namespace Rtrbau
         // Key value pair for class URI and relevant game object
         private Dictionary<string, GameObject> tertiaryElements;
         private int tertiaryCounter;
+        // Key value pair for class URI and relevant game object
+        private Dictionary<string, GameObject> quaternaryElements;
+        private int quaternaryCounter;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
@@ -102,14 +105,14 @@ namespace Rtrbau
 
         void OnEnable()
         {
-            RtrbauerEvents.StartListening("LoadElement", LoadElement);
-            RtrbauerEvents.StartListening("LocateElement", LocateElement);
+            RtrbauerEvents.StartListening("AssetVisualiser_LoadElement", LoadElement);
+            RtrbauerEvents.StartListening("AssetVisualiser_LocateElement", LocateElement);
         }
 
         void OnDisable()
         {
-            RtrbauerEvents.StopListening("LoadElement", LoadElement);
-            RtrbauerEvents.StopListening("LocateElement", LocateElement);
+            RtrbauerEvents.StopListening("AssetVisualiser_LoadElement", LoadElement);
+            RtrbauerEvents.StopListening("AssetVisualiser_LocateElement", LocateElement);
         }
 
         void OnDestroy() { }
@@ -178,19 +181,42 @@ namespace Rtrbau
         /// Primary element only makes sense to exist at one instant (step), otherwise always delete.
         /// </summary>
         /// <param name="element"></param>
-        void AddPrimaryElement(GameObject element)
+        void AddPrimaryElement(GameObject element, RtrbauElementType type)
         {
+            // If null, means primary element does not need re-assigment
             if (element == null)
             {
                 if (primaryElement != null)
                 {
-                    // Destroy game object
-                    Destroy(primaryElement);
-                    // Find in list of loaded elements and remove
-                    loadedElements.Remove(loadedElements.Find(x => x.Value == primaryElement));
-                    // Remove from primary location
-                    primaryElement = null;
-                    
+                    // Confirm if primary element can be destroyed and do so
+                    if (primaryElement.GetComponent<IElementable>().DestroyElement())
+                    {
+                        // Find in list of loaded elements and remove
+                        loadedElements.Remove(loadedElements.Find(x => x.Value == primaryElement));
+                        // Remove from primary location
+                        primaryElement = null;
+                    }
+                    else
+                    {
+                        // If non-destroyable primary element is of report type
+                        if (type == RtrbauElementType.Report)
+                        {
+                            // Move element from primary location to finalise location
+                            // UPG: the idea is to create a fourth location where report elements can go to die when all nominates have created a new element report
+                            // UPG: this requires an extra call for element reports to be unloaded when destroyed by theirselves because they run-out of nominates#
+
+                        }
+                        else
+                        {
+                            throw new ArgumentException("AssetVisualiser::AddPrimaryElement: this should never occurred.");
+                        }
+                    }
+                    //// Destroy game object
+                    //Destroy(primaryElement);
+                    //// Find in list of loaded elements and remove
+                    //loadedElements.Remove(loadedElements.Find(x => x.Value == primaryElement));
+                    //// Remove from primary location
+                    //primaryElement = null;
                 }
                 else { }
             }
@@ -224,18 +250,17 @@ namespace Rtrbau
             // Calculate number of elements per location
             int locationElementsNo;
             if ((int)location != 0) { locationElementsNo = ((int)location * 2) + 2; }
-            //if ((int)location != 0) { locationElementsNo = 5; }
             else { throw new ArgumentException("AddElement function should only be used for non-primary locations, please use AddElementPrimary"); }
-            // else { locationElementsNo = 1; }
-            // Should only be used for other locations rather than primary
 
             // Remove primary element
-            AddPrimaryElement(null);
+            AddPrimaryElement(null, type);
 
             // Determine dictionary key according to element type
             string elementKey;
             // Check element type to return proper key
             if (type == RtrbauElementType.Consult) { elementKey = element.GetComponent<ElementConsult>().classElement.URL(); }
+            // UPG: change for report?? when same class, always move previous to finalise (quaternary) location
+            // UPG: when button complete operation, never allow to complete operation until all elements eliminated??
             else if (type == RtrbauElementType.Report) { elementKey = element.GetComponent<ElementReport>().classElement.URL(); }
             else { throw new ArgumentException("AssetVisualiser::AddElement: RtrbauElementType not implemented"); }
 
@@ -398,30 +423,32 @@ namespace Rtrbau
         }
 
         /// <summary>
-        /// Creates new <paramref name="element"/> of <paramref name="type"/>.
-        /// If <paramref name="element"/> found in list, then re-loaded instead.
+        /// Creates new <see cref="RtrbauElement"/> of <see cref="RtrbauElementType"/>.
+        /// If <paramref name="elementIndividual"/> found in list, then re-loads the <see cref="RtrbauElement"/>.
         /// </summary>
-        /// <param name="element"></param>
-        /// <param name="type"></param>
-        void LoadElement(OntologyElement element, RtrbauElementType type)
+        /// <param name="elementIndividual"><see cref="OntologyElement"/> that refers to the ontology individual which the element represents</param>
+        /// <param name="elementClass"><see cref="OntologyElement"/> that refers to the ontology class which the element represents</param>
+        /// <param name="type"><see cref="RtrbauElementType"/> that determines the type of element to be created</param>
+        void LoadElement(OntologyElement elementIndividual, OntologyElement elementClass, RtrbauElementType type)
         {
-            Debug.Log("AssetVisualiser::LoadElement: element loaded already: " + ElementLoaded(element));
+            Debug.Log("AssetVisualiser::LoadElement: element individual is: " + elementIndividual.entity.name);
+            Debug.Log("AssetVisualiser::LoadElement: element class is: " + elementClass.entity.name);
+            Debug.Log("AssetVisualiser::LoadElement: element loaded already: " + ElementLoaded(elementIndividual));
 
-            if (!ElementLoaded(element))
+            // Find if individual element has already been loaded as rtrbau element
+            if (!ElementLoaded(elementIndividual))
             {
                 if (type == RtrbauElementType.Consult)
                 {
                     GameObject newElement = GameObject.Instantiate(consultElement);
-                    newElement.GetComponent<ElementConsult>().Initialise(this, element, lastElement);
-                    loadedElements.Add(new KeyValuePair<OntologyElement, GameObject>(element, newElement));
+                    newElement.GetComponent<ElementConsult>().Initialise(this, elementIndividual, elementClass, lastElement);
+                    loadedElements.Add(new KeyValuePair<OntologyElement, GameObject>(elementIndividual, newElement));
                 }
                 else if (type == RtrbauElementType.Report)
                 {
-                    // UPG: add consideration when loading element is that element of class?
-                    // UPG: same functionality as if clause above, should it be the same?
                     GameObject newElement = GameObject.Instantiate(reportElement);
-                    newElement.GetComponent<ElementReport>().Initialise(this, element, lastElement);
-                    loadedElements.Add(new KeyValuePair<OntologyElement, GameObject>(element, newElement));
+                    newElement.GetComponent<ElementReport>().Initialise(this, elementIndividual, elementClass, lastElement);
+                    loadedElements.Add(new KeyValuePair<OntologyElement, GameObject>(elementIndividual, newElement));
                 }
                 else
                 {
@@ -443,7 +470,7 @@ namespace Rtrbau
         {
             if (location == RtrbauElementLocation.Primary)
             {
-                AddPrimaryElement(element);
+                AddPrimaryElement(element, type);
             }
             else if (location == RtrbauElementLocation.Secondary)
             {

@@ -36,7 +36,7 @@ namespace Rtrbau
         private Dictionary<string, Action<OntologyEntity>> rtrbauerEventsDictionary;
         #endregion RTRBAU
         #region VISUALISATION
-        private Dictionary<string, Action<OntologyElement, RtrbauElementType>> loadElementsEventsDictionary;
+        private Dictionary<string, Action<OntologyElement, OntologyElement, RtrbauElementType>> loadElementsEventsDictionary;
         private Dictionary<string, Action<GameObject, RtrbauElementType, RtrbauElementLocation>> locateElementsEventsDictionary;
         #endregion VISUALISATION
         #endregion EVENTS_DICTIONARIES
@@ -71,7 +71,7 @@ namespace Rtrbau
             { rtrbauerEventsDictionary = new Dictionary<string, Action<OntologyEntity>>(); }
 
             if (loadElementsEventsDictionary == null)
-            { loadElementsEventsDictionary = new Dictionary<string, Action<OntologyElement, RtrbauElementType>>(); }
+            { loadElementsEventsDictionary = new Dictionary<string, Action<OntologyElement, OntologyElement, RtrbauElementType>>(); }
 
             if (locateElementsEventsDictionary == null)
             { locateElementsEventsDictionary = new Dictionary<string, Action<GameObject, RtrbauElementType, RtrbauElementLocation>>(); }
@@ -132,9 +132,9 @@ namespace Rtrbau
         /// </summary>
         /// <param name="eventName"></param>
         /// <param name="eventListener"></param>
-        public static void StartListening(string eventName, Action<OntologyElement, RtrbauElementType> eventListener)
+        public static void StartListening(string eventName, Action<OntologyElement, OntologyElement, RtrbauElementType> eventListener)
         {
-            Action<OntologyElement, RtrbauElementType> thisEvent = null;
+            Action<OntologyElement, OntologyElement, RtrbauElementType> thisEvent = null;
 
             if (instance.loadElementsEventsDictionary.TryGetValue(eventName, out thisEvent))
             {
@@ -153,12 +153,12 @@ namespace Rtrbau
         /// </summary>
         /// <param name="eventName"></param>
         /// <param name="eventListener"></param>
-        public static void StopListening(string eventName, Action<OntologyElement, RtrbauElementType> eventListener)
+        public static void StopListening(string eventName, Action<OntologyElement, OntologyElement, RtrbauElementType> eventListener)
         {
             if (rtrbauerEventsManager == null) { return; }
             else { }
 
-            Action<OntologyElement, RtrbauElementType> thisEvent = null;
+            Action<OntologyElement, OntologyElement, RtrbauElementType> thisEvent = null;
 
             if (instance.loadElementsEventsDictionary.TryGetValue(eventName, out thisEvent))
             {
@@ -173,14 +173,13 @@ namespace Rtrbau
         /// </summary>
         /// <param name="eventName"></param>
         /// <param name="eventEntity"></param>
-        public static void TriggerEvent(string eventName, OntologyElement eventElement, RtrbauElementType elementType)
+        public static void TriggerEvent(string eventName, OntologyElement elementIndividual, OntologyElement elementClass, RtrbauElementType elementType)
         {
-            Action<OntologyElement, RtrbauElementType> thisEvent = null;
+            Action<OntologyElement, OntologyElement, RtrbauElementType> thisEvent = null;
 
             if (instance.loadElementsEventsDictionary.TryGetValue(eventName, out thisEvent))
             {
-                thisEvent.Invoke(eventElement, elementType);
-                /// instance.selectionEventsDictionary[eventName]();
+                thisEvent.Invoke(elementIndividual, elementClass, elementType);
             }
         }
         #endregion LOADING
@@ -239,7 +238,6 @@ namespace Rtrbau
             if (instance.locateElementsEventsDictionary.TryGetValue(eventName, out thisEvent))
             {
                 thisEvent.Invoke(element, type, location);
-                /// instance.selectionEventsDictionary[eventName]();
             }
         }
         #endregion LOCATION

@@ -24,6 +24,7 @@ using UnityEngine;
 using System;
 using System.IO;
 using UnityEngine.Networking;
+using System.Text;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -64,10 +65,6 @@ namespace Rtrbau
         }
         #endregion SINGLETON_INSTANTIATION
 
-        /// <summary>
-        /// Describe script purpose
-        /// Add links when code has been inspired
-        /// </summary>
         #region CLASS_METHODS
         void Initialise()
         {
@@ -75,6 +72,7 @@ namespace Rtrbau
         }
         #endregion CLASS_METHODS
 
+        #region DOWNLOADERS
         #region ONTOLOGY_DOWNLOADERS
         public void StartOntElementDownload(OntologyElement element)
         {
@@ -184,6 +182,85 @@ namespace Rtrbau
             // Debug.Log("Loader events: Trigger event: " + file.EventName());
         }
         #endregion FILE_DOWNLOADERS
+        #endregion DOWNLOADERS
+
+        #region UPLOADERS
+        #region ONTOLOGY_UPLOADERS
+        public void StartOntElementUpload(OntologyUpload element)
+        {
+            StartCoroutine(UploadElement(element));
+        }
+
+        IEnumerator UploadElement(OntologyUpload element)
+        {
+            OntologyUpload result = null;
+
+            if (!File.Exists(element.FilePath()))
+            {
+                if (!File.Exists(element.individualElement.FilePath()))
+                {
+                    throw new ArgumentException("Loader::UploadElement: json file for " + element.individualElement.entity.name + " should exist.");
+                }
+                else
+                {
+                    if (!File.Exists(element.classElement.FilePath()))
+                    {
+                        throw new ArgumentException("Loader::UploadElement: json file for " + element.classElement.entity.name + " should exist.");
+                    }
+                    else
+                    {
+                        string individualFile = File.ReadAllText(element.individualElement.FilePath());
+                        JsonIndividualValues elementIndividual = JsonUtility.FromJson<JsonIndividualValues>(individualFile);
+
+                        string classFile = File.ReadAllText(element.classElement.FilePath());
+                        JsonClassProperties elementClass = JsonUtility.FromJson<JsonClassProperties>(classFile);
+
+                        JsonUploadIndividual upload = new JsonUploadIndividual(elementIndividual, elementClass);
+
+                        string postData = JsonUtility.ToJson(upload);
+
+                        Debug.Log("Loader::UploadElement: postData: " + postData);
+                        Debug.Log("Loader::UploadElement: postString: " + element.URL());
+
+                        //UnityWebRequest webRequest = UnityWebRequest.Post(element.URL(), postData);
+
+                        // https://qiita.com/mattak/items/d01926bc57f8ab1f569a
+
+                        UnityWebRequest webRequest = new UnityWebRequest(element.URL(), "POST");
+
+                        byte[] postDataRaw = Encoding.UTF8.GetBytes(postData);
+                        webRequest.uploadHandler = (UploadHandler) new UploadHandlerRaw(postDataRaw);
+                        webRequest.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
+                        webRequest.SetRequestHeader("Content-Type", "application/json");
+
+                        yield return webRequest.SendWebRequest();
+
+                        if (webRequest.isNetworkError || webRequest.isHttpError)
+                        {
+                            throw new ArgumentException("Loader::UploadElement: web error: " + webRequest.error);
+                        }
+                        else
+                        {
+                            File.WriteAllBytes(element.FilePath(), webRequest.downloadHandler.data);
+                            result = element;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                result = element;
+            }
+
+            LoaderEvents.TriggerEvent(element.EventName(), result);
+            // Debug.Log("Loader::UploadElement: trigger event: " + element.EventName());
+        }
+        #endregion ONTOLOGY_UPLOADERS
+
+        #region FILE_UPLOADERS
+
+        #endregion FILE_UPLOADERS
+        #endregion UPLOADERS
 
     }
 }

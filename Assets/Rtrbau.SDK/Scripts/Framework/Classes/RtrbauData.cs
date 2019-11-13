@@ -254,7 +254,7 @@ namespace Rtrbau
         /// <param name="assetManager"></param>
         /// <param name="classElement"></param>
         /// <param name="exampleElement"></param>
-        public RtrbauElement (RtrbauElementType elementType, AssetManager assetManager, JsonClassProperties classElement, JsonIndividualValues exampleElement)
+        public RtrbauElement (RtrbauElementType elementType, AssetManager assetManager, OntologyElement individualElement, JsonClassProperties classElement, JsonIndividualValues exampleElement)
         {
             if (elementType == RtrbauElementType.Report)
             {
@@ -265,12 +265,12 @@ namespace Rtrbau
                 // UPG::ErrorHandling: modify to cope with the possibility that example does not exist or covers all attributes
                 if (classElement.ontClass == exampleElement.ontClass)
                 {
-                    // Generate initial element name: using class name and datetime; to be updated afterwards
-                    elementName = new OntologyEntity(classElement.ontClass);
-                    elementName.name += "_" + DateTime.Now.ToString("dd-MM-yy_HH-mm-ss");
-                    // Initialise rest of element variables
+                    // Initialise element variables
+                    elementName = individualElement.entity;
                     elementClass = new OntologyEntity(classElement.ontClass);
                     elementAttributes = new List<RtrbauAttribute>();
+
+                    Debug.Log("RtrbauData::RtrbauElement: parsed individual name is " + elementName.name + " from class " + elementClass.name);
 
                     // UPG: modify RtrbauElement to ensure aligns with nominating components as models if found on the scene
                     foreach (JsonProperty classAttribute in classElement.ontProperties)

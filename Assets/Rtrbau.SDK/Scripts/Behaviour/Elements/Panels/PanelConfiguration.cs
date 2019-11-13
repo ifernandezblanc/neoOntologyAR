@@ -117,7 +117,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public void SelectFabrications()
+        public void LocateElement()
         {
             // ConfigureUser()
         }
@@ -126,7 +126,20 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public void LocateElement()
+        /// <returns>Describe script outcomes</returns>
+        public bool DestroyElement()
+        {
+            // Destroy game object
+            Destroy(this.gameObject);
+            // Return game object was destroyed
+            return true;
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public void SelectFabrications()
         {
             // ConfigureUser()
         }
@@ -149,27 +162,26 @@ namespace Rtrbau
         /// </summary>
         public void InputIntoReport()
         {
+            // Initialise server and user variables
             Rtrbauer.instance.server.serverURI = new Uri(serverURI);
             Rtrbauer.instance.user.name = userName;
             Rtrbauer.instance.user.procedure = userProcedure;
-
-            // string serverReport = serverURI + "/" + "server" + "#" + "connected";
-            // string userReport = serverURI + "/" + "user" + "#" + userName;
+            // Generate server and user variables to report
             string serverReport = serverURI + "server" + "#" + "connected";
             string userReport = serverURI + "user" + "#" + userName;
-
-            Debug.Log("PanelConfiguration: InputIntoReport: serverReport: " + serverReport);
-            Debug.Log("PanelConfiguration: InputIntoReport: userReport: " + userReport);
-
+            // Confirm user and server through log
+            Debug.Log("PanelConfiguration::InputIntoReport: serverReport: " + serverReport);
+            Debug.Log("PanelConfiguration::InputIntoReport: userReport: " + userReport);
+            // Report server and user
             Reporter.instance.ReportElement(new OntologyEntity(serverReport));
             Reporter.instance.ReportElement(new OntologyEntity(userReport));
-
+            // Report asset class
             string assetsURI = Rtrbauer.instance.ontology.ontologyURI.AbsoluteUri + "/" + "orgont#Asset";
             OntologyEntity assetsClass = new OntologyEntity(assetsURI);
-
+            // Move to next panel
             PanellerEvents.TriggerEvent("LoadAssets", assetsClass);
-
-            Destroy(this.gameObject);
+            // Destroy this element
+            DestroyElement();
         }
         #endregion IELEMENTABLE_METHODS
 
@@ -204,7 +216,7 @@ namespace Rtrbau
             //// When working at home to avoid server connection:
             ////serverURI = serverURL;
             ////InputIntoReport();
-            Debug.Log("PanelConfiguration: ConfigureServer: Server configured is: " + serverURL);
+            Debug.Log("PanelConfiguration::ConfigureServer: Server configured is: " + serverURL);
         }
 
         /// <summary>
@@ -222,18 +234,17 @@ namespace Rtrbau
                 if (webRequest.isNetworkError || webRequest.isHttpError)
                 {
                     serverConnectButton.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Server failed. Try another.";
-                    Debug.Log("PanelConfiguration: CheckServerConnection: Server not found");
+                    Debug.Log("PanelConfiguration::CheckServerConnection: Server not found");
                 }
                 else
                 {
                     serverConnectButton.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Server found.";
-                    Debug.Log("PanelConfiguration: CheckServerConnection: Server found");
+                    Debug.Log("PanelConfiguration::CheckServerConnection: Server found");
                     serverURI = serverURL;
                     InputIntoReport();
                 }
             }
         }
-
         #endregion CLASS_METHODS
     }
 }

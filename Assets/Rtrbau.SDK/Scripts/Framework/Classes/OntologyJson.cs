@@ -299,5 +299,109 @@ namespace Rtrbau
         #endregion METHODS
     }
 
+    /// <summary>
+    /// Describe script purpose
+    /// Add links when code has been inspired
+    /// </summary>
+    [Serializable]
+    public class JsonUploadIndividual
+    {
+        #region MEMBERS
+        public string ontName;
+        public string ontOntology;
+        public string ontClass;
+        public List<JsonUploadValue> ontProperties;
+        #endregion MEMBERS
+
+        #region CONSTRUCTORS
+        public JsonUploadIndividual()
+        {
+            ontName = null;
+            ontOntology = null;
+            ontClass = null;
+            ontProperties = new List<JsonUploadValue>();
+        }
+
+        public JsonUploadIndividual(JsonIndividualValues individual, JsonClassProperties individualClass)
+        {
+            if (individual.ontClass == individualClass.ontClass)
+            {
+                ontName = individual.ontIndividual;
+                ontOntology = Parser.ParseURI(individual.ontIndividual, '#', RtrbauParser.pre) + "#";
+                ontClass = individual.ontClass;
+                ontProperties = new List<JsonUploadValue>();
+
+                foreach (JsonValue value in individual.ontProperties)
+                {
+                    JsonProperty property = individualClass.ontProperties.Find(x => x.ontName == value.ontName && x.ontType == value.ontType);
+
+                    JsonUploadValue uploadValue = new JsonUploadValue();
+
+                    uploadValue.ontName = value.ontName;
+                    uploadValue.ontValue = value.ontValue;
+                    uploadValue.ontDomain = individual.ontClass;
+                    uploadValue.ontRange = property.ontRange;
+                    uploadValue.ontType = property.ontType;
+
+                    ontProperties.Add(uploadValue);
+                }
+
+            }
+            else
+            {
+                throw new ArgumentException("RtrbauData::JsonUploadIndividual: individual has to be from same class as individualClass.");
+            }
+        }
+        #endregion CONSTRUCTORS
+
+        #region METHODS
+        #endregion METHODS
+    }
+
+    /// <summary>
+    /// Describe script purpose
+    /// Add links when code has been inspired
+    /// </summary>
+    [Serializable]
+    public class JsonUploadValue
+    {
+        #region MEMBERS
+        public string ontName;
+        public string ontValue;
+        public string ontDomain;
+        public string ontRange;
+        public string ontType;
+        #endregion MEMBERS
+
+        #region CONSTRUCTORS
+        public JsonUploadValue()
+        {
+            ontName = null;
+            ontValue = null;
+            ontDomain = null;
+            ontRange = null;
+            ontType = null;
+        }
+
+        public JsonUploadValue(string domain, JsonValue value, JsonProperty property)
+        {
+            if (value.ontName == property.ontName && value.ontType == property.ontType)
+            {
+                ontName = value.ontName;
+                ontValue = value.ontValue;
+                ontDomain = domain;
+                ontRange = property.ontRange;
+                ontType = property.ontType;
+            }
+            else
+            {
+                throw new ArgumentException("OntologyJson::JsonUploadValue: value and property do not coincide in name or type.");
+            }
+        }
+        #endregion CONSTRUCTORS
+
+        #region METHODS
+        #endregion METHODS
+    }
     #endregion JSON_CLASSES
 }

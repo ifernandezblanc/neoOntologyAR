@@ -40,11 +40,9 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
-        public OntologyEntity relationshipAttribute;
         #endregion CLASS_VARIABLES
 
         #region FACETS_VARIABLES
-        public string nextIndividual;
         #endregion FACETS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
@@ -120,11 +118,7 @@ namespace Rtrbau
             // Check data received meets fabrication requirements
             if (data.fabricationData.TryGetValue(textfacet2, out attribute))
             {
-                // string attributeValue = Parser.ParseURI(attribute.attributeValue, '#', RtrbauParser.post);
-                // text.text = attribute.attributeName.name + ": " + attributeValue;
                 fabricationText.text = attribute.attributeName.name;
-                nextIndividual = attribute.attributeValue;
-                relationshipAttribute = new OntologyEntity(attribute.attributeName.URI());
             }
             else
             {
@@ -137,22 +131,40 @@ namespace Rtrbau
         /// </summary>
         public void OnNextVisualisation()
         {
-            // Send relationship used to connect to the following individual to the report
-            Reporter.instance.ReportElement(relationshipAttribute);
-            // IMPORTANT: this button is set up for individuals in consult mode (IndividualProperties)
-            OntologyElement individual = new OntologyElement(nextIndividual, OntologyElementType.IndividualProperties);
-            GameObject nextElement = visualiser.FindElement(individual);
-            if (nextElement != null)
+            DataFacet textfacet2 = DataFormats.TextButtonTap1.formatFacets[0];
+            RtrbauAttribute attribute;
+
+            // Check data received meets fabrication requirements
+            if (data.fabricationData.TryGetValue(textfacet2, out attribute))
             {
-                Debug.Log("OnNextVisualisation: " + nextElement.name);
-                element.gameObject.GetComponent<ElementsLine>().UpdateLineEnd(nextElement);
+                // Generate ontology entity to report
+                OntologyEntity relationship = new OntologyEntity(attribute.attributeName.URI());
+                // Report relationship attribute to load next RtrbauElement
+                Reporter.instance.ReportElement(relationship);
+                // Generate OntologyElement(s) to load next RtrbauElement
+                OntologyElement individual = new OntologyElement(attribute.attributeValue, OntologyElementType.IndividualProperties);
+                OntologyElement individualClass = new OntologyElement(attribute.attributeRange.URI(), OntologyElementType.ClassProperties);
+                // Find if appointed element has already been loaded
+                GameObject nextElement = visualiser.FindElement(individual);
+                // If so update line renderer, otherwise load new RtrbauElement
+                if (nextElement != null)
+                {
+                    Debug.Log("TextButtonTap1::OnNextVisualisation: element " + nextElement.name + " already loaded");
+                    // Update line renderer
+                    element.gameObject.GetComponent<ElementsLine>().UpdateLineEnd(nextElement);
+                }
+                else
+                {
+                    Debug.Log("TextButtonTap1::OnNextVisualisation: load new RtrbauElement for " + individual.entity.name);
+                    // Modify parent RtrbauElement in expectance of a new RtrbauElement
+                    element.GetComponent<ElementConsult>().ModifyMaterial(fabricationSeenMaterial);
+                    // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load
+                    RtrbauerEvents.TriggerEvent("AssetVisualiser_LoadElement", individual, individualClass, Rtrbauer.instance.user.procedure);
+                }
             }
             else
             {
-                // Element parent to modify material in expectance of a new element
-                element.GetComponent<ElementConsult>().ModifyMaterial(fabricationSeenMaterial);
-                // Trigger event to load a new element
-                RtrbauerEvents.TriggerEvent("LoadElement", individual, Rtrbauer.instance.user.procedure);
+                throw new ArgumentException(data.fabricationName + " cannot implement: " + attribute.attributeName + " received.");
             }
         }
         #endregion IFABRICATIONABLE_METHODS

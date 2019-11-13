@@ -125,6 +125,29 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
+        public void LocateElement()
+        {
+            // Debug.Log("LocateElement: Fabrications selected to creation");
+            CreateFabrications();
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        /// <returns>Describe script outcomes</returns>
+        public bool DestroyElement()
+        {
+            // Destroy game object
+            Destroy(this.gameObject);
+            // Return game object was destroyed
+            return true;
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
         public void SelectFabrications()
         {
             // Find if prefabs have been instantiated
@@ -140,16 +163,6 @@ namespace Rtrbau
                 }
                 else { }
             }
-        }
-
-        /// <summary>
-        /// Describe script purpose
-        /// Add links when code has been inspired
-        /// </summary>
-        public void LocateElement()
-        {
-            // Debug.Log("LocateElement: Fabrications selected to creation");
-            CreateFabrications();
         }
 
         /// <summary>
@@ -205,18 +218,19 @@ namespace Rtrbau
         /// </summary>
         void NominatedIndividual(OntologyEntity entity)
         {
-            Debug.Log("NominatedIndividual: Button Clicked " + entity.name);
+            Debug.Log("PanelClassIndividuals::NominatedIndividual: individual selected is " + entity.name);
 
-            // InputIntoReport()
+            // Report individual selected: InputIntoReport()
             Reporter.instance.ReportElement(entity);
             // Complete paneller behaviour
             PanellerEvents.TriggerEvent("UnloadPaneller", entity);
-            // Start visualiser behaviour (pre-loaded with the asset registrator)
-            OntologyElement element = new OntologyElement(entity.URI(), OntologyElementType.IndividualProperties);
-            // Make sure the element is of correct RtrbauElementType
-            RtrbauerEvents.TriggerEvent("LoadElement", element, Rtrbauer.instance.user.procedure);
-
-            Destroy(this.gameObject);
+            // Generate OntologyElement(s) to load RtrbauElement
+            OntologyElement elementIndividual = new OntologyElement(entity.URI(), OntologyElementType.IndividualProperties);
+            OntologyElement elementClass = new OntologyElement(classElement.entity.URI(), OntologyElementType.ClassProperties);
+            // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load
+            RtrbauerEvents.TriggerEvent("AssetVisualiser_LoadElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
+            // Complete paneller behaviour: destroy this element
+            DestroyElement();
         }
 
         /// <summary>

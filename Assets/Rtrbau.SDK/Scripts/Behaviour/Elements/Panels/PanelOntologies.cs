@@ -129,6 +129,29 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
+        public void LocateElement()
+        {
+            // Debug.Log("LocateElement: Fabrications selected to creation");
+            CreateFabrications();
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        /// <returns>Describe script outcomes</returns>
+        public bool DestroyElement()
+        {
+            // Destroy game object
+            Destroy(this.gameObject);
+            // Return game object was destroyed
+            return true;
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
         public void SelectFabrications()
         {
             // Find if prefabs have been instantiated
@@ -144,16 +167,6 @@ namespace Rtrbau
                 }
                 else { }
             }
-        }
-
-        /// <summary>
-        /// Describe script purpose
-        /// Add links when code has been inspired
-        /// </summary>
-        public void LocateElement()
-        {
-            // Debug.Log("LocateElement: Fabrications selected to creation");
-            CreateFabrications();
         }
 
         /// <summary>
@@ -209,14 +222,16 @@ namespace Rtrbau
         /// </summary>
         void NominatedOntology(OntologyEntity entity)
         {
-            Debug.Log("NominatedOntology: Button Clicked " + entity.ontology);
-            Debug.Log("NominatedOntology: Button Clicked " + DateTime.Now);
+            // Confirm ontology chosen through log
+            Debug.Log("PanelOntologies::NominatedOntology: Button Clicked " + entity.ontology);
+            Debug.Log("PanelOntologies::NominatedOntology: Button Clicked " + DateTime.Now);
 
-            // InputIntoReport()
+            // Report ontology selected: InputIntoReport()
             Reporter.instance.ReportElement(entity);
+            // Move to next panel
             PanellerEvents.TriggerEvent("LoadOperationSubclasses", entity);
-
-            Destroy(this.gameObject);
+            // Destroy this element
+            DestroyElement();
         }
 
         /// <summary>

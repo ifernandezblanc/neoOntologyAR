@@ -63,6 +63,8 @@ namespace Rtrbau
         private bool fabricationCreated;
         private bool nominateButtonsActive;
         private bool individualNominated;
+        private bool newReportNominated;
+        private bool nominatesNewReport;
         #endregion CLASS_EVENTS
 
         #region MONOBEHVAIOUR_METHODS
@@ -102,6 +104,8 @@ namespace Rtrbau
             fabricationCreated = false;
             nominateButtonsActive = false;
             individualNominated = false;
+            newReportNominated = false;
+            nominatesNewReport = false;
             Scale();
             InferFromText();
         }
@@ -131,6 +135,8 @@ namespace Rtrbau
             {
                 // Set button name to relationship name
                 fabricationText.text = attribute.attributeName.name;
+                // Assign nominated class
+                OntologyEntity individualRange = attribute.attributeRange;
                 // Retrieve JsonIndividuals from ElementReport
                 List<JsonIndividual> individuals = element.GetComponent<ElementReport>().objectClassesIndividuals.Find(x => x.ontClass == attribute.attributeRange.URI()).ontIndividuals;
                 // Add individuals to fabrication list
@@ -139,13 +145,13 @@ namespace Rtrbau
                     // Generate OntologyEntity to parse individual URI
                     OntologyEntity individualEntity = new OntologyEntity(individual.ontIndividual);
                     // Create individual button and assign both to dictionary
-                    individualNominates.Add(individualEntity, CreateIndividualButton(individualEntity));
+                    individualNominates.Add(individualEntity, CreateIndividualButton(individualEntity, individualRange));
                 }
                 // Use generic name (class) to generate ontology entity for "new" individual
-                OntologyEntity newIndividualEntity = attribute.attributeRange;
+                OntologyEntity newIndividualEntity = new OntologyEntity(attribute.attributeRange.URI());
                 newIndividualEntity.name += "_New";
                 // Create and assign "new" individual in case user wants to define a new one
-                individualNominates.Add(newIndividualEntity, CreateIndividualButton(newIndividualEntity));
+                individualNominates.Add(newIndividualEntity, CreateIndividualButton(newIndividualEntity, individualRange));
                 // Set fabrication as created
                 fabricationCreated = true;
             }
@@ -169,17 +175,45 @@ namespace Rtrbau
                 // Check data received meets fabrication requirements
                 if (data.fabricationData.TryGetValue(textfacet2, out attribute))
                 {
-                    // Update attribute value according to what user recorded
-                    // This assigns to RtrbauElement from ElementReport through RtrbauFabrication
-                    attribute.attributeValue = nominatedIndividual.URI();
-                    // Change button colour for user confirmation
-                    fabricationReportedPanel.material = fabricationReportedMaterial;
-                    // Check if all attribute values have been recorded
-                    // If true, then ElementReport will input reported element into report
-                    // If true, then ElementReport will change colour to reported
-                    element.gameObject.GetComponent<ElementReport>().CheckAttributesReported();
-                    // Deactivate nominate buttons
-                    DeactivateNominates();
+                    if (nominatesNewReport == false)
+                    {
+                        // If nominatedIndividual is new, then attribute value needs to be modified
+                        if (nominatedIndividual.name.Contains("_New"))
+                        {
+                            // Generate OntologyEntity to parse new individual name
+                            OntologyEntity newIndividual = new OntologyEntity(attribute.attributeRange.URI());
+                            // Parse individual element to generate new individual name
+                            Parser.ParseOntClassToIndividual(newIndividual);
+                            // Assign user-reported attribute value to RtrbauElement from ElementReport through RtrbauFabrication
+                            attribute.attributeValue = newIndividual.URI();
+                            // Assign nominated individual as new element report
+                            newReportNominated = true;
+                        }
+                        else
+                        {
+                            // Assign user-reported attribute value to RtrbauElement from ElementReport through RtrbauFabrication
+                            attribute.attributeValue = nominatedIndividual.URI();
+                        }
+                        
+                        // Change button colour for user confirmation
+                        fabricationReportedPanel.material = fabricationReportedMaterial;
+                        // Check if all attribute values have been recorded
+                        // If true, then ElementReport will input reported element into report
+                        // If true, then ElementReport will change colour to reported
+                        element.gameObject.GetComponent<ElementReport>().CheckAttributesReported();
+                        // Deactivate nominate buttons
+                        DeactivateNominates();
+                    }
+                    else
+                    {
+                        Debug.Log("DefaultNominate::OnNextVisualisation: new element to report is of range: " + attribute.attributeRange.name);
+                        Debug.Log("DefaultNominate::OnNextVisualisation: new element to report name is: " + attribute.attributeValue);
+                        // Generate OntologyElement(s) to load RtrbauElement
+                        OntologyElement elementClass = new OntologyElement(attribute.attributeRange.URI(), OntologyElementType.ClassProperties);
+                        OntologyElement elementIndividual = new OntologyElement(attribute.attributeValue, OntologyElementType.IndividualProperties);
+                        // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load
+                        RtrbauerEvents.TriggerEvent("AssetVisualiser_LoadElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
+                    }
                 }
                 else { }
             }
@@ -222,7 +256,7 @@ namespace Rtrbau
         /// </summary>
         public void ActivateNominates()
         {
-            if (fabricationCreated == true)
+            if (fabricationCreated == true && nominatesNewReport == false)
             {
                 // Call ElementReport to deactivate buttons from other nominate fabrications
                 element.GetComponent<ElementReport>().DeactivateNominates(this.gameObject);
@@ -259,7 +293,7 @@ namespace Rtrbau
         /// </summary>
         public void DeactivateNominates()
         {
-            if (fabricationCreated == true)
+            if (fabricationCreated == true && nominatesNewReport == false)
             {
                 if (nominateButtonsActive == true && individualNominated == false)
                 {
@@ -285,16 +319,52 @@ namespace Rtrbau
                 else { }
             }
         }
+
+        /// <summary>
+        /// Checks if the individual nominated is to create a new individual.
+        /// </summary>
+        /// <returns>
+        /// If true, returns the nominate button from which create a new report element as an <see cref="OntologyEntity"/>.
+        /// Otherwise, returns a null <see cref="OntologyEntity"/>.
+        /// </returns>
+        public bool NominatesNewReportElement()
+        {
+            // Check if han individual has been nominated
+            if (individualNominated == true)
+            {
+                // Check if nominated individual name is that for a new individual
+                if (newReportNominated == true)
+                {
+                    Debug.Log("DefaultNominate::CreateNewElementReport: individual to report is new.");
+                    // Deactivate nominates buttons
+                    DeactivateNominates();
+                    // Assign fabrication as to nominate new RtrbauElement
+                    nominatesNewReport = true;
+                    // Then return true
+                    return true;
+                }
+                else
+                {
+                    Debug.Log("DefaultNominate::CreateNewElementReport: individual to report is not new.");
+                    // Then return false
+                    return false;
+                }
+            }
+            else
+            {
+                throw new ArgumentException("DefaultNominate::CreatesNewElementReport: this function should not be accessible before an individual is nominated.");
+            }
+        }
         #endregion INOMINATABLE_METHODS
 
         #region CLASS_METHODS
         #region PRIVATE
-        GameObject CreateIndividualButton(OntologyEntity individual)
+        GameObject CreateIndividualButton(OntologyEntity individual, OntologyEntity range)
         {
             // Instantiate nominate button
             GameObject individualButton = Instantiate(nominateButton);
             // Initialise nominate button with corresponding nominate function
-            individualButton.GetComponent<NominateButton>().Initialise(NominateIndividual, individual);
+            individualButton.GetComponent<NominateButton>().Initialise(NominateIndividual, individual, range);
             // Scale buttons to possible change in fabrications scale
             ScaleIndividualButton(individualButton);
             // Set tile grid object collection as button parent

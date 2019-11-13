@@ -66,21 +66,12 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        //public static OntologyEntity ParseOntElement(string uri)
-        //{
-        //    OntologyEntity element = new OntologyEntity();
+        public static OntologyEntity ParseOntClassToIndividual(OntologyEntity element)
+        {
+            element.name += "_" + DateTime.Now.ToString("dd-MM-yy_HH-mm-ss");
 
-        //    string url;
-
-        //    element.name = Parser.ParseURI(uri, '#', ParsingType.post);
-
-        //    url = Parser.ParseURI(uri, '#', ParsingType.pre);
-
-        //    element.ontology = Parser.ParseURI(url, '/', ParsingType.post);
-
-        //    return element;
-
-        //}
+            return element;
+        }
         #endregion ELEMENT_PARSERS
 
         #region URI_PARSERS
@@ -118,7 +109,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static string ParseDownOntElementURI(string name, string ontology, OntologyElementType type)
+        public static string ParseOntElementURI(string name, string ontology, OntologyElementType type)
         {
             if (type == OntologyElementType.Ontologies)
             {
@@ -143,7 +134,11 @@ namespace Rtrbau
             else if (type == OntologyElementType.IndividualProperties)
             {
                 return Rtrbauer.instance.server.serverURI + "api/ontologies/" + ontology + "/individual/" + name + "/properties/";
-            }            
+            }
+            else if (type == OntologyElementType.IndividualUpload)
+            {
+                return Rtrbauer.instance.server.serverURI + "api/ontologies/" + ontology + "/individual/" + name + "/input/";
+            }
             else
             {
                 throw new ArgumentException("Argument Error: ontology element type not implemented");
@@ -154,7 +149,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static string ParseDownOntDistURI(OntologyEntity startClass, OntologyEntity endClass)
+        public static string ParseOntDistURI(OntologyEntity startClass, OntologyEntity endClass)
         {
             return Rtrbauer.instance.server.serverURI + "api/ontologies/" + startClass.ontology + "/class/" + 
                 startClass.name + "/distance/" + startClass.ontology + "/" + endClass.ontology + "/class/" + endClass.name;
@@ -164,7 +159,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static string ParseDownFileURI(string name, string type)
+        public static string ParseFileURI(string name, string type)
         {
             RtrbauFileType filetype;
 
@@ -177,7 +172,6 @@ namespace Rtrbau
                 throw new ArgumentException("Argument Error: file type not implemented");
             }
         }
-
         #endregion URI_PARSERS
 
     }

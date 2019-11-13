@@ -128,6 +128,29 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
+        public void LocateElement()
+        {
+            // Debug.Log("LocateElement: Fabrications selected to creation");
+            CreateFabrications();
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        /// <returns>Describe script outcomes</returns>
+        public bool DestroyElement()
+        {
+            // Destroy game object
+            Destroy(this.gameObject);
+            // Return game object was destroyed
+            return true;
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
         public void SelectFabrications()
         {
             // Find if prefabs have been instantiated
@@ -143,16 +166,6 @@ namespace Rtrbau
                 }
                 else { }
             }
-        }
-
-        /// <summary>
-        /// Describe script purpose
-        /// Add links when code has been inspired
-        /// </summary>
-        public void LocateElement()
-        {
-            // Debug.Log("LocateElement: Fabrications selected to creation");
-            CreateFabrications();
         }
 
         /// <summary>
@@ -210,11 +223,14 @@ namespace Rtrbau
         {
             Debug.Log("NominatedIndividual: Button Clicked " + entity.name);
 
-            // InputIntoReport()
+            // Report asset selected: InputIntoReport()
             Reporter.instance.ReportElement(entity);
+
+            // Move to next panel
             PanellerEvents.TriggerEvent("LoadAssetRegistrator", entity);
 
-            Destroy(this.gameObject);
+            // Destroy element
+            DestroyElement();
         }
 
         /// <summary>

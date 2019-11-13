@@ -45,7 +45,7 @@ namespace Rtrbau
         private string url;
         #endregion MEMBERS
 
-        #region CONSTRUCTOR
+        #region CONSTRUCTORS
         public OntologyEntity()
         {
             name = null;
@@ -60,7 +60,7 @@ namespace Rtrbau
             ontology = Parser.ParseURI(entity, '#', RtrbauParser.pre);
             url = Parser.ParseURI(entityURI, '/', RtrbauParser.pre);
         }
-        #endregion CONSTRUCTOR
+        #endregion CONSTRUCTORS
 
         #region METHODS
         public string URI()
@@ -103,7 +103,7 @@ namespace Rtrbau
         #region ILOADABLE_METHODS
         public string URL()
         {
-            return Parser.ParseDownOntElementURI(entity.name, entity.ontology, type);
+            return Parser.ParseOntElementURI(entity.name, entity.ontology, type);
         }
         public string FilePath()
         {
@@ -119,6 +119,62 @@ namespace Rtrbau
         {
             // return type.ToString() + "_" + type.ToString() + "_" + entity.Entity();
             return "Ontology__" + type.ToString() + "__" + entity.Entity();
+        }
+        #endregion ILOADABLE_METHODS
+    }
+
+    /// <summary>
+    /// Describe script purpose
+    /// Add links when code has been inspired
+    /// </summary> 
+    [Serializable]
+    public class OntologyUpload : ILoadable
+    {
+        #region MEMBERS
+        public OntologyElement individualElement;
+        public OntologyElement classElement;
+        #endregion MEMBERS
+
+        #region CONSTRUCTORS
+        public OntologyUpload()
+        {
+            individualElement = new OntologyElement();
+            classElement = new OntologyElement();
+        }
+
+        public OntologyUpload(OntologyElement elementIndividual, OntologyElement elementClass)
+        {
+            if (elementIndividual.entity.ontology == elementClass.entity.ontology)
+            {
+                individualElement = elementIndividual;
+                classElement = elementClass;
+            }
+            else
+            {
+                throw new ArgumentException("OntologyData::OntologyUpload: individual and class must belong to the same ontology.");
+            }
+        }
+        #endregion CONSTRUCTORS
+
+        #region ILOADABLE_METHODS
+        public string URL()
+        {
+            return Parser.ParseOntElementURI(individualElement.entity.name, individualElement.entity.ontology, OntologyElementType.IndividualUpload);
+        }
+
+        public string FilePath()
+        {
+            string folder;
+
+            if (Dictionaries.ontDataDirectories.TryGetValue(OntologyElementType.IndividualUpload, out folder)) { }
+            else { throw new ArgumentException("Argument element error: ontology element type not implemented."); }
+
+            return folder + '/' + individualElement.entity.Entity() + ".json";
+        }
+
+        public string EventName()
+        {
+            return "Ontology__" + OntologyElementType.IndividualUpload + "__" + individualElement.entity.Entity();
         }
         #endregion ILOADABLE_METHODS
     }
@@ -182,7 +238,7 @@ namespace Rtrbau
         #region ILOADABLE_METHODS
         public string URL()
         {
-            return Parser.ParseDownOntDistURI(startClass, endClass);
+            return Parser.ParseOntDistURI(startClass, endClass);
         }
 
         public string FilePath()
@@ -235,7 +291,7 @@ namespace Rtrbau
             if (Dictionaries.FileAugmentations.TryGetValue(type, out augmentation)) { }
             else { throw new ArgumentException("Argument file error: file type not implement to an augmentation method."); }
 
-            url = Parser.ParseDownFileURI(fileName, fileType);
+            url = Parser.ParseFileURI(fileName, fileType);
 
         }
 
