@@ -71,6 +71,11 @@ namespace Rtrbau
         {
             return ontology + "#" + name;
         }
+
+        public bool EqualEntity(OntologyEntity entity)
+        {
+            return name == entity.name && ontology == entity.ontology;
+        }
         #endregion METHODS
     }
 
@@ -121,6 +126,13 @@ namespace Rtrbau
             return "Ontology__" + type.ToString() + "__" + entity.Entity();
         }
         #endregion ILOADABLE_METHODS
+
+        #region CLASS_METHODS
+        public bool EqualElement(OntologyElement element)
+        {
+            return entity.EqualEntity(element.entity) && type.Equals(element.type);
+        }
+        #endregion CLASS_METHODS
     }
 
     /// <summary>

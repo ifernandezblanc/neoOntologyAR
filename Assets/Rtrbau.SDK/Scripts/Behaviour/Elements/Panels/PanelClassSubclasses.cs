@@ -493,7 +493,7 @@ namespace Rtrbau
                             // Parse individual element to generate new individual name
                             Parser.ParseOntClassToIndividual(elementIndividual.entity);
                             // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load
-                            RtrbauerEvents.TriggerEvent("AssetVisualiser_LoadElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
+                            RtrbauerEvents.TriggerEvent("AssetVisualiser_CreateElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
                             // Complete paneller behaviour: destroy this element
                             DestroyElement();
                         }
@@ -524,7 +524,7 @@ namespace Rtrbau
                             // Parse individual element to generate new individual name
                             Parser.ParseOntClassToIndividual(elementIndividual.entity);
                             // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load
-                            RtrbauerEvents.TriggerEvent("AssetVisualiser_LoadElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
+                            RtrbauerEvents.TriggerEvent("AssetVisualiser_CreateElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
                             // Complete paneller behaviour: destroy this element
                             DestroyElement();
                         }

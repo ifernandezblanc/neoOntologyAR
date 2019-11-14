@@ -399,6 +399,377 @@ namespace Rtrbau
         #endregion CONSTRUCTORS
 
     }
+
+    /// <summary>
+    /// Describe script purpose
+    /// Add links when code has been inspired
+    /// </summary> 
+    [Serializable]
+    public class RtrbauLocation
+    {
+        #region MEMBERS
+        private RtrbauElementLocation locationType;
+        private AssetVisualiser locationManager;
+        private List<KeyValuePair<OntologyElement,GameObject>> locationElements;
+        private int locationMaximum;
+        private int locationCounter;
+        #endregion MEMBERS
+
+        #region CONSTRUCTORS
+        public RtrbauLocation(RtrbauElementLocation type, AssetVisualiser location)
+        {
+            if (type != RtrbauElementLocation.None) { locationType = type; }
+            else { throw new ArgumentException("RtrbauData::RtrbauLocation: RtrbauElementLocation " + type.ToString() + "not implementable."); }
+
+            locationManager = location;
+            locationElements = new List<KeyValuePair<OntologyElement, GameObject>>();
+            locationMaximum = ((int)type * 2) + 1;
+            locationCounter = 0;
+        }
+        #endregion CONSTRUCTORS
+
+        #region METHODS
+        #region PRIVATE
+        bool AllocateElement(int position, GameObject element)
+        {
+            Bounds bounds = locationManager.manager.ReturnAssetBoundsLocal();
+            float pX;
+            float pY;
+            float pZ;
+
+            if (locationType == RtrbauElementLocation.Primary)
+            {
+                if (position < 1)
+                {
+                    pX = bounds.size.x;
+                    pY = 0;
+                    pZ = 0;
+
+                    Debug.Log("RtrbauData::RtrbauLocation::SetPosition: element position is: (" + pX + "," + pY + "," + pZ + ")");
+                    element.transform.localPosition = new Vector3(pX, pY, pZ);
+
+                    return true;
+                }
+                else { return false; }
+            }
+            else if (locationType == RtrbauElementLocation.Secondary)
+            {
+                if (position < 3)
+                {
+                    pX = bounds.size.x - position * bounds.size.x;
+                    pY = bounds.size.y * 2f;
+                    pZ = 0;
+
+                    Debug.Log("RtrbauData::RtrbauLocation::SetPosition: element position is: (" + pX + "," + pY + "," + pZ + ")");
+                    element.transform.localPosition = new Vector3(pX, pY, pZ);
+
+                    return true;
+                }
+                else { return false; }
+            }
+            else if (locationType == RtrbauElementLocation.Tertiary)
+            {
+                if (position < 5)
+                {
+                    pX = bounds.size.x * 2f;
+                    pY = bounds.size.y * 2f;
+                    pZ = -bounds.size.z * position;
+
+                    Debug.Log("RtrbauData::RtrbauLocation::SetPosition: element position is: (" + pX + "," + pY + "," + pZ + ")");
+                    element.transform.localPosition = new Vector3(pX, pY, pZ);
+
+                    return true;
+                }
+                else { return false; }
+            }
+            else if (locationType == RtrbauElementLocation.Quaternary)
+            {
+                if (position < 7)
+                {
+                    pX = -bounds.size.x * 2f;
+                    pY = bounds.size.y * 2f;
+                    pZ = -bounds.size.z * position;
+
+                    Debug.Log("RtrbauData::RtrbauLocation::SetPosition: element position is: (" + pX + "," + pY + "," + pZ + ")");
+                    element.transform.localPosition = new Vector3(pX, pY, pZ);
+
+                    return true;
+                }
+                else { return false; }
+            }
+            else
+            {
+                throw new ArgumentException("RtrbauData::RtrbauLocation::AllocateElement: RtrbauElementLocation " + locationType.ToString() + " not implemented");
+            }
+        }
+
+        void ScaleElement(GameObject elementObject)
+        {
+            // Determine asset size through model bounds
+            Bounds asset = locationManager.manager.ReturnAssetBoundsLocal();
+
+            // Re-scale element to match horizontal asset extents (x-axis)
+            // But only in the case asset extents are bigger than element
+            if (asset.extents.x > elementObject.transform.localScale.x)
+            {
+                float sM = asset.extents.x / elementObject.transform.localScale.x;
+                float sX = elementObject.transform.localScale.x * sM;
+                float sY = elementObject.transform.localScale.y * sM;
+                float sZ = elementObject.transform.localScale.z;
+
+                elementObject.transform.localScale = new Vector3(sX, sY, sZ);
+            }
+            else { }
+        }
+        #endregion PRIVATE
+
+        #region PUBLIC
+        public bool AddElement(OntologyElement elementClass, GameObject elementObject)
+        {
+            KeyValuePair<OntologyElement, GameObject> element = new KeyValuePair<OntologyElement, GameObject>(elementClass, elementObject);
+
+            if (locationType != RtrbauElementLocation.Quaternary)
+            {
+                int existingElementIndex = locationElements.FindIndex(x => x.Key.EqualElement(elementClass));
+
+                // If elementClass found
+                if (existingElementIndex != -1)
+                {
+                    // Try to allocate elementObject
+                    if (AllocateElement(existingElementIndex, elementObject))
+                    {
+                        // Once allocated, scale element
+                        ScaleElement(elementObject);
+                        // If elementClass position not empty
+                        if (locationElements[existingElementIndex].Value != null)
+                        {
+                            // Unload elementObject from locationManager
+                            locationManager.UnloadElement(locationElements[existingElementIndex].Value);
+                        }
+                        else { }
+                        // Add new elementObject to locationElements in elementClass position
+                        locationElements[existingElementIndex] = element;
+                        // Break function with value true
+                        return true;
+                    }
+                    else { throw new ArgumentException("RtrbauLocation::AddElement: AllocateElement returned false."); }
+                }
+                else
+                {
+                    // UPG: equal to Quaternary case, then move to a separate private function
+                    if (locationCounter < locationMaximum)
+                    {
+                        // Add new element while locationElements not full yet
+                        if (locationElements.Count() < locationMaximum + 1)
+                        {
+                            // Try to allocate elementObject
+                            if (AllocateElement(locationCounter, elementObject))
+                            {
+                                // Once allocated, scale element
+                                ScaleElement(elementObject);
+                                // Add new element to locationElements
+                                locationElements.Add(element);
+                                // Update locationCounter
+                                locationCounter += 1;
+                                // Break function with value true
+                                return true;
+                            }
+                            else { throw new ArgumentException("RtrbauLocation::AddElement: AllocateElement returned false."); }
+
+                        }
+                        else if (locationElements.Count() == locationMaximum + 1)
+                        {
+                            // Try to allocate elementObject
+                            if (AllocateElement(locationCounter, elementObject))
+                            {
+                                // Once allocated, scale element
+                                ScaleElement(elementObject);
+                                // If elementClass position not empty
+                                if (locationElements[locationCounter].Value != null)
+                                {
+                                    // Unload elementObject from locationManager
+                                    locationManager.UnloadElement(locationElements[locationCounter].Value);
+                                }
+                                else { }
+                                // Add new elementObject to locationElements in elementClass position
+                                locationElements[locationCounter] = element;
+                                // Update locationCounter
+                                locationCounter += 1;
+                                // Break function with value true
+                                return true;
+                            }
+                            else { throw new ArgumentException("RtrbauLocation::AddElement: AllocateElement returned false."); }
+                        }
+                        else { throw new ArgumentException("RtrbauLocation::AddElement: locationCounter should not reach this value."); }
+                    }
+                    else if (locationCounter == locationMaximum)
+                    {
+                        // Reset locationCounter
+                        locationCounter = 0;
+                        // Try to allocate elementObject
+                        if (AllocateElement(locationCounter, elementObject))
+                        {
+                            // Once allocated, scale element
+                            ScaleElement(elementObject);
+                            // If elementClass position not empty
+                            if (locationElements[locationCounter].Value != null)
+                            {
+                                // Unload elementObject from locationManager
+                                locationManager.UnloadElement(locationElements[locationCounter].Value);
+                            }
+                            else { }
+                            // Add new elementObject to locationElements in elementClass position
+                            locationElements[locationCounter] = element;
+                            // Update locationCounter
+                            locationCounter += 1;
+                            // Break function with value true
+                            return true;
+                        }
+                        else { throw new ArgumentException("RtrbauLocation::AddElement: AllocateElement returned false."); }
+                    }
+                    else { throw new ArgumentException("RtrbauLocation::AddElement: locationCounter should not reach this value."); }
+                }
+            }
+            else
+            {
+                // UPG: equal to non-Quaternary, non-existing-element case, then move to a separate private function
+                if (locationCounter < locationMaximum)
+                {
+                    // Add new element while locationElements not full yet
+                    if (locationElements.Count() < locationMaximum + 1)
+                    {
+                        // Try to allocate elementObject
+                        if (AllocateElement(locationCounter, elementObject))
+                        {
+                            // Once allocated, scale element
+                            ScaleElement(elementObject);
+                            // Add new element to locationElements
+                            locationElements.Add(element);
+                            // Update locationCounter
+                            locationCounter += 1;
+                            // Break function with value true
+                            return true;
+                        }
+                        else { throw new ArgumentException("RtrbauLocation::AddElement: AllocateElement returned false."); }
+
+                    }
+                    else if (locationElements.Count() == locationMaximum + 1)
+                    {
+                        // Try to allocate elementObject
+                        if (AllocateElement(locationCounter, elementObject))
+                        {
+                            // Once allocated, scale element
+                            ScaleElement(elementObject);
+                            // If elementClass position not empty
+                            if (locationElements[locationCounter].Value != null)
+                            {
+                                // Unload elementObject from locationManager
+                                locationManager.UnloadElement(locationElements[locationCounter].Value);
+                            }
+                            else { }
+                            // Add new elementObject to locationElements in elementClass position
+                            locationElements[locationCounter] = element;
+                            // Update locationCounter
+                            locationCounter += 1;
+                            // Break function with value true
+                            return true;
+                        }
+                        else { throw new ArgumentException("RtrbauLocation::AddElement: AllocateElement returned false."); }
+                    }
+                    else { throw new ArgumentException("RtrbauLocation::AddElement: locationCounter should not reach this value."); }
+                }
+                else if (locationCounter == locationMaximum)
+                {
+                    // Reset locationCounter
+                    locationCounter = 0;
+                    // Try to allocate elementObject
+                    if (AllocateElement(locationCounter, elementObject))
+                    {
+                        // Once allocated, scale element
+                        ScaleElement(elementObject);
+                        // If elementClass position not empty
+                        if (locationElements[locationCounter].Value != null)
+                        {
+                            // Unload elementObject from locationManager
+                            locationManager.UnloadElement(locationElements[locationCounter].Value);
+                        }
+                        else { }
+                        // Add new elementObject to locationElements in elementClass position
+                        locationElements[locationCounter] = element;
+                        // Update locationCounter
+                        locationCounter += 1;
+                        // Break function with value true
+                        return true;
+                    }
+                    else { throw new ArgumentException("RtrbauLocation::AddElement: AllocateElement returned false."); }
+                }
+                else { throw new ArgumentException("RtrbauLocation::AddElement: locationCounter should not reach this value."); }
+            }
+        }
+
+        public bool RemoveElement(OntologyElement elementClass)
+        {
+            int existingElementIndex = locationElements.FindIndex(x => x.Key.EqualElement(elementClass));
+
+            if (existingElementIndex != -1)
+            {
+                // Create empty KeyValuePair to add to elementClass position in locationElements
+                KeyValuePair<OntologyElement, GameObject> newElement = new KeyValuePair<OntologyElement, GameObject>(elementClass, null);
+                // Remove elementObject from locationElements in elementClass position
+                locationElements[existingElementIndex] = newElement;
+                // Break function with value true
+                return true;
+            }
+            else
+            {
+                // Break function with value false
+                return false;
+            }
+        }
+
+        public bool RemoveElement(GameObject elementObject)
+        {
+            // int existingElementIndex = locationElements.FindIndex(x => x.Value.GetInstanceID() == elementObject.GetInstanceID());
+            int existingElementIndex = locationElements.FindIndex(x => x.Value.Equals(elementObject));
+
+            if (existingElementIndex != -1)
+            {
+                // Create empty KeyValuePair to add to elementClass position in locationElements
+                KeyValuePair<OntologyElement, GameObject> newElement = new KeyValuePair<OntologyElement, GameObject>(locationElements[existingElementIndex].Key, null);
+                // Remove elementObject from locationElements in elementClass position
+                locationElements[existingElementIndex] = newElement;
+                // Break function with value true
+                return true;
+            }
+            else
+            {
+                // Break function with value false
+                return false;
+            }
+        }
+
+        public GameObject FindFirstElement()
+        {
+            if (locationElements.Count() > 0) { return locationElements.First().Value; }
+            else { return null; }   
+        }
+
+        public GameObject FindElement(OntologyElement elementClass)
+        {
+            return locationElements.Find(x => x.Key.EqualElement(elementClass)).Value;
+        }
+
+        public void DebugLocationElements(string functionName)
+        {
+            foreach (KeyValuePair<OntologyElement, GameObject> element in locationElements)
+            {
+                Debug.Log("AssetVisualiser::" + functionName + "::RtrbauData::DebugLocationElements: " + locationType.ToString() + " location locates " + element.Key.entity.name);
+            }
+        }
+        #endregion PUBLIC
+        #endregion METHODS
+    }
+
     #endregion RTRBAU_ELEMENTS
 
     #region AUTHORING_DATA

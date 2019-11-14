@@ -48,20 +48,20 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
-        public RtrbauElementType elementType;
+        public RtrbauElementType rtrbauElementType;
+        public RtrbauElementLocation rtrbauLocationType;
+        public RtrbauElement rtrbauElement;
         public JsonClassProperties classAttributes;
         public JsonIndividualValues exampleAttributes;
         public List<JsonClassProperties> objectClassesAttributes;
         public List<JsonClassIndividuals> objectClassesIndividuals;
         public JsonDistance elementComponentDistance;
         public JsonDistance elementOperationDistance;
-        public RtrbauElement rtrbauElement;
         public List<RtrbauFabrication> assignedFabrications;
-        public List<KeyValuePair<RtrbauFabrication,GameObject>> elementFabrications;
-        public RtrbauElementLocation rtrbauLocation;
+        public List<KeyValuePair<RtrbauFabrication, GameObject>> elementFabrications;
         public List<GameObject> unparentedFabrications;
         public List<GameObject> recordFabrications;
-        public List<GameObject> nominateFabrications; 
+        public List<GameObject> nominateFabrications;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
@@ -70,7 +70,6 @@ namespace Rtrbau
         public TextMeshPro statusText;
         public MeshRenderer panelPrimary;
         public MeshRenderer panelSecondary;
-        public MeshRenderer panelTertiary;
         public Transform fabricationsRecordRest;
         public Transform fabricationsRecordImageVideo;
         public Transform fabricationsNominate;
@@ -91,6 +90,7 @@ namespace Rtrbau
         public bool fabricationsSelected;
         public bool fabricationsCreated;
         public bool fabricationsActive;
+        public bool forcedReported;
         public bool elementReported;
         #endregion CLASS_EVENTS
 
@@ -123,7 +123,7 @@ namespace Rtrbau
         /// </summary>
         public void Initialise(AssetVisualiser assetVisualiser, OntologyElement elementIndividual, OntologyElement elementClass, GameObject elementPrevious)
         {
-            if (individualText == null || classText == null || statusText == null || fabricationsRecordRest == null || fabricationsRecordImageVideo == null || fabricationsNominate == null || panelPrimary == null || panelSecondary == null || panelTertiary == null || reportedMaterial == null || activationButton == null || activationButtonMaximise == null || activationButtonMinimise == null || lineMaterial == null || loadingPanel == null) 
+            if (individualText == null || classText == null || statusText == null || fabricationsRecordRest == null || fabricationsRecordImageVideo == null || fabricationsNominate == null || panelPrimary == null || panelSecondary == null || reportedMaterial == null || activationButton == null || activationButtonMaximise == null || activationButtonMinimise == null || lineMaterial == null || loadingPanel == null)
             {
                 Debug.LogError("ElementReport::Initialise: Fabrication not found. Please assign them in ElementReport script.");
             }
@@ -131,7 +131,8 @@ namespace Rtrbau
             {
                 if (elementClass.type == OntologyElementType.ClassProperties)
                 {
-                    elementType = RtrbauElementType.Report;
+                    rtrbauElementType = RtrbauElementType.Report;
+                    rtrbauLocationType = RtrbauElementLocation.None;
 
                     visualiser = assetVisualiser;
                     individualElement = elementIndividual;
@@ -154,10 +155,11 @@ namespace Rtrbau
 
                     fabricationsActive = false;
 
+                    forcedReported = false;
                     elementReported = false;
 
                     assignedFabrications = new List<RtrbauFabrication>();
-                    elementFabrications = new List<KeyValuePair<RtrbauFabrication,GameObject>>();
+                    elementFabrications = new List<KeyValuePair<RtrbauFabrication, GameObject>>();
                     unparentedFabrications = new List<GameObject>();
                     nominateFabrications = new List<GameObject>();
 
@@ -220,7 +222,7 @@ namespace Rtrbau
             }
             else { }
         }
-        
+
         /// <summary>
         /// Describe script purpose
         /// Add links when code has been inspired
@@ -290,7 +292,7 @@ namespace Rtrbau
                             // UPG: consider where no. of attribute equals 1, then modify according to user and environment formats
                             // Order similar fabrications by number of attributes
                             similarSourceFabrications.Sort((x, y) => x.fabricationData.Count.CompareTo(y.fabricationData.Count));
-                            
+
                             // If highest-attributes-number fabrication has only one, then compare facet restrictivity
                             if (similarSourceFabrications[similarSourceFabrications.Count() - 1].fabricationData.Count() == 1)
                             {
@@ -430,18 +432,18 @@ namespace Rtrbau
 
                 if (componentDistance <= 1)
                 {
-                    rtrbauLocation = RtrbauElementLocation.Primary;
+                    rtrbauLocationType = RtrbauElementLocation.Primary;
                 }
                 else if (operationDistance >= 1)
                 {
-                    rtrbauLocation = RtrbauElementLocation.Secondary;
+                    rtrbauLocationType = RtrbauElementLocation.Secondary;
                 }
                 else
                 {
-                    rtrbauLocation = RtrbauElementLocation.Tertiary;
+                    rtrbauLocationType = RtrbauElementLocation.Tertiary;
                 }
 
-                Debug.Log("ElementConsult::LocateElement: rtrbau location is " + rtrbauLocation);
+                Debug.Log("ElementConsult::LocateElement: rtrbau location is " + rtrbauLocationType);
 
                 LocateIt();
             }
@@ -455,7 +457,20 @@ namespace Rtrbau
         /// <returns>Describe script outcomes</returns>
         public bool DestroyElement()
         {
-            return false;
+            // Check if element reported
+            if (elementReported == true)
+            {
+                // Check if any nominate report still exist
+                if (nominateFabrications.Count == 0)
+                {
+                    // Destroy game object
+                    Destroy(this.gameObject);
+                    // Return game object was destroyed
+                    return true;
+                }
+                else { return false; }
+            }
+            else { return false; }
         }
 
         /// <summary>
@@ -535,13 +550,18 @@ namespace Rtrbau
             reportedIndividual.ontIndividual = rtrbauElement.elementName.URI();
             reportedIndividual.ontClass = rtrbauElement.elementClass.URI();
 
+            // Avoids to include attributes whose values have not been reported
             foreach (RtrbauAttribute attribute in rtrbauElement.elementAttributes)
             {
-                JsonValue attributeValue = new JsonValue();
-                attributeValue.ontName = attribute.attributeName.URI();
-                attributeValue.ontValue = attribute.attributeValue;
-                attributeValue.ontType = attribute.attributeType.URI();
-                reportedIndividual.ontProperties.Add(attributeValue);
+                if (attribute.attributeValue != null)
+                {
+                    JsonValue attributeValue = new JsonValue();
+                    attributeValue.ontName = attribute.attributeName.URI();
+                    attributeValue.ontValue = attribute.attributeValue;
+                    attributeValue.ontType = attribute.attributeType.URI();
+                    reportedIndividual.ontProperties.Add(attributeValue);
+                }
+                else { }
             }
 
             // Create individualElement to write JsonIndividualValues
@@ -582,7 +602,7 @@ namespace Rtrbau
             // UPG: Add ordering for tiled fabrications (buttons, icons, text).
 
             // ElementConsult location is managed by its visualiser.
-            RtrbauerEvents.TriggerEvent("AssetVisualiser_LocateElement", this.gameObject, RtrbauElementType.Report, rtrbauLocation);
+            RtrbauerEvents.TriggerEvent("AssetVisualiser_LocateElement", individualElement, rtrbauElementType, rtrbauLocationType);
         }
 
         /// <summary>
@@ -643,7 +663,7 @@ namespace Rtrbau
                 // Set material of element panels
                 panelPrimary.material = material;
                 panelSecondary.material = material;
-                panelTertiary.material = material;
+                //panelTertiary.material = material;
 
                 // Set material of fabrication panels
                 foreach (KeyValuePair<RtrbauFabrication, GameObject> fabrication in elementFabrications)
@@ -651,12 +671,11 @@ namespace Rtrbau
                     fabrication.Value.GetComponent<IVisualisable>().ModifyMaterial(material);
                 }
             }
-            else 
+            else
             {
                 // Set material of element panels
                 panelPrimary.material = material;
                 panelSecondary.material = material;
-                panelTertiary.material = material;
 
                 // Set material of fabrication panels
                 foreach (GameObject fabrication in nominateFabrications)
@@ -858,7 +877,7 @@ namespace Rtrbau
         /// <summary>
         /// 
         /// </summary>
-        void LocateFabrication (KeyValuePair<RtrbauFabrication, GameObject> fabrication)
+        void LocateFabrication(KeyValuePair<RtrbauFabrication, GameObject> fabrication)
         {
             // UPG: Add ordering for tiled fabrications (buttons, icons, text).
             if (fabrication.Key.fabricationType == RtrbauFabricationType.Record)
@@ -933,7 +952,7 @@ namespace Rtrbau
 
             Debug.Log("ElementReport::CleanRtrbauElement: individual emptied is: " + rtrbauElement.elementName.name);
 
-            foreach(RtrbauAttribute attribute in rtrbauElement.elementAttributes)
+            foreach (RtrbauAttribute attribute in rtrbauElement.elementAttributes)
             {
                 Debug.Log("ElementReport::CleanRtrbauElement: attribute is: " + attribute.attributeName.name + " whose value is: " + attribute.attributeValue);
             }
@@ -951,7 +970,7 @@ namespace Rtrbau
             // Check if nominate fabrication reports new element, otherwise destroy
             foreach (GameObject nominate in nominateFabrications)
             {
-                if (nominate.GetComponent<INominatable>().NominatesNewReportElement())
+                if (nominate.GetComponent<INominatable>().NominatesNewReportElement(forcedReported))
                 {
                     reportElementFabrications.Add(nominate);
                 }
@@ -998,6 +1017,27 @@ namespace Rtrbau
 
             // Deactivate loading panel
             loadingPanel.SetActive(false);
+
+            // Update rtrbauLocation
+            rtrbauLocationType = RtrbauElementLocation.Quaternary;
+
+            // Relocate element in quaternary location
+            RtrbauerEvents.TriggerEvent("AssetVisualiser_LocateElement", individualElement, rtrbauElementType, rtrbauLocationType);
+        }
+
+        void AttributesReported()
+        {
+            // Modify element panels materials to reported
+            panelPrimary.material = reportedMaterial;
+            panelSecondary.material = reportedMaterial;
+            // Modify fabrications panels materials to reported
+            ModifyMaterial(reportedMaterial);
+            // Update status text to show all attributes have been reported
+            statusText.text = "All attributes reported, please click on the next attribute to report.";
+            // Submit reported rtrbauElement for reporting
+            Debug.Log("ElementReport::CheckAttributesReport: all values reported, inputting new individual into report");
+            // Report rtrbauElement
+            InputIntoReport();
         }
         #endregion PRIVATE
 
@@ -1048,17 +1088,8 @@ namespace Rtrbau
             // If there are attributes with non-reported values
             if (nonReportedAttributes.Count == 0)
             {
-                // Modify element panels materials to reported
-                panelPrimary.material = reportedMaterial;
-                panelSecondary.material = reportedMaterial;
-                panelTertiary.material = reportedMaterial;
-                // Modify fabrications panels materials to reported
-                ModifyMaterial(reportedMaterial);
-                // Update status text to show all attributes have been reported
-                statusText.text = "All attributes reported, please click on the next attribute to report.";
-                // Submit reported rtrbauElement for reporting
-                Debug.Log("ElementReport::CheckAttributesReport: all values reported, inputting new individual into report");
-                InputIntoReport();
+                // Report rtrbauElement
+                AttributesReported();
                 return true;
             }
             else
@@ -1068,9 +1099,40 @@ namespace Rtrbau
                 return false;
             }
         }
+
+        /// <summary>
+        /// Forces element to be reported even if not all attributes have been reported.
+        /// </summary>
+        public void ForceAttributesReported()
+        {
+            // Asigned forcedReported as true
+            forcedReported = true;
+            // Report rtrbauElement
+            AttributesReported();
+        }
+
+        /// <summary>
+        /// Removes the nominate button <paramref name="nominate"/> and checks if all new nominates have been reported.
+        /// If so, unloads element from visualiser.
+        /// </summary>
+        /// <param name="nominate"></param>
+        /// <returns>Returns true always.</returns>
+        public bool CheckNewNominatesReported(GameObject nominate)
+        {
+            if (elementReported == true)
+            {
+                // Remove new nominate button from list
+                nominateFabrications.Remove(nominate);
+                // Destroy new nominate button
+                Destroy(nominate);
+                // Unload RtrbauElement if no more new nominates reported are left
+                if (nominateFabrications.Count() == 0) { visualiser.UnloadElement(this.gameObject); }
+                // Return true
+                return true;
+            }
+            else { throw new ArgumentException("ElementReport::CheckNewNominatesReported: this function should not be reached if element not reported."); }
+        }
         #endregion PUBLIC
         #endregion CLASS_METHODS
     }
 }
-
-

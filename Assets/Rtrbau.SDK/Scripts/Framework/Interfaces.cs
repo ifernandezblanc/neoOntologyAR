@@ -94,7 +94,7 @@ namespace Rtrbau
     {
         void ActivateNominates();
         void DeactivateNominates();
-        bool NominatesNewReportElement();
+        bool NominatesNewReportElement(bool reportedForced);
     }
     #endregion INTERFACES
 }

@@ -331,21 +331,24 @@ namespace Rtrbau
                 ontClass = individual.ontClass;
                 ontProperties = new List<JsonUploadValue>();
 
-                foreach (JsonValue value in individual.ontProperties)
+                // Assumes there can be from 0 to infinite individual attribute values for each class property
+                foreach (JsonProperty property in individualClass.ontProperties)
                 {
-                    JsonProperty property = individualClass.ontProperties.Find(x => x.ontName == value.ontName && x.ontType == value.ontType);
+                    List<JsonValue> values = individual.ontProperties.FindAll(x => x.ontName == property.ontName && x.ontType == property.ontType);
 
-                    JsonUploadValue uploadValue = new JsonUploadValue();
+                    foreach (JsonValue value in values)
+                    {
+                        JsonUploadValue uploadValue = new JsonUploadValue();
 
-                    uploadValue.ontName = value.ontName;
-                    uploadValue.ontValue = value.ontValue;
-                    uploadValue.ontDomain = individual.ontClass;
-                    uploadValue.ontRange = property.ontRange;
-                    uploadValue.ontType = property.ontType;
+                        uploadValue.ontName = value.ontName;
+                        uploadValue.ontValue = value.ontValue;
+                        uploadValue.ontDomain = individual.ontClass;
+                        uploadValue.ontRange = property.ontRange;
+                        uploadValue.ontType = property.ontType;
 
-                    ontProperties.Add(uploadValue);
+                        ontProperties.Add(uploadValue);
+                    }
                 }
-
             }
             else
             {

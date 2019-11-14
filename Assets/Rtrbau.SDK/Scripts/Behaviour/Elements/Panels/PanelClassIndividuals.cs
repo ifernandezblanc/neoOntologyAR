@@ -228,7 +228,7 @@ namespace Rtrbau
             OntologyElement elementIndividual = new OntologyElement(entity.URI(), OntologyElementType.IndividualProperties);
             OntologyElement elementClass = new OntologyElement(classElement.entity.URI(), OntologyElementType.ClassProperties);
             // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load
-            RtrbauerEvents.TriggerEvent("AssetVisualiser_LoadElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
+            RtrbauerEvents.TriggerEvent("AssetVisualiser_CreateElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
             // Complete paneller behaviour: destroy this element
             DestroyElement();
         }

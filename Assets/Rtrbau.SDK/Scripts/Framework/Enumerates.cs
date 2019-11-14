@@ -139,7 +139,7 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
-    public enum RtrbauElementLocation : int { Primary, Secondary, Tertiary }
+    public enum RtrbauElementLocation : int { Primary, Secondary, Tertiary, Quaternary, None }
 
     /// <summary>
     /// Describe script purpose

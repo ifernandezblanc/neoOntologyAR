@@ -159,7 +159,7 @@ namespace Rtrbau
                     // Modify parent RtrbauElement in expectance of a new RtrbauElement
                     element.GetComponent<ElementConsult>().ModifyMaterial(fabricationSeenMaterial);
                     // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load
-                    RtrbauerEvents.TriggerEvent("AssetVisualiser_LoadElement", individual, individualClass, Rtrbauer.instance.user.procedure);
+                    RtrbauerEvents.TriggerEvent("AssetVisualiser_CreateElement", individual, individualClass, Rtrbauer.instance.user.procedure);
                 }
             }
             else

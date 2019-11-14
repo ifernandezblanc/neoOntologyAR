@@ -212,7 +212,9 @@ namespace Rtrbau
                         OntologyElement elementClass = new OntologyElement(attribute.attributeRange.URI(), OntologyElementType.ClassProperties);
                         OntologyElement elementIndividual = new OntologyElement(attribute.attributeValue, OntologyElementType.IndividualProperties);
                         // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load
-                        RtrbauerEvents.TriggerEvent("AssetVisualiser_LoadElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
+                        RtrbauerEvents.TriggerEvent("AssetVisualiser_CreateElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
+                        // Check RtrbauElement to UnloadElement if necessary
+                        element.GetComponent<ElementReport>().CheckNewNominatesReported(this.gameObject);
                     }
                 }
                 else { }
@@ -321,16 +323,16 @@ namespace Rtrbau
         }
 
         /// <summary>
-        /// Checks if the individual nominated is to create a new individual.
+        /// Checks if the individual nominated is to create a new individual or that element reported has been forced.
         /// </summary>
         /// <returns>
         /// If true, returns the nominate button from which create a new report element as an <see cref="OntologyEntity"/>.
         /// Otherwise, returns a null <see cref="OntologyEntity"/>.
         /// </returns>
-        public bool NominatesNewReportElement()
+        public bool NominatesNewReportElement(bool reportedForced)
         {
             // Check if han individual has been nominated
-            if (individualNominated == true)
+            if (individualNominated == true || reportedForced == true)
             {
                 // Check if nominated individual name is that for a new individual
                 if (newReportNominated == true)

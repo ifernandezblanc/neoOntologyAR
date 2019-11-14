@@ -47,16 +47,16 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
-        public RtrbauElementType elementType;
+        public RtrbauElementType rtrbauElementType;
+        public RtrbauElementLocation rtrbauLocationType;
+        public RtrbauElement rtrbauElement;
         public JsonIndividualValues individualAttributes;
         public JsonClassProperties classAttributes;
         public List<JsonClassProperties> objectPropertyAttributes;
         public JsonDistance elementComponentDistance;
         public JsonDistance elementOperationDistance;
-        public RtrbauElement rtrbauElement;
         public List<RtrbauFabrication> assignedFabrications;
         public List<KeyValuePair<RtrbauFabrication,GameObject>> elementFabrications;
-        public RtrbauElementLocation rtrbauLocation;
         public List<GameObject> observeFabrications;
         public List<GameObject> inspectFabrications;
         #endregion CLASS_VARIABLES
@@ -126,10 +126,8 @@ namespace Rtrbau
             {
                 if (elementIndividual.type == OntologyElementType.IndividualProperties)
                 {
-                    // lineMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardBlue") as Material;
-                    // viewer = GameObject.FindGameObjectWithTag("MainCamera");
-
-                    elementType = RtrbauElementType.Consult;
+                    rtrbauElementType = RtrbauElementType.Consult;
+                    rtrbauLocationType = RtrbauElementLocation.None;
 
                     visualiser = assetVisualiser;
                     individualElement = elementIndividual;
@@ -417,18 +415,18 @@ namespace Rtrbau
 
                 if (componentDistance <= 1)
                 {
-                    rtrbauLocation = RtrbauElementLocation.Primary;
+                    rtrbauLocationType = RtrbauElementLocation.Primary;
                 }
                 else if (operationDistance >= 1)
                 {
-                    rtrbauLocation = RtrbauElementLocation.Secondary;
+                    rtrbauLocationType = RtrbauElementLocation.Secondary;
                 }
                 else
                 {
-                    rtrbauLocation = RtrbauElementLocation.Tertiary;
+                    rtrbauLocationType = RtrbauElementLocation.Tertiary;
                 }
 
-                Debug.Log("ElementConsult::LocateElement: rtrbau location is " + rtrbauLocation);
+                Debug.Log("ElementConsult::LocateElement: rtrbau location is " + rtrbauLocationType);
 
                 LocateIt();
             }
@@ -442,6 +440,7 @@ namespace Rtrbau
         /// <returns>Describe script outcomes</returns>
         public bool DestroyElement()
         {
+            // Check if element reported
             if (elementReported == true)
             {
                 // Destroy game object
@@ -531,7 +530,7 @@ namespace Rtrbau
             // Rest of functionality remains
             
             // ElementConsult location is managed by its visualiser.
-            RtrbauerEvents.TriggerEvent("AssetVisualiser_LocateElement", this.gameObject, RtrbauElementType.Consult, rtrbauLocation);
+            RtrbauerEvents.TriggerEvent("AssetVisualiser_LocateElement", individualElement, rtrbauElementType, rtrbauLocationType);
             // Report element once it has been created and without the need to update data
             InputIntoReport();
         }
