@@ -47,7 +47,7 @@ namespace Rtrbau
         public static DataFacetRules TextFacet4 = new DataFacetRules(All, null, Any, Libraries.DateTimeLibrary, Any, null, Any, Libraries.DatatypePropertyLibrary);
         public static DataFacetRules TextFacet5 = new DataFacetRules(Any, Libraries.TimeRecord, Any, Libraries.DateTimeLibrary, Any, null, Any, Libraries.DatatypePropertyLibrary);
         public static DataFacetRules TextFacet6 = new DataFacetRules(All, null, Any, Libraries.BooleanLibrary, Any, null, Any, Libraries.DatatypePropertyLibrary);
-        // public static DataFacetRules TextFacet3 = new DataFacetRules(All, null, Any, Libraries.SetLibrary, Any, null); // Error in here, see above to solve
+        //public static DataFacetRules TextFacet3 = new DataFacetRules(All, null, Any, Libraries.SetLibrary, Any, null); // Error in here, see above to solve
         //public static DataFacetRules TextFacet4 = new DataFacetRules(All, Libraries.MessageType, Any, Libraries.TextLibrary, Any, null);
         //public static DataFacetRules TextFacet5 = new DataFacetRules(All, Libraries.MessageAction, Any, Libraries.TextLibrary, Any, null);
         //public static DataFacetRules TextFacet6 = new DataFacetRules(All, Libraries.MessageObject, Any, Libraries.TextLibrary, Any, null);

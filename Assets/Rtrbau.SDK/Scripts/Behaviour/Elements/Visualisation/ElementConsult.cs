@@ -288,7 +288,7 @@ namespace Rtrbau
 
                                 foreach (RtrbauFabrication fabrication in similarSourceFabrications)
                                 {
-                                    Debug.Log("ElementReport::SelectFabrications: similar fabrication restrictiviy-ordered is " + fabrication.fabricationName + " for attribute " + attribute.attributeName.name);
+                                    Debug.Log("ElementReport::SelectFabrications: similar fabrication restrictiviy-ordered is " + fabrication.fabricationName + " for attribute " + attribute.attributeName.Name());
                                 }
 
                                 // If facet restrictivity is equal, then compare format senses
@@ -299,7 +299,7 @@ namespace Rtrbau
 
                                     foreach (RtrbauFabrication fabrication in similarSourceFabrications)
                                     {
-                                        Debug.Log("ElementReport::SelectFabrications: similar fabrication interaction-ordered is " + fabrication.fabricationName + " for attribute " + attribute.attributeName.name);
+                                        Debug.Log("ElementReport::SelectFabrications: similar fabrication interaction-ordered is " + fabrication.fabricationName + " for attribute " + attribute.attributeName.Name());
                                     }
                                 }
                                 else
@@ -459,8 +459,8 @@ namespace Rtrbau
         {
             if (fabricationsSelected == true)
             {
-                individualText.text = rtrbauElement.elementName.name;
-                classText.text = rtrbauElement.elementClass.name;
+                individualText.text = rtrbauElement.elementName.Name();
+                classText.text = rtrbauElement.elementClass.Name();
 
                 Debug.Log("ElementConsult::CreateFabrications: Starting to create fabrications for: " + individualElement.entity.Entity());
 

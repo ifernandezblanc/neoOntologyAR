@@ -163,7 +163,7 @@ namespace Rtrbau
                 }
                 else
                 {
-                    throw new ArgumentException(data.fabricationName + " cannot implement: " + facet.Value.attributeName + " received.");
+                    throw new ArgumentException(data.fabricationName.ToString() + "::InferFromText: cannot implement attribute received.");
                 }
             }
 

@@ -120,7 +120,7 @@ namespace Rtrbau
             }
             else
             {
-                throw new ArgumentException(data.fabricationName + " cannot implement: " + attribute.attributeName + " recieved.");
+                throw new ArgumentException(data.fabricationName.ToString() + "::InferFromText: cannot implement attribute received.");
             }
         }
 

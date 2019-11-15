@@ -65,7 +65,7 @@ namespace Rtrbau
         {
             if (fabricationText == null || fabricationSprite == null || fabricationSeenPanel == null || lineMaterial == null)
             {
-                throw new ArgumentException("ImageManipulation1 script requires some prefabs to work.");
+                throw new ArgumentException("ImageManipulation1::Start: script requires some prefabs to work.");
             }
             else { }
         }
@@ -124,7 +124,7 @@ namespace Rtrbau
             // Check data received meets fabrication requirements
             if (data.fabricationData.TryGetValue(imagefacet1, out attribute))
             {
-                fabricationText.text = attribute.attributeName.name + ": ";
+                fabricationText.text = attribute.attributeName.Name() + ": ";
                 imageFile = new RtrbauFile(attribute.attributeValue);
                 LoaderEvents.StartListening(imageFile.EventName(), DownloadedImage);
                 Loader.instance.StartFileDownload(imageFile);
@@ -134,7 +134,7 @@ namespace Rtrbau
             }
             else
             {
-                throw new ArgumentException(data.fabricationName + " cannot implement: " + attribute.attributeName + " recieved.");
+                throw new ArgumentException(data.fabricationName.ToString() + "::InferFromText: cannot implement attribute received.");
             }
         }
 

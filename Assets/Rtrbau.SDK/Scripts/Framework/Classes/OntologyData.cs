@@ -35,14 +35,54 @@ namespace Rtrbau
     /// <summary>
     /// Describe script purpose
     /// Add links when code has been inspired
+    /// </summary>
+    [Serializable]
+    public class Ontology
+    {
+        #region MEMBERS
+        private string name;
+        private string uri;
+        #endregion MEMBERS
+
+        #region CONSTRUCTORS
+        public Ontology()
+        {
+            name = null;
+            uri = null;
+        }
+
+        public Ontology(OntologyStandardType standard)
+        {
+            if (Dictionaries.OntologyStandardTypes.TryGetValue(standard, out uri)) { name = standard.ToString(); }
+            else { throw new ArgumentException("OntologyData::Ontology: OntologyStandardType not implemented."); }
+        }
+
+        public Ontology(string OntologyURI)
+        {
+            uri = OntologyURI;
+            name = Parser.ParseURI(Parser.ParseURI(OntologyURI, '/', RtrbauParser.post), '#', RtrbauParser.pre);
+        }
+        #endregion CONSTRUCTORS
+
+        #region METHODS
+        public string Name() { return name; }
+
+        public string URI() { return uri; }
+
+        public bool EqualOntology(Ontology ontology) { return uri == ontology.URI(); }
+        #endregion METHODS
+    }
+
+    /// <summary>
+    /// Describe script purpose
+    /// Add links when code has been inspired
     /// </summary> 
     [Serializable]
     public class OntologyEntity
     {
         #region MEMBERS
-        public string name;
-        public string ontology;
-        private string url;
+        private string name;
+        private Ontology ontology;
         #endregion MEMBERS
 
         #region CONSTRUCTORS
@@ -50,32 +90,31 @@ namespace Rtrbau
         {
             name = null;
             ontology = null;
-            url = null;
         }
 
         public OntologyEntity(string entityURI)
         {
-            string entity = Parser.ParseURI(entityURI, '/', RtrbauParser.post);
-            name = Parser.ParseURI(entity, '#', RtrbauParser.post);
-            ontology = Parser.ParseURI(entity, '#', RtrbauParser.pre);
-            url = Parser.ParseURI(entityURI, '/', RtrbauParser.pre);
+            name = Parser.ParseURI(entityURI, '#', RtrbauParser.post);
+            ontology = new Ontology(Parser.ParseURI(entityURI, '#', RtrbauParser.pre) + "#");
+        }
+
+        public OntologyEntity(Ontology entityOntology, string entityName)
+        {
+            name = entityName;
+            ontology = entityOntology;
         }
         #endregion CONSTRUCTORS
 
         #region METHODS
-        public string URI()
-        {
-            return url + "/" + Entity();
-        }
-        public string Entity()
-        {
-            return ontology + "#" + name;
-        }
+        public string URI() { return ontology.URI() + name; }
 
-        public bool EqualEntity(OntologyEntity entity)
-        {
-            return name == entity.name && ontology == entity.ontology;
-        }
+        public string Entity() { return ontology.Name() + "#" + name; }
+
+        public string Name() { return name; }
+
+        public Ontology Ontology() { return ontology; }
+
+        public bool EqualEntity(OntologyEntity entity) { return URI() == entity.URI(); }
         #endregion METHODS
     }
 
@@ -108,7 +147,7 @@ namespace Rtrbau
         #region ILOADABLE_METHODS
         public string URL()
         {
-            return Parser.ParseOntElementURI(entity.name, entity.ontology, type);
+            return Parser.ParseOntElementURI(entity, type);
         }
         public string FilePath()
         {
@@ -156,7 +195,7 @@ namespace Rtrbau
 
         public OntologyUpload(OntologyElement elementIndividual, OntologyElement elementClass)
         {
-            if (elementIndividual.entity.ontology == elementClass.entity.ontology)
+            if (elementIndividual.entity.Ontology().Name() == elementClass.entity.Ontology().Name())
             {
                 individualElement = elementIndividual;
                 classElement = elementClass;
@@ -171,7 +210,7 @@ namespace Rtrbau
         #region ILOADABLE_METHODS
         public string URL()
         {
-            return Parser.ParseOntElementURI(individualElement.entity.name, individualElement.entity.ontology, OntologyElementType.IndividualUpload);
+            return Parser.ParseOntElementURI(individualElement.entity, OntologyElementType.IndividualUpload);
         }
 
         public string FilePath()
@@ -218,29 +257,29 @@ namespace Rtrbau
 
             if (distance == RtrbauDistanceType.Component)
             {
-                if (Rtrbauer.instance.component.componentURI != null)
+                if (Rtrbauer.instance.component != null)
                 {
-                    endClass = new OntologyEntity(Rtrbauer.instance.component.componentURI);
+                    endClass = Rtrbauer.instance.component;
                 }
                 else
                 {
-                    throw new ArgumentException("Argument distance error: component class not declared.");
+                    throw new ArgumentException("OntologyData::OntologyDistance::Constructor: Argument distance error: component class not declared.");
                 }
             }
             else if (distance == RtrbauDistanceType.Operation)
             {
-                if (Rtrbauer.instance.operation.operationURI != null)
+                if (Rtrbauer.instance.operation != null)
                 {
-                    endClass = new OntologyEntity(Rtrbauer.instance.operation.operationURI);
+                    endClass = Rtrbauer.instance.operation;
                 }
                 else
                 {
-                    throw new ArgumentException("Argument distance error: operation class not declared.");
+                    throw new ArgumentException("OntologyData::OntologyDistance::Constructor: Argument distance error: operation class not declared.");
                 }
             }
             else
             {
-                throw new ArgumentException("Argument distance error: rtrbau distance type not implemented.");
+                throw new ArgumentException("OntologyData::OntologyDistance::Constructor: Argument distance error: rtrbau distance type not implemented.");
             }
 
             distanceType = distance;
@@ -258,7 +297,7 @@ namespace Rtrbau
             string folder;
 
             if (Dictionaries.distanceDataDirectories.TryGetValue(distanceType, out folder)){}
-            else { throw new ArgumentException("Argument distance error: rtrbau distance type not implemented."); }
+            else { throw new ArgumentException("OntologyData::OntologyDistance::FilePath: Argument distance error: rtrbau distance type not implemented."); }
 
             return folder + "/" + startClass.Entity() + ".json";
         }
@@ -298,10 +337,10 @@ namespace Rtrbau
             name = fileName;
 
             if (Enum.TryParse<RtrbauFileType>(fileType, out type)) {}
-            else { throw new ArgumentException("Argument file error: file type not implemented."); }
+            else { throw new ArgumentException("OntologyData::RtrbauFile::Constructor: Argument file error: file type not implemented."); }
 
             if (Dictionaries.FileAugmentations.TryGetValue(type, out augmentation)) { }
-            else { throw new ArgumentException("Argument file error: file type not implement to an augmentation method."); }
+            else { throw new ArgumentException("OntologyData::RtrbauFile::Constructor: Argument file error: file type not implement to an augmentation method."); }
 
             url = Parser.ParseFileURI(fileName, fileType);
 
@@ -315,10 +354,10 @@ namespace Rtrbau
             string fileType = Parser.ParseURI(file, '.', RtrbauParser.post);
 
             if (Enum.TryParse<RtrbauFileType>(fileType, out type)) {}
-            else { throw new ArgumentException("Argument file error: file type not implemented."); }
+            else { throw new ArgumentException("OntologyData::RtrbauFile::Constructor: Argument file error: file type not implemented."); }
 
             if (Dictionaries.FileAugmentations.TryGetValue(type, out augmentation)) { }
-            else { throw new ArgumentException("Argument file error: file type not implement to an augmentation method."); }
+            else { throw new ArgumentException("OntologyData::RtrbauFile::Constructor: Argument file error: file type not implement to an augmentation method."); }
         }
         #endregion CONSTRUCTOR
 
@@ -333,7 +372,7 @@ namespace Rtrbau
             string folder;
 
             if (Dictionaries.fileDataDirectories.TryGetValue(type, out folder)) { }
-            else { throw new ArgumentException("Argument file error: file type not implemented."); }
+            else { throw new ArgumentException("OntologyData::RtrbauFile::FilePath: Argument file error: file type not implemented."); }
 
             return folder + '/' + name + '.' + type.ToString();
         }

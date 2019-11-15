@@ -73,7 +73,7 @@ namespace Rtrbau
         public GameObject reportElement;
         public GameObject reportPanel;
         public GameObject reportButton;
-        public List<KeyValuePair<DateTime, OntologyEntity>> reportDictionary;
+        public List<KeyValuePair<DateTimeOffset, OntologyEntity>> reportDictionary;
         #endregion CLASS_VARIABLES
 
         #region MONOBEHAVIOUR_METHODS
@@ -100,7 +100,7 @@ namespace Rtrbau
             else
             {
                 // reportPanel = this.transform.Find("ReportElements").gameObject;
-                reportDictionary = new List<KeyValuePair<DateTime, OntologyEntity>>();
+                reportDictionary = new List<KeyValuePair<DateTimeOffset, OntologyEntity>>();
             }
         }
 
@@ -121,19 +121,19 @@ namespace Rtrbau
             }
 
             // Initialise report dictionary
-            reportDictionary = new List<KeyValuePair<DateTime, OntologyEntity>>();
+            reportDictionary = new List<KeyValuePair<DateTimeOffset, OntologyEntity>>();
 
             // Update user
-            Rtrbauer.instance.user.name = "User" + "_" + DateTime.Now.ToString("dd-MM-yy_HH-mm-ss");
+            Rtrbauer.instance.user.name = Parser.ParseAddDateTime("User_");
 
             // Re-initialise dictionary elements: server, user and asset
-            string serverReport = Rtrbauer.instance.server.serverURI + "server" + "#" + "connected";
-            string userReport = Rtrbauer.instance.server.serverURI + "user" + "#" + Rtrbauer.instance.user.name;
+            string serverReport = Rtrbauer.instance.server.AbsoluteUri + "server#connected";
+            string userReport = Rtrbauer.instance.server.AbsoluteUri + "user#" + Rtrbauer.instance.user.name;
 
             // Report re-initialised elements
             ReportElement(new OntologyEntity(serverReport));
             ReportElement(new OntologyEntity(userReport));
-            ReportElement(new OntologyEntity(Rtrbauer.instance.asset.assetURI));
+            ReportElement(new OntologyEntity(Rtrbauer.instance.asset.URI()));
 
             // UPG: to reinitialise with Vuforia to start the app again (start at configuration panel)
         }
@@ -146,14 +146,14 @@ namespace Rtrbau
         {
             GameObject reportedElement;
 
-            reportDictionary.Add(new KeyValuePair<DateTime, OntologyEntity>(DateTime.Now, entity));
+            reportDictionary.Add(new KeyValuePair<DateTimeOffset, OntologyEntity>(DateTimeOffset.Now, entity));
 
             reportedElement = Instantiate(reportElement, reportPanel.transform);
 
-            reportedElement.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = entity.ontology;
-            reportedElement.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = entity.name;
+            reportedElement.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = entity.Ontology().Name();
+            reportedElement.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = entity.Name();
 
-            Debug.Log("Reporter: ReportElement: " + DateTime.Now.ToString("dd-MM-yy_HH-mm-ss") + "_" + entity.ToString());
+            Debug.Log("Reporter::ReportElement: " + Parser.ParseNamingDateTimeXSD() + "_" + entity.Entity());
         }
 
         /// <summary>
@@ -171,8 +171,7 @@ namespace Rtrbau
             for (int i = 0; i < reportDictionary.Count; i++)
             {
                 reportWriter.WriteLine("{");
-                reportWriter.WriteLine("\"dateTime\": " + "\"" + reportDictionary[i].Key.ToString("dd-MM-yy_HH-mm-ss") + "\",");
-                // reportWriter.WriteLine("\"entity\": " + JsonUtility.ToJson(reportDictionary[i].Value));
+                reportWriter.WriteLine("\"dateTime\": " + "\"" + Parser.ParseNamingDateTimeXSD(reportDictionary[i].Key) + "\",");
                 reportWriter.WriteLine("\"entity\": " + "\"" + reportDictionary[i].Value.URI() + "\"");
                 if (i != reportDictionary.Count - 1) { reportWriter.WriteLine("},"); }
                 else { reportWriter.WriteLine("}"); }

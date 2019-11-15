@@ -302,7 +302,7 @@ namespace Rtrbau
 
                                 foreach (RtrbauFabrication fabrication in similarSourceFabrications)
                                 {
-                                    Debug.Log("ElementReport::SelectFabrications: similar fabrication restrictiviy-ordered is " + fabrication.fabricationName + " for attribute " + attribute.attributeName.name);
+                                    Debug.Log("ElementReport::SelectFabrications: similar fabrication restrictiviy-ordered is " + fabrication.fabricationName + " for attribute " + attribute.attributeName.Name());
                                 }
 
                                 // If facet restrictivity is equal, then compare format senses
@@ -313,7 +313,7 @@ namespace Rtrbau
 
                                     foreach (RtrbauFabrication fabrication in similarSourceFabrications)
                                     {
-                                        Debug.Log("ElementReport::SelectFabrications: similar fabrication interaction-ordered is " + fabrication.fabricationName + " for attribute " + attribute.attributeName.name);
+                                        Debug.Log("ElementReport::SelectFabrications: similar fabrication interaction-ordered is " + fabrication.fabricationName + " for attribute " + attribute.attributeName.Name());
                                     }
                                 }
                                 else
@@ -356,7 +356,7 @@ namespace Rtrbau
 
             foreach (RtrbauAttribute attribute in assignedAttributes)
             {
-                Debug.Log("EvaluateElement: assigned attributes: " + attribute.attributeName.name + " : " + attribute.attributeValue);
+                Debug.Log("EvaluateElement: assigned attributes: " + attribute.attributeName.Name() + " : " + attribute.attributeValue);
             }
 
             // Identify attributes that have not been assigned to generated fabrications
@@ -382,7 +382,7 @@ namespace Rtrbau
                     fabrication.fabricationDescription = UserFormats.DefaultRecord.formatDescription;
                     // Assign fabrication to assignedFabrications
                     assignedFabrications.Add(fabrication);
-                    Debug.Log("ElementReport::SelectFabrications: attribute with DefaultRecord is: " + attribute.attributeName.name);
+                    Debug.Log("ElementReport::SelectFabrications: attribute with DefaultRecord is: " + attribute.attributeName.Name());
                 }
                 else if (attribute.fabricationType == RtrbauFabricationType.Nominate)
                 {
@@ -398,7 +398,7 @@ namespace Rtrbau
                     fabrication.fabricationDescription = UserFormats.DefaultNominate.formatDescription;
                     // Assign fabrication to assignedFabrications
                     assignedFabrications.Add(fabrication);
-                    Debug.Log("ElementReport::SelectFabrications: attribute with DefaultNominate is: " + attribute.attributeName.name);
+                    Debug.Log("ElementReport::SelectFabrications: attribute with DefaultNominate is: " + attribute.attributeName.Name());
                 }
                 else
                 {
@@ -487,10 +487,10 @@ namespace Rtrbau
             // Check fabrications selected as well as object classes attributes and individuals have been downloaded
             if (objectClassesAttributes.Count == objectPropertiesNumber && objectClassesIndividuals.Count == objectPropertiesNumber && fabricationsSelected == true)
             {
-                individualText.text = rtrbauElement.elementName.name;
-                classText.text = rtrbauElement.elementClass.name;
+                individualText.text = rtrbauElement.elementName.Name();
+                classText.text = rtrbauElement.elementClass.Name();
 
-                Debug.Log("ElementConsult::CreateFabrications: Starting to create fabrications for: " + rtrbauElement.elementName.name);
+                Debug.Log("ElementConsult::CreateFabrications: Starting to create fabrications for: " + rtrbauElement.elementName.Name());
 
                 foreach (RtrbauFabrication fabrication in assignedFabrications)
                 {
@@ -523,7 +523,7 @@ namespace Rtrbau
                 // UPG: do it with other fabrication panel as well?
                 fabricationsRecordImageVideo.GetComponent<TileGridObjectCollection>().enabled = false;
 
-                Debug.Log("ElementConsult::CreateFabrications: fabrications created for: " + rtrbauElement.elementName.name + " and values emptied");
+                Debug.Log("ElementConsult::CreateFabrications: fabrications created for: " + rtrbauElement.elementName.Name() + " and values emptied");
                 // Clean RtrbauElement attributes values when fabrications created for further update on user report
                 CleanRtrbauElement();
 
@@ -950,11 +950,11 @@ namespace Rtrbau
                 attribute.attributeValue = null;
             }
 
-            Debug.Log("ElementReport::CleanRtrbauElement: individual emptied is: " + rtrbauElement.elementName.name);
+            Debug.Log("ElementReport::CleanRtrbauElement: individual emptied is: " + rtrbauElement.elementName.Name());
 
             foreach (RtrbauAttribute attribute in rtrbauElement.elementAttributes)
             {
-                Debug.Log("ElementReport::CleanRtrbauElement: attribute is: " + attribute.attributeName.name + " whose value is: " + attribute.attributeValue);
+                Debug.Log("ElementReport::CleanRtrbauElement: attribute is: " + attribute.attributeName.Name() + " whose value is: " + attribute.attributeValue);
             }
         }
 

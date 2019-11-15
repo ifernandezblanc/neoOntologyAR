@@ -41,6 +41,18 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
+        public static Dictionary<OntologyStandardType, string> OntologyStandardTypes = new Dictionary<OntologyStandardType, string>
+        {
+            {OntologyStandardType.rdf, "http://www.w3.org/2001/XMLSchema#"},
+            {OntologyStandardType.xsd, "http://www.w3.org/1999/02/22-rdf-syntax-ns#"},
+            {OntologyStandardType.rdfs, "http://www.w3.org/2000/01/rdf-schema#"},
+            {OntologyStandardType.owl, "http://www.w3.org/2002/07/owl#"}
+        };
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
         public static Dictionary<string, OntologyPropertyType> OntologyPropertyTypes = new Dictionary<string, OntologyPropertyType>()
         {
             {"ObjectProperty",OntologyPropertyType.ObjectProperty},

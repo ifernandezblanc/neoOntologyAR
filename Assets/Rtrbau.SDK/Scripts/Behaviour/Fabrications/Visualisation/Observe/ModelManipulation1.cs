@@ -61,7 +61,7 @@ namespace Rtrbau
         {
             if (fabricationText == null || fabricationSeenPanel == null || lineMaterial == null || modelMaterial == null)
             {
-                throw new ArgumentException("ModelManipulation1 script requires some prefabs to work.");
+                throw new ArgumentException("ModelManipulation1::Start: script requires some prefabs to work.");
             }
         }
 
@@ -135,7 +135,7 @@ namespace Rtrbau
                 component = visualiser.transform.parent.gameObject.GetComponent<AssetManager>().FindAssetComponentManipulator(name);
 
                 // Update fabrication text with component name
-                string note = attribute.attributeName.name + ": " + name;
+                string note = attribute.attributeName.Name() + ": " + name;
                 fabricationText.text = note;
                 // Debug.Log("ModelManipulation1: " + note);
                 // AddTextPanel(note);
@@ -147,7 +147,7 @@ namespace Rtrbau
             }
             else
             {
-                throw new ArgumentException(data.fabricationName + " cannot implement: " + attribute.attributeName + " received.");
+                throw new ArgumentException(data.fabricationName.ToString() + "::InferFromText: cannot implement attribute received.");
             }
         }
 

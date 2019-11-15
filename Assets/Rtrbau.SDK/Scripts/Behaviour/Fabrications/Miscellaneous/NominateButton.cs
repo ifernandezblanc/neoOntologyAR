@@ -22,7 +22,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Microsoft.MixedReality.Toolkit.UI;
+using System.IO;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -30,30 +30,36 @@ namespace Rtrbau
     public class NominateButton : MonoBehaviour, IVisualisable
     {
         #region INITIALISATION_VARIABLES
-        public Action<OntologyEntity> nominate;
+        public Action<OntologyEntity, OntologyEntity> nominate;
         public OntologyEntity individual;
+        public OntologyElement range;
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
+        public JsonClassProperties rangeProperties;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
         public TextMeshPro buttonText;
         public MeshRenderer seenPanel;
         public MeshRenderer reportedPanel;
+        public GameObject recordButton;
+        public TextMeshProUGUI recordButtonText;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
         private bool buttonCreated;
+        private bool recordableNominate;
         #endregion CLASS_EVENTS
 
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (buttonText == null || seenPanel == null || reportedPanel == null)
+            if (buttonText == null || seenPanel == null || reportedPanel == null || recordButton == null || recordButtonText == null)
             {
                 throw new ArgumentException("NominateButton::Start: Script requires some prefabs to work.");
             }
+            else { recordButton.SetActive(false); }
         }
 
         void OnDestroy() { DestroyIt(); }
@@ -83,28 +89,97 @@ namespace Rtrbau
 
         #region CLASS_METHODS
         #region PRIVATE
+        void DownloadRangeProperties(OntologyElement rangeElement)
+        {
+            // Stop range class download
+            LoaderEvents.StopListening(range.EventName(), DownloadRangeProperties);
 
+            if (File.Exists(range.FilePath()))
+            {
+                string jsonFile = File.ReadAllText(range.FilePath());
+
+                rangeProperties = JsonUtility.FromJson<JsonClassProperties>(jsonFile);
+                // If range properties are zero, then activate nominate record button
+                if (rangeProperties.ontProperties.Count == 0)
+                {
+                    // Only if the nominate name is new
+                    if (individual.Name().Contains(Parser.ParseNamingNew())) { LoadButton(true); }
+                    else { LoadButton(false); }
+                }
+                else { LoadButton(false); }
+            }
+            else
+            {
+                Debug.LogError("NominateButton::DownloadedClass: File not found: " + range.FilePath());
+            }
+        }
+
+        void LoadButton(bool recordable)
+        {
+            if (recordable == false)
+            {
+                // Show individual name the button refers to
+                buttonText.text = individual.Name();
+                // Assign button as created
+                buttonCreated = true;
+                // Assig nominate as non recordable
+                recordableNominate = false;
+            }
+            else
+            {
+                // Show individual name the button refers to
+                buttonText.text = individual.Name();
+                // Assign button as created
+                buttonCreated = true;
+                // Assign nominate as recordable
+                recordableNominate = true;
+                // Activate record button
+                recordButton.SetActive(true);
+            }
+        }
         #endregion PRIVATE
 
         #region PUBLIC
-        public void Initialise(Action<OntologyEntity> nominateIndividual, OntologyEntity relationshipValue, OntologyEntity relationshipRange)
+        public void Initialise(Action<OntologyEntity, OntologyEntity> nominateIndividual, OntologyEntity relationshipValue, OntologyEntity relationshipRange)
         {
             // Assign button variables
             nominate = nominateIndividual;
             individual = relationshipValue;
-            // Show individual name the button refers to
-            buttonText.text = individual.name;
-            // Assign button as created
-            buttonCreated = true;
+            // To optimise speed, only check range if nominate is new
+            if (individual.Name().Contains(Parser.ParseNamingNew()))
+            {
+                // If nominated individual is new, then download class
+                range = new OntologyElement(relationshipRange.URI(), OntologyElementType.ClassProperties);
+                // Start range class download
+                LoaderEvents.StartListening(range.EventName(), DownloadRangeProperties);
+                Loader.instance.StartOntElementDownload(range);
+            }
+            else
+            {
+                // Otherwise load button as non recordable
+                LoadButton(false);
+            }
         }
 
         public void NominateIndividual()
         {
-            if (buttonCreated == true)
+            if (buttonCreated == true && recordableNominate == false)
             {
-                // Trigger the nominate individual action for this button
-                nominate.Invoke(individual);
+                // Trigger the nominate individual action for this button with new individual as new
+                nominate.Invoke(individual, null);
             }
+            else if (buttonCreated == true && recordableNominate == true)
+            {
+                if (recordButtonText != null)
+                {
+                    // Create new individual entity to nominate
+                    OntologyEntity newIndividual = new OntologyEntity(individual.Ontology().URI() + recordButtonText.text);
+                    // Trigger the nominate individual action for this button
+                    nominate.Invoke(individual, newIndividual);
+                }
+                else { }
+            }
+            else { }
         }
 
         public void ReportMaterial(Material material)
@@ -115,6 +190,18 @@ namespace Rtrbau
         public void SeenMaterial(Material material)
         {
             seenPanel.material = material;
+        }
+
+        public void ActivateRecordButton()
+        {
+            if (buttonCreated == true)
+            {
+                if (recordableNominate == true)
+                {
+                    if (recordButton.activeSelf == false) { recordButton.SetActive(true); }
+                    else { recordButton.SetActive(false); }
+                }
+            }
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS

@@ -125,21 +125,21 @@ namespace Rtrbau
             {
                 // Add text for attributes name
                 string attributeName = Parser.ParseURI(attribute.attributeValue, '#', RtrbauParser.post);
-                fabricationText.text = attribute.attributeName.name + ":";
+                fabricationText.text = attribute.attributeName.Name() + ":";
                 // Find icon that retrieves value
                 // iconName = Libraries.IconLibrary.Find(x => x.Contains(attribute.attributeValue));
                 iconName = Libraries.IconLibrary.Find(x => attribute.attributeValue.Contains(x));
                 string iconPath = "Rtrbau/Icons/" + iconName;
 
                 
-                fabricationText.text = attribute.attributeName.name + ": " + attribute.attributeValue;
+                fabricationText.text = attribute.attributeName.Name() + ": " + attribute.attributeValue;
                 nextIndividual = attribute.attributeValue;
 
                 relationshipAttribute = new OntologyEntity(attribute.attributeName.URI());
             }
             else
             {
-                throw new ArgumentException(data.fabricationName + " cannot implement: " + attribute.attributeName + " received.");
+                throw new ArgumentException(data.fabricationName.ToString() + "::InferFromText: cannot implement attribute received.");
             }
         }
 
@@ -166,13 +166,13 @@ namespace Rtrbau
                 // If so update line renderer, otherwise load new RtrbauElement
                 if (nextElement != null)
                 {
-                    Debug.Log("TextButtonTap1::OnNextVisualisation: element " + nextElement.name + " already loaded");
+                    Debug.Log("IconButtonTap1::OnNextVisualisation: element " + nextElement.name + " already loaded");
                     // Update line renderer
                     element.gameObject.GetComponent<ElementsLine>().UpdateLineEnd(nextElement);
                 }
                 else
                 {
-                    Debug.Log("TextButtonTap1::OnNextVisualisation: load new RtrbauElement for " + individual.entity.name);
+                    Debug.Log("IconButtonTap1::OnNextVisualisation: load new RtrbauElement for " + individual.entity.Name());
                     // Modify parent RtrbauElement in expectance of a new RtrbauElement
                     element.GetComponent<ElementConsult>().ModifyMaterial(fabricationSeenMaterial);
                     // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load

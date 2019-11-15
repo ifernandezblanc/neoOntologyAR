@@ -218,7 +218,7 @@ namespace Rtrbau
         /// </summary>
         void NominatedIndividual(OntologyEntity entity)
         {
-            Debug.Log("PanelClassIndividuals::NominatedIndividual: individual selected is " + entity.name);
+            Debug.Log("PanelClassIndividuals::NominatedIndividual: individual selected is " + entity.Name());
 
             // Report individual selected: InputIntoReport()
             Reporter.instance.ReportElement(entity);

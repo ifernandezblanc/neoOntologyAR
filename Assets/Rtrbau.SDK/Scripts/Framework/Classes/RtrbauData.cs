@@ -149,25 +149,28 @@ namespace Rtrbau
                                 OntologyEntity attributeType;
                                 RtrbauFabricationType fabricationType;
 
+                                Debug.Log("RtrbauData::RtrbauElement::Constructor: component class is: " + Rtrbauer.instance.component.URI());
+                                Debug.Log("RtrbauData::RtrbauElement::Constructor: attribute class is: " + classAttribute.ontRange);
+
                                 // When component distance = 0, then assign individual as obj file
-                                if (classAttribute.ontRange == Rtrbauer.instance.component.componentURI)
+                                if (classAttribute.ontRange == Rtrbauer.instance.component.URI())
                                 {
                                     OntologyEntity individualValue = new OntologyEntity(individualAttribute.ontValue);
                                     // Changed way in which components are found in the scene
                                     // It is dependent on visualiser being unique in the scene
                                     // UPG: to adapt for when visualiser won't be unique
-                                    string componentName = assetManager.FindAssetComponent(individualValue.name);
-                                    Debug.Log("RtrbauData::RtrbauElement: " + componentName);
-                                    Debug.Log("RtrbauData::RtrbauElement: " + individualValue.name);
+                                    string componentName = assetManager.FindAssetComponent(individualValue.Name());
+                                    Debug.Log("RtrbauData::RtrbauElement: componentName is" + componentName);
+                                    Debug.Log("RtrbauData::RtrbauElement: individualValue is" + individualValue.Name());
                                     // But only when the component is found in the scene
                                     // In that case, it is assumed the obj file was taken from the current server
                                     // Otherwise, it is already known the attribute is of object type: so fabrication type should be inspect
                                     // if (GameObject.Find(individualValue.name) != null)
-                                    if (componentName == individualValue.name)
+                                    if (componentName == individualValue.Name())
                                     {
-                                        attributeRange = new OntologyEntity(Rtrbauer.instance.uris.XSD + "#anyURI");
-                                        attributeValue = Rtrbauer.instance.server.serverURI + "api/files/obj/" + individualValue.name + ".obj";
-                                        attributeType = new OntologyEntity(Rtrbauer.instance.uris.OWL + "#DatatypeProperty");
+                                        attributeRange = new OntologyEntity(Rtrbauer.instance.xsd.URI() + "anyURI");
+                                        attributeValue = Rtrbauer.instance.server.AbsoluteUri + "api/files/obj/" + individualValue.Name() + ".obj";
+                                        attributeType = new OntologyEntity(Rtrbauer.instance.owl.URI() + "DatatypeProperty");
                                         fabricationType = RtrbauFabricationType.Observe;
                                     }
                                     else
@@ -211,10 +214,10 @@ namespace Rtrbau
                                         // IMPORTANT: this changes the attribute range to string to allow icon creation
                                         // However, this only applies to consult elements
                                         // Report elements may require a new consult type
-                                        attributeRange = new OntologyEntity(Rtrbauer.instance.uris.XSD + "#string");
+                                        attributeRange = new OntologyEntity(Rtrbauer.instance.xsd.URI() + "string");
                                         // attributeRange = new OntologyEntity(classAttribute.ontRange);
                                         attributeValue = Parser.ParseURI(individualAttribute.ontValue, '#', RtrbauParser.post);
-                                        attributeType = new OntologyEntity(Rtrbauer.instance.uris.OWL + "#DatatypeProperty");
+                                        attributeType = new OntologyEntity(Rtrbauer.instance.owl.URI() + "DatatypeProperty");
                                         fabricationType = RtrbauFabricationType.Observe;
                                     }
                                 }
@@ -224,7 +227,7 @@ namespace Rtrbau
                                 }
 
                                 elementAttributes.Add(new RtrbauAttribute(attributeName, attributeRange, attributeValue, attributeType, fabricationType));
-                                Debug.Log("RtrbauData::RtrbauElement: " + attributeName.name + " " + attributeRange.name + " " + attributeValue + " " + attributeType);
+                                Debug.Log("RtrbauData::RtrbauElement: " + attributeName.Name() + " " + attributeRange.Name() + " " + attributeValue + " " + attributeType.Name());
                             }
                             else
                             {
@@ -270,7 +273,7 @@ namespace Rtrbau
                     elementClass = new OntologyEntity(classElement.ontClass);
                     elementAttributes = new List<RtrbauAttribute>();
 
-                    Debug.Log("RtrbauData::RtrbauElement: parsed individual name is " + elementName.name + " from class " + elementClass.name);
+                    Debug.Log("RtrbauData::RtrbauElement: parsed individual name is " + elementName.Name() + " from class " + elementClass.Name());
 
                     // UPG: modify RtrbauElement to ensure aligns with nominating components as models if found on the scene
                     foreach (JsonProperty classAttribute in classElement.ontProperties)
@@ -309,7 +312,7 @@ namespace Rtrbau
                         {
                             // Assign attribute fabrication type and re-assign other features when necessary
                             // When attribute class coincides when component class, then assign individual as obj file
-                            if (classAttribute.ontRange == Rtrbauer.instance.component.componentURI)
+                            if (classAttribute.ontRange == Rtrbauer.instance.component.URI())
                             {
                                 OntologyEntity exampleValue = new OntologyEntity(exampleAttributeValue.ontValue);
                                 // For ElementReport any component can be accepted as an example value
@@ -317,9 +320,9 @@ namespace Rtrbau
                                 // Only scene-found models would be selectable, so server location is assumed
                                 // UPG: to find a better way to automatically generate obj files for model record
                                 // UPG: when found, add a secondary fabrication for model nomination
-                                attributeRange = new OntologyEntity(Rtrbauer.instance.uris.XSD + "#anyURI");
-                                attributeValue = Rtrbauer.instance.server.serverURI + "api/files/obj/" + exampleValue.name + ".obj";
-                                attributeType = new OntologyEntity(Rtrbauer.instance.uris.OWL + "#DatatypeProperty");
+                                attributeRange = new OntologyEntity(Rtrbauer.instance.xsd.URI() + "anyURI");
+                                attributeValue = Rtrbauer.instance.server.AbsoluteUri + "api/files/obj/" + exampleValue.Name() + ".obj";
+                                attributeType = new OntologyEntity(Rtrbauer.instance.owl.URI() + "DatatypeProperty");
                                 fabricationType = RtrbauFabricationType.Record;
                             }
                             else if (classAttribute.ontType.Contains(OntologyPropertyType.DatatypeProperty.ToString()))
@@ -763,7 +766,7 @@ namespace Rtrbau
         {
             foreach (KeyValuePair<OntologyElement, GameObject> element in locationElements)
             {
-                Debug.Log("AssetVisualiser::" + functionName + "::RtrbauData::DebugLocationElements: " + locationType.ToString() + " location locates " + element.Key.entity.name);
+                Debug.Log("AssetVisualiser::" + functionName + "::RtrbauData::DebugLocationElements: " + locationType.ToString() + " location locates " + element.Key.entity.Name());
             }
         }
         #endregion PUBLIC
@@ -1039,7 +1042,7 @@ namespace Rtrbau
 
                     foreach (DataFacet facet in formatFacets)
                     {
-                        if (facet.facetRules.EvaluateFacet(attribute.attributeName.name, attribute.attributeRange.name, attribute.attributeValue, attribute.attributeType.name))
+                        if (facet.facetRules.EvaluateFacet(attribute.attributeName.Name(), attribute.attributeRange.Name(), attribute.attributeValue, attribute.attributeType.Name()))
                         {
                             // assignableFacets.Add(new KeyValuePair<KeyValuePair<RtrbauFacetForm, DataFacetRules>, RtrbauAttribute>(new KeyValuePair<RtrbauFacetForm, DataFacetRules>(facet.Key, facet.Value), attribute));
                             assignableAttributes.Add(new KeyValuePair<DataFacet, RtrbauAttribute>(facet, attribute));

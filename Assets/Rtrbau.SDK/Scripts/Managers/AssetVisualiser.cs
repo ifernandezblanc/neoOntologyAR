@@ -462,7 +462,7 @@ namespace Rtrbau
                     // Remove element from loadedElements
                     loadedElements.RemoveAt(elementIndex);
                     // Element unloaded and destroyed, return true
-                    DebugElements("LocateElement_" + loadedElements[elementIndex].Item1.entity.name);
+                    DebugElements("LocateElement_" + loadedElements[elementIndex].Item1.entity.Name());
                     return true;
                 }
                 else { throw new ArgumentException("AssetVisualiser::UnloadElement: Element not created/loaded yet."); }
@@ -487,9 +487,9 @@ namespace Rtrbau
         /// <param name="type"><see cref="RtrbauElementType"/> that determines the type of element to be created</param>
         void CreateElement(OntologyElement elementIndividual, OntologyElement elementClass, RtrbauElementType type)
         {
-            Debug.Log("AssetVisualiser::LoadElement: element individual is: " + elementIndividual.entity.name);
-            Debug.Log("AssetVisualiser::LoadElement: element class is: " + elementClass.entity.name);
-            DebugElements("LocateElement_" + elementIndividual.entity.name);
+            Debug.Log("AssetVisualiser::LoadElement: element individual is: " + elementIndividual.entity.Name());
+            Debug.Log("AssetVisualiser::LoadElement: element class is: " + elementClass.entity.Name());
+            DebugElements("LocateElement_" + elementIndividual.entity.Name());
 
             // Identify IElementable game object thar represents the element to load
             int elementIndex = loadedElements.FindIndex(x => x.Item1.EqualElement(elementIndividual));
@@ -509,7 +509,7 @@ namespace Rtrbau
                     // UPG: create an IElementable function to initialise
                     elementObject.GetComponent<ElementConsult>().Initialise(this, elementIndividual, elementClass, lastElement);
                     
-                    Debug.Log("AssetVisualiser::LoadElement: Element " + elementIndividual.entity.name + " loaded.");
+                    Debug.Log("AssetVisualiser::LoadElement: Element " + elementIndividual.entity.Name() + " loaded.");
                 }
                 else if (type == RtrbauElementType.Report)
                 {
@@ -523,7 +523,7 @@ namespace Rtrbau
                     // UPG: create an IElementable function to initialise
                     elementObject.GetComponent<ElementReport>().Initialise(this, elementIndividual, elementClass, lastElement);
 
-                    Debug.Log("AssetVisualiser::LoadElement: Element " + elementIndividual.entity.name + " loaded.");
+                    Debug.Log("AssetVisualiser::LoadElement: Element " + elementIndividual.entity.Name() + " loaded.");
                 }
                 else
                 {
@@ -533,11 +533,11 @@ namespace Rtrbau
             else
             {
                 // UPG: ErrorHandling
-                Debug.Log("AssetVisualiser::LoadElement: IElementable for " + elementIndividual.entity.name + "loaded already");
+                Debug.Log("AssetVisualiser::LoadElement: IElementable for " + elementIndividual.entity.Name() + "loaded already");
             }
 
             Debug.Log("AssetVisualiser::LoadElement: Number of elements loaded is: " + loadedElements.Count());
-            DebugElements("LocateElement_" + elementIndividual.entity.name);
+            DebugElements("LocateElement_" + elementIndividual.entity.Name());
         }
 
         /// <summary>
@@ -550,7 +550,7 @@ namespace Rtrbau
         {
             int elementIndex = loadedElements.FindIndex(x => x.Item1.EqualElement(elementIndividual));
 
-            DebugElements("LocateElement_" + elementIndividual.entity.name);
+            DebugElements("LocateElement_" + elementIndividual.entity.Name());
 
             if (elementIndex != -1)
             {
@@ -640,7 +640,7 @@ namespace Rtrbau
             }
             else { Debug.Log("AssetVisualiser::LocateElement: Element not loaded yet."); }
 
-            DebugElements("LocateElement_" + elementIndividual.entity.name);
+            DebugElements("LocateElement_" + elementIndividual.entity.Name());
         }
         #endregion EVENTS
         #endregion CLASS_METHODS
@@ -650,7 +650,7 @@ namespace Rtrbau
         {
             foreach (Tuple<OntologyElement, OntologyElement, GameObject, RtrbauElementLocation> element in loadedElements)
             {
-                Debug.Log("AssetVisualiser::" + functionName + "::DebugElements: loaded element is " + element.Item1.entity.name);
+                Debug.Log("AssetVisualiser::" + functionName + "::DebugElements: loaded element is " + element.Item1.entity.Name());
             }
 
             primaryElements.DebugLocationElements(functionName);

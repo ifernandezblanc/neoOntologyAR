@@ -11,18 +11,20 @@ namespace Rtrbau
         public TextMeshProUGUI label;
         public OntologyEntity fabricatedEntity;
 
+        // UPG: MERGE WITH BUTTONNOMINATE
+
         public void Initialise(OntologyEntity entity)
         {
             fabricatedEntity = entity;
 
             // To comply with ontologies visualisation which do not have name, only ontology fields.
-            if (fabricatedEntity.name != "")
+            if (fabricatedEntity.Name() != null)
             {
-                label.text = fabricatedEntity.name;
+                label.text = fabricatedEntity.Name();
             }
             else
             {
-                label.text = fabricatedEntity.ontology;
+                label.text = fabricatedEntity.Ontology().Name();
             }
         }
 

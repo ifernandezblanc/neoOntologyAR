@@ -119,7 +119,7 @@ namespace Rtrbau
             else
             {
                 // Declare paneller initialisation
-                string serverconfig = Rtrbauer.instance.ontology.ontologyURI.AbsoluteUri + "/" + "server" + "#" + "connected";
+                string serverconfig = Rtrbauer.instance.server.AbsoluteUri + "server#connected";
                 OntologyEntity configuration = new OntologyEntity(serverconfig);
                 PanellerEvents.TriggerEvent("LoadConfiguration", configuration);
             }
@@ -133,7 +133,7 @@ namespace Rtrbau
 
             // Initialise fabrication
             panelConfiguration = Instantiate(configurationPanel, this.transform);
-            panelConfiguration.GetComponent<PanelConfiguration>().Initialise(Rtrbauer.instance.server.serverURI.ToString());
+            panelConfiguration.GetComponent<PanelConfiguration>().Initialise();
         }
 
         public void LoadAssets(OntologyEntity entity)
@@ -192,7 +192,7 @@ namespace Rtrbau
 
             // Declare initialisation variables
             // Remember that first trigger to subclasses comes from class with same name as ontology
-            OntologyEntity ontologyEntity = new OntologyEntity(entity.URI() + entity.ontology);
+            OntologyEntity ontologyEntity = new OntologyEntity(entity.URI() + entity.Ontology().Name());
             OntologyElement ontologyClasses = new OntologyElement(ontologyEntity.URI(), OntologyElementType.ClassSubclasses);
 
             // Initialise fabrication

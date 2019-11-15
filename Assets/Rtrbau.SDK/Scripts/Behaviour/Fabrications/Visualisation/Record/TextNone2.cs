@@ -10,7 +10,7 @@ Copyright (c) 2019 Babcock International Group. All Rights Reserved.
 All Rights Reserved.
 Confidential and Proprietary - Protected under copyright and other laws.
 
-Date: 24/08/2019
+Date: 15/11/2019
 ==============================================================================*/
 
 /// <summary>
@@ -30,7 +30,7 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
-    public class TextButtonTap1 : MonoBehaviour, IFabricationable, IVisualisable
+    public class TextNone2 : MonoBehaviour, IFabricationable, IVisualisable
     {
         #region INITIALISATION_VARIABLES
         public AssetVisualiser visualiser;
@@ -47,20 +47,19 @@ namespace Rtrbau
 
         #region GAMEOBJECT_PREFABS
         public TextMeshPro fabricationText;
-        public MeshRenderer fabricationSeenPanel;
-        public Material fabricationSeenMaterial;
+        public MeshRenderer fabricationPanel;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
-
+        private bool fabricationCreated;
         #endregion CLASS_EVENTS
 
-        #region MONOBEHVAIOUR_METHODS
+        #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null)
+            if (fabricationText == null || fabricationPanel == null)
             {
-                throw new ArgumentException("TextButtonTap1 script requires some prefabs to work.");
+                throw new ArgumentException("TextNone2::Start: Script requires some prefabs to work.");
             }
         }
 
@@ -79,16 +78,15 @@ namespace Rtrbau
         /// </summary>
         /// <param name="assetVisualiser"></param>
         /// <param name="fabrication"></param>
-        /// <param name="scale"></param>
+        /// <param name="elementParent"></param>
+        /// <param name="fabricationParent"></param>
         public void Initialise(AssetVisualiser assetVisualiser, RtrbauFabrication fabrication, Transform elementParent, Transform fabricationParent)
         {
-            // Is location necessary?
-            // Maybe change inferfromtext by initialise in IFabricationable?
             visualiser = assetVisualiser;
             data = fabrication;
             element = elementParent;
             scale = fabricationParent;
-            // loc = location;
+            fabricationCreated = false;
             Scale();
             InferFromText();
         }
@@ -98,8 +96,6 @@ namespace Rtrbau
         /// </summary>
         public void Scale()
         {
-            // Debug.Log("Root: " + this.transform.root.name);
-
             float sX = this.transform.localScale.x / scale.transform.localScale.x;
             float sY = this.transform.localScale.y / scale.transform.localScale.y;
             float sZ = this.transform.localScale.z / scale.transform.localScale.z;
@@ -112,17 +108,18 @@ namespace Rtrbau
         /// </summary>
         public void InferFromText()
         {
-            DataFacet textfacet2 = DataFormats.TextButtonTap1.formatFacets[0];
+            DataFacet textfacet5 = DataFormats.TextNone2.formatFacets[0];
             RtrbauAttribute attribute;
 
             // Check data received meets fabrication requirements
-            if (data.fabricationData.TryGetValue(textfacet2, out attribute))
+            if (data.fabricationData.TryGetValue(textfacet5, out attribute))
             {
                 fabricationText.text = attribute.attributeName.Name();
+                fabricationCreated = true;
             }
             else
             {
-                throw new ArgumentException(data.fabricationName + " cannot implement: " + attribute.attributeName + " received.");
+                throw new ArgumentException(data.fabricationName.ToString() + "::InferFromText: cannot implement attribute received.");
             }
         }
 
@@ -131,53 +128,38 @@ namespace Rtrbau
         /// </summary>
         public void OnNextVisualisation()
         {
-            DataFacet textfacet2 = DataFormats.TextButtonTap1.formatFacets[0];
-            RtrbauAttribute attribute;
+            //DataFacet textfacet0 = DataFormats.DefaultRecord.formatFacets[0];
+            //RtrbauAttribute attribute;
 
-            // Check data received meets fabrication requirements
-            if (data.fabricationData.TryGetValue(textfacet2, out attribute))
-            {
-                // Generate ontology entity to report
-                OntologyEntity relationship = new OntologyEntity(attribute.attributeName.URI());
-                // Report relationship attribute to load next RtrbauElement
-                Reporter.instance.ReportElement(relationship);
-                // Generate OntologyElement(s) to load next RtrbauElement
-                OntologyElement individual = new OntologyElement(attribute.attributeValue, OntologyElementType.IndividualProperties);
-                OntologyElement individualClass = new OntologyElement(attribute.attributeRange.URI(), OntologyElementType.ClassProperties);
-                // Find if appointed element has already been loaded
-                GameObject nextElement = visualiser.FindElement(individual);
-                // If so update line renderer, otherwise load new RtrbauElement
-                if (nextElement != null)
-                {
-                    Debug.Log("TextButtonTap1::OnNextVisualisation: element " + nextElement.name + " already loaded");
-                    // Update line renderer
-                    element.gameObject.GetComponent<ElementsLine>().UpdateLineEnd(nextElement);
-                }
-                else
-                {
-                    Debug.Log("TextButtonTap1::OnNextVisualisation: load new RtrbauElement for " + individual.entity.Name());
-                    // Modify parent RtrbauElement in expectance of a new RtrbauElement
-                    element.GetComponent<ElementConsult>().ModifyMaterial(fabricationSeenMaterial);
-                    // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load
-                    RtrbauerEvents.TriggerEvent("AssetVisualiser_CreateElement", individual, individualClass, Rtrbauer.instance.user.procedure);
-                }
-            }
-            else
-            {
-                throw new ArgumentException(data.fabricationName.ToString() + "::InferFromText: cannot implement attribute received.");
-            }
+            //// Check data received meets fabrication requirements
+            //if (data.fabricationData.TryGetValue(textfacet0, out attribute))
+            //{
+            //    // Update attribute value according to what user recorded
+            //    // This assigns to RtrbauElement from ElementReport through RtrbauFabrication
+            //    // TextMeshPro - InputField creates an extra child that is assigned
+            //    attribute.attributeValue = recordButton.transform.GetChild(0).GetChild(0).GetChild(1).GetChild(0).GetChild(0).GetChild(2).GetComponent<TextMeshProUGUI>().text;
+            //    // Change button colour for user confirmation
+            //    fabricationReportedPanel.material = fabricationReportedMaterial;
+            //    // Check if all attribute values have been recorded
+            //    // If true, then ElementReport will input reported element into report
+            //    // If true, then ElementReport will change colour to reported
+            //    element.gameObject.GetComponent<ElementReport>().CheckAttributesReported();
+            //    // Deactivate record button
+            //    DeactivateRecords();
+            //}
+            //else { }
         }
         #endregion IFABRICATIONABLE_METHODS
 
         #region IVISUALISABLE_METHODS
         public void LocateIt()
         {
-            /// Fabrication location is managed by <see cref="ElementConsult"/>.
+            /// Fabrication location is managed by <see cref="ElementReport"/>.
         }
 
         public void ActivateIt()
         {
-            /// Fabrication activation is managed by <see cref="ElementConsult"/>.
+            /// Fabrication activation is managed by <see cref="ElementReport"/>.
         }
 
         public void DestroyIt()
@@ -187,11 +169,47 @@ namespace Rtrbau
 
         public void ModifyMaterial(Material material)
         {
-            fabricationSeenPanel.material = material;
+            //fabricationSeenPanel.material = material;
         }
         #endregion IVISUALISABLE_METHODS
 
+        #region IRECORDABLE_METHODS
+        /// <summary>
+        /// Activates record buttons when attribute name button is <see cref="OnFocus"/>.
+        /// It also triggers deactivation of other record buttons fabrications.
+        /// </summary>
+        public void ActivateRecords()
+        {
+            //// Call ElementReport to deactivate buttons from other record fabrications
+            //element.GetComponent<ElementReport>().DeactivateRecords(this.gameObject);
+
+            //if (fabricationCreated == true && recordButton.activeSelf == false)
+            //{
+            //    recordButton.SetActive(true);
+            //}
+            //else { }
+        }
+
+        /// <summary>
+        /// Deactivates record buttons.
+        /// It is also called by <see cref="ElementReport"/> to deactivate record buttons when others are to become active.
+        /// </summary>
+        public void DeactivateRecords()
+        {
+            //if (fabricationCreated == true && recordButton.activeSelf == true)
+            //{
+            //    recordButton.SetActive(false);
+            //}
+            //else { }
+        }
+        #endregion IRECORDABLE_METHODS
+
         #region CLASS_METHODS
+        #region PRIVATE
+        #endregion PRIVATE
+
+        #region PUBLIC
+        #endregion PUBLIC
         #endregion CLASS_METHODS
     }
 }

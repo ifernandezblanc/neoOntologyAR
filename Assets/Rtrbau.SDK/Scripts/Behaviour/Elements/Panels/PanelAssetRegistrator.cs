@@ -120,7 +120,7 @@ namespace Rtrbau
             {
                 assetEntity = asset;
 
-                assetModel = new GameObject(assetEntity.name);
+                assetModel = new GameObject(assetEntity.Name());
 
                 assetDatasetFilesDownloaded = 0;
                 assetRegistratorObjectsLoaded = 0;
@@ -142,9 +142,9 @@ namespace Rtrbau
         {
             Debug.Log("AssetRegistrator: DownloadElement: Started download");
 
-            assetModelOBJ = new RtrbauFile(assetEntity.name, "obj");
-            assetTargetXML = new RtrbauFile(assetEntity.name, "xml");
-            assetTargetDAT = new RtrbauFile(assetEntity.name, "dat");
+            assetModelOBJ = new RtrbauFile(assetEntity.Name(), "obj");
+            assetTargetXML = new RtrbauFile(assetEntity.Name(), "xml");
+            assetTargetDAT = new RtrbauFile(assetEntity.Name(), "dat");
 
             LoaderEvents.StartListening(assetModelOBJ.EventName(), DownloadedAssetModel);
             Loader.instance.StartFileDownload(assetModelOBJ);
@@ -230,7 +230,7 @@ namespace Rtrbau
             Tracker.instance.TerminateVuforia();
             
             // Move to next panel
-            string ontologiesURI = Rtrbauer.instance.ontology.ontologyURI.AbsoluteUri + "/" + "ontologies#ontologies";
+            string ontologiesURI = Rtrbauer.instance.server.AbsoluteUri + "ontologies#ontologies";
             OntologyEntity ontologies = new OntologyEntity(ontologiesURI);
             PanellerEvents.TriggerEvent("LoadOperationOntologies", ontologies);
 

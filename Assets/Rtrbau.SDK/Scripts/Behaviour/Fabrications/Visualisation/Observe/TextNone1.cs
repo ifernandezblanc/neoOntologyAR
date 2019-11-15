@@ -57,7 +57,7 @@ namespace Rtrbau
         {
             if (fabricationText == null || fabricationSeenPanel == null)
             {
-                throw new ArgumentException("TextNone1 script requires some prefabs to work.");
+                throw new ArgumentException("TextNone1::Start: script requires some prefabs to work.");
             }
         }
 
@@ -120,7 +120,7 @@ namespace Rtrbau
             }
             else
             {
-                throw new ArgumentException(data.fabricationName + " cannot implement: " + attribute.attributeName + " recieved.");
+                throw new ArgumentException(data.fabricationName.ToString() + "::InferFromText: cannot implement attribute received.");
             }
         }
 

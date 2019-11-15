@@ -179,7 +179,7 @@ namespace Rtrbau
 
             foreach (JsonOntology ontology in ontologies.ontOntologies)
             {
-                OntologyEntity ontologyEntity = new OntologyEntity(ontology.ontUri);
+                OntologyEntity ontologyEntity = new OntologyEntity(new Ontology(ontology.ontUri), null);
                 GameObject ontologyFabrication = Instantiate(fabricationPrefab, fabricationLocator.transform);
 
                 Debug.Log(ontologyEntity.Entity());
@@ -187,7 +187,7 @@ namespace Rtrbau
 
                 PanellerEvents.StartListening(ontologyEntity.Entity(), NominatedOntology);
 
-                // Debug.Log("CreateFabrications: Initialised button " + ontologyEntity.ontology);
+                Debug.Log("PanelOntologies::CreateFabrications: Initialised button for " + ontologyEntity.Ontology().Name());
             }
 
             fabricationLocator.GetComponent<GridObjectCollection>().UpdateCollection();
@@ -223,9 +223,7 @@ namespace Rtrbau
         void NominatedOntology(OntologyEntity entity)
         {
             // Confirm ontology chosen through log
-            Debug.Log("PanelOntologies::NominatedOntology: Button Clicked " + entity.ontology);
-            Debug.Log("PanelOntologies::NominatedOntology: Button Clicked " + DateTime.Now);
-
+            Debug.Log("PanelOntologies::NominatedOntology: Ontology selected " + entity.Ontology().Name());
             // Report ontology selected: InputIntoReport()
             Reporter.instance.ReportElement(entity);
             // Move to next panel

@@ -186,7 +186,7 @@ namespace Rtrbau
                     float positionUP = model.GetComponent<MeshRenderer>().bounds.size.y;
                     text.transform.localPosition += new Vector3(0, positionUP, 0);
                     // Provide name
-                    text.transform.GetChild(1).GetComponent<TextMeshPro>().text = facet.Value.attributeName.name + ": " + componentName;
+                    text.transform.GetChild(1).GetComponent<TextMeshPro>().text = facet.Value.attributeName.Name() + ": " + componentName;
 
                     // Create Line renderer
                     // Set line widht at 10% of element consult panel
@@ -224,7 +224,7 @@ namespace Rtrbau
                     float positionUP = modelPair.GetComponent<MeshRenderer>().bounds.size.y;
                     textPair.transform.localPosition += new Vector3(0, positionUP, 0);
                     // Provide name
-                    textPair.transform.GetChild(1).GetComponent<TextMeshPro>().text = facet.Value.attributeName.name + ": " + componentName;
+                    textPair.transform.GetChild(1).GetComponent<TextMeshPro>().text = facet.Value.attributeName.Name() + ": " + componentName;
 
                     // Create Line renderer
                     // Set line widht at 10% of element consult panel
@@ -247,7 +247,7 @@ namespace Rtrbau
                 }
                 else
                 {
-                    throw new ArgumentException(data.fabricationName + " cannot implement: " + facet.Value.attributeName + " received.");
+                    throw new ArgumentException(data.fabricationName.ToString() + "::InferFromText: cannot implement attribute received.");
                 }
             }
 

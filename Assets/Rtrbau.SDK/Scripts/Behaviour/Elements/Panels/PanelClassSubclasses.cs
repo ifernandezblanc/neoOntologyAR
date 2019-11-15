@@ -65,9 +65,10 @@ namespace Rtrbau
         #region MONOBEHAVIOUR_METHODS
         void Awake()
         {
-            Debug.Log(classElement.entity.name);
-            Debug.Log("");
+            // OnAwake assign classElement to null
+            classElement = null;
         }
+
         void OnEnable()
         {
             OnSelectedFabrications += LocateElement;
@@ -90,8 +91,13 @@ namespace Rtrbau
         /// </summary>
         public void Initialise(OntologyElement ontElement)
         {
-            // Check if fabrications were there before
-            if (classElement.entity.name != "")
+            // Check if it is the first time the panel is being used
+            if (classElement == null)
+            {
+                // Assign previous class element to be able to go back
+                previousClassElement = ontElement;
+            }
+            else
             {
                 // Assign previous class element to be able to go back
                 previousClassElement = classElement;
@@ -101,11 +107,6 @@ namespace Rtrbau
                     DestroyFabrications();
                     DestroyFabricationListeners();
                 }
-            }
-            else
-            {
-                // Assign previous class element to be able to go back
-                previousClassElement = ontElement;
             }
             
             classElement = ontElement;
@@ -214,7 +215,7 @@ namespace Rtrbau
         /// </summary>
         public void CreateFabrications()
         {
-            Debug.Log("CreateFabrications: Initialising fabrications");
+            Debug.Log("PanelClassSubclasses::CreateFabrications: Initialising fabrications");
 
             foreach (JsonSubclass subclass in subclasses.ontSubclasses)
             {
@@ -228,7 +229,7 @@ namespace Rtrbau
 
                 PanellerEvents.StartListening(subclassEntity.Entity(), NominatedSubclass);
 
-                Debug.Log("CreateFabrications: Initialised button " + subclassEntity.name);
+                Debug.Log("PanelClassSubclasses::CreateFabrications: Initialised button " + subclassEntity.Name());
             }
 
             fabricationLocator.GetComponent<GridObjectCollection>().UpdateCollection();
@@ -253,7 +254,7 @@ namespace Rtrbau
         /// </summary>
         void EvaluateClass (OntologyElement element)
         {
-            Debug.Log("EvaluateClass: class downloaded" + element.entity.name);
+            Debug.Log("PanelClassSubclasses::EvaluateClass: class downloaded" + element.entity.Name());
             LoaderEvents.StopListening(element.EventName(), EvaluateClass);
             EvaluateElement();
         }
@@ -264,7 +265,7 @@ namespace Rtrbau
         /// </summary>
         void NominatedSubclass (OntologyEntity entity)
         {
-            Debug.Log("NominatedSubclass: Button Clicked " + entity.name);
+            Debug.Log("PanelClassSubclasses::NominatedSubclass: Class selected is " + entity.Name());
 
             OntologyElement subclassSubclasses = new OntologyElement(entity.URI(), OntologyElementType.ClassSubclasses);
 
@@ -283,9 +284,6 @@ namespace Rtrbau
             LoaderEvents.StartListening(subclassIndividuals.EventName(), EvaluateSubclassIndividuals);
 
             Loader.instance.StartOntElementDownload(subclassIndividuals);
-
-            // EvaluateNextStep(entity);
-
         }
 
         /// <summary>
@@ -304,20 +302,20 @@ namespace Rtrbau
 
                 subclassSubclasses = JsonUtility.FromJson<JsonClassSubclasses>(File.ReadAllText(element.FilePath()));
 
-                Debug.Log("EvaluateSubclassSubclasses: " + subclassSubclasses.ontClass);
-                Debug.Log("EvaluateSubclassSubclasses: subclasses number " + subclassSubclasses.ontSubclasses.Count);
+                Debug.Log("PanelClassSubclasses::EvaluateSubclassSubclasses: " + subclassSubclasses.ontClass);
+                Debug.Log("PanelClassSubclasses::EvaluateSubclassSubclasses: subclasses number " + subclassSubclasses.ontSubclasses.Count);
 
                 // If the subclass has subclasses, it is assumed the subclass has no properties nor individuals
                 if (subclassSubclasses.ontSubclasses.Count != 0)
                 {
                     subclassHasSubclasses = true;
-                    Debug.Log("EvaluateSubclassSubclasses: has subclasses " + subclassSubclasses.ontClass);
+                    Debug.Log("PanelClassSubclasses::EvaluateSubclassSubclasses: has subclasses " + subclassSubclasses.ontClass);
                 }
                 else
                 {
                     // If it doesn't, then it is necessary to evaluate its properties and individuals
                     subclassHasSubclasses = false;
-                    Debug.Log("EvaluateSubclassSubclasses: has not subclasses " + subclassEvaluation);
+                    Debug.Log("PanelClassSubclasses::EvaluateSubclassSubclasses: has not subclasses " + subclassEvaluation);
                 }
 
                 // Invoke next step evaluation call
@@ -330,7 +328,7 @@ namespace Rtrbau
             }
             else
             {
-                Debug.LogError("Element not found.");
+                Debug.LogError("PanelClassSubclasses::EvaluateSubclassSubclasses: Element not found.");
             }
         }
 
@@ -352,26 +350,26 @@ namespace Rtrbau
 
                 subclassProperties = JsonUtility.FromJson<JsonClassProperties>(File.ReadAllText(element.FilePath()));
 
-                Debug.Log("EvaluateSubclassProperties: " + subclassProperties.ontClass);
-                Debug.Log("EvaluateSubclassProperties: properties number " + subclassProperties.ontProperties.Count);
+                Debug.Log("PanelClassSubclasses::EvaluateSubclassProperties: " + subclassProperties.ontClass);
+                Debug.Log("PanelClassSubclasses::EvaluateSubclassProperties: properties number " + subclassProperties.ontProperties.Count);
 
                 // If the subclass has no properties, then it cannot be neither reported nor consulted
                 if (subclassProperties.ontProperties.Count != 0)
                 {
-                    Debug.Log("EvaluateSubclassProperties: has properties " + element.entity.name);
+                    Debug.Log("PanelClassSubclasses::EvaluateSubclassProperties: has properties " + element.entity.Name());
 
                     subclassHasProperties = true;                    
                 }
                 else
                 {
-                    Debug.Log("EvaluateSubclassProperties: has not properties " + element.entity.name);
+                    Debug.Log("PanelClassSubclasses::EvaluateSubclassProperties: has not properties " + element.entity.Name());
 
                     subclassHasProperties = false;
                 }
 
                 // subclassEvaluation += 1;
 
-                Debug.Log("EvaluateSubclassProperties : " + subclassEvaluation.ToString());
+                Debug.Log("PanelClassSubclasses::EvaluateSubclassProperties : " + subclassEvaluation.ToString());
 
                 if (OnSubclassEvaluated != null)
                 {
@@ -382,7 +380,7 @@ namespace Rtrbau
             }
             else
             {
-                Debug.LogError("Element not found.");
+                Debug.LogError("PanelClassSubclasses::EvaluateSubclassProperties: Element not found.");
             }
 
         }
@@ -402,25 +400,25 @@ namespace Rtrbau
 
                 subclassIndividuals = JsonUtility.FromJson<JsonClassIndividuals>(File.ReadAllText(element.FilePath()));
 
-                Debug.Log("EvaluateSubclassIndividuals: " + subclassIndividuals.ontClass);
-                Debug.Log("EvaluateSubclassIndividuals: individuals number " + subclassIndividuals.ontIndividuals.Count);
+                Debug.Log("PanelClassSubclasses::EvaluateSubclassIndividuals: " + subclassIndividuals.ontClass);
+                Debug.Log("PanelClassSubclasses::EvaluateSubclassIndividuals: individuals number " + subclassIndividuals.ontIndividuals.Count);
 
                 // If the subclass has no inviduals, then it cannot be consulted
                 if (subclassIndividuals.ontIndividuals.Count != 0)
                 {
-                    Debug.Log("EvaluateSubclassIndividuals: has individuals " + element.entity.name);
+                    Debug.Log("PanelClassSubclasses::EvaluateSubclassIndividuals: has individuals " + element.entity.Name());
 
                     subclassHasIndividuals = true;
                 }
                 else
                 {
-                    Debug.Log("EvaluateSubclassIndividuals: has not individuals " + element.entity.name);
+                    Debug.Log("PanelClassSubclasses::EvaluateSubclassIndividuals: has not individuals " + element.entity.Name());
 
                     subclassHasIndividuals = false;
                 }
 
                 // subclassEvaluation += 1;
-                Debug.Log("EvaluateSubclassIndividuals: " + subclassEvaluation);
+                Debug.Log("PanelClassSubclasses::EvaluateSubclassIndividuals: " + subclassEvaluation);
 
                 if (OnSubclassEvaluated != null)
                 {
@@ -432,7 +430,7 @@ namespace Rtrbau
             }
             else
             {
-                Debug.LogError("Element not found.");
+                Debug.LogError("PanelClassSubclasses::EvaluateSubclassIndividual: Element not found.");
             }
 
         }
@@ -443,7 +441,7 @@ namespace Rtrbau
         /// </summary>
         void EvaluateNextStep(OntologyEntity entity)
         {
-            Debug.Log("Evaluate next step on: evaluationInvoke number: " + subclassEvaluation);
+            Debug.Log("PanelClassSubclasses::EvaluateNextStep: invoke number: " + subclassEvaluation);
 
             // Check all 3 evaluations made their invoke to the function
             if (subclassEvaluation == 3)
@@ -451,7 +449,7 @@ namespace Rtrbau
                 // OnSubclassEvaluated = null;
                 subclassEvaluation = 0;
 
-                Debug.Log("Evaluate next step: " + "| " + "subclassHasSubclasses: " + subclassHasSubclasses + " | " + "subclassHasProperties: " + subclassHasProperties + " | " + "subclassHasIndividuals: " + subclassHasIndividuals + " .");
+                Debug.Log("PanelClassSubclasses::EvaluateNextStep: " + "subclassHasSubclasses: " + subclassHasSubclasses + " | " + "subclassHasProperties: " + subclassHasProperties + " | " + "subclassHasIndividuals: " + subclassHasIndividuals + " .");
 
                 if (subclassHasSubclasses == true)
                 {
@@ -464,8 +462,8 @@ namespace Rtrbau
                     if (subclassHasProperties == true && subclassHasIndividuals == true)
                     {
                         // In this case, class can be reported and consulted
-                        Debug.Log("Evaluate next step: " + entity.name + " can be reported and consulted");
-                        panelUsage.GetComponent<TextMeshProUGUI>().text = entity.name + " can be reported and consulted";
+                        Debug.Log("PanelClassSubclasses::EvaluateNextStep: " + entity.Name() + " can be reported and consulted");
+                        panelUsage.GetComponent<TextMeshProUGUI>().text = entity.Name() + " can be reported and consulted";
 
                         // Check if user wants to do procedure(s) available
                         if (Rtrbauer.instance.user.procedure == RtrbauElementType.Consult)
@@ -473,7 +471,7 @@ namespace Rtrbau
                             // Report class selected: InputIntoReport()
                             Reporter.instance.ReportElement(entity);
                             // Remember to add operation to configuration
-                            Rtrbauer.instance.operation.operationURI = entity.URI();
+                            Rtrbauer.instance.operation = new OntologyEntity(entity.URI());
                             // Complete paneller behaviour
                             PanellerEvents.TriggerEvent("LoadOperationIndividuals", entity);
                             // Complete paneller behaviour: destroy this element
@@ -484,14 +482,12 @@ namespace Rtrbau
                             // Report class selected: InputIntoReport()
                             Reporter.instance.ReportElement(entity);
                             // Remember to add operation to configuration
-                            Rtrbauer.instance.operation.operationURI = entity.URI();
+                            Rtrbauer.instance.operation = new OntologyEntity(entity.URI());
                             // Complete paneller behaviour
                             PanellerEvents.TriggerEvent("UnloadPaneller", entity);
                             // Generate OntologyElement(s) to load RtrbauElement
                             OntologyElement elementClass = new OntologyElement(entity.URI(), OntologyElementType.ClassProperties);
-                            OntologyElement elementIndividual = new OntologyElement(entity.URI(), OntologyElementType.IndividualProperties);
-                            // Parse individual element to generate new individual name
-                            Parser.ParseOntClassToIndividual(elementIndividual.entity);
+                            OntologyElement elementIndividual = new OntologyElement(Parser.ParseAddDateTime(entity.URI()), OntologyElementType.IndividualProperties);
                             // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load
                             RtrbauerEvents.TriggerEvent("AssetVisualiser_CreateElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
                             // Complete paneller behaviour: destroy this element
@@ -506,8 +502,8 @@ namespace Rtrbau
                     else if (subclassHasProperties == true && subclassHasIndividuals == false)
                     {
                         // In this case, class can only be reported
-                        Debug.Log("Evaluate next step: " + entity.name + " can only be reported");
-                        panelUsage.GetComponent<TextMeshProUGUI>().text = entity.name + " can only be reported";
+                        Debug.Log("PanelClassSubclasses::EvaluateNextStep: " + entity.Name() + " can only be reported");
+                        panelUsage.GetComponent<TextMeshProUGUI>().text = entity.Name() + " can only be reported";
 
                         // Check if user wants to do procedure(s) available
                         if (Rtrbauer.instance.user.procedure == RtrbauElementType.Report)
@@ -515,14 +511,12 @@ namespace Rtrbau
                             // Report class selected: InputIntoReport()
                             Reporter.instance.ReportElement(entity);
                             // Remember to add operation to configuration
-                            Rtrbauer.instance.operation.operationURI = entity.URI();
+                            Rtrbauer.instance.operation = new OntologyEntity(entity.URI());
                             // Complete paneller behaviour
                             PanellerEvents.TriggerEvent("UnloadPaneller", entity);
                             // Generate OntologyElement(s) to load RtrbauElement
                             OntologyElement elementClass = new OntologyElement(entity.URI(), OntologyElementType.ClassProperties);
-                            OntologyElement elementIndividual = new OntologyElement(entity.URI(), OntologyElementType.IndividualProperties);
-                            // Parse individual element to generate new individual name
-                            Parser.ParseOntClassToIndividual(elementIndividual.entity);
+                            OntologyElement elementIndividual = new OntologyElement(Parser.ParseAddDateTime(entity.URI()), OntologyElementType.IndividualProperties);
                             // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load
                             RtrbauerEvents.TriggerEvent("AssetVisualiser_CreateElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
                             // Complete paneller behaviour: destroy this element
@@ -537,8 +531,8 @@ namespace Rtrbau
                     else if (subclassHasProperties == false && subclassHasIndividuals == true)
                     {
                         // In this case, class is made of datatype individuals
-                        Debug.Log("Evaluate next step: " + entity.name + " is made of datatype individuals");
-                        panelUsage.GetComponent<TextMeshProUGUI>().text = entity.name + " is made of datatype individuals";
+                        Debug.Log("PanelClassSubclasses::EvaluateNextStep: " + entity.Name() + " is made of datatype individuals");
+                        panelUsage.GetComponent<TextMeshProUGUI>().text = entity.Name() + " is made of datatype individuals";
 
                         // Return to previous class nomination
                         Initialise(previousClassElement);
@@ -546,8 +540,8 @@ namespace Rtrbau
                     else if (subclassHasProperties == false && subclassHasIndividuals == false)
                     {
                         // This case should never happen?
-                        Debug.LogError("Evaluate next step: " + "Rationale error: this case should never happen");
-                        panelUsage.GetComponent<TextMeshProUGUI>().text = entity.name + "Rationale error: this case should never happen";
+                        Debug.LogError("PanelClassSubclasses::EvaluateNextStep: " + "Rationale error: this case should never happen");
+                        panelUsage.GetComponent<TextMeshProUGUI>().text = entity.Name() + "Rationale error: this case should never happen";
 
                         // Return to previous class nomination
                         Initialise(previousClassElement);
@@ -555,8 +549,8 @@ namespace Rtrbau
                     else
                     {
                         // This case should never happen?
-                        Debug.LogError("Evaluate next step: " + "Rationale error: this case should never happen");
-                        panelUsage.GetComponent<TextMeshProUGUI>().text = entity.name + "Rationale error: this case should never happen";
+                        Debug.LogError("PanelClassSubclasses::EvaluateNextStep: " + "Rationale error: this case should never happen");
+                        panelUsage.GetComponent<TextMeshProUGUI>().text = entity.Name() + "Rationale error: this case should never happen";
 
                         // Return to previous class nomination
                         Initialise(previousClassElement);
@@ -565,8 +559,8 @@ namespace Rtrbau
                 else
                 {
                     // This case should never happen?
-                    Debug.LogError("Evaluate next step: " + "Rationale error: this case should never happen");
-                    panelUsage.GetComponent<TextMeshProUGUI>().text = entity.name + "Rationale error: this case should never happen";
+                    Debug.LogError("PanelClassSubclasses::EvaluateNextStep: " + "Rationale error: this case should never happen");
+                    panelUsage.GetComponent<TextMeshProUGUI>().text = entity.Name() + "Rationale error: this case should never happen";
 
                     // Return to previous class nomination
                     Initialise(previousClassElement);
@@ -575,7 +569,7 @@ namespace Rtrbau
             else
             {
                 // subclassEvaluation += 1;
-                Debug.Log("Evaluate next step on: " + entity.name + " | evaluationInvoke number: " + subclassEvaluation);
+                Debug.Log("PanelClassSubclasses::EvaluateNextStep: " + entity.Name() + " | evaluationInvoke number: " + subclassEvaluation);
             }
 
             // Needs Downloading --> To Generalise

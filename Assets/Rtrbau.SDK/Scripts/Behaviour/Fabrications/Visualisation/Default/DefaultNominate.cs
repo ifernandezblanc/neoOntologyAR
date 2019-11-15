@@ -134,7 +134,7 @@ namespace Rtrbau
             if (data.fabricationData.TryGetValue(textfacet2, out attribute))
             {
                 // Set button name to relationship name
-                fabricationText.text = attribute.attributeName.name;
+                fabricationText.text = attribute.attributeName.Name();
                 // Assign nominated class
                 OntologyEntity individualRange = attribute.attributeRange;
                 // Retrieve JsonIndividuals from ElementReport
@@ -142,14 +142,14 @@ namespace Rtrbau
                 // Add individuals to fabrication list
                 foreach (JsonIndividual individual in individuals)
                 {
+                    Debug.Log("DefaultNominate::InferFromtText: individual nominated is: " + individual.ontIndividual);
                     // Generate OntologyEntity to parse individual URI
                     OntologyEntity individualEntity = new OntologyEntity(individual.ontIndividual);
                     // Create individual button and assign both to dictionary
                     individualNominates.Add(individualEntity, CreateIndividualButton(individualEntity, individualRange));
                 }
                 // Use generic name (class) to generate ontology entity for "new" individual
-                OntologyEntity newIndividualEntity = new OntologyEntity(attribute.attributeRange.URI());
-                newIndividualEntity.name += "_New";
+                OntologyEntity newIndividualEntity = new OntologyEntity(Parser.ParseAddNew(attribute.attributeRange.URI()));
                 // Create and assign "new" individual in case user wants to define a new one
                 individualNominates.Add(newIndividualEntity, CreateIndividualButton(newIndividualEntity, individualRange));
                 // Set fabrication as created
@@ -157,7 +157,7 @@ namespace Rtrbau
             }
             else
             {
-                throw new ArgumentException(data.fabricationName + " cannot implement: " + attribute.attributeName + " received.");
+                throw new ArgumentException(data.fabricationName.ToString() + "::InferFromText: cannot implement attribute received.");
             }
         }
 
@@ -177,13 +177,13 @@ namespace Rtrbau
                 {
                     if (nominatesNewReport == false)
                     {
+                        Debug.Log("DefaultNominate::OnNextVisualisation: nominatedIndividual is: " + nominatedIndividual.Name());
+                        Debug.Log("DefaultNominate::OnNextVisualisation: nominatedIndividual is: " + nominatedIndividual.URI());
                         // If nominatedIndividual is new, then attribute value needs to be modified
-                        if (nominatedIndividual.name.Contains("_New"))
+                        if (nominatedIndividual.Name().Contains(Parser.ParseNamingNew()))
                         {
-                            // Generate OntologyEntity to parse new individual name
-                            OntologyEntity newIndividual = new OntologyEntity(attribute.attributeRange.URI());
-                            // Parse individual element to generate new individual name
-                            Parser.ParseOntClassToIndividual(newIndividual);
+                            // Generate OntologyEntity to parse new individual name with date time
+                            OntologyEntity newIndividual = new OntologyEntity(Parser.ParseAddDateTime(attribute.attributeRange.URI()));
                             // Assign user-reported attribute value to RtrbauElement from ElementReport through RtrbauFabrication
                             attribute.attributeValue = newIndividual.URI();
                             // Assign nominated individual as new element report
@@ -206,8 +206,12 @@ namespace Rtrbau
                     }
                     else
                     {
-                        Debug.Log("DefaultNominate::OnNextVisualisation: new element to report is of range: " + attribute.attributeRange.name);
+                        Debug.Log("DefaultNominate::OnNextVisualisation: new element to report is of range: " + attribute.attributeRange.Name());
                         Debug.Log("DefaultNominate::OnNextVisualisation: new element to report name is: " + attribute.attributeValue);
+                        // Generate ontology entity to report connection to new RtrbauElement
+                        OntologyEntity relationship = new OntologyEntity(attribute.attributeName.URI());
+                        // Report relationship attribute to load next RtrbauElement
+                        Reporter.instance.ReportElement(relationship);
                         // Generate OntologyElement(s) to load RtrbauElement
                         OntologyElement elementClass = new OntologyElement(attribute.attributeRange.URI(), OntologyElementType.ClassProperties);
                         OntologyElement elementIndividual = new OntologyElement(attribute.attributeValue, OntologyElementType.IndividualProperties);
@@ -415,7 +419,7 @@ namespace Rtrbau
         /// 
         /// </summary>
         /// <param name="individual"></param>
-        public void NominateIndividual(OntologyEntity individual)
+        public void NominateIndividual(OntologyEntity individual, OntologyEntity newIndividual)
         {
             // If fabrication created but individual not nominated, then nominate this individual
             if (fabricationCreated == true && individualNominated == false)
@@ -427,7 +431,8 @@ namespace Rtrbau
                     else { DeactivateIndividualButton(nominateButton.Value); }
                 }
                 // Assign individual as nominated
-                nominatedIndividual = individual;
+                if (newIndividual != null) { nominatedIndividual = newIndividual; }
+                else { nominatedIndividual = individual; }
                 // Check individual nomination
                 individualNominated = true;
             }

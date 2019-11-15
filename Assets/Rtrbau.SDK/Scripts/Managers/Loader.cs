@@ -199,13 +199,13 @@ namespace Rtrbau
             {
                 if (!File.Exists(element.individualElement.FilePath()))
                 {
-                    throw new ArgumentException("Loader::UploadElement: json file for " + element.individualElement.entity.name + " should exist.");
+                    throw new ArgumentException("Loader::UploadElement: json file for " + element.individualElement.entity.Name() + " should exist.");
                 }
                 else
                 {
                     if (!File.Exists(element.classElement.FilePath()))
                     {
-                        throw new ArgumentException("Loader::UploadElement: json file for " + element.classElement.entity.name + " should exist.");
+                        throw new ArgumentException("Loader::UploadElement: json file for " + element.classElement.entity.Name() + " should exist.");
                     }
                     else
                     {

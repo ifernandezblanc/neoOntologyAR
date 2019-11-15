@@ -50,7 +50,7 @@ namespace Rtrbau
             // Reinitialise visualiser
             Rtrbauer.instance.ReloadVisualiser();
             // Reinitialise paneller at ontologies level
-            string ontologiesURI = Rtrbauer.instance.ontology.ontologyURI.AbsoluteUri + "/" + "ontologies#ontologies";
+            string ontologiesURI = Rtrbauer.instance.server.AbsoluteUri + "ontologies#ontologies";
             OntologyEntity ontologies = new OntologyEntity(ontologiesURI);
             PanellerEvents.TriggerEvent("LoadOperationOntologies", ontologies);
         }

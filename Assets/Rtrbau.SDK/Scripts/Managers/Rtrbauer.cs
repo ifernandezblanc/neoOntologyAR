@@ -62,12 +62,12 @@ namespace Rtrbau
         #endregion SINGLETON_INSTANTIATION
 
         #region CLASS_MEMBERS
-        public URIS uris;
-        public Server server;
-        public Ontology ontology;
-        public Asset asset;
-        public Component component;
-        public Operation operation;
+        public Uri server;
+        public Ontology xsd;
+        public Ontology owl;
+        public OntologyEntity asset;
+        public OntologyEntity component;
+        public OntologyEntity operation;
         public User user;
         public Environment environment;
         public GameObject viewer;
@@ -88,38 +88,7 @@ namespace Rtrbau
             {
                 throw new ArgumentException("RtrbauVisualiser and RtrbauPaneller game objects should be attached");
             }
-            else
-            {
-                // Declare configuration classes
-                // IMPORTANT! This is default, however, things may change afterwards.
-                server.serverURI = new Uri("http://138.250.108.1:3003");
-                ontology.ontologyURI = new Uri(server.serverURI, "api/files/owl");
-                asset.assetURI = ontology.ontologyURI.AbsoluteUri + "/" + "orgont#Asset";
-                component.componentURI = ontology.ontologyURI.AbsoluteUri + "/" + "orgont#Component";
-                // IMPORTANT! This should be considered while in configuration panels (Paneller: ClassSubclassPanel)
-                // operation.operationURI = ontology.ontologyURI.AbsoluteUri + "/" + "repont#Operation";
-                // Declare visualisation configuration classes
-                // User
-                foreach (RtrbauComprehensiveness comprehensiveness in Enum.GetValues(typeof(RtrbauComprehensiveness)))
-                {
-                    user.AssignComprehensiveness(comprehensiveness, true);
-                }
-                foreach (RtrbauDescriptiveness descriptiveness in Enum.GetValues(typeof(RtrbauDescriptiveness)))
-                {
-                    user.AssignDescriptiveness(descriptiveness, true);
-                }
-                // Environment
-                environment.AssignSense(RtrbauSense.hearing, true);
-                environment.AssignSense(RtrbauSense.sight, true);
-                environment.AssignSense(RtrbauSense.kinaesthetic, true);
-                // Viewer camera
-                viewer = GameObject.FindGameObjectWithTag("MainCamera");
-                // Fabrications
-                ConsultFabrications = LoadFabrications(RtrbauElementType.Consult);
-                ReportFabrications = LoadFabrications(RtrbauElementType.Report);
-                // Start scene
-                LoadPaneller();
-            }
+            else {}
         }
         #endregion MONOBEHAVIOUR_METHODS
 
@@ -134,7 +103,36 @@ namespace Rtrbau
         /// </summary>
         private void Initialise()
         {
-            // GameObject.Find("RtrbauPanels").GetComponent<Paneller>().Initialise();
+            // Declare Rtrbau configuration ontologies and server
+            server = new Uri("http://138.250.108.1:3003");
+            xsd = new Ontology(OntologyStandardType.xsd);
+            owl = new Ontology(OntologyStandardType.owl);
+            Ontology orgont = new Ontology(server.AbsoluteUri + "api/files/owl/orgont#");
+            asset = new OntologyEntity(orgont, "Asset");
+            component = new OntologyEntity(orgont, "Component");
+            user = new User();
+            environment = new Environment();
+            // Modify user values
+            user.name = Parser.ParseAddDateTime("User_");
+            foreach (RtrbauComprehensiveness comprehensiveness in Enum.GetValues(typeof(RtrbauComprehensiveness)))
+            {
+                user.AssignComprehensiveness(comprehensiveness, true);
+            }
+            foreach (RtrbauDescriptiveness descriptiveness in Enum.GetValues(typeof(RtrbauDescriptiveness)))
+            {
+                user.AssignDescriptiveness(descriptiveness, true);
+            }
+            // Modify environment values
+            environment.AssignSense(RtrbauSense.hearing, true);
+            environment.AssignSense(RtrbauSense.sight, true);
+            environment.AssignSense(RtrbauSense.kinaesthetic, true);
+            // Assign user camera
+            viewer = GameObject.FindGameObjectWithTag("MainCamera");
+            // Assign fabrications
+            ConsultFabrications = LoadFabrications(RtrbauElementType.Consult);
+            ReportFabrications = LoadFabrications(RtrbauElementType.Report);
+            // Start scene
+            LoadPaneller();
         }
 
         /// <summary>
@@ -157,7 +155,7 @@ namespace Rtrbau
                     if (Enum.TryParse<RtrbauFabricationName>(fabrication.name, out fabricationName))
                     {
                         fabrications.Add(fabricationName, fabrication);
-                        // Debug.Log("Rtrbauer::LoadFabrications: preloaded fabrication is " + fabrication.name);
+                        Debug.Log("Rtrbauer::LoadFabrications: preloaded fabrication is " + fabrication.name);
                     }
                     else { }
                 }
@@ -181,10 +179,6 @@ namespace Rtrbau
             rtrbauPaneller.transform.SetParent(this.transform.root, false);
             rtrbauPaneller.GetComponent<Paneller>().Initialise();
             paneller = rtrbauPaneller;
-
-            // UPG: to load paneller as unique element in the game
-            // paneller.GetComponent<Paneller>().Initialise();
-            // Paneller.instance.Initialise();
         }
 
         /// <summary>

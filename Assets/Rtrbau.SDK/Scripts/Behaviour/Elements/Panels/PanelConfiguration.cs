@@ -74,7 +74,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public void Initialise(string serverURI)
+        public void Initialise()
         {
             if (serverWriteButton == null || serverConnectButton == null || userWriteButton == null || userSelectReportButton == null || userSelectConsultButton == null)
             {
@@ -82,8 +82,8 @@ namespace Rtrbau
             }
             else
             {
-                serverDefaultURI = serverURI;
-                userDefaultName = "User" + "_" + DateTime.Now.ToString("dd-MM-yy_HH-mm-ss");
+                serverDefaultURI = Rtrbauer.instance.server.AbsoluteUri;
+                userDefaultName = Rtrbauer.instance.user.name;
 
                 userWriteButton.SetActive(true);
                 userSelectReportButton.SetActive(true);
@@ -163,23 +163,23 @@ namespace Rtrbau
         public void InputIntoReport()
         {
             // Initialise server and user variables
-            Rtrbauer.instance.server.serverURI = new Uri(serverURI);
+            Rtrbauer.instance.server = new Uri(serverURI);
             Rtrbauer.instance.user.name = userName;
             Rtrbauer.instance.user.procedure = userProcedure;
             // Generate server and user variables to report
-            string serverReport = serverURI + "server" + "#" + "connected";
-            string userReport = serverURI + "user" + "#" + userName;
+            string serverReport = serverURI + "api/files/owl/server#connected";
+            string userReport = serverURI + "api/files/owl/server#" + userName;
             // Confirm user and server through log
             Debug.Log("PanelConfiguration::InputIntoReport: serverReport: " + serverReport);
             Debug.Log("PanelConfiguration::InputIntoReport: userReport: " + userReport);
             // Report server and user
             Reporter.instance.ReportElement(new OntologyEntity(serverReport));
             Reporter.instance.ReportElement(new OntologyEntity(userReport));
-            // Report asset class
-            string assetsURI = Rtrbauer.instance.ontology.ontologyURI.AbsoluteUri + "/" + "orgont#Asset";
-            OntologyEntity assetsClass = new OntologyEntity(assetsURI);
+            // Report asset and component
+            Reporter.instance.ReportElement(Rtrbauer.instance.asset);
+            Reporter.instance.ReportElement(Rtrbauer.instance.component);
             // Move to next panel
-            PanellerEvents.TriggerEvent("LoadAssets", assetsClass);
+            PanellerEvents.TriggerEvent("LoadAssets", Rtrbauer.instance.asset);
             // Destroy this element
             DestroyElement();
         }

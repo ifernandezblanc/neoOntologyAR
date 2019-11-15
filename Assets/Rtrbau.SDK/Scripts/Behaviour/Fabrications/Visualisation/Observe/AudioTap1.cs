@@ -126,7 +126,7 @@ namespace Rtrbau
             // Check data received meets fabrication requirements
             if (data.fabricationData.TryGetValue(audiofacet1, out attribute))
             {
-                fabricationText.text = attribute.attributeName.name + ": ";
+                fabricationText.text = attribute.attributeName.Name() + ": ";
                 audioFile = new RtrbauFile(attribute.attributeValue);
                 LoaderEvents.StartListening(audioFile.EventName(), DownloadedAudio);
                 Loader.instance.StartFileDownload(audioFile);
@@ -134,7 +134,7 @@ namespace Rtrbau
             }
             else
             {
-                throw new ArgumentException(data.fabricationName + " cannot implement: " + attribute.attributeName + " received.");
+                throw new ArgumentException(data.fabricationName.ToString() + "::InferFromText: cannot implement attribute received.");
             }
         }
 

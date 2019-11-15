@@ -41,36 +41,64 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static Type ParseOntElementType()
+        public static string ParseNamingDateTime()
         {
-            return null;
-        }
-        /// <summary>
-        /// Describe script purpose
-        /// Add links when code has been inspired
-        /// </summary>
-        public static Type ParseOntPropertyType()
-        {
-            return null;
-        }
-        /// <summary>
-        /// Describe script purpose
-        /// Add links when code has been inspired
-        /// </summary>
-        public static Type ParseOntValueType()
-        {
-            return null;
+            return DateTimeOffset.Now.ToString("yyyy'-'MM'-'dd'T'HH'-'mm'-'ss''zz");
         }
 
         /// <summary>
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static OntologyEntity ParseOntClassToIndividual(OntologyEntity element)
+        public static string ParseNamingDateTimeXSD()
         {
-            element.name += "_" + DateTime.Now.ToString("dd-MM-yy_HH-mm-ss");
+            return DateTimeOffset.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss''zzz");
+        }
 
-            return element;
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public static string ParseNamingDateTimeXSD(DateTimeOffset time)
+        {
+            return time.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss''zzz");
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public static string ParseNamingNew()
+        {
+            // UPG: to modify returned to make it more robust
+            return "_New";
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public static string ParseAddDateTime(string uri)
+        {
+            return uri + "_" + ParseNamingDateTime();
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public static string ParseAddDateTimeXSD(string uri)
+        {
+            return uri + "_" + ParseNamingDateTimeXSD();
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public static string ParseAddNew(string uri)
+        {
+            return uri + "_" + ParseNamingNew();
         }
         #endregion ELEMENT_PARSERS
 
@@ -88,10 +116,13 @@ namespace Rtrbau
             {
                 if (parsing == RtrbauParser.pre)
                 {
+                    //Debug.Log("Parser::ParseURI: pre: " + uri.Substring(0, uriIndex));
                     return uri.Substring(0, uriIndex);
+                    
                 }
                 else if (parsing == RtrbauParser.post)
                 {
+                    //Debug.Log("Parser::ParseURI: post: " + uri.Substring(uriIndex + 1));
                     return uri.Substring(uriIndex + 1);
                 }
                 else
@@ -109,35 +140,35 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public static string ParseOntElementURI(string name, string ontology, OntologyElementType type)
+        public static string ParseOntElementURI(OntologyEntity entity, OntologyElementType type)
         {
             if (type == OntologyElementType.Ontologies)
             {
-                return Rtrbauer.instance.server.serverURI + "api/ontologies/";
+                return Rtrbauer.instance.server.AbsoluteUri + "api/ontologies/";
             }
             else if (type == OntologyElementType.ClassSubclasses)
             {
-                return Rtrbauer.instance.server.serverURI + "api/ontologies/" + ontology + "/class/" + name + "/subclasses/";
+                return Rtrbauer.instance.server.AbsoluteUri + "api/ontologies/" + entity.Ontology().Name() + "/class/" + entity.Name() + "/subclasses/";
             }
             else if (type == OntologyElementType.ClassIndividuals)
             {
-                return Rtrbauer.instance.server.serverURI + "api/ontologies/" + ontology + "/class/" + name + "/individuals/";
+                return Rtrbauer.instance.server.AbsoluteUri + "api/ontologies/" + entity.Ontology().Name() + "/class/" + entity.Name() + "/individuals/";
             }
             else if (type == OntologyElementType.ClassProperties)
             {
-                return Rtrbauer.instance.server.serverURI + "api/ontologies/" + ontology + "/class/" + name + "/properties/";
+                return Rtrbauer.instance.server.AbsoluteUri + "api/ontologies/" + entity.Ontology().Name() + "/class/" + entity.Name() + "/properties/";
             }
             else if (type == OntologyElementType.ClassExample)
             {
-                return Rtrbauer.instance.server.serverURI + "api/ontologies/" + ontology + "/class/" + name + "/example/";
+                return Rtrbauer.instance.server.AbsoluteUri + "api/ontologies/" + entity.Ontology().Name() + "/class/" + entity.Name() + "/example/";
             }
             else if (type == OntologyElementType.IndividualProperties)
             {
-                return Rtrbauer.instance.server.serverURI + "api/ontologies/" + ontology + "/individual/" + name + "/properties/";
+                return Rtrbauer.instance.server.AbsoluteUri + "api/ontologies/" + entity.Ontology().Name() + "/individual/" + entity.Name() + "/properties/";
             }
             else if (type == OntologyElementType.IndividualUpload)
             {
-                return Rtrbauer.instance.server.serverURI + "api/ontologies/" + ontology + "/individual/" + name + "/input/";
+                return Rtrbauer.instance.server.AbsoluteUri + "api/ontologies/" + entity.Ontology().Name() + "/individual/" + entity.Name() + "/input/";
             }
             else
             {
@@ -151,8 +182,8 @@ namespace Rtrbau
         /// </summary>
         public static string ParseOntDistURI(OntologyEntity startClass, OntologyEntity endClass)
         {
-            return Rtrbauer.instance.server.serverURI + "api/ontologies/" + startClass.ontology + "/class/" + 
-                startClass.name + "/distance/" + startClass.ontology + "/" + endClass.ontology + "/class/" + endClass.name;
+            return Rtrbauer.instance.server.AbsoluteUri + "api/ontologies/" + startClass.Ontology().Name() + "/class/" + 
+                startClass.Name() + "/distance/" + startClass.Ontology().Name() + "/" + endClass.Ontology().Name() + "/class/" + endClass.Name();
         }
 
         /// <summary>
@@ -165,7 +196,7 @@ namespace Rtrbau
 
             if (Enum.TryParse<RtrbauFileType>(type, out filetype))
             {
-                return Rtrbauer.instance.server.serverURI + "api/files/" + type + "/";
+                return Rtrbauer.instance.server.AbsoluteUri + "api/files/" + type + "/";
             }
             else
             {

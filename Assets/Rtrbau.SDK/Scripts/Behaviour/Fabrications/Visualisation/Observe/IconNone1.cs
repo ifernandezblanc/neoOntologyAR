@@ -120,7 +120,7 @@ namespace Rtrbau
             if (data.fabricationData.TryGetValue(iconnone1Source, out attribute))
             {
                 // Add text for attributes name
-                fabricationText.text = attribute.attributeName.name + ":";
+                fabricationText.text = attribute.attributeName.Name() + ":";
                 // Find icon that retrieves value
                 Debug.Log(attribute.attributeValue);
                 // iconName = Libraries.IconLibrary.Find(x => x.Contains(attribute.attributeValue));
@@ -137,7 +137,7 @@ namespace Rtrbau
             }
             else
             {
-                throw new ArgumentException(data.fabricationName + " cannot implement: " + attribute.attributeName + " received.");
+                throw new ArgumentException(data.fabricationName.ToString() + "::InferFromText: cannot implement attribute received.");
             }
         }
 

@@ -118,11 +118,11 @@ namespace Rtrbau
             // Check data received meets fabrication requirements
             if (data.fabricationData.TryGetValue(textfacet2, out attribute))
             {
-                fabricationText.text = attribute.attributeName.name;
+                fabricationText.text = attribute.attributeName.Name();
             }
             else
             {
-                throw new ArgumentException(data.fabricationName + " cannot implement: " + attribute.attributeName + " received.");
+                throw new ArgumentException(data.fabricationName.ToString() + "::InferFromText: cannot implement attribute received.");
             }
         }
 
@@ -155,7 +155,7 @@ namespace Rtrbau
                 }
                 else
                 {
-                    Debug.Log("DefaultInspect::OnNextVisualisation: load new RtrbauElement for " + individual.entity.name);
+                    Debug.Log("DefaultInspect::OnNextVisualisation: load new RtrbauElement for " + individual.entity.Name());
                     // Modify parent RtrbauElement in expectance of a new RtrbauElement
                     element.GetComponent<ElementConsult>().ModifyMaterial(fabricationSeenMaterial);
                     // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load
