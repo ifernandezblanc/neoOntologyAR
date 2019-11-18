@@ -547,7 +547,7 @@ namespace Rtrbau
                         if (locationElements[existingElementIndex].Value != null)
                         {
                             // Unload elementObject from locationManager
-                            locationManager.UnloadElement(locationElements[existingElementIndex].Value);
+                            locationManager.UnloadElement(locationElements[existingElementIndex].Key, locationElements[existingElementIndex].Value);
                         }
                         else { }
                         // Add new elementObject to locationElements in elementClass position
@@ -591,7 +591,7 @@ namespace Rtrbau
                                 if (locationElements[locationCounter].Value != null)
                                 {
                                     // Unload elementObject from locationManager
-                                    locationManager.UnloadElement(locationElements[locationCounter].Value);
+                                    locationManager.UnloadElement(locationElements[locationCounter].Key, locationElements[locationCounter].Value);
                                 }
                                 else { }
                                 // Add new elementObject to locationElements in elementClass position
@@ -618,7 +618,7 @@ namespace Rtrbau
                             if (locationElements[locationCounter].Value != null)
                             {
                                 // Unload elementObject from locationManager
-                                locationManager.UnloadElement(locationElements[locationCounter].Value);
+                                locationManager.UnloadElement(locationElements[locationCounter].Key, locationElements[locationCounter].Value);
                             }
                             else { }
                             // Add new elementObject to locationElements in elementClass position
@@ -667,7 +667,7 @@ namespace Rtrbau
                             if (locationElements[locationCounter].Value != null)
                             {
                                 // Unload elementObject from locationManager
-                                locationManager.UnloadElement(locationElements[locationCounter].Value);
+                                locationManager.UnloadElement(locationElements[locationCounter].Key, locationElements[locationCounter].Value);
                             }
                             else { }
                             // Add new elementObject to locationElements in elementClass position
@@ -694,7 +694,7 @@ namespace Rtrbau
                         if (locationElements[locationCounter].Value != null)
                         {
                             // Unload elementObject from locationManager
-                            locationManager.UnloadElement(locationElements[locationCounter].Value);
+                            locationManager.UnloadElement(locationElements[locationCounter].Key, locationElements[locationCounter].Value);
                         }
                         else { }
                         // Add new elementObject to locationElements in elementClass position
@@ -730,37 +730,38 @@ namespace Rtrbau
             }
         }
 
-        public bool RemoveElement(GameObject elementObject)
-        {
-            // int existingElementIndex = locationElements.FindIndex(x => x.Value.GetInstanceID() == elementObject.GetInstanceID());
-            int existingElementIndex = locationElements.FindIndex(x => x.Value.Equals(elementObject));
+        //public bool RemoveElement(GameObject elementObject)
+        //{
+        //    // int existingElementIndex = locationElements.FindIndex(x => x.Value.GetInstanceID() == elementObject.GetInstanceID());
+        //    // Considers the option that a located class may have its loaded element gameobject set to null (when the element has been unloaded)
+        //    int existingElementIndex = locationElements.FindIndex(x => x.Value != null ? x.Value.Equals(elementObject) : default(GameObject).Equals(elementObject));
 
-            if (existingElementIndex != -1)
-            {
-                // Create empty KeyValuePair to add to elementClass position in locationElements
-                KeyValuePair<OntologyElement, GameObject> newElement = new KeyValuePair<OntologyElement, GameObject>(locationElements[existingElementIndex].Key, null);
-                // Remove elementObject from locationElements in elementClass position
-                locationElements[existingElementIndex] = newElement;
-                // Break function with value true
-                return true;
-            }
-            else
-            {
-                // Break function with value false
-                return false;
-            }
+        //    if (existingElementIndex != -1)
+        //    {
+        //        // Create empty KeyValuePair to add to elementClass position in locationElements
+        //        KeyValuePair<OntologyElement, GameObject> newElement = new KeyValuePair<OntologyElement, GameObject>(locationElements[existingElementIndex].Key, null);
+        //        // Remove elementObject from locationElements in elementClass position
+        //        locationElements[existingElementIndex] = newElement;
+        //        // Break function with value true
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        // Break function with value false
+        //        return false;
+        //    }
+        //}
+
+        public KeyValuePair<OntologyElement,GameObject> FindFirstElement()
+        {
+            if (locationElements.Count() > 0) { return locationElements.First(); }
+            else { return new KeyValuePair<OntologyElement, GameObject>(); }   
         }
 
-        public GameObject FindFirstElement()
-        {
-            if (locationElements.Count() > 0) { return locationElements.First().Value; }
-            else { return null; }   
-        }
-
-        public GameObject FindElement(OntologyElement elementClass)
-        {
-            return locationElements.Find(x => x.Key.EqualElement(elementClass)).Value;
-        }
+        //public GameObject FindElement(OntologyElement elementClass)
+        //{
+        //    return locationElements.Find(x => x.Key.EqualElement(elementClass)).Value;
+        //}
 
         public void DebugLocationElements(string functionName)
         {

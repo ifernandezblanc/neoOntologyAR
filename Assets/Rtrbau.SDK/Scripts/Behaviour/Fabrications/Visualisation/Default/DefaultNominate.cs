@@ -63,6 +63,7 @@ namespace Rtrbau
         private bool fabricationCreated;
         private bool nominateButtonsActive;
         private bool individualNominated;
+        private bool individualRecordable;
         private bool newReportNominated;
         private bool nominatesNewReport;
         #endregion CLASS_EVENTS
@@ -104,6 +105,7 @@ namespace Rtrbau
             fabricationCreated = false;
             nominateButtonsActive = false;
             individualNominated = false;
+            individualRecordable = false;
             newReportNominated = false;
             nominatesNewReport = false;
             Scale();
@@ -142,7 +144,7 @@ namespace Rtrbau
                 // Add individuals to fabrication list
                 foreach (JsonIndividual individual in individuals)
                 {
-                    Debug.Log("DefaultNominate::InferFromtText: individual nominated is: " + individual.ontIndividual);
+                    //Debug.Log("DefaultNominate::InferFromtText: individual nominated is: " + individual.ontIndividual);
                     // Generate OntologyEntity to parse individual URI
                     OntologyEntity individualEntity = new OntologyEntity(individual.ontIndividual);
                     // Create individual button and assign both to dictionary
@@ -177,17 +179,37 @@ namespace Rtrbau
                 {
                     if (nominatesNewReport == false)
                     {
-                        Debug.Log("DefaultNominate::OnNextVisualisation: nominatedIndividual is: " + nominatedIndividual.Name());
-                        Debug.Log("DefaultNominate::OnNextVisualisation: nominatedIndividual is: " + nominatedIndividual.URI());
+                        //Debug.Log("DefaultNominate::OnNextVisualisation: nominatedIndividual is: " + nominatedIndividual.Name());
+                        //Debug.Log("DefaultNominate::OnNextVisualisation: nominatedIndividual is: " + nominatedIndividual.URI());
                         // If nominatedIndividual is new, then attribute value needs to be modified
                         if (nominatedIndividual.Name().Contains(Parser.ParseNamingNew()))
                         {
-                            // Generate OntologyEntity to parse new individual name with date time
-                            OntologyEntity newIndividual = new OntologyEntity(Parser.ParseAddDateTime(attribute.attributeRange.URI()));
-                            // Assign user-reported attribute value to RtrbauElement from ElementReport through RtrbauFabrication
-                            attribute.attributeValue = newIndividual.URI();
-                            // Assign nominated individual as new element report
-                            newReportNominated = true;
+                            // Check if new individual is recordable
+                            if (individualRecordable == false)
+                            {
+                                // Generate OntologyEntity to parse new individual name with date time
+                                OntologyEntity newIndividual = new OntologyEntity(Parser.ParseAddDateTime(attribute.attributeRange.URI()));
+                                // Assign user-reported attribute value to RtrbauElement from ElementReport through RtrbauFabrication
+                                attribute.attributeValue = newIndividual.URI();
+                                // Assign nominated individual as new element report
+                                newReportNominated = true;
+                                //Debug.Log("DefaultNominate::OnNextVisualisation: nominatedIndividual " + nominatedIndividual.Name() + " is new to report");
+                            }
+                            else
+                            {
+                                // Parse text from record button in nominate button to generate new individual entity
+                                GameObject individual;
+                                string newNominatedRecorded;
+                                // Deactivate only nominated individual button
+                                if (individualNominates.TryGetValue(nominatedIndividual, out individual))
+                                {
+                                    newNominatedRecorded = individual.GetComponent<NominateButton>().recordButtonText.text;
+                                }
+                                else { throw new ArgumentException("DefaultNominate::OnNextVisualisation: nominated individual not found"); }
+                                // Assign user-reported attribute value to RtrbauElement from ElementReport through RtrbauFabrication
+                                attribute.attributeValue = nominatedIndividual.Ontology().URI() + newNominatedRecorded;
+                                //Debug.Log("DefaultNominate::OnNextVisualisation: nominatedIndividual " + nominatedIndividual.Name() + " is new to record");
+                            }
                         }
                         else
                         {
@@ -206,8 +228,8 @@ namespace Rtrbau
                     }
                     else
                     {
-                        Debug.Log("DefaultNominate::OnNextVisualisation: new element to report is of range: " + attribute.attributeRange.Name());
-                        Debug.Log("DefaultNominate::OnNextVisualisation: new element to report name is: " + attribute.attributeValue);
+                        //Debug.Log("DefaultNominate::OnNextVisualisation: new element to report is of range: " + attribute.attributeRange.Name());
+                        //Debug.Log("DefaultNominate::OnNextVisualisation: new element to report name is: " + attribute.attributeValue);
                         // Generate ontology entity to report connection to new RtrbauElement
                         OntologyEntity relationship = new OntologyEntity(attribute.attributeName.URI());
                         // Report relationship attribute to load next RtrbauElement
@@ -341,7 +363,7 @@ namespace Rtrbau
                 // Check if nominated individual name is that for a new individual
                 if (newReportNominated == true)
                 {
-                    Debug.Log("DefaultNominate::CreateNewElementReport: individual to report is new.");
+                    //Debug.Log("DefaultNominate::CreateNewElementReport: individual to report is new.");
                     // Deactivate nominates buttons
                     DeactivateNominates();
                     // Assign fabrication as to nominate new RtrbauElement
@@ -351,7 +373,7 @@ namespace Rtrbau
                 }
                 else
                 {
-                    Debug.Log("DefaultNominate::CreateNewElementReport: individual to report is not new.");
+                    //Debug.Log("DefaultNominate::CreateNewElementReport: individual to report is not new.");
                     // Then return false
                     return false;
                 }
@@ -419,7 +441,7 @@ namespace Rtrbau
         /// 
         /// </summary>
         /// <param name="individual"></param>
-        public void NominateIndividual(OntologyEntity individual, OntologyEntity newIndividual)
+        public void NominateIndividual(OntologyEntity individual, bool nominatedRecordable)
         {
             // If fabrication created but individual not nominated, then nominate this individual
             if (fabricationCreated == true && individualNominated == false)
@@ -430,9 +452,12 @@ namespace Rtrbau
                     if (nominateButton.Key == individual) { nominateButton.Value.GetComponent<NominateButton>().ReportMaterial(fabricationReportedMaterial); }
                     else { DeactivateIndividualButton(nominateButton.Value); }
                 }
+                // Update button material
+                fabricationReportedPanel.material = fabricationReportedMaterial;
                 // Assign individual as nominated
-                if (newIndividual != null) { nominatedIndividual = newIndividual; }
-                else { nominatedIndividual = individual; }
+                nominatedIndividual = individual;
+                // Check individual nomination as recordable
+                individualRecordable = nominatedRecordable;
                 // Check individual nomination
                 individualNominated = true;
             }
@@ -448,6 +473,8 @@ namespace Rtrbau
                 fabricationReportedPanel.material = fabricationNonReportedMaterial;
                 // Unassign individual as nominated
                 nominatedIndividual = null;
+                // Uncheck individual recordable nomination
+                individualRecordable = false;
                 // Uncheck individual nomination
                 individualNominated = false;
             }

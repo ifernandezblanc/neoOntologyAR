@@ -866,17 +866,6 @@ namespace Rtrbau
         /// <summary>
         /// 
         /// </summary>
-        void AddLineRenderer()
-        {
-            if (previousElement != null)
-            {
-                this.gameObject.AddComponent<ElementsLine>().Initialise(this.gameObject, previousElement, lineMaterial);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         void LocateFabrication(KeyValuePair<RtrbauFabrication, GameObject> fabrication)
         {
             // UPG: Add ordering for tiled fabrications (buttons, icons, text).
@@ -990,6 +979,10 @@ namespace Rtrbau
             recordFabrications = new List<GameObject>();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uploadElement"></param>
         void FinaliseReporting(OntologyUpload uploadElement)
         {
             LoaderEvents.StopListening(uploadElement.EventName(), FinaliseReporting);
@@ -1025,6 +1018,9 @@ namespace Rtrbau
             RtrbauerEvents.TriggerEvent("AssetVisualiser_LocateElement", individualElement, rtrbauElementType, rtrbauLocationType);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         void AttributesReported()
         {
             // Modify element panels materials to reported
@@ -1038,6 +1034,17 @@ namespace Rtrbau
             Debug.Log("ElementReport::CheckAttributesReport: all values reported, inputting new individual into report");
             // Report rtrbauElement
             InputIntoReport();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void AddLineRenderer()
+        {
+            if (previousElement != null)
+            {
+                this.gameObject.AddComponent<ElementsLine>().Initialise(this.gameObject, previousElement, lineMaterial);
+            }
         }
         #endregion PRIVATE
 
@@ -1126,7 +1133,7 @@ namespace Rtrbau
                 // Destroy new nominate button
                 Destroy(nominate);
                 // Unload RtrbauElement if no more new nominates reported are left
-                if (nominateFabrications.Count() == 0) { visualiser.UnloadElement(this.gameObject); }
+                // if (nominateFabrications.Count() == 0) { visualiser.UnloadElement(this.gameObject); }
                 // Return true
                 return true;
             }

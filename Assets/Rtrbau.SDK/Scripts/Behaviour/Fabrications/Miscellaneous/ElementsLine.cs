@@ -43,6 +43,7 @@ public class ElementsLine : MonoBehaviour
     {
         if (start != null && end != null)
         {
+            // Update line renderer points and points position
             start.gameObject.GetComponent<LineRenderer>().positionCount = 2;
             Vector3 startPoint = start.transform.position;
             Vector3 endPoint = end.transform.position;
@@ -51,6 +52,7 @@ public class ElementsLine : MonoBehaviour
         }
         else
         {
+            // Update line renderer points
             start.gameObject.GetComponent<LineRenderer>().positionCount = 0;
         }
     }

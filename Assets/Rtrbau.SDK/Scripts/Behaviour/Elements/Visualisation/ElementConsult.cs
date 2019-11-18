@@ -774,17 +774,6 @@ namespace Rtrbau
         /// <summary>
         /// 
         /// </summary>
-        void AddLineRenderer()
-        {
-            if (previousElement != null)
-            {
-                this.gameObject.AddComponent<ElementsLine>().Initialise(this.gameObject, previousElement, lineMaterial);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         void LocateFabrication (KeyValuePair<RtrbauFabrication, GameObject> fabrication)
         {
             // UPG: Add ordering for tiled fabrications (buttons, icons, text).
@@ -845,6 +834,16 @@ namespace Rtrbau
                 fabrication.transform.localScale = new Vector3(sX, sY, sZ);
             }
             else { }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        void AddLineRenderer()
+        {
+            if (previousElement != null)
+            {
+                this.gameObject.AddComponent<ElementsLine>().Initialise(this.gameObject, previousElement, lineMaterial);
+            }
         }
         #endregion PRIVATE
 

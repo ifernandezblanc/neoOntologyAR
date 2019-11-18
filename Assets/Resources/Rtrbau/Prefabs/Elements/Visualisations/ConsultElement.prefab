@@ -14,17 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   visualiser: {fileID: 0}
   individualElement:
-    entity:
-      name: 
-      ontology: 
     type: 0
   classElement:
-    entity:
-      name: 
-      ontology: 
     type: 0
   previousElement: {fileID: 0}
-  elementType: 0
+  rtrbauElementType: 0
+  rtrbauLocationType: 0
+  rtrbauElement:
+    elementAttributes: []
   individualAttributes:
     ontIndividual: 
     ontClass: 
@@ -32,7 +29,7 @@ MonoBehaviour:
   classAttributes:
     ontClass: 
     ontProperties: []
-  objectClassesAttributes: []
+  objectPropertyAttributes: []
   elementComponentDistance:
     ontStartClass: 
     ontEndClass: 
@@ -41,17 +38,9 @@ MonoBehaviour:
     ontStartClass: 
     ontEndClass: 
     ontDistance: 
-  rtrbauElement:
-    elementName:
-      name: 
-      ontology: 
-    elementClass:
-      name: 
-      ontology: 
-    elementAttributes: []
   assignedFabrications: []
-  rtrbauLocation: 0
-  unparentedFabrications: []
+  observeFabrications: []
+  inspectFabrications: []
   classText: {fileID: 7976910728143890828}
   individualText: {fileID: 4440280282876874411}
   statusText: {fileID: 3075127127800621898}
@@ -60,19 +49,23 @@ MonoBehaviour:
   fabricationsObserveRest: {fileID: 342975890442189119}
   fabricationsObserveImageVideo: {fileID: 3990523973396405946}
   fabricationsInspect: {fileID: 7332681423777907476}
-  seenMaterial: {fileID: 2100000, guid: c1ecea20ac7df7042b4aa15f1d240875, type: 2}
   activationButton: {fileID: 7475292298197805726}
   activationButtonMaximise: {fileID: 21300000, guid: 3c5008f828db4904f887aef29a9807ba,
     type: 3}
   activationButtonMinimise: {fileID: 21300000, guid: 174bbdf809352fc42a45fd5412d60920,
     type: 3}
+  lineRenderers: {fileID: 1325168620969849147}
   lineMaterial: {fileID: 2100000, guid: 067135b03b686574eb53fb59456a7a64, type: 2}
-  objectClassesNumber: 0
-  fabricationsSelected: 0
+  individualDownloaded: 0
+  classDownloaded: 0
+  objectPropertiesDownloaded: 0
+  objectPropertiesNumber: 0
   componentDistanceDownloaded: 0
   operationDistanceDownloaded: 0
-  materialChanged: 0
+  fabricationsSelected: 0
+  fabricationsCreated: 0
   fabricationsActive: 0
+  elementReported: 0
 --- !u!1001 &5090915240688925461
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -242,6 +235,12 @@ Transform:
 --- !u!4 &7332681423777907476 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2550298081673476097, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
+    type: 3}
+  m_PrefabInstance: {fileID: 5090915240688925461}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1325168620969849147 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6108395838386752046, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
     type: 3}
   m_PrefabInstance: {fileID: 5090915240688925461}
   m_PrefabAsset: {fileID: 0}

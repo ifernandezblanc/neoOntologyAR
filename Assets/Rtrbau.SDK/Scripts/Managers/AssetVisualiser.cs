@@ -441,20 +441,20 @@ namespace Rtrbau
         /// 
         /// </summary>
         /// <param name="elementObject"></param>
-        public bool UnloadElement(GameObject elementObject)
+        public bool UnloadElement(OntologyElement elementClass, GameObject elementObject)
         {
             if (elementObject != null)
             {
-                // int elementIndex = loadedElements.FindIndex(x => x.Item3.GetInstanceID() == elementObject.GetInstanceID());
+                // GameObjects for loadedElements should always exist
                 int elementIndex = loadedElements.FindIndex(x => x.Item3.Equals(elementObject));
 
                 if (elementIndex != -1)
                 {
-                    // Remove element from location
-                    if (loadedElements[elementIndex].Item4 == RtrbauElementLocation.Primary) { primaryElements.RemoveElement(elementObject); }
-                    else if (loadedElements[elementIndex].Item4 == RtrbauElementLocation.Secondary) { secondaryElements.RemoveElement(elementObject); }
-                    else if (loadedElements[elementIndex].Item4 == RtrbauElementLocation.Tertiary) { tertiaryElements.RemoveElement(elementObject); }
-                    else if (loadedElements[elementIndex].Item4 == RtrbauElementLocation.Quaternary) { quaternaryElements.RemoveElement(elementObject); }
+                    // Remove element from location in case it is not quaternary
+                    if (loadedElements[elementIndex].Item4 == RtrbauElementLocation.Primary) { primaryElements.RemoveElement(elementClass); }
+                    else if (loadedElements[elementIndex].Item4 == RtrbauElementLocation.Secondary) { secondaryElements.RemoveElement(elementClass); }
+                    else if (loadedElements[elementIndex].Item4 == RtrbauElementLocation.Tertiary) { tertiaryElements.RemoveElement(elementClass); }
+                    else if (loadedElements[elementIndex].Item4 == RtrbauElementLocation.Quaternary) { quaternaryElements.RemoveElement(elementClass); } 
                     else { throw new ArgumentException("AssetVisualiser::UnloadElement: Element " + loadedElements[elementIndex].Item1.entity.Entity() + " not loaded yet."); }
                     // Destroy elementObject
                     if (elementObject.GetComponent<IElementable>().DestroyElement()) { }
@@ -469,11 +469,10 @@ namespace Rtrbau
             }
             else { return false; }
 
-            
             // loadedElements.Remove(loadedElements.Find(x => x.Item2 == element));
             // Remove from location
+            // Destroy elementObject
             // Remove from loaded list
-            // Destroy
         }
         #endregion PUBLIC
 
@@ -562,12 +561,18 @@ namespace Rtrbau
                 {
                     if (loadedElements[elementIndex].Item4 == RtrbauElementLocation.None)
                     {
+                        // Modify material of lastElement to seen
                         if (lastElement != null) { lastElement.GetComponent<IVisualisable>().ModifyMaterial(elementSeenMaterial); }
+                        // Unparent elementObject from previous location
                         elementObject.transform.SetParent(this.transform, false);
+                        // Set elementObject as lastElement
                         lastElement = elementObject;
-
-                        UnloadElement(primaryElements.FindFirstElement());
+                        // Unload and destroy element from primary location
+                        KeyValuePair<OntologyElement, GameObject> primaryFirstElement = primaryElements.FindFirstElement();
+                        UnloadElement(primaryFirstElement.Key, primaryFirstElement.Value);
+                        // Add element to elementLocation
                         primaryElements.AddElement(elementClass, elementObject);
+                        // Set loadedElement to new location (ReloadElement)
                         Tuple<OntologyElement, OntologyElement, GameObject, RtrbauElementLocation> element = new Tuple<OntologyElement, OntologyElement, GameObject, RtrbauElementLocation>(elementIndividual, elementClass, elementObject, RtrbauElementLocation.Primary);
                         ReloadElement(element);
                     }
@@ -577,12 +582,18 @@ namespace Rtrbau
                 {
                     if (loadedElements[elementIndex].Item4 == RtrbauElementLocation.None)
                     {
+                        // Modify material of lastElement to seen
                         if (lastElement != null) { lastElement.GetComponent<IVisualisable>().ModifyMaterial(elementSeenMaterial); }
+                        // Unparent elementObject from previous location
                         elementObject.transform.SetParent(this.transform, false);
+                        // Set elementObject as lastElement
                         lastElement = elementObject;
-
-                        UnloadElement(primaryElements.FindFirstElement());
+                        // Unload and destroy element from primary location
+                        KeyValuePair<OntologyElement, GameObject> primaryFirstElement = primaryElements.FindFirstElement();
+                        UnloadElement(primaryFirstElement.Key, primaryFirstElement.Value);
+                        // Add element to elementLocation
                         secondaryElements.AddElement(elementClass, elementObject);
+                        // Set loadedElement to new location (ReloadElement)
                         Tuple<OntologyElement, OntologyElement, GameObject, RtrbauElementLocation> element = new Tuple<OntologyElement, OntologyElement, GameObject, RtrbauElementLocation>(elementIndividual, elementClass, elementObject, RtrbauElementLocation.Secondary);
                         ReloadElement(element);
                     }
@@ -592,12 +603,18 @@ namespace Rtrbau
                 {
                     if (loadedElements[elementIndex].Item4 == RtrbauElementLocation.None)
                     {
+                        // Modify material of lastElement to seen
                         if (lastElement != null) { lastElement.GetComponent<IVisualisable>().ModifyMaterial(elementSeenMaterial); }
+                        // Unparent elementObject from previous location
                         elementObject.transform.SetParent(this.transform, false);
+                        // Set elementObject as lastElement
                         lastElement = elementObject;
-
-                        UnloadElement(primaryElements.FindFirstElement());
+                        // Unload and destroy element from primary location
+                        KeyValuePair<OntologyElement, GameObject> primaryFirstElement = primaryElements.FindFirstElement();
+                        UnloadElement(primaryFirstElement.Key, primaryFirstElement.Value);
+                        // Add element to elementLocation
                         tertiaryElements.AddElement(elementClass, elementObject);
+                        // Set loadedElement to new location (ReloadElement)
                         Tuple<OntologyElement, OntologyElement, GameObject, RtrbauElementLocation> element = new Tuple<OntologyElement, OntologyElement, GameObject, RtrbauElementLocation>(elementIndividual, elementClass, elementObject, RtrbauElementLocation.Tertiary);
                         ReloadElement(element);
                     }
@@ -611,21 +628,30 @@ namespace Rtrbau
 
                         if (loadedElements[elementIndex].Item4 == RtrbauElementLocation.Primary)
                         {
+                            // Remove element from previous elementLocation
                             primaryElements.RemoveElement(elementClass);
+                            // Relocate element in new elementLocation
                             quaternaryElements.AddElement(elementClass, elementObject);
-                            loadedElements[elementIndex] = element;
+                            // Set loadedElement to new location
+                            ReloadElement(element);
                         }
                         else if (loadedElements[elementIndex].Item4 == RtrbauElementLocation.Secondary)
                         {
+                            // Remove element from previous elementLocation
                             secondaryElements.RemoveElement(elementClass);
+                            // Relocate element in new elementLocation
                             quaternaryElements.AddElement(elementClass, elementObject);
-                            loadedElements[elementIndex] = element;
+                            // Set loadedElement to new location
+                            ReloadElement(element);
                         }
                         else if (loadedElements[elementIndex].Item4 == RtrbauElementLocation.Tertiary)
                         {
+                            // Remove element from previous elementLocation
                             tertiaryElements.RemoveElement(elementClass);
+                            // Relocate element in new elementLocation
                             quaternaryElements.AddElement(elementClass, elementObject);
-                            loadedElements[elementIndex] = element;
+                            // Set loadedElement to new location
+                            ReloadElement(element);
                         }
                         else if (loadedElements[elementIndex].Item4 == RtrbauElementLocation.Quaternary) { throw new ArgumentException("AssetVisualiser::LocateElement: Element already loaded."); }
                         else if (loadedElements[elementIndex].Item4 == RtrbauElementLocation.None) { throw new ArgumentException("AssetVisualiser::LocateElement: Element not loaded yet."); }

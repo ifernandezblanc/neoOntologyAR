@@ -30,7 +30,7 @@ namespace Rtrbau
     public class NominateButton : MonoBehaviour, IVisualisable
     {
         #region INITIALISATION_VARIABLES
-        public Action<OntologyEntity, OntologyEntity> nominate;
+        public Action<OntologyEntity, bool> nominate;
         public OntologyEntity individual;
         public OntologyElement range;
         #endregion INITIALISATION_VARIABLES
@@ -140,7 +140,7 @@ namespace Rtrbau
         #endregion PRIVATE
 
         #region PUBLIC
-        public void Initialise(Action<OntologyEntity, OntologyEntity> nominateIndividual, OntologyEntity relationshipValue, OntologyEntity relationshipRange)
+        public void Initialise(Action<OntologyEntity, bool> nominateIndividual, OntologyEntity relationshipValue, OntologyEntity relationshipRange)
         {
             // Assign button variables
             nominate = nominateIndividual;
@@ -165,17 +165,15 @@ namespace Rtrbau
         {
             if (buttonCreated == true && recordableNominate == false)
             {
-                // Trigger the nominate individual action for this button with new individual as new
-                nominate.Invoke(individual, null);
+                // Trigger the nominate individual action for this button as non-recordable
+                nominate.Invoke(individual, recordableNominate);
             }
             else if (buttonCreated == true && recordableNominate == true)
             {
                 if (recordButtonText != null)
                 {
-                    // Create new individual entity to nominate
-                    OntologyEntity newIndividual = new OntologyEntity(individual.Ontology().URI() + recordButtonText.text);
-                    // Trigger the nominate individual action for this button
-                    nominate.Invoke(individual, newIndividual);
+                    // Trigger the nominate individual action for this button as recordable
+                    nominate.Invoke(individual, recordableNominate);
                 }
                 else { }
             }

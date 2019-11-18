@@ -150,7 +150,7 @@ namespace Rtrbau
                 if (nextElement != null)
                 {
                     Debug.Log("TextButtonTap1::OnNextVisualisation: element " + nextElement.name + " already loaded");
-                    // Update line renderer
+                    // Update element line renderer
                     element.gameObject.GetComponent<ElementsLine>().UpdateLineEnd(nextElement);
                 }
                 else
