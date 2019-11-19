@@ -10,7 +10,7 @@ Copyright (c) 2019 Babcock International Group. All Rights Reserved.
 All Rights Reserved.
 Confidential and Proprietary - Protected under copyright and other laws.
 
-Date: 04/11/2019
+Date: 19/11/2019
 ==============================================================================*/
 
 /// <summary>
@@ -30,7 +30,7 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
-    public class DefaultRecord : MonoBehaviour, IFabricationable, IVisualisable, IRecordable
+    public class TextButtonTap2 : MonoBehaviour, IFabricationable, IVisualisable, IRecordable
     {
         #region INITIALISATION_VARIABLES
         public AssetVisualiser visualiser;
@@ -50,7 +50,7 @@ namespace Rtrbau
         public MeshRenderer fabricationSeenPanel;
         public MeshRenderer fabricationReportedPanel;
         public Material fabricationReportedMaterial;
-        public GameObject recordButton;
+        public GameObject recordTimeButton;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -60,7 +60,7 @@ namespace Rtrbau
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || recordButton == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || recordTimeButton == null)
             {
                 throw new ArgumentException("DefaultRecord::Start: Script requires some prefabs to work.");
             }
@@ -111,13 +111,15 @@ namespace Rtrbau
         /// </summary>
         public void InferFromText()
         {
-            DataFacet textfacet0 = DataFormats.DefaultRecord.formatFacets[0];
+            DataFacet textfacet4 = DataFormats.TextButtonTap2.formatFacets[0];
             RtrbauAttribute attribute;
 
             // Check data received meets fabrication requirements
-            if (data.fabricationData.TryGetValue(textfacet0, out attribute))
+            if (data.fabricationData.TryGetValue(textfacet4, out attribute))
             {
+                // Assign fabrication to attributeName
                 fabricationText.text = attribute.attributeName.Name();
+                // Check fabrication creation as true
                 fabricationCreated = true;
             }
             else
@@ -131,15 +133,16 @@ namespace Rtrbau
         /// </summary>
         public void OnNextVisualisation()
         {
-            DataFacet textfacet0 = DataFormats.DefaultRecord.formatFacets[0];
+            DataFacet textfacet4 = DataFormats.TextButtonTap2.formatFacets[0];
             RtrbauAttribute attribute;
 
             // Check data received meets fabrication requirements
-            if (data.fabricationData.TryGetValue(textfacet0, out attribute))
+            if (data.fabricationData.TryGetValue(textfacet4, out attribute))
             {
-                // Update attribute value according to what user recorded
+                // Update attributeValue assigned automatically when fabrication created (InferFromText)
+                // It could not be done before for attributes values re-initialisation after fabrications creation
                 // This assigns to RtrbauElement from ElementReport through RtrbauFabrication
-                attribute.attributeValue = recordButton.GetComponent<RecordButton>().ReturnAttributeValue();
+                attribute.attributeValue = Parser.ParseNamingDateTimeXSD(recordTimeButton.GetComponent<RecordTimeButton>().ReturnAttributeValueDateTime());
                 // Change button colour for user confirmation
                 fabricationReportedPanel.material = fabricationReportedMaterial;
                 // Check if all attribute values have been recorded
@@ -187,9 +190,9 @@ namespace Rtrbau
             // Call ElementReport to deactivate buttons from other nominate fabrications
             element.GetComponent<ElementReport>().DeactivateNominates(null);
 
-            if (fabricationCreated == true && recordButton.activeSelf == false)
+            if (fabricationCreated == true && recordTimeButton.activeSelf == false)
             {
-                recordButton.SetActive(true);
+                recordTimeButton.SetActive(true);
             }
             else { }
         }
@@ -200,9 +203,9 @@ namespace Rtrbau
         /// </summary>
         public void DeactivateRecords()
         {
-            if (fabricationCreated == true && recordButton.activeSelf == true)
+            if (fabricationCreated == true && recordTimeButton.activeSelf == true)
             {
-                recordButton.SetActive(false);
+                recordTimeButton.SetActive(false);
             }
             else { }
         }

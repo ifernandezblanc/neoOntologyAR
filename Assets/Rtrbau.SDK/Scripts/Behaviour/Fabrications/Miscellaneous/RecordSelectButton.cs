@@ -10,7 +10,7 @@ Copyright (c) 2019 Babcock International Group. All Rights Reserved.
 All Rights Reserved.
 Confidential and Proprietary - Protected under copyright and other laws.
 
-Date: 19/11/2019
+Date: 18/11/2019
 ==============================================================================*/
 
 /// <summary>
@@ -25,17 +25,21 @@ using TMPro;
 #endregion NAMESPACES
 
 namespace Rtrbau
-{
-    public class RecordButton : MonoBehaviour, IVisualisable
+{ 
+    public class RecordSelectButton : MonoBehaviour, IVisualisable
     {
         #region INITIALISATION_VARIABLES
+        public Action<string> select;
+        public string selectableValue;
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
-        public TextMeshProUGUI recordButtonText;
+        public TextMeshPro buttonText;
+        public MeshRenderer seenPanel;
+        public MeshRenderer reportedPanel;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -45,7 +49,7 @@ namespace Rtrbau
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (recordButtonText == null)
+            if (buttonText == null || seenPanel == null || reportedPanel == null)
             {
                 throw new ArgumentException("NominateButton::Start: Script requires some prefabs to work.");
             }
@@ -82,19 +86,38 @@ namespace Rtrbau
         #endregion PRIVATE
 
         #region PUBLIC
-        /// <summary>
-        /// Returns user recorded text.
-        /// </summary>
-        /// <returns>Returns <see cref="string"/> if text recorded, otherwise returns <see cref="null"/>.</returns>
-        public string ReturnAttributeValue()
+        public void Initialise(Action<string> selectRecord, string setValue)
         {
-            if (recordButtonText.text != null)
+            // Assign button variables
+            select = selectRecord;
+            selectableValue = setValue;
+            // Assign selectable value to button
+            buttonText.text = setValue;
+            // Check button as created
+            buttonCreated = true;
+        }
+
+        public void SelectRecord()
+        {
+            if (buttonCreated == true)
             {
-                return recordButtonText.text;
+                // Trigger the select record action for this button
+                select.Invoke(selectableValue);
             }
-            else { return null; }
+            else { }
+        }
+
+        public void ReportMaterial(Material material)
+        {
+            reportedPanel.material = material;
+        }
+
+        public void SeenMaterial(Material material)
+        {
+            seenPanel.material = material;
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS
     }
 }
+

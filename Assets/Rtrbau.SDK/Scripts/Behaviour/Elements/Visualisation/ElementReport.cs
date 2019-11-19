@@ -247,9 +247,9 @@ namespace Rtrbau
                     Debug.Log("ElementConsult::SelectFabrications: " + format.Item2.formatName + " required facets: " + format.Item2.formatRequiredFacets);
 
                     // Determine if format is assignable as fabrications to the element
-                    // List<RtrbauFabrication> formatAssignedFabrications = format.Item2.EvaluateFormat(rtrbauElement);
+                    List<RtrbauFabrication> formatAssignedFabrications = format.Item2.EvaluateFormat(rtrbauElement);
                     // FABRICATIONS CREATION TRIAL: USE PREVIOUS WHEN COMPLETED
-                    List<RtrbauFabrication> formatAssignedFabrications = null;
+                    //List<RtrbauFabrication> formatAssignedFabrications = null;
 
                     // Assign fabrications
                     if (formatAssignedFabrications != null)
@@ -890,7 +890,6 @@ namespace Rtrbau
                 {
                     fabrication.Value.transform.SetParent(fabricationsRecordRest, false);
                     fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, visualiser.transform);
-                    //unparentedFabrications.Add(fabrication.Value);
                 }
                 else { }
                 recordFabrications.Add(fabrication.Value);
@@ -1051,6 +1050,7 @@ namespace Rtrbau
         #region PUBLIC
         /// <summary>
         /// Deactivates record buttons from all other record fabrications that are not active.
+        /// Pass null as argument if all records buttons to be deactivated.
         /// </summary>
         /// <param name="activeRecord"></param>
         public void DeactivateRecords(GameObject activeRecord)
@@ -1065,6 +1065,7 @@ namespace Rtrbau
 
         /// <summary>
         /// Deactivates nominate buttons from all other nominate fabrications that are not active.
+        /// Pass null as argument if all nominates buttons to be deactivated.
         /// </summary>
         /// <param name="activeNominate"></param>
         public void DeactivateNominates(GameObject activeNominate)
@@ -1090,17 +1091,24 @@ namespace Rtrbau
             // Identify attributes whose values have not been reported
             List<RtrbauAttribute> nonReportedAttributes = rtrbauElement.elementAttributes.FindAll(x => x.attributeValue == null);
 
-            Debug.Log("ElementReport::CheckAttributesReport: checking if all attribute values reported...");
+            Debug.Log("ElementReport::CheckAttributesReported: checking if all attribute values reported...");
+
+            foreach (RtrbauAttribute attribute in rtrbauElement.elementAttributes) 
+            {
+                Debug.Log("ElementReport::CheckAttributesReported: attribute " + attribute.attributeName.Name() + " has value " + attribute.attributeValue);
+            }
 
             // If there are attributes with non-reported values
             if (nonReportedAttributes.Count == 0)
             {
+                Debug.Log("ElementReport::CheckAttributesReported: all attribute values reported.");
                 // Report rtrbauElement
                 AttributesReported();
                 return true;
             }
             else
             {
+                Debug.Log("ElementReport::CheckAttributesReported: some attribute values still to be reported.");
                 // Update status text to show all attributes have not been reported
                 statusText.text = "Not all attributes reported, please complete them and click again for reporting.";
                 return false;

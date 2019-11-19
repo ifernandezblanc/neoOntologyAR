@@ -10,7 +10,7 @@ Copyright (c) 2019 Babcock International Group. All Rights Reserved.
 All Rights Reserved.
 Confidential and Proprietary - Protected under copyright and other laws.
 
-Date: 05/11/2019
+Date: 19/11/2019
 ==============================================================================*/
 
 /// <summary>
@@ -31,7 +31,7 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
-    public class DefaultNominate : MonoBehaviour, IFabricationable, IVisualisable, INominatable
+    public class TextPanelTap1 : MonoBehaviour, IFabricationable, IVisualisable, INominatable
     {
         #region INITIALISATION_VARIABLES
         public AssetVisualiser visualiser;
@@ -129,7 +129,7 @@ namespace Rtrbau
         /// </summary>
         public void InferFromText()
         {
-            DataFacet textfacet2 = DataFormats.DefaultNominate.formatFacets[0];
+            DataFacet textfacet2 = DataFormats.TextPanelTap1.formatFacets[0];
             RtrbauAttribute attribute;
 
             // Check data received meets fabrication requirements
@@ -171,7 +171,7 @@ namespace Rtrbau
             // Check if an individual has been nominated
             if (individualNominated == true)
             {
-                DataFacet textfacet2 = DataFormats.DefaultNominate.formatFacets[0];
+                DataFacet textfacet2 = DataFormats.TextPanelTap1.formatFacets[0];
                 RtrbauAttribute attribute;
 
                 // Check data received meets fabrication requirements

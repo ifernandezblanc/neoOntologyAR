@@ -42,7 +42,7 @@ namespace Rtrbau
         #region TEXT_FACETS
         public static DataFacetRules TextFacet0 = new DataFacetRules(All, null, Any, null, Any, null, Any, null); // All properties will fit into here
         public static DataFacetRules TextFacet1 = new DataFacetRules(All, null, Any, Libraries.TextLibrary, Any, null, Any, Libraries.DatatypePropertyLibrary);
-        public static DataFacetRules TextFacet2 = new DataFacetRules(All, null, Any, null, Any, null, Any, Libraries.ObjectPropertyLibrary);
+        public static DataFacetRules TextFacet2 = new DataFacetRules(All, null, Any, null, Any, null, Any, Libraries.ObjectPropertyLibrary); // Includes two types: new report individual and new record individual
         public static DataFacetRules TextFacet3 = new DataFacetRules(All, null, Any, Libraries.StringLibrary, Any, null, Any, Libraries.DatatypePropertyLibrary);
         public static DataFacetRules TextFacet4 = new DataFacetRules(All, null, Any, Libraries.DateTimeLibrary, Any, null, Any, Libraries.DatatypePropertyLibrary);
         public static DataFacetRules TextFacet5 = new DataFacetRules(Any, Libraries.TimeRecord, Any, Libraries.DateTimeLibrary, Any, null, Any, Libraries.DatatypePropertyLibrary);

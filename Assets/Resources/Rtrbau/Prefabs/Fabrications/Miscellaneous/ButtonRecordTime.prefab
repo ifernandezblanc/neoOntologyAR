@@ -294,7 +294,7 @@ MonoBehaviour:
   eventsToReceive: 0
   pokeThreshold: 0.25
   debounceThreshold: 0.01
---- !u!114 &1624648850665041156
+--- !u!114 &-3465340660072275734
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -303,9 +303,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6157507697026778445}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3ccae89d64878148a4b0bab6401f50b, type: 3}
+  m_Script: {fileID: 11500000, guid: d47cd06a8d17a8b44af26cad0d555a5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  recordButtonPlaceholder: {fileID: 6351423805303293961}
   recordButtonText: {fileID: 6802093868100408237}
 --- !u!1 &7240682901585696322
 GameObject:
@@ -721,7 +722,7 @@ PrefabInstance:
     - target: {fileID: 6607748768231483013, guid: 1410b751b30772648a4eebd45457b714,
         type: 3}
       propertyPath: m_Name
-      value: ButtonRecord
+      value: ButtonRecordTime
       objectReference: {fileID: 0}
     - target: {fileID: 6995589815024851810, guid: 1410b751b30772648a4eebd45457b714,
         type: 3}

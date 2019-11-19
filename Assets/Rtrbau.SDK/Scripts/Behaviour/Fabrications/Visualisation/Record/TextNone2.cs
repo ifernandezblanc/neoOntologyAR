@@ -30,7 +30,7 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
-    public class TextNone2 : MonoBehaviour, IFabricationable, IVisualisable
+    public class TextNone2 : MonoBehaviour, IFabricationable, IVisualisable, IRecordable
     {
         #region INITIALISATION_VARIABLES
         public AssetVisualiser visualiser;
@@ -40,6 +40,7 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
+        public DateTimeOffset attributeDate;
         #endregion CLASS_VARIABLES
 
         #region FACETS_VARIABLES
@@ -47,7 +48,10 @@ namespace Rtrbau
 
         #region GAMEOBJECT_PREFABS
         public TextMeshPro fabricationText;
-        public MeshRenderer fabricationPanel;
+        public MeshRenderer fabricationSeenPanel;
+        public MeshRenderer fabricationReportedPanel;
+        public Material fabricationReportedMaterial;
+        public GameObject recordText;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -57,9 +61,9 @@ namespace Rtrbau
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationPanel == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || recordText == null)
             {
-                throw new ArgumentException("TextNone2::Start: Script requires some prefabs to work.");
+                throw new ArgumentException("DefaultRecord::Start: Script requires some prefabs to work.");
             }
         }
 
@@ -114,7 +118,13 @@ namespace Rtrbau
             // Check data received meets fabrication requirements
             if (data.fabricationData.TryGetValue(textfacet5, out attribute))
             {
+                // Assign time of creation as time of record
+                attributeDate = DateTimeOffset.Now;
+                // Assign record text with attribute value given automatically
+                recordText.GetComponentInChildren<TextMeshPro>().text = Parser.ParseNamingDateTimeXSD(attributeDate);
+                // Assign fabrication to attributeName
                 fabricationText.text = attribute.attributeName.Name();
+                // Check fabrication creation as true
                 fabricationCreated = true;
             }
             else
@@ -128,26 +138,26 @@ namespace Rtrbau
         /// </summary>
         public void OnNextVisualisation()
         {
-            //DataFacet textfacet0 = DataFormats.DefaultRecord.formatFacets[0];
-            //RtrbauAttribute attribute;
+            DataFacet textfacet5 = DataFormats.TextNone2.formatFacets[0];
+            RtrbauAttribute attribute;
 
-            //// Check data received meets fabrication requirements
-            //if (data.fabricationData.TryGetValue(textfacet0, out attribute))
-            //{
-            //    // Update attribute value according to what user recorded
-            //    // This assigns to RtrbauElement from ElementReport through RtrbauFabrication
-            //    // TextMeshPro - InputField creates an extra child that is assigned
-            //    attribute.attributeValue = recordButton.transform.GetChild(0).GetChild(0).GetChild(1).GetChild(0).GetChild(0).GetChild(2).GetComponent<TextMeshProUGUI>().text;
-            //    // Change button colour for user confirmation
-            //    fabricationReportedPanel.material = fabricationReportedMaterial;
-            //    // Check if all attribute values have been recorded
-            //    // If true, then ElementReport will input reported element into report
-            //    // If true, then ElementReport will change colour to reported
-            //    element.gameObject.GetComponent<ElementReport>().CheckAttributesReported();
-            //    // Deactivate record button
-            //    DeactivateRecords();
-            //}
-            //else { }
+            // Check data received meets fabrication requirements
+            if (data.fabricationData.TryGetValue(textfacet5, out attribute))
+            {
+                // Update attributeValue assigned automatically when fabrication created (InferFromText)
+                // It could not be done before for attributes values re-initialisation after fabrications creation
+                // This assigns to RtrbauElement from ElementReport through RtrbauFabrication
+                attribute.attributeValue = Parser.ParseNamingDateTimeXSD(attributeDate);
+                // Change button colour for user confirmation
+                fabricationReportedPanel.material = fabricationReportedMaterial;
+                // Check if all attribute values have been recorded
+                // If true, then ElementReport will input reported element into report
+                // If true, then ElementReport will change colour to reported
+                element.gameObject.GetComponent<ElementReport>().CheckAttributesReported();
+                // Deactivate record button
+                DeactivateRecords();
+            }
+            else { }
         }
         #endregion IFABRICATIONABLE_METHODS
 
@@ -169,7 +179,7 @@ namespace Rtrbau
 
         public void ModifyMaterial(Material material)
         {
-            //fabricationSeenPanel.material = material;
+            fabricationSeenPanel.material = material;
         }
         #endregion IVISUALISABLE_METHODS
 
@@ -180,14 +190,16 @@ namespace Rtrbau
         /// </summary>
         public void ActivateRecords()
         {
-            //// Call ElementReport to deactivate buttons from other record fabrications
-            //element.GetComponent<ElementReport>().DeactivateRecords(this.gameObject);
+            // Call ElementReport to deactivate buttons from other record fabrications
+            element.GetComponent<ElementReport>().DeactivateRecords(this.gameObject);
+            // Call ElementReport to deactivate buttons from other nominate fabrications
+            element.GetComponent<ElementReport>().DeactivateNominates(null);
 
-            //if (fabricationCreated == true && recordButton.activeSelf == false)
-            //{
-            //    recordButton.SetActive(true);
-            //}
-            //else { }
+            if (fabricationCreated == true && recordText.activeSelf == false)
+            {
+                recordText.SetActive(true);
+            }
+            else { }
         }
 
         /// <summary>
@@ -196,11 +208,11 @@ namespace Rtrbau
         /// </summary>
         public void DeactivateRecords()
         {
-            //if (fabricationCreated == true && recordButton.activeSelf == true)
-            //{
-            //    recordButton.SetActive(false);
-            //}
-            //else { }
+            if (fabricationCreated == true && recordText.activeSelf == true)
+            {
+                recordText.SetActive(false);
+            }
+            else { }
         }
         #endregion IRECORDABLE_METHODS
 

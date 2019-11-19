@@ -10,7 +10,7 @@ Copyright (c) 2019 Babcock International Group. All Rights Reserved.
 All Rights Reserved.
 Confidential and Proprietary - Protected under copyright and other laws.
 
-Date: 19/11/2019
+Date: 18/11/2019
 ==============================================================================*/
 
 /// <summary>
@@ -25,16 +25,18 @@ using TMPro;
 #endregion NAMESPACES
 
 namespace Rtrbau
-{
-    public class RecordButton : MonoBehaviour, IVisualisable
+{ 
+    public class RecordTimeButton : MonoBehaviour, IVisualisable
     {
         #region INITIALISATION_VARIABLES
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
+        public DateTimeOffset attributeValueDateTime;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
+        public TextMeshProUGUI recordButtonPlaceholder;
         public TextMeshProUGUI recordButtonText;
         #endregion GAMEOBJECT_PREFABS
 
@@ -45,11 +47,16 @@ namespace Rtrbau
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (recordButtonText == null)
+            if (recordButtonPlaceholder == null || recordButtonText == null)
             {
                 throw new ArgumentException("NominateButton::Start: Script requires some prefabs to work.");
             }
-            else { }
+            else
+            {
+                attributeValueDateTime = default(DateTimeOffset);
+                recordButtonPlaceholder.text = "yyyy-MM-dd HH:mm";
+                buttonCreated = true;
+            }
         }
 
         void OnDestroy() { DestroyIt(); }
@@ -83,18 +90,34 @@ namespace Rtrbau
 
         #region PUBLIC
         /// <summary>
-        /// Returns user recorded text.
+        /// Returns user recorded <see cref="DateTimeOffset"/> by text input.
         /// </summary>
-        /// <returns>Returns <see cref="string"/> if text recorded, otherwise returns <see cref="null"/>.</returns>
-        public string ReturnAttributeValue()
+        /// <returns>Returns <see cref="attributeValueDateTime"/> if parsed correctly, otherwise returns <see cref="default"/>.</returns>
+        public DateTimeOffset ReturnAttributeValueDateTime()
         {
-            if (recordButtonText.text != null)
+            if (buttonCreated == true)
             {
-                return recordButtonText.text;
+                if (recordButtonText.text != null)
+                {
+                    if (DateTimeOffset.TryParse(recordButtonText.text, out attributeValueDateTime))
+                    {
+                        return attributeValueDateTime;
+                    }
+                    else
+                    {
+                        return default(DateTimeOffset);
+                    }
+                    
+                }
+                else { return default(DateTimeOffset); }
             }
-            else { return null; }
+            else
+            {
+                return default(DateTimeOffset);
+            }
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS
     }
 }
+
