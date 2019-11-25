@@ -42,12 +42,14 @@ namespace Rtrbau
 
         #region CLASS_VARIABLES
         public TrackableBehaviour assetTargetTrackableBehaviour;
+        private bool assetTargetTrackableBehaviourFound;
         #endregion CLASS_VARIABLES
 
         #region MONOBEHAVIOUR_METHODS
         protected virtual void Start()
         {
-
+            assetTargetTrackableBehaviourFound = false;
+            StartCoroutine(ForceVuforiaRegistration());
         }
 
         protected virtual void Update()
@@ -74,13 +76,14 @@ namespace Rtrbau
             newStatus == TrackableBehaviour.Status.TRACKED ||
             newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED)
             {
-                //Debug.Log("Hello " + mTrackableBehaviour.TrackableName + " found");
+                Debug.Log("PanelAssetTargetEvents::OnTrackableStateChanged: " + assetTargetTrackableBehaviour.TrackableName + " found");
                 WriteStatusChange("Asset found");
+                assetTargetTrackableBehaviourFound = true;
                 assetRegistrationButton.SetActive(true);
             }
             else if (previousStatus == TrackableBehaviour.Status.NO_POSE)
             {
-                //Debug.Log("Hello " + mTrackableBehaviour.TrackableName + " lost");
+                Debug.Log("PanelAssetTargetEvents::OnTrackableStateChanged: " + assetTargetTrackableBehaviour.TrackableName + " lost");
                 WriteStatusChange("No pose found");
             }
             else if (previousStatus == TrackableBehaviour.Status.LIMITED)
@@ -99,6 +102,39 @@ namespace Rtrbau
         #endregion ITRACKABLEEVENTHANDLER_METHODS
 
         #region CLASS_METHODS
+
+        #region PRIVATE
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="status"></param>
+        void WriteStatusChange(string status)
+        {
+            if (assetStatus != null)
+            {
+                assetStatus.text = status;
+            }
+            else { }
+        }
+
+        IEnumerator ForceVuforiaRegistration()
+        {
+            int counter = 30;
+            Debug.Log("PanelAssetTargetEvents::ForceVuforiaRegistration: waiting for " + counter + " seconds before forcing registration");
+            while (counter > 0 && assetTargetTrackableBehaviourFound == false)
+            {
+                yield return new WaitForSeconds(1);
+                counter--;
+                Debug.Log("PanelAssetTargetEvents::ForceVuforiaRegistration: waiting for " + counter + " seconds before forcing registration");
+            }
+            Debug.Log("PanelAssetTargetEvents::ForceVuforiaRegistration: asset registration being forced");
+            WriteStatusChange("Asset found");
+            assetTargetTrackableBehaviourFound = true;
+            assetRegistrationButton.SetActive(true);
+        }
+        #endregion PRIVATE
+
+        #region PUBLIC
         /// <summary>
         /// 
         /// </summary>
@@ -132,19 +168,7 @@ namespace Rtrbau
             }
 
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="status"></param>
-        void WriteStatusChange(string status)
-        {
-            if (assetStatus != null)
-            {
-                assetStatus.text = status;
-            }
-            else { }
-        }
+        #endregion PUBLIC
         #endregion CLASS_METHODS
     }
 }

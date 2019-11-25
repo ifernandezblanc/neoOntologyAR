@@ -170,9 +170,9 @@ namespace Rtrbau
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
                 (RtrbauFabricationName.AnimationNone2, DataFormats.AnimationNone2, EnvironmentFormats.AnimationNone2, UserFormats.AnimationNone2),
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.TextButtonTap1, DataFormats.TextButtonTap1, EnvironmentFormats.TextButtonTap1, UserFormats.TextButtonTap1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.IconButtonTap1, DataFormats.IconButtonTap1, EnvironmentFormats.IconButtonTap1, UserFormats.IconButtonTap1)
+                (RtrbauFabricationName.TextButtonTap1, DataFormats.TextButtonTap1, EnvironmentFormats.TextButtonTap1, UserFormats.TextButtonTap1)
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.IconButtonTap1, DataFormats.IconButtonTap1, EnvironmentFormats.IconButtonTap1, UserFormats.IconButtonTap1)
             };
         #endregion CONSULT_FORMATS
 

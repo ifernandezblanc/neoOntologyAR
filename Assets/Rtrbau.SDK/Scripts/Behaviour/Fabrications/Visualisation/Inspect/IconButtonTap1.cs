@@ -29,6 +29,7 @@ namespace Rtrbau
     /// <summary>
     /// Describe script purpose
     /// Add links when code has been inspired
+    /// UPG: TO COMPLETE WITH ICON SPRITE AND NEW PREFAB AS COPY OF TEXTBUTTONTAP1
     /// </summary>
     public class IconButtonTap1 : MonoBehaviour, IFabricationable, IVisualisable
     {
