@@ -91,7 +91,8 @@ namespace Rtrbau
         TextDictation1,
         TextKeyboard1,
         TextPanelTap1, TextPanelTap2,
-        IconPanelTap1
+        IconPanelTap1,
+        ModelPanelTap1
     }
 
     /// <summary>

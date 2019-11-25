@@ -202,7 +202,9 @@ namespace Rtrbau
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
                 (RtrbauFabricationName.TextButtonTap2, DataFormats.TextButtonTap2, EnvironmentFormats.TextButtonTap2, UserFormats.TextButtonTap2),
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.TextPanelTap2, DataFormats.TextPanelTap2, EnvironmentFormats.TextPanelTap2, UserFormats.TextPanelTap2)
+                (RtrbauFabricationName.TextPanelTap2, DataFormats.TextPanelTap2, EnvironmentFormats.TextPanelTap2, UserFormats.TextPanelTap2),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.ModelPanelTap1, DataFormats.ModelPanelTap1, EnvironmentFormats.ModelPanelTap1, UserFormats.ModelPanelTap1)
             };
         #endregion REPORT_FORMATS
         #endregion DICTIONARIES_FORMATS

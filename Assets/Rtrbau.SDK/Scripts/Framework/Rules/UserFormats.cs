@@ -126,7 +126,8 @@ namespace Rtrbau
         #endregion ICONPANEL_FORMATS
 
         #region MODELPANEL_FORMATS
-        // UPG: to modify ModelRecordHold1 once changes for component class being made
+        // UPG: to modify to fabrication type nominate once component class being considered properly on RtrbauElement
+        public static UserFormat ModelPanelTap1 = new UserFormat(RtrbauFabricationName.ModelPanelTap1, RtrbauComprehensiveness.threeD, RtrbauDescriptiveness.literal);
         #endregion MODELPANEL_FORMATS
         #endregion FORMATS
     }

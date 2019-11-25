@@ -120,10 +120,6 @@ namespace Rtrbau
         public static EnvironmentFormat TextKeyboard1 = new EnvironmentFormat(RtrbauFabricationName.TextKeyboard1, EnvironmentFacets.text, EnvironmentFacets.gesturekeyboard);
         #endregion TEXTRECORD_FORMATS
 
-        #region MODELPANEL_FORMATS
-        // UPG: to modify ModelRecordHold1 once changes for component class being made
-        #endregion MODELPANEL_FORMATS
-
         #region TEXTPANEL_FORMATS
         public static EnvironmentFormat TextPanelTap1 = new EnvironmentFormat(RtrbauFabricationName.TextPanelTap1, EnvironmentFacets.text, EnvironmentFacets.gesturetap);
         public static EnvironmentFormat TextPanelTap2 = new EnvironmentFormat(RtrbauFabricationName.TextPanelTap2, EnvironmentFacets.text, EnvironmentFacets.gesturetap);
@@ -132,6 +128,11 @@ namespace Rtrbau
         #region ICONPANEL_FORMATS
         public static EnvironmentFormat IconPanelTap1 = new EnvironmentFormat(RtrbauFabricationName.IconPanelTap1, EnvironmentFacets.text, EnvironmentFacets.gesturetap);
         #endregion ICONPANEL_FORMATS
+
+        #region MODELPANEL_FORMATS
+        // UPG: to modify to fabrication type nominate once component class being considered properly on RtrbauElement
+        public static EnvironmentFormat ModelPanelTap1 = new EnvironmentFormat(RtrbauFabricationName.ModelPanelTap1, EnvironmentFacets.model, EnvironmentFacets.gesturetap);
+        #endregion MODELPANEL_FORMATS
         #endregion FORMATS
     }
 }
