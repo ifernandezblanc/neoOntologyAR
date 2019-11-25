@@ -294,7 +294,7 @@ MonoBehaviour:
   eventsToReceive: 0
   pokeThreshold: 0.25
   debounceThreshold: 0.01
---- !u!114 &1624648850665041156
+--- !u!114 &2747842784308064989
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -721,7 +721,7 @@ PrefabInstance:
     - target: {fileID: 6607748768231483013, guid: 1410b751b30772648a4eebd45457b714,
         type: 3}
       propertyPath: m_Name
-      value: ButtonRecord
+      value: ButtonRecordKeyboard
       objectReference: {fileID: 0}
     - target: {fileID: 6995589815024851810, guid: 1410b751b30772648a4eebd45457b714,
         type: 3}

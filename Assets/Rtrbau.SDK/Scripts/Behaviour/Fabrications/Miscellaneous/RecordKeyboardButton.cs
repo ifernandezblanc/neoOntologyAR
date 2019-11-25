@@ -26,7 +26,7 @@ using TMPro;
 
 namespace Rtrbau
 {
-    public class RecordButton : MonoBehaviour, IVisualisable
+    public class RecordKeyboardButton : MonoBehaviour, IVisualisable
     {
         #region INITIALISATION_VARIABLES
         #endregion INITIALISATION_VARIABLES

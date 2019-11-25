@@ -50,7 +50,7 @@ namespace Rtrbau
         public MeshRenderer fabricationSeenPanel;
         public MeshRenderer fabricationReportedPanel;
         public Material fabricationReportedMaterial;
-        public GameObject recordButton;
+        public GameObject recordKeyboardButton;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -60,7 +60,7 @@ namespace Rtrbau
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || recordButton == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || recordKeyboardButton == null)
             {
                 throw new ArgumentException("DefaultRecord::Start: Script requires some prefabs to work.");
             }
@@ -139,7 +139,7 @@ namespace Rtrbau
             {
                 // Update attribute value according to what user recorded
                 // This assigns to RtrbauElement from ElementReport through RtrbauFabrication
-                attribute.attributeValue = recordButton.GetComponent<RecordButton>().ReturnAttributeValue();
+                attribute.attributeValue = recordKeyboardButton.GetComponent<RecordKeyboardButton>().ReturnAttributeValue();
                 // Change button colour for user confirmation
                 fabricationReportedPanel.material = fabricationReportedMaterial;
                 // Check if all attribute values have been recorded
@@ -187,9 +187,9 @@ namespace Rtrbau
             // Call ElementReport to deactivate buttons from other nominate fabrications
             element.GetComponent<ElementReport>().DeactivateNominates(null);
 
-            if (fabricationCreated == true && recordButton.activeSelf == false)
+            if (fabricationCreated == true && recordKeyboardButton.activeSelf == false)
             {
-                recordButton.SetActive(true);
+                recordKeyboardButton.SetActive(true);
             }
             else { }
         }
@@ -200,9 +200,9 @@ namespace Rtrbau
         /// </summary>
         public void DeactivateRecords()
         {
-            if (fabricationCreated == true && recordButton.activeSelf == true)
+            if (fabricationCreated == true && recordKeyboardButton.activeSelf == true)
             {
-                recordButton.SetActive(false);
+                recordKeyboardButton.SetActive(false);
             }
             else { }
         }

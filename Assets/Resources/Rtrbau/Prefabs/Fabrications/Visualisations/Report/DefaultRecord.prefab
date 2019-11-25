@@ -27,7 +27,7 @@ MonoBehaviour:
   fabricationReportedPanel: {fileID: 1496305885126205786}
   fabricationReportedMaterial: {fileID: 2100000, guid: d1e6ac5dd3c0c3b40ac84b4b2a1faaff,
     type: 2}
-  recordButton: {fileID: 3888492109924277743}
+  recordKeyboardButton: {fileID: 3888492109924277743}
 --- !u!1001 &4772971569594001564
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -377,7 +377,7 @@ PrefabInstance:
     - target: {fileID: 6157507697026778445, guid: f486cb5feca96c543af53f2473d7bb1e,
         type: 3}
       propertyPath: m_Name
-      value: ButtonRecord
+      value: ButtonRecordKeyboard
       objectReference: {fileID: 0}
     - target: {fileID: 6157507697026778445, guid: f486cb5feca96c543af53f2473d7bb1e,
         type: 3}
@@ -439,11 +439,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8072737661283166223, guid: f486cb5feca96c543af53f2473d7bb1e,
-        type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 6273826497656271688, guid: f486cb5feca96c543af53f2473d7bb1e,
         type: 3}
       propertyPath: m_textInfo.characterCount
@@ -478,6 +473,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSize
       value: 23.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8072737661283166223, guid: f486cb5feca96c543af53f2473d7bb1e,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f486cb5feca96c543af53f2473d7bb1e, type: 3}

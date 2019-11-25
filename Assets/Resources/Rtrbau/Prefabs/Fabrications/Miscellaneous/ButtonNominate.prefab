@@ -32,12 +32,32 @@ PrefabInstance:
     - target: {fileID: 6157507697026778445, guid: f486cb5feca96c543af53f2473d7bb1e,
         type: 3}
       propertyPath: m_Name
-      value: ButtonRecord
+      value: ButtonRecordKeyboard
       objectReference: {fileID: 0}
     - target: {fileID: 6157507697026778445, guid: f486cb5feca96c543af53f2473d7bb1e,
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6802093868100408237, guid: f486cb5feca96c543af53f2473d7bb1e,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6802093868100408237, guid: f486cb5feca96c543af53f2473d7bb1e,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6802093868100408237, guid: f486cb5feca96c543af53f2473d7bb1e,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6802093868100408237, guid: f486cb5feca96c543af53f2473d7bb1e,
+        type: 3}
+      propertyPath: m_textInfo.pageCount
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2600747933821622799, guid: f486cb5feca96c543af53f2473d7bb1e,
         type: 3}
@@ -115,26 +135,6 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6351423805303293961, guid: f486cb5feca96c543af53f2473d7bb1e,
-        type: 3}
-      propertyPath: m_textInfo.pageCount
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6802093868100408237, guid: f486cb5feca96c543af53f2473d7bb1e,
-        type: 3}
-      propertyPath: m_textInfo.characterCount
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6802093868100408237, guid: f486cb5feca96c543af53f2473d7bb1e,
-        type: 3}
-      propertyPath: m_textInfo.wordCount
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6802093868100408237, guid: f486cb5feca96c543af53f2473d7bb1e,
-        type: 3}
-      propertyPath: m_textInfo.lineCount
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6802093868100408237, guid: f486cb5feca96c543af53f2473d7bb1e,
         type: 3}
       propertyPath: m_textInfo.pageCount
       value: 1

@@ -181,8 +181,8 @@ namespace Rtrbau
             = new List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>>
             {
                 // TRIAL: to un-comment when created
-                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                //(RtrbauFabricationName.TextDictation1, DataFormats.TextDictation1, EnvironmentFormats.TextDictation1, UserFormats.TextDictation1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.TextDictation1, DataFormats.TextDictation1, EnvironmentFormats.TextDictation1, UserFormats.TextDictation1),
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
                 (RtrbauFabricationName.TextKeyboard1, DataFormats.TextKeyboard1, EnvironmentFormats.TextKeyboard1, UserFormats.TextKeyboard1),
                 //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
