@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.IO;
 #endregion
 
 
@@ -730,38 +731,11 @@ namespace Rtrbau
             }
         }
 
-        //public bool RemoveElement(GameObject elementObject)
-        //{
-        //    // int existingElementIndex = locationElements.FindIndex(x => x.Value.GetInstanceID() == elementObject.GetInstanceID());
-        //    // Considers the option that a located class may have its loaded element gameobject set to null (when the element has been unloaded)
-        //    int existingElementIndex = locationElements.FindIndex(x => x.Value != null ? x.Value.Equals(elementObject) : default(GameObject).Equals(elementObject));
-
-        //    if (existingElementIndex != -1)
-        //    {
-        //        // Create empty KeyValuePair to add to elementClass position in locationElements
-        //        KeyValuePair<OntologyElement, GameObject> newElement = new KeyValuePair<OntologyElement, GameObject>(locationElements[existingElementIndex].Key, null);
-        //        // Remove elementObject from locationElements in elementClass position
-        //        locationElements[existingElementIndex] = newElement;
-        //        // Break function with value true
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        // Break function with value false
-        //        return false;
-        //    }
-        //}
-
         public KeyValuePair<OntologyElement,GameObject> FindFirstElement()
         {
             if (locationElements.Count() > 0) { return locationElements.First(); }
             else { return new KeyValuePair<OntologyElement, GameObject>(); }   
         }
-
-        //public GameObject FindElement(OntologyElement elementClass)
-        //{
-        //    return locationElements.Find(x => x.Key.EqualElement(elementClass)).Value;
-        //}
 
         public void DebugLocationElements(string functionName)
         {

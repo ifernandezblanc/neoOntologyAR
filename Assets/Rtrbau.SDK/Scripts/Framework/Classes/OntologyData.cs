@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using System.IO;
 #endregion
 
 
@@ -179,7 +180,7 @@ namespace Rtrbau
     /// Add links when code has been inspired
     /// </summary> 
     [Serializable]
-    public class OntologyUpload : ILoadable
+    public class OntologyElementUpload : ILoadable
     {
         #region MEMBERS
         public OntologyElement individualElement;
@@ -187,13 +188,13 @@ namespace Rtrbau
         #endregion MEMBERS
 
         #region CONSTRUCTORS
-        public OntologyUpload()
+        public OntologyElementUpload()
         {
             individualElement = new OntologyElement();
             classElement = new OntologyElement();
         }
 
-        public OntologyUpload(OntologyElement elementIndividual, OntologyElement elementClass)
+        public OntologyElementUpload(OntologyElement elementIndividual, OntologyElement elementClass)
         {
             if (elementIndividual.entity.Ontology().Name() == elementClass.entity.Ontology().Name())
             {
@@ -202,7 +203,7 @@ namespace Rtrbau
             }
             else
             {
-                throw new ArgumentException("OntologyData::OntologyUpload: individual and class must belong to the same ontology.");
+                throw new ArgumentException("OntologyData::OntologyElementUpload: individual and class must belong to the same ontology.");
             }
         }
         #endregion CONSTRUCTORS
@@ -314,7 +315,7 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary> 
-    public class RtrbauFile : ILoadable
+    public class OntologyFile : ILoadable
     {
         #region MEMBERS
         public string name;
@@ -324,7 +325,7 @@ namespace Rtrbau
         #endregion MEMBERS
 
         #region CONSTRUCTOR
-        public RtrbauFile()
+        public OntologyFile()
         {
             name = null;
             type = RtrbauFileType.wav;
@@ -332,32 +333,32 @@ namespace Rtrbau
             url = null;
         }
 
-        public RtrbauFile(string fileName, string fileType)
+        public OntologyFile(string fileName, string fileType)
         {
             name = fileName;
 
             if (Enum.TryParse<RtrbauFileType>(fileType, out type)) {}
-            else { throw new ArgumentException("OntologyData::RtrbauFile::Constructor: Argument file error: file type not implemented."); }
+            else { throw new ArgumentException("OntologyData::OntologyFile::Constructor: Argument file error: file type not implemented."); }
 
             if (Dictionaries.FileAugmentations.TryGetValue(type, out augmentation)) { }
-            else { throw new ArgumentException("OntologyData::RtrbauFile::Constructor: Argument file error: file type not implement to an augmentation method."); }
+            else { throw new ArgumentException("OntologyData::OntologyFile::Constructor: Argument file error: file type not implement to an augmentation method."); }
 
             url = Parser.ParseFileURI(fileName, fileType);
 
         }
 
-        public RtrbauFile(string filePath)
+        public OntologyFile(string fileWebPath)
         {
-            url = Parser.ParseURI(filePath, '/', RtrbauParser.pre) + "/";
-            string file = Parser.ParseURI(filePath, '/', RtrbauParser.post);
+            url = Parser.ParseURI(fileWebPath, '/', RtrbauParser.pre) + "/";
+            string file = Parser.ParseURI(fileWebPath, '/', RtrbauParser.post);
             name = Parser.ParseURI(file, '.', RtrbauParser.pre);
             string fileType = Parser.ParseURI(file, '.', RtrbauParser.post);
 
             if (Enum.TryParse<RtrbauFileType>(fileType, out type)) {}
-            else { throw new ArgumentException("OntologyData::RtrbauFile::Constructor: Argument file error: file type not implemented."); }
+            else { throw new ArgumentException("OntologyData::OntologyFile::Constructor: Argument file error: file type not implemented."); }
 
             if (Dictionaries.FileAugmentations.TryGetValue(type, out augmentation)) { }
-            else { throw new ArgumentException("OntologyData::RtrbauFile::Constructor: Argument file error: file type not implement to an augmentation method."); }
+            else { throw new ArgumentException("OntologyData::OntologyFile::Constructor: Argument file error: file type not implement to an augmentation method."); }
         }
         #endregion CONSTRUCTOR
 
@@ -372,7 +373,7 @@ namespace Rtrbau
             string folder;
 
             if (Dictionaries.fileDataDirectories.TryGetValue(type, out folder)) { }
-            else { throw new ArgumentException("OntologyData::RtrbauFile::FilePath: Argument file error: file type not implemented."); }
+            else { throw new ArgumentException("OntologyData::OntologyFile::FilePath: Argument file error: file type not implemented."); }
 
             return folder + '/' + name + '.' + type.ToString();
         }
@@ -382,6 +383,65 @@ namespace Rtrbau
             return "File__" + name + "__" + type.ToString();
         }
         #endregion ILOADABLE_METHODS
+    }
+
+    /// <summary>
+    /// Describe script purpose
+    /// Add links when code has been inspired
+    /// UPG: To merge with <see cref="OntologyFile"/>
+    /// </summary> 
+    public class OntologyFileUpload: ILoadable
+    {
+        #region MEMBERS
+        public OntologyFile file;
+        private string form;
+        #endregion MEMBERS
+
+        #region CONSTRUCTORS
+        public OntologyFileUpload()
+        {
+            file = new OntologyFile();
+            form = null;
+        }
+
+        public OntologyFileUpload(string fileName, string fileType)
+        {
+            file = new OntologyFile(fileName, fileType);
+            form = "multipart/form-data";
+        }
+
+        public OntologyFileUpload(string filePath)
+        {
+            file = new OntologyFile(filePath);
+            form = "multipart/form-data";
+        }
+
+        public OntologyFileUpload(OntologyFile uploadFile)
+        {
+            file = uploadFile;
+            form = "multipart/form-data";
+        }
+        #endregion CONSTRUCTORS
+
+        #region ILOADABLE_METHODS
+        public string URL() { return Parser.ParseURI(file.URL(), '/', RtrbauParser.pre) + "/upload"; }
+
+        public string FilePath() { return file.FilePath(); }
+
+        public string EventName() { return file.EventName(); }
+        #endregion ILOADABLE_METHODS
+
+        #region CLASS_METHODS
+        public string FileName() { return file.name + "." + file.type.ToString(); }
+
+        public byte[] FileData()
+        {
+            if (!File.Exists(file.FilePath())) { return null; }
+            else { return File.ReadAllBytes(file.FilePath()); }
+        }
+
+        public string UploadForm() { return form; }
+        #endregion CLASS_METHODS
     }
     #endregion DATA_CLASSES
 }

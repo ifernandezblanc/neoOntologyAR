@@ -93,19 +93,19 @@ namespace Rtrbau
         #endregion MODELBUTTON_FORMATS
 
         #region AUDIORECORD_FORMATS
-        public static EnvironmentFormat AudioRecordHold1 = new EnvironmentFormat(RtrbauFabricationName.AudioRecordHold1, EnvironmentFacets.audio, EnvironmentFacets.gesturehold);
+        public static EnvironmentFormat AudioRecordTap1 = new EnvironmentFormat(RtrbauFabricationName.AudioRecordTap1, EnvironmentFacets.audio, EnvironmentFacets.gesturedoubletap);
         #endregion AUDIORECORD_FORMATS
 
         #region PICTURERECORD_FORMATS
-        public static EnvironmentFormat ImageRecordHold1 = new EnvironmentFormat(RtrbauFabricationName.ImageRecordHold1, EnvironmentFacets.image, EnvironmentFacets.gesturehold);
+        public static EnvironmentFormat ImageRecordTap1 = new EnvironmentFormat(RtrbauFabricationName.ImageRecordTap1, EnvironmentFacets.image, EnvironmentFacets.gesturetap);
         #endregion PICTURERECORD_FORMATS
 
         #region VIDEORECORD_FORMATS
-        public static EnvironmentFormat VideoRecordHold1 = new EnvironmentFormat(RtrbauFabricationName.VideoRecordHold1, EnvironmentFacets.video, EnvironmentFacets.gesturehold);
+        public static EnvironmentFormat VideoRecordTap1 = new EnvironmentFormat(RtrbauFabricationName.VideoRecordTap1, EnvironmentFacets.video, EnvironmentFacets.gesturedoubletap);
         #endregion VIDEORECORD_FORMATS
 
         #region MODELRECORD_FORMATS
-        public static EnvironmentFormat ModelRecordHold1 = new EnvironmentFormat(RtrbauFabricationName.ModelRecordHold1, EnvironmentFacets.model, EnvironmentFacets.gesturehold);
+        public static EnvironmentFormat ModelRecordManipulation1 = new EnvironmentFormat(RtrbauFabricationName.ModelRecordManipulation1, EnvironmentFacets.model, EnvironmentFacets.gesturemanipulation);
         #endregion MODELRECORD_FORMATS
 
         #region ANIMATIONRECORD_FORMATS

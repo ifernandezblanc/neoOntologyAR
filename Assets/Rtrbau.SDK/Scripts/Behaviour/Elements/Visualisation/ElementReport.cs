@@ -168,7 +168,7 @@ namespace Rtrbau
                 }
                 else
                 {
-                    throw new ArgumentException("ElementConsult::Initialise: ontology element type not implemented.");
+                    throw new ArgumentException("ElementReport::Initialise: ontology element type not implemented.");
                 }
             }
         }
@@ -181,7 +181,7 @@ namespace Rtrbau
         /// </summary>
         public void DownloadElement()
         {
-            Debug.Log("ElementConsult::DownloadElement: start downloading class element:" + classElement.entity.Entity());
+            Debug.Log("ElementReport::DownloadElement: start downloading class element:" + classElement.URL());
 
             // Download class structure: datatype and object properties
             LoaderEvents.StartListening(classElement.EventName(), DownloadedClass);
@@ -212,11 +212,11 @@ namespace Rtrbau
         {
             if (classDownloaded == true && exampleDownloaded == true)
             {
-                Debug.Log("ElementConsult::EvaluateElement: All class-related elements downloaded:" + classElement.entity.Entity());
+                Debug.Log("ElementReport::EvaluateElement: All class-related elements downloaded:" + classElement.entity.Entity());
                 // New RtrbauElement declaration form to define report elements
                 rtrbauElement = new RtrbauElement(Rtrbauer.instance.user.procedure, visualiser.manager, individualElement, classAttributes, exampleAttributes);
                 // Check new individual name has been generated correctly
-                Debug.Log("ElementConsult::EvaluateElement: rtrbauElement created:" + rtrbauElement.elementName.Entity());
+                Debug.Log("ElementReport::EvaluateElement: rtrbauElement created:" + rtrbauElement.elementName.Entity());
                 // Call to next step
                 SelectFabrications();
             }
@@ -229,7 +229,7 @@ namespace Rtrbau
         /// </summary>
         public void SelectFabrications()
         {
-            Debug.Log("ElementConsult::SelectFabrications: rtrbau attributes to be evaluated against formats");
+            Debug.Log("ElementReport::SelectFabrications: rtrbau attributes to be evaluated against formats");
             // RTRBAU ALGORITHM: new extension (which original loop number is?)
             // Checks if format is acceptable
             // If so, then evaluates the format agains the element to determine if it is assignable
@@ -243,8 +243,8 @@ namespace Rtrbau
 
                 if (envFacets != null && userFacets != null)
                 {
-                    Debug.Log("ElementConsult::SelectFabrications: Fabrication available: " + format.Item1);
-                    Debug.Log("ElementConsult::SelectFabrications: " + format.Item2.formatName + " required facets: " + format.Item2.formatRequiredFacets);
+                    Debug.Log("ElementReport::SelectFabrications: Fabrication available: " + format.Item1);
+                    Debug.Log("ElementReport::SelectFabrications: " + format.Item2.formatName + " required facets: " + format.Item2.formatRequiredFacets);
 
                     // Determine if format is assignable as fabrications to the element
                     List<RtrbauFabrication> formatAssignedFabrications = format.Item2.EvaluateFormat(rtrbauElement);
@@ -256,7 +256,7 @@ namespace Rtrbau
                     {
                         foreach (RtrbauFabrication fabrication in formatAssignedFabrications)
                         {
-                            Debug.Log("ElementConsult::SelectFabrications: Fabrication assigned: " + fabrication.fabricationName);
+                            Debug.Log("ElementReport::SelectFabrications: Fabrication assigned: " + fabrication.fabricationName);
                             // Add environment and user features to fabrication
                             // UPG: since environment and user formats are being evaluated before, there is no need to add them to RtrbauFabrication class?
                             fabrication.fabricationAugmentation = format.Item3.formatAugmentation.facetAugmentation;
@@ -356,7 +356,7 @@ namespace Rtrbau
 
             foreach (RtrbauAttribute attribute in assignedAttributes)
             {
-                Debug.Log("EvaluateElement: assigned attributes: " + attribute.attributeName.Name() + " : " + attribute.attributeValue);
+                Debug.Log("ElementReport::SelectFabrications: assigned attributes: " + attribute.attributeName.Name() + " : " + attribute.attributeValue);
             }
 
             // Identify attributes that have not been assigned to generated fabrications
@@ -402,13 +402,13 @@ namespace Rtrbau
                 }
                 else
                 {
-                    throw new ArgumentException("ElementConsult::SelectFabrications: Default fabrications not implemented for fabrication type: " + attribute.fabricationType);
+                    throw new ArgumentException("ElementReport::SelectFabrications: Default fabrications not implemented for fabrication type: " + attribute.fabricationType);
                 }
             }
 
             foreach (RtrbauFabrication fab in assignedFabrications)
             {
-                Debug.Log("EvaluateElement: fabrication evaluated: " + fab.fabricationName);
+                Debug.Log("ElementReport::SelectFabrications: fabrication evaluated: " + fab.fabricationName);
             }
 
             fabricationsSelected = true;
@@ -427,8 +427,8 @@ namespace Rtrbau
                 int componentDistance = int.Parse(elementComponentDistance.ontDistance);
                 int operationDistance = int.Parse(elementOperationDistance.ontDistance);
 
-                Debug.Log("ElementConsult::LocateElement: component distance is " + componentDistance);
-                Debug.Log("ElementConsult::LocateElement: operation distance is " + operationDistance);
+                Debug.Log("ElementReport::LocateElement: component distance is " + componentDistance);
+                Debug.Log("ElementReport::LocateElement: operation distance is " + operationDistance);
 
                 if (componentDistance <= 1)
                 {
@@ -443,7 +443,7 @@ namespace Rtrbau
                     rtrbauLocationType = RtrbauElementLocation.Tertiary;
                 }
 
-                Debug.Log("ElementConsult::LocateElement: rtrbau location is " + rtrbauLocationType);
+                Debug.Log("ElementReport::LocateElement: rtrbau location is " + rtrbauLocationType);
 
                 LocateIt();
             }
@@ -479,10 +479,10 @@ namespace Rtrbau
         /// </summary>
         public void CreateFabrications()
         {
-            Debug.Log("ElementConsult::EvaluateElement: Number of attributes downloadable: " + objectPropertiesNumber);
-            Debug.Log("ElementConsult::EvaluateElement: Number of attribute classes downloaded: " + objectClassesAttributes.Count);
-            Debug.Log("ElementConsult::EvaluateElement: Number of attribute individuals downloaded: " + objectClassesIndividuals.Count);
-            Debug.Log("ElementConsult::EvaluateElement: Fabrications selected is: " + fabricationsSelected);
+            Debug.Log("ElementReport::CreateFabrications: Number of attributes downloadable: " + objectPropertiesNumber);
+            Debug.Log("ElementReport::CreateFabrications: Number of attribute classes downloaded: " + objectClassesAttributes.Count);
+            Debug.Log("ElementReport::CreateFabrications: Number of attribute individuals downloaded: " + objectClassesIndividuals.Count);
+            Debug.Log("ElementReport::CreateFabrications: Fabrications selected is: " + fabricationsSelected);
 
             // Check fabrications selected as well as object classes attributes and individuals have been downloaded
             if (objectClassesAttributes.Count == objectPropertiesNumber && objectClassesIndividuals.Count == objectPropertiesNumber && fabricationsSelected == true)
@@ -490,7 +490,7 @@ namespace Rtrbau
                 individualText.text = rtrbauElement.elementName.Name();
                 classText.text = rtrbauElement.elementClass.Name();
 
-                Debug.Log("ElementConsult::CreateFabrications: Starting to create fabrications for: " + rtrbauElement.elementName.Name());
+                Debug.Log("ElementReport::CreateFabrications: Starting to create fabrications for: " + rtrbauElement.elementName.Name());
 
                 foreach (RtrbauFabrication fabrication in assignedFabrications)
                 {
@@ -511,7 +511,7 @@ namespace Rtrbau
                     }
                     else
                     {
-                        Debug.LogError("ElementConsult::CreateFabrications: " + fabrication.fabricationName + " is not implemented");
+                        Debug.LogError("ElementReport::CreateFabrications: " + fabrication.fabricationName + " is not implemented");
                     }
                 }
 
@@ -523,7 +523,7 @@ namespace Rtrbau
                 // UPG: do it with other fabrication panel as well?
                 fabricationsRecordImageVideo.GetComponent<TileGridObjectCollection>().enabled = false;
 
-                Debug.Log("ElementConsult::CreateFabrications: fabrications created for: " + rtrbauElement.elementName.Name() + " and values emptied");
+                Debug.Log("ElementReport::CreateFabrications: fabrications created for: " + rtrbauElement.elementName.Name() + " and values emptied");
                 // Clean RtrbauElement attributes values when fabrications created for further update on user report
                 CleanRtrbauElement();
 
@@ -572,8 +572,8 @@ namespace Rtrbau
             Debug.Log("ElementReport::InputIntoReport: individual element is: " + individualElement.entity.Entity());
             Debug.Log("ElementReport::InputIntoReport: class element is: " + classElement.entity.Entity());
 
-            // Create OntologyUpload element to upload individualElement to server
-            OntologyUpload individualUpload = new OntologyUpload(individualElement, classElement);
+            // Create OntologyElementUpload element to upload individualElement to server
+            OntologyElementUpload individualUpload = new OntologyElementUpload(individualElement, classElement);
 
             // Upload ontology individual reported to server
             LoaderEvents.StartListening(individualUpload.EventName(), FinaliseReporting);
@@ -741,7 +741,7 @@ namespace Rtrbau
             }
             else
             {
-                Debug.LogError("ElementConsult::DownloadedClass: File not found: " + classElement.FilePath());
+                Debug.LogError("ElementReport::DownloadedClass: File not found: " + classElement.FilePath());
             }
 
         }
@@ -766,7 +766,7 @@ namespace Rtrbau
             }
             else
             {
-                Debug.LogError("ElementConsult::DownloadedExample: File not found: " + exampleElement.FilePath());
+                Debug.LogError("ElementReport::DownloadedExample: File not found: " + exampleElement.FilePath());
             }
         }
 
@@ -788,7 +788,7 @@ namespace Rtrbau
             }
             else
             {
-                Debug.LogError("ElementConsult::DownloadedAttributeClass: File not found: " + elementAttributeClass.FilePath());
+                Debug.LogError("ElementReport::DownloadedAttributeClass: File not found: " + elementAttributeClass.FilePath());
             }
         }
         /// <summary>
@@ -810,7 +810,7 @@ namespace Rtrbau
             }
             else
             {
-                Debug.LogError("ElementConsult::DownloadedAttributeIndividuals: File not found: " + elementAttributeIndividuals.FilePath());
+                Debug.LogError("ElementReport::DownloadedAttributeIndividuals: File not found: " + elementAttributeIndividuals.FilePath());
             }
         }
 
@@ -834,7 +834,7 @@ namespace Rtrbau
             }
             else
             {
-                Debug.LogError("ElementConsult::DownloadedComponentDistance: File not found: " + componentDistance.FilePath());
+                Debug.LogError("ElementReport::DownloadedComponentDistance: File not found: " + componentDistance.FilePath());
             }
 
         }
@@ -859,7 +859,7 @@ namespace Rtrbau
             }
             else
             {
-                Debug.LogError("ElementConsult::DownloadedOperationDistance: File not found: " + operationDistance.FilePath());
+                Debug.LogError("ElementReport::DownloadedOperationDistance: File not found: " + operationDistance.FilePath());
             }
         }
 
@@ -881,7 +881,8 @@ namespace Rtrbau
                 else if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Image ||
                 fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Video)
                 {
-                    fabrication.Value.transform.SetParent(fabricationsRecordImageVideo, false);
+                    // fabrication.Value.transform.SetParent(fabricationsRecordImageVideo, false);
+                    fabrication.Value.transform.SetParent(fabricationsRecordRest, false);
                     fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
                 }
                 else if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Model ||
@@ -902,7 +903,7 @@ namespace Rtrbau
             }
             else
             {
-                throw new ArgumentException("ElementConsult::LocateIt: Fabrication type not implemented");
+                throw new ArgumentException("ElementReport::LocateIt: Fabrication type not implemented");
             }
         }
 
@@ -982,7 +983,7 @@ namespace Rtrbau
         /// 
         /// </summary>
         /// <param name="uploadElement"></param>
-        void FinaliseReporting(OntologyUpload uploadElement)
+        void FinaliseReporting(OntologyElementUpload uploadElement)
         {
             LoaderEvents.StopListening(uploadElement.EventName(), FinaliseReporting);
 
@@ -1030,7 +1031,7 @@ namespace Rtrbau
             // Update status text to show all attributes have been reported
             statusText.text = "All attributes reported, please click on the next attribute to report.";
             // Submit reported rtrbauElement for reporting
-            Debug.Log("ElementReport::CheckAttributesReport: all values reported, inputting new individual into report");
+            Debug.Log("ElementReport::AttributesReported: all values reported, inputting new individual into report");
             // Report rtrbauElement
             InputIntoReport();
         }

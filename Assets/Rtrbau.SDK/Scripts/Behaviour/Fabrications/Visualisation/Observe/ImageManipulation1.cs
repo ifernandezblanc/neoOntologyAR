@@ -47,7 +47,7 @@ namespace Rtrbau
         #endregion CLASS_VARIABLES
 
         #region FACET_VARIABLES
-        public RtrbauFile imageFile;
+        public OntologyFile imageFile;
         #endregion FACET_VARIABLES
 
         #region GAMEOBJECT_PREFABS
@@ -125,7 +125,7 @@ namespace Rtrbau
             if (data.fabricationData.TryGetValue(imagefacet1, out attribute))
             {
                 fabricationText.text = attribute.attributeName.Name() + ": ";
-                imageFile = new RtrbauFile(attribute.attributeValue);
+                imageFile = new OntologyFile(attribute.attributeValue);
                 LoaderEvents.StartListening(imageFile.EventName(), DownloadedImage);
                 Loader.instance.StartFileDownload(imageFile);
                 Debug.Log("ImageManipulation1: InferFromText: Started audio download " + imageFile.URL());
@@ -172,7 +172,7 @@ namespace Rtrbau
 
         #region CLASS_METHODS
         #region PRIVATE
-        void DownloadedImage(RtrbauFile imageFile)
+        void DownloadedImage(OntologyFile imageFile)
         {
             LoaderEvents.StopListening(imageFile.EventName(), DownloadedImage);
             Debug.Log("ImageManipulation1: LoadAudio: downloaded " + imageFile.URL());
@@ -195,7 +195,7 @@ namespace Rtrbau
 
         }
 
-        IEnumerator LoadImage(RtrbauFile imageFile)
+        IEnumerator LoadImage(OntologyFile imageFile)
         {
             if(imageFile != null)
             {

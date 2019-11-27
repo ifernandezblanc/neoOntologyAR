@@ -40,9 +40,9 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
-        public RtrbauFile assetModelOBJ;
-        public RtrbauFile assetTargetXML;
-        public RtrbauFile assetTargetDAT;
+        public OntologyFile assetModelOBJ;
+        public OntologyFile assetTargetXML;
+        public OntologyFile assetTargetDAT;
 
         public GameObject assetTarget;
         public GameObject assetModel;
@@ -142,9 +142,9 @@ namespace Rtrbau
         {
             Debug.Log("AssetRegistrator: DownloadElement: Started download");
 
-            assetModelOBJ = new RtrbauFile(assetEntity.Name(), "obj");
-            assetTargetXML = new RtrbauFile(assetEntity.Name(), "xml");
-            assetTargetDAT = new RtrbauFile(assetEntity.Name(), "dat");
+            assetModelOBJ = new OntologyFile(assetEntity.Name(), "obj");
+            assetTargetXML = new OntologyFile(assetEntity.Name(), "xml");
+            assetTargetDAT = new OntologyFile(assetEntity.Name(), "dat");
 
             LoaderEvents.StartListening(assetModelOBJ.EventName(), DownloadedAssetModel);
             Loader.instance.StartFileDownload(assetModelOBJ);
@@ -260,7 +260,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        void DownloadedAssetModel(RtrbauFile modelAsset)
+        void DownloadedAssetModel(OntologyFile modelAsset)
         {
             LoaderEvents.StopListening(modelAsset.EventName(), DownloadedAssetModel);
             Debug.Log("RegistratorAsset: DownloadedAssetModel: downloaded " + modelAsset.URL());
@@ -282,7 +282,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        void DownloadedAssetTargetXML(RtrbauFile targetXMLAsset)
+        void DownloadedAssetTargetXML(OntologyFile targetXMLAsset)
         {
             LoaderEvents.StopListening(targetXMLAsset.EventName(), DownloadedAssetTargetXML);
             Debug.Log("RegistratorAsset: DownloadedAssetTargetXML: downloaded " + targetXMLAsset.URL());
@@ -307,7 +307,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        void DownloadedAssetTargetDAT(RtrbauFile targetDATAsset)
+        void DownloadedAssetTargetDAT(OntologyFile targetDATAsset)
         {
             LoaderEvents.StopListening(targetDATAsset.EventName(), DownloadedAssetTargetDAT);
             Debug.Log("RegistratorAsset: DownloadedAssetTargetDAT: downloaded " + targetDATAsset.URL());

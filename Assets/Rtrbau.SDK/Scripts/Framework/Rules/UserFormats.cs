@@ -89,19 +89,19 @@ namespace Rtrbau
         #endregion MODELBUTTON_FORMATS
 
         #region AUDIORECORD_FORMATS
-        public static UserFormat AudioRecordHold1 = new UserFormat(RtrbauFabricationName.AudioRecordHold1, RtrbauComprehensiveness.fourD, RtrbauDescriptiveness.literal);
+        public static UserFormat AudioRecordTap1 = new UserFormat(RtrbauFabricationName.AudioRecordTap1, RtrbauComprehensiveness.fourD, RtrbauDescriptiveness.literal);
         #endregion AUDIORECORD_FORMATS
 
         #region PICTURERECORD_FORMATS
-        public static UserFormat ImageRecordHold1 = new UserFormat(RtrbauFabricationName.ImageRecordHold1, RtrbauComprehensiveness.twoD, RtrbauDescriptiveness.literal);
+        public static UserFormat ImageRecordTap1 = new UserFormat(RtrbauFabricationName.ImageRecordTap1, RtrbauComprehensiveness.twoD, RtrbauDescriptiveness.literal);
         #endregion PICTURERECORD_FORMATS
 
         #region VIDEORECORD_FORMATS
-        public static UserFormat VideoRecordHold1 = new UserFormat(RtrbauFabricationName.VideoRecordHold1, RtrbauComprehensiveness.threeD, RtrbauDescriptiveness.literal);
+        public static UserFormat VideoRecordTap1 = new UserFormat(RtrbauFabricationName.VideoRecordTap1, RtrbauComprehensiveness.threeD, RtrbauDescriptiveness.literal);
         #endregion VIDEORECORD_FORMATS
 
         #region MODELRECORD_FORMATS
-        public static UserFormat ModelRecordHold1 = new UserFormat(RtrbauFabricationName.ModelRecordHold1, RtrbauComprehensiveness.threeD, RtrbauDescriptiveness.literal);
+        public static UserFormat ModelRecordManipulation1 = new UserFormat(RtrbauFabricationName.ModelRecordManipulation1, RtrbauComprehensiveness.threeD, RtrbauDescriptiveness.literal);
         #endregion MODELRECORD_FORMATS
 
         #region ANIMATIONRECORD_FORMATS

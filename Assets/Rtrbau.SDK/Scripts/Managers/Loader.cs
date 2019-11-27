@@ -39,6 +39,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
+        #region CLASS_MEMBERS 
         #region SINGLETON_INSTANTIATION
         private static Loader loaderManager;
 
@@ -52,7 +53,7 @@ namespace Rtrbau
 
                     if (!loaderManager)
                     {
-                        Debug.LogError("There needs to be a Loader script in the scene.");
+                        Debug.LogError("Loader::Instance: There needs to be a Loader script in the scene.");
                     }
                     else
                     {
@@ -64,14 +65,14 @@ namespace Rtrbau
             }
         }
         #endregion SINGLETON_INSTANTIATION
-
-        #region CLASS_METHODS
-        void Initialise()
-        {
-
-        }
         #endregion CLASS_METHODS
 
+        #region CLASS_METHODS
+        #region PRIVATE
+        void Initialise() {}
+        #endregion PRIVATE
+
+        #region PUBLIC
         #region DOWNLOADERS
         #region ONTOLOGY_DOWNLOADERS
         public void StartOntElementDownload(OntologyElement element)
@@ -91,7 +92,7 @@ namespace Rtrbau
 
                 if (webRequest.isNetworkError || webRequest.isHttpError)
                 {
-                    throw new ArgumentException("Web error: " + webRequest.error);
+                    throw new ArgumentException("Loader::DownloadElement: Web error: " + webRequest.error + " from element " + element.EventName() + " of type " + element.type.ToString());
                 }
                 else
                 {
@@ -128,7 +129,7 @@ namespace Rtrbau
 
                 if (webRequest.isNetworkError || webRequest.isHttpError)
                 {
-                    throw new ArgumentException("Web error: " + webRequest.error);
+                    throw new ArgumentException("Loader::DownloadDistance: Web error: " + webRequest.error + " from element " + distance.EventName());
                 }
                 else
                 {
@@ -148,14 +149,14 @@ namespace Rtrbau
         #endregion DISTANCE_DOWNLOADERS
 
         #region FILE_DOWNLOADERS
-        public void StartFileDownload(RtrbauFile file)
+        public void StartFileDownload(OntologyFile file)
         {
             StartCoroutine(DownloadFile(file));
         }
 
-        IEnumerator DownloadFile(RtrbauFile file)
+        IEnumerator DownloadFile(OntologyFile file)
         {
-            RtrbauFile result = null;
+            OntologyFile result = null;
 
             if (!File.Exists(file.FilePath()))
             {
@@ -165,7 +166,7 @@ namespace Rtrbau
 
                 if (webRequest.isNetworkError || webRequest.isHttpError)
                 {
-                    throw new ArgumentException("Web error: " + webRequest.error);
+                    throw new ArgumentException("Loader::DownloadDistance: Web error: " + webRequest.error + " from element " + file.EventName());
                 }
                 else
                 {
@@ -186,14 +187,14 @@ namespace Rtrbau
 
         #region UPLOADERS
         #region ONTOLOGY_UPLOADERS
-        public void StartOntElementUpload(OntologyUpload element)
+        public void StartOntElementUpload(OntologyElementUpload element)
         {
             StartCoroutine(UploadElement(element));
         }
 
-        IEnumerator UploadElement(OntologyUpload element)
+        IEnumerator UploadElement(OntologyElementUpload element)
         {
-            OntologyUpload result = null;
+            OntologyElementUpload result = null;
 
             if (!File.Exists(element.FilePath()))
             {
@@ -222,7 +223,7 @@ namespace Rtrbau
                         Debug.Log("Loader::UploadElement: postData: " + postData);
                         Debug.Log("Loader::UploadElement: postString: " + element.URL());
 
-                        //UnityWebRequest webRequest = UnityWebRequest.Post(element.URL(), postData);
+                        // UnityWebRequest webRequest = UnityWebRequest.Post(element.URL(), postData);
 
                         // https://qiita.com/mattak/items/d01926bc57f8ab1f569a
 
@@ -258,9 +259,93 @@ namespace Rtrbau
         #endregion ONTOLOGY_UPLOADERS
 
         #region FILE_UPLOADERS
+        public void StartFileUpload(OntologyFileUpload file)
+        {
+            StartCoroutine(UploadFile(file));
+        }
 
+        IEnumerator UploadFile(OntologyFileUpload fileUpload)
+        {
+            OntologyFileUpload result = null;
+
+            Debug.Log("Loader::UploadFile: start file upload " + fileUpload.file.URL());
+
+            if (!File.Exists(fileUpload.FilePath()))
+            {
+                throw new ArgumentException("Loader::UploadFile: file " + fileUpload.file.name + "." + fileUpload.file.type + " should exist.");
+            }
+            else
+            {
+                // Create a form data post request
+                // https://docs.unity3d.com/Manual/UnityWebRequest-SendingForm.html
+                // https://docs.unity3d.com/ScriptReference/Networking.MultipartFormFileSection-ctor.html
+
+                // byte[] fileRawData = File.ReadAllBytes(fileUpload.FilePath());
+
+                //WWWForm dataForm = new WWWForm();
+                //dataForm.AddBinaryData("file", data, fileName, "multipart/form-data");
+
+                List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
+                formData.Add(new MultipartFormFileSection("file", fileUpload.FileData(), fileUpload.FileName(), fileUpload.UploadForm()));
+
+                UnityWebRequest webRequest = UnityWebRequest.Post(fileUpload.URL(), formData);
+                //webRequest.SetRequestHeader("content-type", "multipart/form-data");
+                //webRequest.SetRequestHeader("cache-control", "no-cache");
+
+                yield return webRequest.SendWebRequest();
+
+                if (webRequest.isNetworkError || webRequest.isHttpError)
+                {
+                    throw new ArgumentException("Loader::UploadElement: web error: " + webRequest.error);
+                }
+                else
+                {
+                    result = fileUpload;
+                }
+
+                //UnityWebRequest webRequest = new UnityWebRequest(fileUpload.URL(), "POST");
+
+                //byte[] postDataRaw = File.ReadAllBytes(fileUpload.FilePath());
+                //webRequest.uploadHandler = (UploadHandler)new UploadHandlerRaw(postDataRaw);
+                //webRequest.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+                //webRequest.SetRequestHeader("Content-Type", "multipart/form-data");
+
+                //yield return webRequest.SendWebRequest();
+
+                //if (webRequest.isNetworkError || webRequest.isHttpError)
+                //{
+                //    throw new ArgumentException("Loader::UploadElement: web error: " + webRequest.error);
+                //}
+                //else
+                //{
+                //    result = fileUpload;
+                //}
+
+                //List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
+                //formData.Add(new MultipartFormFileSection("file", fileData, fileForm, fileName));
+
+                //Debug.Log("Loader::UploadFile: file " + fileName + " uploaded to " + fileUpload.URL());
+
+                //UnityWebRequest webRequest = UnityWebRequest.Post(fileUpload.URL(), formData);
+
+                //yield return webRequest.SendWebRequest();
+
+                //if (webRequest.isNetworkError || webRequest.isHttpError)
+                //{
+                //    throw new ArgumentException("Loader::UploadFile: web error: " + webRequest.error);
+                //}
+                //else
+                //{
+                //    result = fileUpload;
+                //}
+            }
+
+            LoaderEvents.TriggerEvent(fileUpload.EventName(), result);
+            // Debug.Log("Loader::UploadFile: trigger event: " + fileUpload.EventName());
+        }
         #endregion FILE_UPLOADERS
         #endregion UPLOADERS
-
+        #endregion PUBLIC
+        #endregion CLASS_METHODS
     }
 }

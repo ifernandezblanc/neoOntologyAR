@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Rtrbau.Examples/Scenes/7-Trial-CararComplete.unity
-    guid: c57487d228595b74f92a90f8546c6c23
+    path: Assets/Rtrbau.Examples/Scenes/7-Trial-Recorder.unity
+    guid: d69d338666643f2428245cdd3e6fc381
   m_configObjects: {}

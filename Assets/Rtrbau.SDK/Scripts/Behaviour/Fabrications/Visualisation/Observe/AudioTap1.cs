@@ -47,7 +47,7 @@ namespace Rtrbau
         #endregion CLASS_VARIABLES
 
         #region FACET_VARIABLES
-        public RtrbauFile audioFile;
+        public OntologyFile audioFile;
         #endregion FACET_VARIABLES
 
         #region GAMEOBJECT_PREFABS
@@ -127,7 +127,7 @@ namespace Rtrbau
             if (data.fabricationData.TryGetValue(audiofacet1, out attribute))
             {
                 fabricationText.text = attribute.attributeName.Name() + ": ";
-                audioFile = new RtrbauFile(attribute.attributeValue);
+                audioFile = new OntologyFile(attribute.attributeValue);
                 LoaderEvents.StartListening(audioFile.EventName(), DownloadedAudio);
                 Loader.instance.StartFileDownload(audioFile);
                 Debug.Log("AudioTap1: InferFromText: Started audio download " + audioFile.URL());
@@ -172,7 +172,7 @@ namespace Rtrbau
 
         #region CLASS_METHODS
         #region PRIVATE
-        void DownloadedAudio(RtrbauFile file)
+        void DownloadedAudio(OntologyFile file)
         {
             LoaderEvents.StopListening(audioFile.EventName(), DownloadedAudio);
             Debug.Log("AudioTap1: LoadAudio: downloaded " + audioFile.URL());
@@ -196,7 +196,7 @@ namespace Rtrbau
 
         }
 
-        IEnumerator LoadAudio(RtrbauFile audioFile)
+        IEnumerator LoadAudio(OntologyFile audioFile)
         {
             if(audioFile.type == RtrbauFileType.wav)
             {
@@ -218,7 +218,7 @@ namespace Rtrbau
             }
             else
             {
-                Debug.LogError("AudioTap1: LoadAudio: " + audioFile.type + "not implemented for AudioTap1.");
+                Debug.LogError("AudioTap1::LoadAudio: " + audioFile.type + "not implemented for AudioTap1.");
             }
         }
         #endregion PRIVATE

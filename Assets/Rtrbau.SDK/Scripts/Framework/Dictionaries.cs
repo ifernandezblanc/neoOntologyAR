@@ -65,7 +65,7 @@ namespace Rtrbau
         /// </summary>
         public static Dictionary<string, Type> OntologyDataPropertyTypes = new Dictionary<string, Type>()
         {
-            {"anyURI",typeof(RtrbauFile)},
+            {"anyURI",typeof(OntologyFile)},
             {"string",typeof(string)},
             {"double",typeof(double)},
             {"int",typeof(int)},
@@ -185,14 +185,14 @@ namespace Rtrbau
                 (RtrbauFabricationName.TextDictation1, DataFormats.TextDictation1, EnvironmentFormats.TextDictation1, UserFormats.TextDictation1),
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
                 (RtrbauFabricationName.TextKeyboard1, DataFormats.TextKeyboard1, EnvironmentFormats.TextKeyboard1, UserFormats.TextKeyboard1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.AudioRecordTap1, DataFormats.AudioRecordTap1, EnvironmentFormats.AudioRecordTap1, UserFormats.AudioRecordTap1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.ImageRecordTap1, DataFormats.ImageRecordTap1, EnvironmentFormats.ImageRecordTap1, UserFormats.ImageRecordTap1),
                 //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                //(RtrbauFabricationName.AudioRecordHold1, DataFormats.AudioRecordHold1, EnvironmentFormats.AudioRecordHold1, UserFormats.AudioRecordHold1),
+                //(RtrbauFabricationName.VideoRecordDoubleTap1, DataFormats.VideoRecordDoubleTap1, EnvironmentFormats.VideoRecordDoubleTap1, UserFormats.VideoRecordDoubleTap1),
                 //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                //(RtrbauFabricationName.ImageRecordHold1, DataFormats.ImageRecordHold1, EnvironmentFormats.ImageRecordHold1, UserFormats.ImageRecordHold1),
-                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                //(RtrbauFabricationName.VideoRecordHold1, DataFormats.VideoRecordHold1, EnvironmentFormats.VideoRecordHold1, UserFormats.VideoRecordHold1),
-                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                //(RtrbauFabricationName.ModelRecordHold1, DataFormats.ModelRecordHold1, EnvironmentFormats.ModelRecordHold1, UserFormats.ModelRecordHold1),
+                //(RtrbauFabricationName.ModelRecordManipulation1, DataFormats.ModelRecordManipulation1, EnvironmentFormats.ModelRecordManipulation1, UserFormats.ModelRecordManipulation1),
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
                 (RtrbauFabricationName.TextPanelTap1, DataFormats.TextPanelTap1, EnvironmentFormats.TextPanelTap1, UserFormats.TextPanelTap1),
                 //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>

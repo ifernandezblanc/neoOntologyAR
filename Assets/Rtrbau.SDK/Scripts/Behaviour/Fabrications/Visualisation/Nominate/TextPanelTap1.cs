@@ -193,7 +193,7 @@ namespace Rtrbau
                                 attribute.attributeValue = newIndividual.URI();
                                 // Assign nominated individual as new element report
                                 newReportNominated = true;
-                                //Debug.Log("DefaultNominate::OnNextVisualisation: nominatedIndividual " + nominatedIndividual.Name() + " is new to report");
+                                Debug.Log("DefaultNominate::OnNextVisualisation: nominatedIndividual " + nominatedIndividual.Name() + " is new to report");
                             }
                             else
                             {

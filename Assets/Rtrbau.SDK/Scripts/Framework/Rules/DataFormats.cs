@@ -176,28 +176,28 @@ namespace Rtrbau
         #endregion MODELBUTTON_FORMATS
 
         #region AUDIORECORD_FORMATS
-        public static DataFormat AudioRecordHold1 = new DataFormat(RtrbauFabricationName.AudioRecordHold1, RtrbauFabricationType.Record, new List<DataFacet>
+        public static DataFormat AudioRecordTap1 = new DataFormat(RtrbauFabricationName.AudioRecordTap1, RtrbauFabricationType.Record, new List<DataFacet>
         {
             new DataFacet(RtrbauFacetForm.source, DataFacets.AudioFacet1)
         });
         #endregion AUDIORECORD_FORMATS
 
         #region PICTURERECORD_FORMATS
-        public static DataFormat ImageRecordHold1 = new DataFormat(RtrbauFabricationName.ImageRecordHold1, RtrbauFabricationType.Record, new List<DataFacet>
+        public static DataFormat ImageRecordTap1 = new DataFormat(RtrbauFabricationName.ImageRecordTap1, RtrbauFabricationType.Record, new List<DataFacet>
         {
             new DataFacet(RtrbauFacetForm.source, DataFacets.PictureFacet1)
         });
         #endregion PICTURERECORD_FORMATS
 
         #region VIDEORECORD_FORMATS
-        public static DataFormat VideoRecordHold1 = new DataFormat(RtrbauFabricationName.VideoRecordHold1, RtrbauFabricationType.Record, new List<DataFacet>
+        public static DataFormat VideoRecordTap1 = new DataFormat(RtrbauFabricationName.VideoRecordTap1, RtrbauFabricationType.Record, new List<DataFacet>
         {
             new DataFacet(RtrbauFacetForm.source, DataFacets.VideoFacet1)
         });
         #endregion VIDEORECORD_FORMATS
 
         #region MODELRECORD_FORMATS
-        public static DataFormat ModelRecordHold1 = new DataFormat(RtrbauFabricationName.ModelRecordHold1, RtrbauFabricationType.Record, new List<DataFacet>
+        public static DataFormat ModelRecordManipulation1 = new DataFormat(RtrbauFabricationName.ModelRecordManipulation1, RtrbauFabricationType.Record, new List<DataFacet>
         {
             new DataFacet(RtrbauFacetForm.source, DataFacets.ModelFacet1)
         });
