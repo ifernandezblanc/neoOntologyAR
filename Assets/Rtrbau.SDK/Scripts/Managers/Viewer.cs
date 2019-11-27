@@ -85,8 +85,8 @@ namespace Rtrbau
             }
             else
             {
-                cranfieldLogo.SetActive(true);
-                babcockLogo.SetActive(true);
+                cranfieldLogo.SetActive(false);
+                babcockLogo.SetActive(false);
                 recordingFrame.SetActive(false);
                 recordingButton.SetActive(false);
                 recordingTimerText.gameObject.SetActive(false);

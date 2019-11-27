@@ -166,5 +166,11 @@ namespace Rtrbau
     /// </summary>
     public enum RtrbauEvent : int { Download, ButtonClicked }
 
+    /// <summary>
+    /// Describe script purpose
+    /// Add links when code has been inspired
+    /// </summary>
+    public enum VuforiaTargetType : int { DifferentTarget, ImageTarget, ModelTarget }
+
     #endregion ENUMERATES
 }

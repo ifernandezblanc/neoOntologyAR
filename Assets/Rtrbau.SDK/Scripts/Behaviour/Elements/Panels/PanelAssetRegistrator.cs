@@ -44,6 +44,7 @@ namespace Rtrbau
         public OntologyFile assetTargetXML;
         public OntologyFile assetTargetDAT;
 
+        public VuforiaTargetType assetTargetType;
         public GameObject assetTarget;
         public GameObject assetModel;
 
@@ -333,22 +334,32 @@ namespace Rtrbau
             if (assetDatasetFilesDownloaded == 2)
             {
                 // Load asset target using tracker
-                assetTarget = Tracker.instance.LoadAssetTarget(assetTargetDAT.name);
-                assetNamePanel.text = assetTargetDAT.name;
-                assetStatusPanel.text = "Look around and gaze at your asset.";
+                KeyValuePair<VuforiaTargetType,GameObject> assetTargetPair = Tracker.instance.LoadAssetTarget(assetTargetDAT.name);
 
-                // Load asset target events
-                this.gameObject.AddComponent<PanelAssetTargetEvents>();
-                this.gameObject.GetComponent<PanelAssetTargetEvents>().Initialise(assetTarget, assetStatusPanel, assetRegistrationButton);
-
-                assetRegistratorObjectsLoaded += 1;
-
-                if (OnRegistratorObjectsDownloaded != null)
+                if (assetTargetPair.Key == VuforiaTargetType.DifferentTarget)
                 {
-                    OnRegistratorObjectsDownloaded.Invoke();
+                    throw new ArgumentException("PanelAssetRegistrator::LoadAssetTarget: Vuforia target type not implemented.");
                 }
-                else { }
+                else
+                {
+                    // Load asset target using tracker
+                    assetTargetType = assetTargetPair.Key;
+                    assetTarget = assetTargetPair.Value;
+                    assetNamePanel.text = assetTargetDAT.name;
+                    assetStatusPanel.text = "Look around and gaze at your asset.";
 
+                    // Load asset target events
+                    this.gameObject.AddComponent<PanelAssetTargetEvents>();
+                    this.gameObject.GetComponent<PanelAssetTargetEvents>().Initialise(assetTarget, assetStatusPanel, assetRegistrationButton);
+
+                    assetRegistratorObjectsLoaded += 1;
+
+                    if (OnRegistratorObjectsDownloaded != null)
+                    {
+                        OnRegistratorObjectsDownloaded.Invoke();
+                    }
+                    else { }
+                }
             }
             else
             {
@@ -384,6 +395,16 @@ namespace Rtrbau
                 assetModel.transform.SetParent(assetTarget.transform, false);
                 // Rotate asset model 180 degrees on y-axis to align with target
                 assetModel.transform.Rotate(new Vector3(0, 180, 0), Space.Self);
+
+                // Redefine asset model scale in case asset target is of type image target
+                if (assetTargetType == VuforiaTargetType.ImageTarget)
+                {
+                    // Assumes the image target is of width smaller than one meter (scale < 1)
+                    float sX = assetModel.transform.localScale.x / assetTarget.transform.localScale.x;
+                    float sY = assetModel.transform.localScale.y / assetTarget.transform.localScale.y;
+                    float sZ = assetModel.transform.localScale.z / assetTarget.transform.localScale.z;
+                    assetModel.transform.localScale = new Vector3(sX, sY, sZ);
+                }
 
                 Debug.Log("RegistratorAsset: LoadAssetRegistrator: Asset Registrator Objects found.");
 

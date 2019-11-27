@@ -246,9 +246,10 @@ namespace Rtrbau
             objectTracker.Start();
         }
 
-        public GameObject LoadAssetTarget(string assetDatasetName)
+        public KeyValuePair<VuforiaTargetType,GameObject> LoadAssetTarget(string assetDatasetName)
         {
             GameObject assetTarget = new GameObject();
+            VuforiaTargetType assetTargetType = VuforiaTargetType.DifferentTarget;
             bool assetTargetFound = false;
 
             // TrackerManager trackerManager = (TrackerManager)TrackerManager.Instance;
@@ -302,6 +303,19 @@ namespace Rtrbau
                             if (vTB.TrackableName == assetDatasetName)
                             {
                                 vTB.gameObject.name = "Target_" + vTB.TrackableName;
+
+                                if (vTB is ImageTargetBehaviour) 
+                                { 
+                                    Debug.Log("Tracker::LoadAssetTarget: " + vTB.TrackableName + " is " + VuforiaTargetType.ImageTarget.ToString());
+                                    assetTargetType = VuforiaTargetType.ImageTarget;
+                                }
+                                else if (vTB is ModelTargetBehaviour) 
+                                { 
+                                    Debug.Log("Tracker::LoadAssetTarget: " + vTB.TrackableName + " is " + VuforiaTargetType.ModelTarget.ToString());
+                                    assetTargetType = VuforiaTargetType.ModelTarget;
+                                }
+                                else { Debug.Log("Tracker::LoadAssetTarget: " + vTB.TrackableName + " is " + VuforiaTargetType.DifferentTarget.ToString()); }
+
                                 assetTarget = vTB.gameObject;
                                 assetTargetFound = true;
                             }
@@ -317,11 +331,11 @@ namespace Rtrbau
 
                     if (assetTargetFound)
                     {
-                        return assetTarget;
+                        return new KeyValuePair<VuforiaTargetType, GameObject>(assetTargetType,assetTarget);
                     }
                     else
                     {
-                        return null;
+                        return new KeyValuePair<VuforiaTargetType, GameObject>();
                     }
 
                 }
