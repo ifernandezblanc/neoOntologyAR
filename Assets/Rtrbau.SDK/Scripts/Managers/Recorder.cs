@@ -119,6 +119,7 @@ namespace Rtrbau
                 else
                 {
                     microphoneSource.clip = Microphone.Start("Built-in Microphone", false, audioRecordMaxLength*2, microphoneMaxFrequency);
+                    Viewer.instance.StartRecordingForSeconds(audioRecordMaxLength + 1);
                     yield return new WaitForSeconds(audioRecordMaxLength);
                     Microphone.End("Built-in Microphone");
                     AudioSaver.Save(audioFile.FilePath(), microphoneSource.clip);
@@ -172,10 +173,10 @@ namespace Rtrbau
             // Assign camera ready value
             cameraIsReady = captureObjectResult.success;
             // Call to image record method
-            RecordImage();
+            StartCoroutine(ImageCapture());
         }
 
-        void RecordImage()
+        IEnumerator ImageCapture()
         {
             if (cameraIsReady)
             {
@@ -186,6 +187,9 @@ namespace Rtrbau
                     if (imageFile.type == RtrbauFileType.png) { imageFormat = PhotoCaptureFileOutputFormat.PNG; }
                     else if (imageFile.type == RtrbauFileType.jpg) { imageFormat = PhotoCaptureFileOutputFormat.JPG; }
                     else { throw new ArgumentException("Recorder::RecordImage: file type not available for images."); }
+
+                    Viewer.instance.StartRecordingForSeconds(6);
+                    yield return new WaitForSeconds(5);
 
                     imageCapture.TakePhotoAsync(imageFile.FilePath(), imageFormat, OnCapturedPhotoToDisk);
                 }
