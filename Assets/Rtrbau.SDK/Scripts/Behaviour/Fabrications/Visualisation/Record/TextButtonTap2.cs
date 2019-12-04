@@ -118,7 +118,7 @@ namespace Rtrbau
             if (data.fabricationData.TryGetValue(textfacet4, out attribute))
             {
                 // Assign fabrication to attributeName
-                fabricationText.text = attribute.attributeName.Name();
+                fabricationText.text = Parser.ParseNamingOntologyFormat(attribute.attributeName.Name());
                 // Check fabrication creation as true
                 fabricationCreated = true;
             }

@@ -135,7 +135,7 @@ namespace Rtrbau
                 component = visualiser.transform.parent.gameObject.GetComponent<AssetManager>().FindAssetComponentManipulator(name);
 
                 // Update fabrication text with component name
-                string note = attribute.attributeName.Name() + ": " + name;
+                string note = Parser.ParseNamingOntologyFormat(attribute.attributeName.Name()) + ": " + name;
                 fabricationText.text = note;
                 // Debug.Log("ModelManipulation1: " + note);
                 // AddTextPanel(note);

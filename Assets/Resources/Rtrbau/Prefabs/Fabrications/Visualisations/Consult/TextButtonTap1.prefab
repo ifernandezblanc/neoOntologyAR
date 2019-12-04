@@ -22,10 +22,6 @@ MonoBehaviour:
     fabricationDescription: 0
   element: {fileID: 0}
   scale: {fileID: 0}
-  relationshipAttribute:
-    name: 
-    ontology: 
-  nextIndividual: 
   fabricationText: {fileID: 2607955612011865284}
   fabricationSeenPanel: {fileID: 1571806674462580628}
   fabricationSeenMaterial: {fileID: 2100000, guid: c1ecea20ac7df7042b4aa15f1d240875,

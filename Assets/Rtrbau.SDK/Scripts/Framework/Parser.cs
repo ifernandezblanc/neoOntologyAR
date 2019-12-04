@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Text.RegularExpressions;
 #endregion NAMESPACES
 
 /// <summary>
@@ -72,6 +73,15 @@ namespace Rtrbau
         {
             // UPG: to modify returned to make it more robust
             return "_New";
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired 
+        /// </summary>
+        public static string ParseNamingOntologyFormat(string ontologyFormattedName)
+        {
+            return Regex.Replace(ontologyFormattedName, "([A-Z])", " $1", RegexOptions.Compiled).Trim();
         }
 
         /// <summary>

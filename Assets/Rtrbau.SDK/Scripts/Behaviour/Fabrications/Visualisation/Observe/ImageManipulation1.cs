@@ -124,7 +124,7 @@ namespace Rtrbau
             // Check data received meets fabrication requirements
             if (data.fabricationData.TryGetValue(imagefacet1, out attribute))
             {
-                fabricationText.text = attribute.attributeName.Name() + ": ";
+                fabricationText.text = Parser.ParseNamingOntologyFormat(attribute.attributeName.Name()) + ": ";
                 imageFile = new OntologyFile(attribute.attributeValue);
                 LoaderEvents.StartListening(imageFile.EventName(), DownloadedImage);
                 Loader.instance.StartFileDownload(imageFile);

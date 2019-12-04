@@ -126,7 +126,7 @@ namespace Rtrbau
             // Check data received meets fabrication requirements
             if (data.fabricationData.TryGetValue(audiofacet1, out attribute))
             {
-                fabricationText.text = attribute.attributeName.Name() + ": ";
+                fabricationText.text = Parser.ParseNamingOntologyFormat(attribute.attributeName.Name()) + ": ";
                 audioFile = new OntologyFile(attribute.attributeValue);
                 LoaderEvents.StartListening(audioFile.EventName(), DownloadedAudio);
                 Loader.instance.StartFileDownload(audioFile);

@@ -127,7 +127,7 @@ namespace Rtrbau
             // Check data received meets fabrication requirements
             if (data.fabricationData.TryGetValue(picturefacet1, out attribute))
             {
-                fabricationText.text = attribute.attributeName.Name();
+                fabricationText.text = Parser.ParseNamingOntologyFormat(attribute.attributeName.Name());
                 imageGenericName = attribute.attributeName.Name();
                 fabricationCreated = true;
             }

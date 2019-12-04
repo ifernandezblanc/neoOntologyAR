@@ -123,7 +123,7 @@ namespace Rtrbau
                 // Assign record text with attribute value given automatically
                 recordText.GetComponentInChildren<TextMeshPro>().text = Parser.ParseNamingDateTimeXSD(attributeDate);
                 // Assign fabrication to attributeName
-                fabricationText.text = attribute.attributeName.Name();
+                fabricationText.text = Parser.ParseNamingOntologyFormat(attribute.attributeName.Name());
                 // Check fabrication creation as true
                 fabricationCreated = true;
             }

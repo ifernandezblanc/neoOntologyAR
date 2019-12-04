@@ -118,7 +118,7 @@ namespace Rtrbau
             // Check data received meets fabrication requirements
             if (data.fabricationData.TryGetValue(textfacet2, out attribute))
             {
-                fabricationText.text = attribute.attributeName.Name();
+                fabricationText.text = Parser.ParseNamingOntologyFormat(attribute.attributeName.Name());
             }
             else
             {

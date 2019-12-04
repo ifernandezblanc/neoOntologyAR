@@ -170,7 +170,7 @@ namespace Rtrbau
             SetModel();
             SetHologram();
             hologramCreated = true;
-            fabricationText.text = "Hologram available, follow line to view.";
+            fabricationText.text = "Hologram available";
             // AddLineRenderer();
         }
 

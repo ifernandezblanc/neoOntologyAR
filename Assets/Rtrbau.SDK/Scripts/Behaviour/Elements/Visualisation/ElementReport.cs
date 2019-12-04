@@ -488,7 +488,7 @@ namespace Rtrbau
             if (objectClassesAttributes.Count == objectPropertiesNumber && objectClassesIndividuals.Count == objectPropertiesNumber && fabricationsSelected == true)
             {
                 individualText.text = rtrbauElement.elementName.Name();
-                classText.text = rtrbauElement.elementClass.Name();
+                classText.text = Parser.ParseNamingOntologyFormat(rtrbauElement.elementClass.Name());
 
                 Debug.Log("ElementReport::CreateFabrications: Starting to create fabrications for: " + rtrbauElement.elementName.Name());
 

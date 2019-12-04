@@ -158,7 +158,7 @@ namespace Rtrbau
             element = elementParent;
             scale = fabricationParent;
 
-            fabricationText.text = "Animation available, follow line to view.";
+            fabricationText.text = "Animation available";
             Scale();
             InferFromText();
         }
