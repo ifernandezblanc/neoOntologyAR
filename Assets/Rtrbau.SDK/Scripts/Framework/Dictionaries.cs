@@ -204,7 +204,9 @@ namespace Rtrbau
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
                 (RtrbauFabricationName.TextPanelTap2, DataFormats.TextPanelTap2, EnvironmentFormats.TextPanelTap2, UserFormats.TextPanelTap2),
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.ModelPanelTap1, DataFormats.ModelPanelTap1, EnvironmentFormats.ModelPanelTap1, UserFormats.ModelPanelTap1)
+                (RtrbauFabricationName.ModelPanelTap1, DataFormats.ModelPanelTap1, EnvironmentFormats.ModelPanelTap1, UserFormats.ModelPanelTap1),
+                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                (RtrbauFabricationName.TextPanelTap3, DataFormats.TextPanelTap3, EnvironmentFormats.TextPanelTap3, UserFormats.TextPanelTap3)
             };
         #endregion REPORT_FORMATS
         #endregion DICTIONARIES_FORMATS
@@ -212,10 +214,6 @@ namespace Rtrbau
         #region DICTIONARIES_CONFIGURATION
         #endregion DICTIONARIES_CONFIGURATION
 
-        /// <summary>
-        /// Describe script purpose
-        /// Add links when code has been inspired
-        /// </summary>
         #region DICTIONARIES_DYNAMIC
         ///// <summary>
         ///// Describe script purpose

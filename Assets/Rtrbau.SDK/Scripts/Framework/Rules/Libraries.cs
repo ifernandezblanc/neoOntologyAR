@@ -277,6 +277,15 @@ namespace Rtrbau
         {
             "Start", "End"
         };
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired 
+        /// </summary>
+        public static List<string> StateIdeal = new List<string>
+        {
+            "Ideal", "State"
+        };
         #endregion NAME_LIBRARIES
 
         #region RANGE_LIBRARIES
@@ -333,6 +342,15 @@ namespace Rtrbau
         /// </summary>
         public static List<string> TextLibrary = StringLibrary.Concat(NumericLibrary).Concat(BooleanLibrary).Concat(DateTimeLibrary).ToList();
 
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired 
+        /// </summary>
+        public static List<string> StateLibrary = new List<string>
+        {
+            "State"
+        };
+
         ///// <summary>
         ///// Describe script purpose
         ///// Add links when code has been inspired
@@ -342,7 +360,7 @@ namespace Rtrbau
         //    OntologyElementType.ClassIndividuals.ToString()
         //};
 
-        
+
         #endregion RANGE_LIBRARIES
 
         #region VALUE_LIBRARIES
