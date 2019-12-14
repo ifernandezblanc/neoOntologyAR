@@ -282,19 +282,25 @@ namespace Rtrbau
             {
                 Debug.LogError("ImageManipulation1: LoadAudio: " + imageFile.type + "not implemented for ImageManipulation1.");
             }
+
+            // Remember to deactivate loading panel
+            element.GetComponent<ElementReport>().loadingPanel.SetActive(false);
         }
         #endregion PRIVATE
 
         #region PUBLIC
         public void RecordImage()
         {
+            // Generate image file name
             string imageName = Parser.ParseAddDateTime(imageGenericName);
-
+            // Create new ontology file
             imageRecord = new OntologyFile(imageName, RtrbauFileType.jpg.ToString());
-
+            // Initialise on image recorded event
             RecorderEvents.StartListening(imageRecord.EventName(), OnPictureTaken);
-
+            // Start image record
             Recorder.instance.StartImageRecord(imageRecord);
+            // Activate element loading panel
+            element.GetComponent<ElementReport>().loadingPanel.SetActive(true);
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS

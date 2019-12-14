@@ -152,6 +152,12 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
+    public enum RtrbauElementMode : int { Interior, Exterior }
+
+    /// <summary>
+    /// Describe script purpose
+    /// Add links when code has been inspired
+    /// </summary>
     public enum RtrbauPanel : int { Ontology, User, Asset, Operation }
 
     /// <summary>

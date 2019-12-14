@@ -16,7 +16,7 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos.EyeTracking
         /// The GameObject mimics the camera's movement while keeping a given offset.
         /// </summary>
         [SerializeField]
-        private Vector3 offsetToCamera = Vector3.zero;
+        public Vector3 offsetToCamera = Vector3.zero;
 
         private void Update()
         {

@@ -27,7 +27,7 @@ MonoBehaviour:
   fabricationReportedPanel: {fileID: 1108666793538702221}
   fabricationReportedMaterial: {fileID: 2100000, guid: d1e6ac5dd3c0c3b40ac84b4b2a1faaff,
     type: 2}
-  recordText: {fileID: 6981733290867199683}
+  recordText: {fileID: 3247254367572884139}
 --- !u!1001 &3247254367572884277
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -100,6 +100,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5617266142024103415, guid: 3b819b37ceff0e84784a4465953c6ce6,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5617266142024103415, guid: 3b819b37ceff0e84784a4465953c6ce6,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5617266142024103415, guid: 3b819b37ceff0e84784a4465953c6ce6,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 865245061703266956, guid: 3b819b37ceff0e84784a4465953c6ce6,
         type: 3}
       propertyPath: m_textInfo.characterCount
@@ -132,7 +147,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3b819b37ceff0e84784a4465953c6ce6, type: 3}
---- !u!1 &6981733290867199683 stripped
+--- !u!1 &3247254367572884139 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5617266142024103414, guid: 3b819b37ceff0e84784a4465953c6ce6,
     type: 3}

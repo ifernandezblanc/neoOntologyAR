@@ -213,6 +213,8 @@ namespace Rtrbau
         #endregion PRIVATE
 
         #region PUBLIC
+        public void StartDictation() { element.GetComponent<ElementReport>().loadingPanel.SetActive(true); }
+        public void StopDictation() { element.GetComponent<ElementReport>().loadingPanel.SetActive(false); }
         #endregion PUBLIC
         #endregion CLASS_METHODS
     }

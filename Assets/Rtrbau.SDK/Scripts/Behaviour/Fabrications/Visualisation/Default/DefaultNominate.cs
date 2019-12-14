@@ -216,7 +216,7 @@ namespace Rtrbau
                             // Assign user-reported attribute value to RtrbauElement from ElementReport through RtrbauFabrication
                             attribute.attributeValue = nominatedIndividual.URI();
                         }
-                        
+
                         // Change button colour for user confirmation
                         fabricationReportedPanel.material = fabricationReportedMaterial;
                         // Check if all attribute values have been recorded
@@ -395,7 +395,7 @@ namespace Rtrbau
             GameObject individualButton = Instantiate(nominateButton);
             // Initialise nominate button with corresponding nominate function
             individualButton.GetComponent<NominateButton>().Initialise(NominateIndividual, individual, range);
-            // Scale buttons to possible change in fabrications scale
+            // Scale buttons to possible change in fabrications scale before assigning to parent
             ScaleIndividualButton(individualButton);
             // Set tile grid object collection as button parent
             DeactivateIndividualButton(individualButton);
@@ -405,11 +405,27 @@ namespace Rtrbau
 
         void ScaleIndividualButton(GameObject button)
         {
-            // UPG: if it does not work, then try scale.transform.localScale
-            float sX = button.transform.localScale.x / this.transform.localScale.x;
-            float sY = button.transform.localScale.y / this.transform.localScale.y;
-            float sZ = button.transform.localScale.z / this.transform.localScale.z;
-
+            // Declare scaling parameters
+            float sX;
+            float sY;
+            float sZ;
+            // Assuming buttons (fabrications) have equal scales for all axis
+            decimal bS = (decimal)button.transform.localScale.x;
+            // In case the button has a scale smaller than 1
+            // That also means the fabrication has an equal scale smaller than 1
+            if (bS < 1)
+            {
+                sX = 1 / this.transform.localScale.x;
+                sY = 1 / this.transform.localScale.y;
+                sZ = 1 / this.transform.localScale.z;
+            }
+            else
+            {
+                sX = button.transform.localScale.x / this.transform.localScale.x;
+                sY = button.transform.localScale.y / this.transform.localScale.y;
+                sZ = button.transform.localScale.z / this.transform.localScale.z;
+            }
+            
             button.transform.localScale = new Vector3(sX, sY, sZ);
         }
 

@@ -51,9 +51,10 @@ namespace Rtrbau
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
-        private bool buttonCreated;
+        public bool buttonCreated;
         private bool datableNominate;
         private bool buttonActive;
+        public bool unloadableNominate;
         #endregion CLASS_EVENTS
 
         #region MONOBEHAVIOUR_METHODS
@@ -182,7 +183,11 @@ namespace Rtrbau
                                 // Assign nominated model to list of nominated data texts
                                 nominatedDataTexts.Add(nominatedModel);
                             }
-                            else { DestroyIt(); }
+                            else 
+                            {
+                                // Set nominate as unloadable
+                                unloadableNominate = true;
+                            }
                         }
                         else
                         {
@@ -194,6 +199,7 @@ namespace Rtrbau
                     }
                     else {}
                 }
+
                 // Assign button as created
                 buttonCreated = true;
                 // Assign nominate as recordable
@@ -203,9 +209,11 @@ namespace Rtrbau
 
         GameObject CreateNominatedPropertyText(JsonValue nominatedProperty, bool isDatatype)
         {
+            // Instantiate nominated text panel
             GameObject nominatedText = Instantiate(nominatedDataText);
             // Initialise nominated text panel
             nominatedText.transform.SetParent(nominatedDataPanel, false);
+            // Scale nominated text panel
             ScaleNominatedText(nominatedText);
             // Generate datatype property text
             string propertyName = Parser.ParseURI(nominatedProperty.ontName, '#', RtrbauParser.post);
@@ -249,11 +257,14 @@ namespace Rtrbau
 
         void ScaleNominatedText(GameObject nominatedData)
         {
-            float sX = this.transform.localScale.x / parent.transform.localScale.x;
-            float sY = this.transform.localScale.y / parent.transform.localScale.y;
-            float sZ = this.transform.localScale.z / parent.transform.localScale.z;
+            // Assuming all rtrbau fabrications have the same scale, the child should have the same scale as the parent
+            // This is because both are childs of tile grid object collections with game objects of scale 1
+            // UPG: to create a method that does not have any assumptions
+            float sX = parent.transform.localScale.x;
+            float sY = parent.transform.localScale.y;
+            float sZ = parent.transform.localScale.z;
 
-            this.transform.localScale = new Vector3(sX, sY, sZ);
+            nominatedData.transform.localScale = new Vector3(sX, sY, sZ);
         }
         #endregion PRIVATE
 
@@ -266,6 +277,10 @@ namespace Rtrbau
             individualElement = new OntologyElement(relationshipValue.URI(), OntologyElementType.IndividualProperties);
             parent = fabricationParent;
             nominatedDataTexts = new List<GameObject>();
+            buttonCreated = false;
+            datableNominate = false;
+            buttonActive = false;
+            unloadableNominate = false;
             // To optimise speed, only check individual properties if nominate is not new
             if (individual.Name().Contains(Parser.ParseNamingNew()))
             {

@@ -279,21 +279,27 @@ namespace Rtrbau
             {
                 Debug.LogError("AudioRecordDoubleTap1::LoadAudio: audio file not found");
             }
+
+            // Remember to deactivate loading panel
+            element.GetComponent<ElementReport>().loadingPanel.SetActive(false);
         }
         #endregion PRIVATE
 
         #region PUBLIC
         public void RecordAudio()
         {
+            // Generate audio file name
             string audioName = Parser.ParseAddDateTime(audioGenericName);
-
+            // Create new ontology file
             audioRecord = new OntologyFile(audioName, RtrbauFileType.wav.ToString());
-
+            // Initialise on audio recorded event
             RecorderEvents.StartListening(audioRecord.EventName(), OnAudioRecorded);
-
+            // Start audio record
             Recorder.instance.StartAudioRecord(audioRecord);
-
+            // Deactivate audio play button
             playAudioButton.SetActive(false);
+            // Activate element loading panel
+            element.GetComponent<ElementReport>().loadingPanel.SetActive(false);
         }
 
         public void PlayAudio()

@@ -1649,6 +1649,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5508257579919130961}
   - component: {fileID: 5508257579919130963}
+  - component: {fileID: -539908468017136917}
   - component: {fileID: 5508257579919130962}
   m_Layer: 0
   m_Name: RtrbauReporter
@@ -1691,6 +1692,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offsetToCamera: {x: -2, y: 0, z: 0}
+--- !u!114 &-539908468017136917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5508257579919130960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2547b4dd088644d6aaf64f45df657c79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pivotAxis: 0
+  targetTransform: {fileID: 0}
 --- !u!114 &5508257579919130962
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3552,15 +3567,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22456292bf872e94ead536f3bb5e1448, type: 3}
---- !u!4 &1017579680068689049 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7949764269272708337, guid: 22456292bf872e94ead536f3bb5e1448,
-    type: 3}
-  m_PrefabInstance: {fileID: 6938946587900110952}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1047309848194428147 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7981748438181364891, guid: 22456292bf872e94ead536f3bb5e1448,
+    type: 3}
+  m_PrefabInstance: {fileID: 6938946587900110952}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1017579680068689049 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7949764269272708337, guid: 22456292bf872e94ead536f3bb5e1448,
     type: 3}
   m_PrefabInstance: {fileID: 6938946587900110952}
   m_PrefabAsset: {fileID: 0}

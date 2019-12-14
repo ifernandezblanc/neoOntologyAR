@@ -21,6 +21,7 @@ Date: 09/10/2019
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 using System.IO;
 using System.Linq;
 using TMPro;
@@ -99,11 +100,11 @@ namespace Rtrbau
 
         void Update()
         {
-            if (Rtrbauer.instance.viewer != null)
-            {
-                this.transform.LookAt(Rtrbauer.instance.viewer.transform.position);
-                this.transform.Rotate(0, 180, 0);
-            }
+            //if (Rtrbauer.instance.viewer != null)
+            //{
+            //    this.transform.LookAt(Rtrbauer.instance.viewer.transform.position);
+            //    this.transform.Rotate(0, 180, 0);
+            //}
         }
 
         void OnEnable() { }
@@ -529,6 +530,7 @@ namespace Rtrbau
 
                 // Set fabrications as created
                 fabricationsCreated = true;
+                // Locate element in rtrbau location
                 LocateElement();
             }
             else
@@ -1147,6 +1149,56 @@ namespace Rtrbau
                 return true;
             }
             else { throw new ArgumentException("ElementReport::CheckNewNominatesReported: this function should not be reached if element not reported."); }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ScaleLoadingPanel()
+        {
+            // Initialise scale increase calculation variables
+            decimal fabricationBoundSizeY = 0.0M;
+            int recordFabs = recordFabrications.Count();
+            int nominateFabs = nominateFabrications.Count();
+            decimal boundSizeIncrease;
+            decimal boundSizeOffset = 0.0M;
+            // Debug.Log("ElementReport::ScaleLoadingPanel: fabricationBoundSizeY is " + fabricationBoundSizeY);
+            // Calculate minimum bound size of all fabrications
+            foreach (KeyValuePair<RtrbauFabrication, GameObject> fabrication in elementFabrications)
+            {
+                if (fabricationBoundSizeY == 0.00000M) 
+                { 
+                    fabricationBoundSizeY = (decimal)fabrication.Value.transform.GetChild(0).GetChild(1).GetComponent<Renderer>().bounds.size.y; 
+                }
+                else if ((decimal)fabrication.Value.transform.GetChild(0).GetChild(1).GetComponent<Renderer>().bounds.size.y < fabricationBoundSizeY)
+                {
+                    fabricationBoundSizeY = (decimal)fabrication.Value.transform.GetChild(0).GetChild(1).GetComponent<Renderer>().bounds.size.y;
+                }
+                else { }
+                // Debug.Log("ElementReport::ScaleLoadingPanel: fabricationBoundSizeY is " + fabricationBoundSizeY);
+            }
+            // Calculate scale increase based on which type of fabrications have the most number of them
+            if (recordFabs >= nominateFabs) 
+            { 
+                boundSizeIncrease = (fabricationBoundSizeY) * recordFabs;
+                // Add offset in case RtrbauElementMode is interior (seems the issue is due to numbers precision)
+                if (visualiser.elementsMode == RtrbauElementMode.Interior) { boundSizeOffset = 0.025M * recordFabs; }
+                else if (visualiser.elementsMode == RtrbauElementMode.Exterior) { }
+                else { throw new ArgumentException("ElementReport::ScaleLoadingPanel: RtrbauElementMode " + visualiser.elementsMode + " not implemented."); }
+            }
+            else 
+            { 
+                boundSizeIncrease = (fabricationBoundSizeY) * nominateFabs;
+                // Add offset in case RtrbauElementMode is interior (seems the issue is due to numbers precision)
+                if (visualiser.elementsMode == RtrbauElementMode.Interior) { boundSizeOffset = 0.025M * nominateFabs; }
+                else if (visualiser.elementsMode == RtrbauElementMode.Exterior) { }
+                else { throw new ArgumentException("ElementReport::ScaleLoadingPanel: RtrbauElementMode " + visualiser.elementsMode + " not implemented."); }
+            }
+                
+            // Move loading panel half the size of boundSizeIncrease downwards on y axis
+            loadingPanel.transform.position -= new Vector3(0, (float)boundSizeIncrease / 2, 0);
+            // Rescale loading panel background the size of boundSizeIncrease on y axis
+            loadingPanel.transform.GetChild(0).localScale += new Vector3(0, (float)boundSizeIncrease + (float)boundSizeOffset, 0);
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS

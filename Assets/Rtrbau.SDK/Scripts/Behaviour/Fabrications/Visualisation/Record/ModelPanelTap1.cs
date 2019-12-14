@@ -55,6 +55,7 @@ namespace Rtrbau
         public Material fabricationSeenMaterial;
         public Material fabricationNonReportedMaterial;
         public Material fabricationReportedMaterial;
+        public Material fabricationModelMaterial;
         public GameObject recordSelectButton;
         public TextMeshPro recordSelectButtonText;
         #endregion GAMEOBJECT_PREFABS
@@ -68,7 +69,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationSeenMaterial == null || fabricationNonReportedMaterial == null || fabricationReportedMaterial == null || recordSelectButton == null || recordSelectButtonText == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationSeenMaterial == null || fabricationNonReportedMaterial == null || fabricationReportedMaterial == null || fabricationModelMaterial == null || recordSelectButton == null || recordSelectButtonText == null)
             {
                 throw new ArgumentException("DefaultNominate::Start: Script requires some prefabs to work.");
             }
@@ -112,9 +113,12 @@ namespace Rtrbau
         /// </summary>
         public void Scale()
         {
-            float sX = this.transform.localScale.x / scale.transform.localScale.x;
-            float sY = this.transform.localScale.y / scale.transform.localScale.y;
-            float sZ = this.transform.localScale.z / scale.transform.localScale.z;
+            // In this case, the scaling affects to the button
+            // Hence, it is necessary to scale against parent and not scale
+            // UPG: ensure all fabrications work the same way
+            float sX = this.transform.localScale.x / element.transform.localScale.x;
+            float sY = this.transform.localScale.y / element.transform.localScale.y;
+            float sZ = this.transform.localScale.z / element.transform.localScale.z;
 
             this.transform.localScale = new Vector3(sX, sY, sZ);
         }
@@ -318,7 +322,7 @@ namespace Rtrbau
             selectableModel.transform.position = componentModel.transform.position;
             selectableModel.transform.rotation = componentModel.transform.rotation;
             // Initialise material to non reported
-            selectableModel.GetComponentInChildren<MeshRenderer>().material = fabricationNonReportedMaterial;
+            selectableModel.GetComponentInChildren<MeshRenderer>().material = fabricationModelMaterial;
             // Add line renderer to fabrication record select button
             selectableModel.AddComponent<ElementsLine>().Initialise(selectableModel, recordSelectButton, fabricationReportedMaterial);
             // Add ManipulationHandler

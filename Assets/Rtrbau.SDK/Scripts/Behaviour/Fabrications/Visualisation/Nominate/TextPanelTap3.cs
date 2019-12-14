@@ -21,6 +21,7 @@ Date: 07/12/2019
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 using TMPro;
 using Microsoft.MixedReality.Toolkit.Utilities;
 #endregion NAMESPACES
@@ -148,12 +149,14 @@ namespace Rtrbau
                 // Add individuals to fabrication list
                 foreach (JsonIndividual individual in individuals)
                 {
-                    //Debug.Log("DefaultNominate::InferFromtText: individual nominated is: " + individual.ontIndividual);
+                    Debug.Log("DefaultNominate::InferFromtText: individual nominated is: " + individual.ontIndividual);
                     // Generate OntologyEntity to parse individual URI
                     OntologyEntity individualEntity = new OntologyEntity(individual.ontIndividual);
                     // Create individual button and assign both to dictionary
                     individualNominates.Add(individualEntity, CreateIndividualButton(individualEntity, individualRange));
                 }
+                // Ensure no nominates buttons are unloadable
+                StartCoroutine(UnloadNominates());
                 // Set fabrication as created
                 fabricationCreated = true;
             }
@@ -406,10 +409,26 @@ namespace Rtrbau
 
         void ScaleIndividualButton(GameObject button)
         {
-            // UPG: if it does not work, then try scale.transform.localScale
-            float sX = button.transform.localScale.x / this.transform.localScale.x;
-            float sY = button.transform.localScale.y / this.transform.localScale.y;
-            float sZ = button.transform.localScale.z / this.transform.localScale.z;
+            // Declare scaling parameters
+            float sX;
+            float sY;
+            float sZ;
+            // Assuming buttons (fabrications) have equal scales for all axis
+            decimal bS = (decimal)button.transform.localScale.x;
+            // In case the button has a scale smaller than 1
+            // That also means the fabrication has an equal scale smaller than 1
+            if (bS < 1)
+            {
+                sX = 1 / this.transform.localScale.x;
+                sY = 1 / this.transform.localScale.y;
+                sZ = 1 / this.transform.localScale.z;
+            }
+            else
+            {
+                sX = button.transform.localScale.x / this.transform.localScale.x;
+                sY = button.transform.localScale.y / this.transform.localScale.y;
+                sZ = button.transform.localScale.z / this.transform.localScale.z;
+            }
 
             button.transform.localScale = new Vector3(sX, sY, sZ);
         }
@@ -438,6 +457,44 @@ namespace Rtrbau
             button.SetActive(false);
             // Activate tile grid object collection
             nominateButtons.gameObject.GetComponent<TileGridObjectCollection>().enabled = true;
+        }
+
+        IEnumerator UnloadNominates()
+        {
+            Dictionary<OntologyEntity, GameObject> unloadableNominates = new Dictionary<OntologyEntity, GameObject>();
+
+            foreach (KeyValuePair<OntologyEntity,GameObject> individualNominate in individualNominates)
+            {
+                // Wait until all nominates buttons have been created
+                while(individualNominate.Value.GetComponent<NominateDataButton>().buttonCreated == false)
+                {
+                    yield return null;
+                }
+
+                // If created button is unloadable, then add to unloadable nominates
+                if (individualNominate.Value.GetComponent<NominateDataButton>().unloadableNominate == true)
+                {
+                    unloadableNominates.Add(individualNominate.Key, individualNominate.Value);
+                }
+                else {}
+            }
+
+            foreach (KeyValuePair<OntologyEntity, GameObject> nominate in unloadableNominates)
+            {
+                // Remove from individual Nominates
+                individualNominates.Remove(nominate.Key);
+                // Destroy button
+                Destroy(nominate.Value);
+            }
+
+            //GameObject nominateDataButton;
+            //if (individualNominates.TryGetValue(nominate, out nominateDataButton))
+            //{
+            //    individualNominates.Remove(nominate);
+            //    Destroy(nominateDataButton);
+            //    Debug.Log("TextPanelTap3::UnloadNominate: individual nominate being unloaded: " + nominate.Entity());
+            //}
+            //else { throw new ArgumentException("TextPanelTap3::UnloadNominate: Nominate should be found: " + nominate.Entity()); }
         }
         #endregion PRIVATE
 

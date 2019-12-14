@@ -1,5 +1,19 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &2497994771003277773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6653357932425215832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2547b4dd088644d6aaf64f45df657c79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pivotAxis: 0
+  targetTransform: {fileID: 0}
 --- !u!114 &1518043886720504873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -54,7 +68,6 @@ MonoBehaviour:
     type: 3}
   activationButtonMinimise: {fileID: 21300000, guid: 174bbdf809352fc42a45fd5412d60920,
     type: 3}
-  lineRenderers: {fileID: 1325168620969849147}
   lineMaterial: {fileID: 2100000, guid: 067135b03b686574eb53fb59456a7a64, type: 2}
   individualDownloaded: 0
   classDownloaded: 0
@@ -235,12 +248,6 @@ Transform:
 --- !u!4 &7332681423777907476 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2550298081673476097, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
-    type: 3}
-  m_PrefabInstance: {fileID: 5090915240688925461}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1325168620969849147 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6108395838386752046, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
     type: 3}
   m_PrefabInstance: {fileID: 5090915240688925461}
   m_PrefabAsset: {fileID: 0}

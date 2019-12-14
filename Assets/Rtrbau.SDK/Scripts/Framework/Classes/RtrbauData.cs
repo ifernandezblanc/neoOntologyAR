@@ -284,8 +284,10 @@ namespace Rtrbau
                         // Find value to assign to class Attribute to generate fabrications: to be updated with user interactions
                         JsonValue exampleAttributeValue = exampleElement.ontProperties.Find(delegate (JsonValue exampleValue) { return exampleValue.ontName == classAttribute.ontName; });
 
+                        // Debug.Log("RtrbauData::RtrbauElement: exampleAttributeValue is: " + exampleAttributeValue.ontValue);
+
                         // Check if value attribute exists for class attribute, otherwise give example default
-                        Debug.Log("RtrbauData::RtrbauElement: exampleAttributeValue exists: " + Equals(exampleAttributeValue, default(JsonValue)));
+                        Debug.Log("RtrbauData::RtrbauElement: exampleAttributeValue exists: " + !Equals(exampleAttributeValue, default(JsonValue)));
 
                         // ErrorHandling: when example attribute value does not exist, leave value empty
                         if (Equals(exampleAttributeValue, default(JsonValue)))
@@ -298,6 +300,8 @@ namespace Rtrbau
                                 ontType = classAttribute.ontType
                             };
                         }
+
+                        Debug.Log("RtrbauData:RtrbauElement: exampleAttributeValue is: " + exampleAttributeValue.ontValue);
 
                         // Assign variables to generate a new RtrbauAttribute
                         // UPG: to modify assignment if necessary as for consult element fabrications
@@ -445,14 +449,32 @@ namespace Rtrbau
             {
                 if (position < 1)
                 {
-                    pX = bounds.size.x;
-                    pY = 0;
-                    pZ = 0;
+                    if (locationManager.elementsMode == RtrbauElementMode.Exterior)
+                    {
+                        pX = bounds.size.x;
+                        pY = 0;
+                        pZ = 0;
 
-                    Debug.Log("RtrbauData::RtrbauLocation::SetPosition: element position is: (" + pX + "," + pY + "," + pZ + ")");
-                    element.transform.localPosition = new Vector3(pX, pY, pZ);
+                        Debug.Log("RtrbauData::RtrbauLocation::SetPosition: element position is: (" + pX + "," + pY + "," + pZ + ")");
+                        element.transform.localPosition = new Vector3(pX, pY, pZ);
 
-                    return true;
+                        return true;
+                    }
+                    else if (locationManager.elementsMode == RtrbauElementMode.Interior)
+                    {
+                        pX = 0.5f;
+                        pY = 0;
+                        pZ = 0.5f;
+
+                        Debug.Log("RtrbauData::RtrbauLocation::SetPosition: element position follows user at: (" + pX + "," + pY + "," + pZ + ")");
+                        element.AddComponent< Microsoft.MixedReality.Toolkit.Examples.Demos.EyeTracking.MoveWithCamera>().offsetToCamera = new Vector3(pX, pY, pZ);
+
+                        return true;
+                    }
+                    else
+                    {
+                        throw new ArgumentException("RtrbauData::RtrbauLocation::SetPosition: RtrbauElementMode " + locationManager.elementsMode.ToString() + " not implemented for " + locationType.ToString());
+                    }
                 }
                 else { return false; }
             }
@@ -460,14 +482,21 @@ namespace Rtrbau
             {
                 if (position < 3)
                 {
-                    pX = bounds.size.x - position * bounds.size.x;
-                    pY = bounds.size.y * 2f;
-                    pZ = 0;
+                    if (locationManager.elementsMode == RtrbauElementMode.Exterior)
+                    {
+                        pX = bounds.size.x - position * bounds.size.x;
+                        pY = bounds.size.y * 2f;
+                        pZ = 0;
 
-                    Debug.Log("RtrbauData::RtrbauLocation::SetPosition: element position is: (" + pX + "," + pY + "," + pZ + ")");
-                    element.transform.localPosition = new Vector3(pX, pY, pZ);
+                        Debug.Log("RtrbauData::RtrbauLocation::SetPosition: element position is: (" + pX + "," + pY + "," + pZ + ")");
+                        element.transform.localPosition = new Vector3(pX, pY, pZ);
 
-                    return true;
+                        return true;
+                    }
+                    else
+                    {
+                        throw new ArgumentException("RtrbauData::RtrbauLocation::SetPosition: RtrbauElementMode " + locationManager.elementsMode.ToString() + " not implemented for " + locationType.ToString());
+                    }
                 }
                 else { return false; }
             }
@@ -475,14 +504,21 @@ namespace Rtrbau
             {
                 if (position < 5)
                 {
-                    pX = bounds.size.x * 2f;
-                    pY = bounds.size.y * 2f;
-                    pZ = -bounds.size.z * position;
+                    if (locationManager.elementsMode == RtrbauElementMode.Exterior)
+                    {
+                        pX = bounds.size.x * 2f;
+                        pY = bounds.size.y * 2f;
+                        pZ = -bounds.size.z * position;
 
-                    Debug.Log("RtrbauData::RtrbauLocation::SetPosition: element position is: (" + pX + "," + pY + "," + pZ + ")");
-                    element.transform.localPosition = new Vector3(pX, pY, pZ);
+                        Debug.Log("RtrbauData::RtrbauLocation::SetPosition: element position is: (" + pX + "," + pY + "," + pZ + ")");
+                        element.transform.localPosition = new Vector3(pX, pY, pZ);
 
-                    return true;
+                        return true;
+                    }
+                    else
+                    {
+                        throw new ArgumentException("RtrbauData::RtrbauLocation::SetPosition: RtrbauElementMode " + locationManager.elementsMode.ToString() + " not implemented for " + locationType.ToString());
+                    }
                 }
                 else { return false; }
             }
@@ -490,14 +526,32 @@ namespace Rtrbau
             {
                 if (position < 7)
                 {
-                    pX = -bounds.size.x * 2f;
-                    pY = bounds.size.y * 2f;
-                    pZ = -bounds.size.z * position;
+                    if (locationManager.elementsMode == RtrbauElementMode.Exterior)
+                    {
+                        pX = -bounds.size.x * 2f;
+                        pY = bounds.size.y * 2f;
+                        pZ = -bounds.size.z * position;
 
-                    Debug.Log("RtrbauData::RtrbauLocation::SetPosition: element position is: (" + pX + "," + pY + "," + pZ + ")");
-                    element.transform.localPosition = new Vector3(pX, pY, pZ);
+                        Debug.Log("RtrbauData::RtrbauLocation::SetPosition: element position is: (" + pX + "," + pY + "," + pZ + ")");
+                        element.transform.localPosition = new Vector3(pX, pY, pZ);
 
-                    return true;
+                        return true;
+                    }
+                    else if (locationManager.elementsMode == RtrbauElementMode.Interior)
+                    {
+                        pX = -0.5f;
+                        pY = 0;
+                        pZ = (-0.5f * position) + 1.5f;
+
+                        Debug.Log("RtrbauData::RtrbauLocation::SetPosition: element position follows user at: (" + pX + "," + pY + "," + pZ + ")");
+                        element.AddComponent<Microsoft.MixedReality.Toolkit.Examples.Demos.EyeTracking.MoveWithCamera>().offsetToCamera = new Vector3(pX, pY, pZ);
+
+                        return true;
+                    }
+                    else
+                    {
+                        throw new ArgumentException("RtrbauData::RtrbauLocation::SetPosition: RtrbauElementMode " + locationManager.elementsMode.ToString() + " not implemented for " + locationType.ToString());
+                    }
                 }
                 else { return false; }
             }
@@ -512,16 +566,28 @@ namespace Rtrbau
             // Determine asset size through model bounds
             Bounds asset = locationManager.manager.ReturnAssetBoundsLocal();
 
-            // Re-scale element to match horizontal asset extents (x-axis)
-            // But only in the case asset extents are bigger than element
-            if (asset.extents.x > elementObject.transform.localScale.x)
+            // If element location mode is exterior
+            if (locationManager.elementsMode == RtrbauElementMode.Exterior)
             {
-                float sM = asset.extents.x / elementObject.transform.localScale.x;
-                float sX = elementObject.transform.localScale.x * sM;
-                float sY = elementObject.transform.localScale.y * sM;
-                float sZ = elementObject.transform.localScale.z;
+                decimal aX = (decimal)asset.size.x;
+                decimal eX = (decimal)elementObject.transform.localScale.x;
+                Debug.Log("RtrbauData::RtrbauLocation::ScaleElement: x-axis asset extents is: " + aX);
+                Debug.Log("RtrbauData::RtrbauLocation::ScaleElement: x-axis element local scale is: " + eX);
+                Debug.Log("RtrbauData::RtrbauLocation::ScaleElement: asset extent is greater than element scale: " + (eX < aX));
+                // Re-scale element to match horizontal asset extents (x-axis)
+                // But only in the case asset extents are bigger than element
+                if (eX < aX)
+                {
+                    float sM = asset.size.x / elementObject.transform.localScale.x;
+                    if (sM < 2) { sM = 2f; }
+                    Debug.Log("RtrbauData::RtrbauLocation::ScaleElement: element re-scale factor is: " + sM);
+                    float sX = elementObject.transform.localScale.x * sM;
+                    float sY = elementObject.transform.localScale.y * sM;
+                    float sZ = elementObject.transform.localScale.z;
 
-                elementObject.transform.localScale = new Vector3(sX, sY, sZ);
+                    elementObject.transform.localScale = new Vector3(sX, sY, sZ);
+                }
+                else { }
             }
             else { }
         }
@@ -1075,11 +1141,11 @@ namespace Rtrbau
                     throw new ArgumentException("Facet: " + nameof(facet.Key.facetRules) + " not correctly defined for format: " + formatName);
                 }
 
-                //Debug.Log("EvaluateFormat: format: " + formatName + " facet: " + facet.Key.Key.facetName + "attributes assigned: " + facet.Value.Count);
+                //Debug.Log("EvaluateFormat: format: " + formatName + " facet: " + nameof(facet.Key.facetRules) + " attributes assigned: " + facet.Value.Count);
 
                 //foreach (RtrbauAttribute assigned in facet.Value)
                 //{
-                //    Debug.Log("EvaluateFormat: format: " + formatName + " facet: " + facet.Key.Key.facetName + " attribute: " + assigned.attributeName.name);
+                //    Debug.Log("EvaluateFormat: format: " + formatName + " facet: " + nameof(facet.Key.facetRules) + " attribute: " + assigned.attributeName.Name());
                 //}
             }
 
@@ -1134,9 +1200,9 @@ namespace Rtrbau
                 //foreach (RtrbauFabrication fabrication in assignedFabrications)
                 //{
                 //    Debug.Log("EvaluateFormat: fabrication assigned: " + fabrication.fabricationName);
-                //    foreach (KeyValuePair<DataFacet, RtrbauAttribute> attribute in fabrication.fabricationAttributes)
+                //    foreach (KeyValuePair<DataFacet, RtrbauAttribute> attribute in fabrication.fabricationData)
                 //    {
-                //        Debug.Log("EvaluateFormat: facet assigned: " + attribute.Key.facetRules.facetName + " with: " + attribute.Value.attributeName.name);
+                //        Debug.Log("EvaluateFormat: facet assigned: " + nameof(attribute.Key) + " with: " + attribute.Value.attributeName.Name());
                 //    }
                 //}
 

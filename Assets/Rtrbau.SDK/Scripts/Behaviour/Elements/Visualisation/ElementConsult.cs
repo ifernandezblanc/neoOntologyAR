@@ -94,11 +94,11 @@ namespace Rtrbau
 
         void Update()
         {
-            if (Rtrbauer.instance.viewer != null)
-            {
-                this.transform.LookAt(Rtrbauer.instance.viewer.transform.position);
-                this.transform.Rotate(0, 180, 0);
-            }
+            //if (Rtrbauer.instance.viewer != null)
+            //{
+            //    this.transform.LookAt(Rtrbauer.instance.viewer.transform.position);
+            //    this.transform.Rotate(0, 180, 0);
+            //}
         }
 
         void OnEnable() { }
