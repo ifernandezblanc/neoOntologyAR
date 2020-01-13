@@ -50,59 +50,62 @@ namespace Rtrbau
         private TouchScreenKeyboard touchscreenKeyboard;
         #endif
         public static string KeyboardText = "";
-
-        [SerializeField]
-        private TextMeshPro debugMessage = null;
-
         public Material typedMaterial;
         public Material untypedMaterial;
         public MeshRenderer typeButton;
+        [SerializeField]
+        private TextMeshPro recordedText;
+        [SerializeField]
+        private GameObject loadingPanel;
         #endregion CLASS_VARIABLES
 
         #region MONOBEHAVIOUR_METHODS
         private void Start()
         {
-            if (typedMaterial == null || untypedMaterial == null || typeButton == null || debugMessage == null)
+            if (typedMaterial == null || untypedMaterial == null || typeButton == null)
             {
                 Debug.LogError("SystemKeyboard::Start: Keyboard button elements not found. Please add them to the script.");
             }
             else
             {
-                #if WINDOWS_UWP
+#if WINDOWS_UWP
                 // Windows mixed reality keyboard initialization goes here
                 wmrKeyboard = gameObject.AddComponent<MixedRealityKeyboard>();
-                #elif UNITY_IOS || UNITY_ANDROID
+#elif UNITY_IOS || UNITY_ANDROID
                 // non-Windows mixed reality keyboard initialization goes here
-                #else
-                // debugMessage.text = "Keyboard not supported on this platform.";
-                #endif
+#else
+                if (this.gameObject.GetComponentInParent<ElementReport>() != null) 
+                { loadingPanel = this.gameObject.GetComponentInParent<ElementReport>().loadingPanel; }
+#endif
             }
         }
 
         private void Update()
         {
-            #if WINDOWS_UWP
+#if WINDOWS_UWP
             // Windows mixed reality keyboard update goes here
             KeyboardText = wmrKeyboard.Text;
             if (wmrKeyboard.Visible)
             {
-                // debugMessage.text = "typing... " + KeyboardText;
-                debugMessage.text = KeyboardText;
+                recordedText.text = KeyboardText;
+                if (loadingPanel != null) { if(loadingPanel.active == false) { loadingPanel.SetActive(true); } }
             }
             else
             {
                 if (KeyboardText == null || KeyboardText.Length == 0)
                 {
-                    // debugMessage.text = "open keyboard to type text";
+                    recordedText.text = "Focus to open keyboard";
                     typeButton.material = untypedMaterial;
+                    if (loadingPanel != null) { if(loadingPanel.active == true) { loadingPanel.SetActive(false); } }
                 }
                 else
                 {
-                    // debugMessage.text = "typed " + KeyboardText;
+                    recordedText.text = KeyboardText;
                     typeButton.material = typedMaterial;
+                    if (loadingPanel != null) { if(loadingPanel.active == true) { loadingPanel.SetActive(false); } }
                 }
             }
-            #elif UNITY_IOS || UNITY_ANDROID
+#elif UNITY_IOS || UNITY_ANDROID
             // non-Windows mixed reality keyboard initialization goes here
             // for non-Windows mixed reality keyboards just use Unity's default
             // touchscreenkeyboard. 
@@ -113,27 +116,31 @@ namespace Rtrbau
                 KeyboardText = touchscreenKeyboard.text;
                 if (TouchScreenKeyboard.visible)
                 {
-                    // debugMessage.text = "typing... " + KeyboardText;
+                    recordedText.text = KeyboardText;
+                    if (loadingPanel != null) { if(loadingPanel.active == false) { loadingPanel.SetActive(true); } }
                 }
                 else
                 {
-                    // debugMessage.text = "typed " + KeyboardText;
+                    recordedText.text = KeyboardText;
                     touchscreenKeyboard = null;
                     typeButton.material = typedMaterial;
+                    if (loadingPanel != null) { if(loadingPanel.active == true) { loadingPanel.SetActive(false); } }
                 }
             }
-            #endif
+#endif
         }
         #endregion MONOBEHAVIOUR_METHODS
 
         #region CLASS_METHODS
         public void OpenSystemKeyboard()
         {
-            #if WINDOWS_UWP
+#if WINDOWS_UWP
             wmrKeyboard.ShowKeyboard();
-            #elif UNITY_IOS || UNITY_ANDROID
+#elif UNITY_IOS || UNITY_ANDROID
             touchscreenKeyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, false, false);
-            #endif
+#else
+            recordedText.text = "Keyboard not supported";
+#endif
         }
         #endregion CLASS_METHODS
     }

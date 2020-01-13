@@ -19,6 +19,7 @@ Date: 19/11/2019
 /// </summary>
 #region NAMESPACES
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -32,6 +33,8 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
+        public Action<string> recordDictation;
+        public Transform element;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
@@ -47,7 +50,7 @@ namespace Rtrbau
         {
             if (dictatedText == null)
             {
-                throw new ArgumentException("NominateButton::Start: Script requires some prefabs to work.");
+                throw new ArgumentException("RecordDictationButton::Start: Script requires some prefabs to work.");
             }
             else { }
         }
@@ -79,32 +82,54 @@ namespace Rtrbau
 
         #region CLASS_METHODS
         #region PRIVATE
+        /// <summary>
+        /// Records dictated text after being visualised by the user.
+        /// </summary>
+        /// <returns>Awaits for user to visualise text dictated before recording it.</returns>
+        void RecordDictation()
+        {
+            // Determine whether to invoke record action
+            if (!dictatedText.text.Contains("<Dictation text will appear here>")|| !dictatedText.text.Contains("<Dictation error, please try again>") || !dictatedText.text.Contains("Dictation has timed out. Please try again."))
+            {
+                // yield return new WaitForSecondsRealtime(3f);
+                recordDictation.Invoke(dictatedText.text);
+            }
+            else
+            {
+                dictatedText.text = "<Dictation error, please try again>";
+            }
+        }
         #endregion PRIVATE
 
         #region PUBLIC
         /// <summary>
-        /// Returns user recorded text.
+        /// 
         /// </summary>
-        /// <returns>Returns <see cref="string"/> if text recorded, otherwise returns <see cref="null"/>.</returns>
-        public string ReturnAttributeValue()
+        /// <param name="dictateAction"></param>
+        /// <param name="elementFabrication"></param>
+        public void Initialise(Action<string> recordAction, Transform elementFabrication)
         {
-            if (dictatedText.text != null || !dictatedText.text.Contains("Dictation has timed out. Please try again."))
-            {
-                return dictatedText.text;
-            }
-            else { return null; }
+            // Initialise class variables
+            recordDictation = recordAction;
+            element = elementFabrication;
         }
-
         /// <summary>
-        /// Activates dictation text panel OnFocus.
+        /// To trigger actions when dictation starts
         /// </summary>
-        public void RestartDictatedText()
+        public void OnDictationStarts() 
+        { 
+            // Activate element loading panel
+            element.GetComponent<ElementReport>().loadingPanel.SetActive(true); 
+        }
+        /// <summary>
+        /// To trigger actions when dictation ends
+        /// </summary>
+        public void OnDictationEnds() 
         {
-            if (dictatedText.text != null)
-            {
-                dictatedText.text = null;
-            }
-            else { }
+            // Activate record action
+            RecordDictation();
+            // Deactivate element loading panel
+            element.GetComponent<ElementReport>().loadingPanel.SetActive(false);
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS

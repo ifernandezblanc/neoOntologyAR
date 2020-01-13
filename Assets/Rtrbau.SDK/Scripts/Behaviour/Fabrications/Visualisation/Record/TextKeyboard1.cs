@@ -40,6 +40,7 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
+        public string attributeText;
         #endregion CLASS_VARIABLES
 
         #region FACETS_VARIABLES
@@ -89,7 +90,9 @@ namespace Rtrbau
             data = fabrication;
             element = elementParent;
             scale = fabricationParent;
+            attributeText = null;
             fabricationCreated = false;
+            recordKeyboardButton.GetComponent<RecordKeyboardButton>().Initialise(RecordText);
             Scale();
             InferFromText();
         }
@@ -139,7 +142,8 @@ namespace Rtrbau
             {
                 // Update attribute value according to what user recorded
                 // This assigns to RtrbauElement from ElementReport through RtrbauFabrication
-                attribute.attributeValue = recordKeyboardButton.GetComponent<RecordKeyboardButton>().ReturnAttributeValue();
+                // attribute.attributeValue = recordKeyboardButton.GetComponent<RecordKeyboardButton>().ReturnAttributeValue();
+                attribute.attributeValue = attributeText;
                 // Change button colour for user confirmation
                 fabricationReportedPanel.material = fabricationReportedMaterial;
                 // Check if all attribute values have been recorded
@@ -147,7 +151,7 @@ namespace Rtrbau
                 // If true, then ElementReport will change colour to reported
                 element.gameObject.GetComponent<ElementReport>().CheckAttributesReported();
                 // Deactivate record button
-                DeactivateRecords();
+                // DeactivateRecords();
             }
             else { }
         }
@@ -213,6 +217,19 @@ namespace Rtrbau
         #endregion PRIVATE
 
         #region PUBLIC
+        /// <summary>
+        /// Activates OnNextVisualisation when recordText on attribute is received.
+        /// </summary>
+        /// <param name="recordedText"></param>
+        public void RecordText(string recordedText)
+        {
+            if (recordedText != null)
+            {
+                attributeText = recordedText;
+                OnNextVisualisation();
+            }
+            else { }
+        }
         #endregion PUBLIC
         #endregion CLASS_METHODS
     }

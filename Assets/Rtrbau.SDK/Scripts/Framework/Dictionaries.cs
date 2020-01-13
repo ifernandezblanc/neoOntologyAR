@@ -180,7 +180,6 @@ namespace Rtrbau
         public static List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>> ReportFormats
             = new List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>>
             {
-                // TRIAL: to un-comment when created
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
                 (RtrbauFabricationName.TextDictation1, DataFormats.TextDictation1, EnvironmentFormats.TextDictation1, UserFormats.TextDictation1),
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
@@ -189,14 +188,14 @@ namespace Rtrbau
                 (RtrbauFabricationName.AudioRecordTap1, DataFormats.AudioRecordTap1, EnvironmentFormats.AudioRecordTap1, UserFormats.AudioRecordTap1),
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
                 (RtrbauFabricationName.ImageRecordTap1, DataFormats.ImageRecordTap1, EnvironmentFormats.ImageRecordTap1, UserFormats.ImageRecordTap1),
-                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                //(RtrbauFabricationName.VideoRecordDoubleTap1, DataFormats.VideoRecordDoubleTap1, EnvironmentFormats.VideoRecordDoubleTap1, UserFormats.VideoRecordDoubleTap1),
-                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                //(RtrbauFabricationName.ModelRecordManipulation1, DataFormats.ModelRecordManipulation1, EnvironmentFormats.ModelRecordManipulation1, UserFormats.ModelRecordManipulation1),
+                ////new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                ////(RtrbauFabricationName.VideoRecordDoubleTap1, DataFormats.VideoRecordDoubleTap1, EnvironmentFormats.VideoRecordDoubleTap1, UserFormats.VideoRecordDoubleTap1),
+                ////new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                ////(RtrbauFabricationName.ModelRecordManipulation1, DataFormats.ModelRecordManipulation1, EnvironmentFormats.ModelRecordManipulation1, UserFormats.ModelRecordManipulation1),
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
                 (RtrbauFabricationName.TextPanelTap1, DataFormats.TextPanelTap1, EnvironmentFormats.TextPanelTap1, UserFormats.TextPanelTap1),
-                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                //(RtrbauFabricationName.IconPanelTap1, DataFormats.IconPanelTap1, EnvironmentFormats.IconPanelTap1, UserFormats.IconPanelTap1),
+                ////new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                ////(RtrbauFabricationName.IconPanelTap1, DataFormats.IconPanelTap1, EnvironmentFormats.IconPanelTap1, UserFormats.IconPanelTap1),
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
                 (RtrbauFabricationName.TextNone2, DataFormats.TextNone2, EnvironmentFormats.TextNone2, UserFormats.TextNone2),
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>

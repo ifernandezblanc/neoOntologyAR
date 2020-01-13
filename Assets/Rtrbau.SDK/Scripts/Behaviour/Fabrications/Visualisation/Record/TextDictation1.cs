@@ -40,6 +40,7 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
+        public string dictatedRecord;
         #endregion CLASS_VARIABLES
 
         #region FACETS_VARIABLES
@@ -62,7 +63,7 @@ namespace Rtrbau
         {
             if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || recordDictationButton == null)
             {
-                throw new ArgumentException("DefaultRecord::Start: Script requires some prefabs to work.");
+                throw new ArgumentException("TextDictation1::Start: Script requires some prefabs to work.");
             }
         }
 
@@ -89,6 +90,7 @@ namespace Rtrbau
             data = fabrication;
             element = elementParent;
             scale = fabricationParent;
+            dictatedRecord = null;
             fabricationCreated = false;
             Scale();
             InferFromText();
@@ -118,6 +120,7 @@ namespace Rtrbau
             if (data.fabricationData.TryGetValue(textfacet3, out attribute))
             {
                 fabricationText.text = Parser.ParseNamingOntologyFormat(attribute.attributeName.Name());
+                recordDictationButton.GetComponent<RecordDictationButton>().Initialise(DictateRecord, element);
                 fabricationCreated = true;
             }
             else
@@ -139,7 +142,7 @@ namespace Rtrbau
             {
                 // Update attribute value according to what user recorded
                 // This assigns to RtrbauElement from ElementReport through RtrbauFabrication
-                attribute.attributeValue = recordDictationButton.GetComponent<RecordDictationButton>().ReturnAttributeValue();
+                attribute.attributeValue = dictatedRecord;
                 // Change button colour for user confirmation
                 fabricationReportedPanel.material = fabricationReportedMaterial;
                 // Check if all attribute values have been recorded
@@ -147,7 +150,7 @@ namespace Rtrbau
                 // If true, then ElementReport will change colour to reported
                 element.gameObject.GetComponent<ElementReport>().CheckAttributesReported();
                 // Deactivate record button
-                DeactivateRecords();
+                // DeactivateRecords();
             }
             else { }
         }
@@ -213,8 +216,20 @@ namespace Rtrbau
         #endregion PRIVATE
 
         #region PUBLIC
-        public void StartDictation() { element.GetComponent<ElementReport>().loadingPanel.SetActive(true); }
-        public void StopDictation() { element.GetComponent<ElementReport>().loadingPanel.SetActive(false); }
+        /// <summary>
+        /// Returns user dictated text.
+        /// </summary>
+        /// <param name="dictatedValue"></param>
+        public void DictateRecord(string dictation)
+        {
+            if (dictation != null)
+            {
+                dictatedRecord = dictation;
+                OnNextVisualisation();
+                dictatedRecord = null;
+            }
+            else { }
+        }
         #endregion PUBLIC
         #endregion CLASS_METHODS
     }

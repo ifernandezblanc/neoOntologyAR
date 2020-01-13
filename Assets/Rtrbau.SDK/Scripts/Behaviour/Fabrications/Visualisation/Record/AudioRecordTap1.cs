@@ -168,7 +168,7 @@ namespace Rtrbau
                     // If true, then ElementReport will change colour to reported
                     element.gameObject.GetComponent<ElementReport>().CheckAttributesReported();
                     // Deactivate record button
-                    DeactivateRecords();
+                    // DeactivateRecords();
                 }
                 else { }
             }
@@ -280,6 +280,8 @@ namespace Rtrbau
                 Debug.LogError("AudioRecordDoubleTap1::LoadAudio: audio file not found");
             }
 
+            // Call to report attribute
+            OnNextVisualisation();
             // Remember to deactivate loading panel
             element.GetComponent<ElementReport>().loadingPanel.SetActive(false);
         }

@@ -2658,7 +2658,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: 
+  m_text: Focus to write server
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2686,7 +2686,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 36
+  m_fontSize: 268.5
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2727,13 +2727,13 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 3488346152430517525}
-    characterCount: 0
+    characterCount: 21
     spriteCount: 0
-    spaceCount: 0
-    wordCount: 0
+    spaceCount: 3
+    wordCount: 4
     linkCount: 0
-    lineCount: 0
-    pageCount: 0
+    lineCount: 1
+    pageCount: 1
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
@@ -3964,10 +3964,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa13561070a6a6e4fbedb022794f16f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugMessage: {fileID: 6768370185145831494}
   typedMaterial: {fileID: 2100000, guid: d1e6ac5dd3c0c3b40ac84b4b2a1faaff, type: 2}
   untypedMaterial: {fileID: 2100000, guid: 067135b03b686574eb53fb59456a7a64, type: 2}
   typeButton: {fileID: 5965724314701312846}
+  recordedText: {fileID: 0}
+  loadingPanel: {fileID: 0}
 --- !u!1 &5965724316225710806
 GameObject:
   m_ObjectHideFlags: 0
@@ -5821,18 +5822,7 @@ MonoBehaviour:
     HadDefaultTheme: 1
   OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7126074437542441163}
-        m_MethodName: OpenSystemKeyboard
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   Events:
@@ -5936,6 +5926,59 @@ MonoBehaviour:
       - Near Only
       - Far Only
     HideUnityEvents: 0
+  - Name: OnFocus
+    Event:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7126074437542441163}
+          m_MethodName: OpenSystemKeyboard
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    ClassName: InteractableOnFocusReceiver
+    AssemblyQualifiedName: Microsoft.MixedReality.Toolkit.UI.InteractableOnFocusReceiver,
+      Microsoft.MixedReality.Toolkit.SDK
+    Settings:
+    - Type: 18
+      Label: On Focus Off
+      Name: OnFocusOff
+      Tooltip: Focus has left the object
+      IntValue: 0
+      StringValue: 
+      FloatValue: 0
+      BoolValue: 0
+      GameObjectValue: {fileID: 0}
+      ScriptableObjectValue: {fileID: 0}
+      ObjectValue: {fileID: 0}
+      MaterialValue: {fileID: 0}
+      TextureValue: {fileID: 0}
+      ColorValue: {r: 0, g: 0, b: 0, a: 0}
+      Vector2Value: {x: 0, y: 0}
+      Vector3Value: {x: 0, y: 0, z: 0}
+      Vector4Value: {x: 0, y: 0, z: 0, w: 0}
+      CurveValue:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 0
+        m_PostInfinity: 0
+        m_RotationOrder: 0
+      AudioClipValue: {fileID: 0}
+      QuaternionValue: {x: 0, y: 0, z: 0, w: 0}
+      EventValue:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      Options: []
+    HideUnityEvents: 0
   dimensionIndex: 0
 --- !u!114 &5101454069883341434
 MonoBehaviour:
@@ -5969,7 +6012,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa13561070a6a6e4fbedb022794f16f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugMessage: {fileID: 3488346152430517525}
   typedMaterial: {fileID: 2100000, guid: d1e6ac5dd3c0c3b40ac84b4b2a1faaff, type: 2}
   untypedMaterial: {fileID: 2100000, guid: 067135b03b686574eb53fb59456a7a64, type: 2}
   typeButton: {fileID: 2185223130100557460}
+  recordedText: {fileID: 3488346152430517525}
+  loadingPanel: {fileID: 0}

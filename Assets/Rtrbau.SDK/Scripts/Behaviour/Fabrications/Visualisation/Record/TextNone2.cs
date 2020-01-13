@@ -56,6 +56,7 @@ namespace Rtrbau
 
         #region CLASS_EVENTS
         private bool fabricationCreated;
+        private bool inmutableReported;
         #endregion CLASS_EVENTS
 
         #region MONOBEHAVIOUR_METHODS
@@ -91,6 +92,7 @@ namespace Rtrbau
             element = elementParent;
             scale = fabricationParent;
             fabricationCreated = false;
+            inmutableReported = false;
             Scale();
             InferFromText();
         }
@@ -155,7 +157,9 @@ namespace Rtrbau
                 // If true, then ElementReport will change colour to reported
                 element.gameObject.GetComponent<ElementReport>().CheckAttributesReported();
                 // Deactivate record button
-                DeactivateRecords();
+                // DeactivateRecords();
+                // Assign inmutable value as reported attribute
+                inmutableReported = true;
             }
             else { }
         }
@@ -200,6 +204,9 @@ namespace Rtrbau
                 recordText.SetActive(true);
             }
             else { }
+
+            // Ensure call to report attribute is made at least once
+            ReportInmutableValue();
         }
 
         /// <summary>
@@ -213,11 +220,22 @@ namespace Rtrbau
                 recordText.SetActive(false);
             }
             else { }
+
+            // Ensure call to report attribute is made at least once
+            ReportInmutableValue();
         }
         #endregion IRECORDABLE_METHODS
 
         #region CLASS_METHODS
         #region PRIVATE
+        void ReportInmutableValue()
+        {
+            if (inmutableReported == false)
+            {
+                // Call to report attribute
+                OnNextVisualisation();
+            }
+        }
         #endregion PRIVATE
 
         #region PUBLIC

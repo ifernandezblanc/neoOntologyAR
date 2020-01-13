@@ -29,6 +29,7 @@ namespace Rtrbau
     public class RecordTimeButton : MonoBehaviour, IVisualisable
     {
         #region INITIALISATION_VARIABLES
+        public Action<DateTimeOffset> timeRecord;
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
@@ -36,8 +37,7 @@ namespace Rtrbau
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
-        public TextMeshProUGUI recordButtonPlaceholder;
-        public TextMeshProUGUI recordButtonText;
+        public TextMeshPro recordButtonText;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -47,14 +47,14 @@ namespace Rtrbau
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (recordButtonPlaceholder == null || recordButtonText == null)
+            if (recordButtonText == null)
             {
                 throw new ArgumentException("NominateButton::Start: Script requires some prefabs to work.");
             }
             else
             {
                 attributeValueDateTime = default(DateTimeOffset);
-                recordButtonPlaceholder.text = "yyyy-MM-dd HH:mm";
+                recordButtonText.text = "Focus to input date: yyyy-MM-dd HH:mm";
                 buttonCreated = true;
             }
         }
@@ -90,10 +90,20 @@ namespace Rtrbau
 
         #region PUBLIC
         /// <summary>
+        /// Initialise <see cref="RecordTimeButton"/> using the Action that triggers the button.
+        /// </summary>
+        /// <param name="recordTime"></param>
+        public void Initialise(Action<DateTimeOffset> recordTime)
+        {
+            timeRecord = recordTime;
+        }
+
+
+        /// <summary>
         /// Returns user recorded <see cref="DateTimeOffset"/> by text input.
         /// </summary>
         /// <returns>Returns <see cref="attributeValueDateTime"/> if parsed correctly, otherwise returns <see cref="default"/>.</returns>
-        public DateTimeOffset ReturnAttributeValueDateTime()
+        public void RecordDateTime()
         {
             if (buttonCreated == true)
             {
@@ -101,20 +111,13 @@ namespace Rtrbau
                 {
                     if (DateTimeOffset.TryParse(recordButtonText.text, out attributeValueDateTime))
                     {
-                        return attributeValueDateTime;
+                        timeRecord.Invoke(attributeValueDateTime);
                     }
-                    else
-                    {
-                        return default(DateTimeOffset);
-                    }
-                    
+                    else { recordButtonText.text = "Input date as: yyyy-MM-dd HH:mm"; }
                 }
-                else { return default(DateTimeOffset); }
+                else { recordButtonText.text = "Input date as: yyyy-MM-dd HH:mm"; }
             }
-            else
-            {
-                return default(DateTimeOffset);
-            }
+            else { }
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS

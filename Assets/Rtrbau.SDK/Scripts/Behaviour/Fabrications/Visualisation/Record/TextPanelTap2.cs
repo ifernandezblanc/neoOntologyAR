@@ -170,7 +170,7 @@ namespace Rtrbau
                     // If true, then ElementReport will change colour to reported
                     element.gameObject.GetComponent<ElementReport>().CheckAttributesReported();
                     // Deactivate record select buttons
-                    DeactivateRecords();
+                    // DeactivateRecords();
                 }
                 else { }
             }
@@ -369,6 +369,8 @@ namespace Rtrbau
                 selectedRecord = setValue;
                 // Check attribute selection record
                 recordSelected = true;
+                // Call to report attribute
+                OnNextVisualisation();
             }
             else if (fabricationCreated == true && recordSelected == true)
             {

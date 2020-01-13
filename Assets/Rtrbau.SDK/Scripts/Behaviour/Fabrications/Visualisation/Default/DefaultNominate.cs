@@ -203,7 +203,7 @@ namespace Rtrbau
                                 // Deactivate only nominated individual button
                                 if (individualNominates.TryGetValue(nominatedIndividual, out individual))
                                 {
-                                    newNominatedRecorded = individual.GetComponent<NominateButton>().recordButtonText.text;
+                                    newNominatedRecorded = individual.GetComponent<NominateButton>().recordableText;
                                 }
                                 else { throw new ArgumentException("DefaultNominate::OnNextVisualisation: nominated individual not found"); }
                                 // Assign user-reported attribute value to RtrbauElement from ElementReport through RtrbauFabrication
@@ -220,11 +220,9 @@ namespace Rtrbau
                         // Change button colour for user confirmation
                         fabricationReportedPanel.material = fabricationReportedMaterial;
                         // Check if all attribute values have been recorded
-                        // If true, then ElementReport will input reported element into report
-                        // If true, then ElementReport will change colour to reported
                         element.gameObject.GetComponent<ElementReport>().CheckAttributesReported();
                         // Deactivate nominate buttons
-                        DeactivateNominates();
+                        // DeactivateNominates();
                     }
                     else
                     {
@@ -284,7 +282,7 @@ namespace Rtrbau
         /// </summary>
         public void ActivateNominates()
         {
-            if (fabricationCreated == true && nominatesNewReport == false)
+            if (fabricationCreated == true)
             {
                 // Call ElementReport to deactivate buttons from other nominate fabrications
                 element.GetComponent<ElementReport>().DeactivateNominates(this.gameObject);
@@ -323,7 +321,7 @@ namespace Rtrbau
         /// </summary>
         public void DeactivateNominates()
         {
-            if (fabricationCreated == true && nominatesNewReport == false)
+            if (fabricationCreated == true)
             {
                 if (nominateButtonsActive == true && individualNominated == false)
                 {
@@ -478,23 +476,34 @@ namespace Rtrbau
                 individualRecordable = nominatedRecordable;
                 // Check individual nomination
                 individualNominated = true;
+                // Call to report attribute
+                OnNextVisualisation();
             }
             else if (fabricationCreated == true && individualNominated == true)
             {
-                // Activate other buttons and update individual button material
-                foreach (KeyValuePair<OntologyEntity, GameObject> nominateButton in individualNominates)
+                if (nominatesNewReport == false)
                 {
-                    if (nominateButton.Key == individual) { nominateButton.Value.GetComponent<NominateButton>().ReportMaterial(fabricationNonReportedMaterial); }
-                    else { ActivateIndividualButton(nominateButton.Value); }
+                    // Activate other buttons and update individual button material
+                    foreach (KeyValuePair<OntologyEntity, GameObject> nominateButton in individualNominates)
+                    {
+                        if (nominateButton.Key == individual) { nominateButton.Value.GetComponent<NominateButton>().ReportMaterial(fabricationNonReportedMaterial); }
+                        else { ActivateIndividualButton(nominateButton.Value); }
+                    }
+                    // Update button material
+                    fabricationReportedPanel.material = fabricationNonReportedMaterial;
+                    // Unassign individual as nominated
+                    nominatedIndividual = null;
+                    // Uncheck individual recordable nomination
+                    individualRecordable = false;
+                    // Uncheck individual nomination
+                    individualNominated = false;
                 }
-                // Update button material
-                fabricationReportedPanel.material = fabricationNonReportedMaterial;
-                // Unassign individual as nominated
-                nominatedIndividual = null;
-                // Uncheck individual recordable nomination
-                individualRecordable = false;
-                // Uncheck individual nomination
-                individualNominated = false;
+                else if (nominatesNewReport == true)
+                {
+                    // Call to report attribute
+                    OnNextVisualisation();
+                }
+                else { }
             }
             else { }
         }

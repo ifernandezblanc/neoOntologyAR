@@ -160,7 +160,7 @@ namespace Rtrbau
                     // If true, then ElementReport will change colour to reported
                     element.gameObject.GetComponent<ElementReport>().CheckAttributesReported();
                     // Deactivate record button
-                    DeactivateRecords();
+                    // DeactivateRecords();
                 }
                 else { }
             }
@@ -275,7 +275,7 @@ namespace Rtrbau
                     // Setup image rendered as image recorded
                     imageRecord = imageFile;
                     // Inform the user of picture rendered
-                    imageStatus.text = "Picture uploaded, click again to take another picture.";
+                    imageStatus.text = "Click again to take another picture.";
                 }
             }
             else
@@ -283,6 +283,8 @@ namespace Rtrbau
                 Debug.LogError("ImageManipulation1: LoadAudio: " + imageFile.type + "not implemented for ImageManipulation1.");
             }
 
+            // Call to report attribute
+            OnNextVisualisation();
             // Remember to deactivate loading panel
             element.GetComponent<ElementReport>().loadingPanel.SetActive(false);
         }

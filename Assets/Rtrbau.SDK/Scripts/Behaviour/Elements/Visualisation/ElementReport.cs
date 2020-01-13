@@ -518,7 +518,7 @@ namespace Rtrbau
 
                 // Set fabrications as active
                 fabricationsActive = true;
-                statusText.text = "Element maximised, click to hide information";
+                statusText.text = "Click on buttons below to report attributes";
 
                 // Disable tile grid object collection from side panel to allow image manipulation
                 // UPG: do it with other fabrication panel as well?
@@ -1005,7 +1005,7 @@ namespace Rtrbau
             AssignNewReportElements();
 
             // Update status text
-            statusText.text = "Element reported, please click on the buttons below to continue reporting one of those elements.";
+            statusText.text = "Click on an attribute to open new report";
 
             // Assign element as reported
             elementReported = true;
@@ -1031,7 +1031,7 @@ namespace Rtrbau
             // Modify fabrications panels materials to reported
             ModifyMaterial(reportedMaterial);
             // Update status text to show all attributes have been reported
-            statusText.text = "All attributes reported, please click on the next attribute to report.";
+            // statusText.text = "Click on an attribute to open new report";
             // Submit reported rtrbauElement for reporting
             Debug.Log("ElementReport::AttributesReported: all values reported, inputting new individual into report");
             // Report rtrbauElement
@@ -1104,16 +1104,18 @@ namespace Rtrbau
             // If there are attributes with non-reported values
             if (nonReportedAttributes.Count == 0)
             {
-                Debug.Log("ElementReport::CheckAttributesReported: all attribute values reported.");
+                Debug.Log("ElementReport::CheckAttributesReported: all attribute values reported");
+                // Update status text
+                statusText.text = "All attributes reported, now click Submit";
                 // Report rtrbauElement
-                AttributesReported();
+                // AttributesReported();
                 return true;
             }
             else
             {
                 Debug.Log("ElementReport::CheckAttributesReported: some attribute values still to be reported.");
                 // Update status text to show all attributes have not been reported
-                statusText.text = "Not all attributes reported, please complete them and click again for reporting.";
+                statusText.text = "Not all attributes reported, please complete them";
                 return false;
             }
         }
@@ -1121,7 +1123,7 @@ namespace Rtrbau
         /// <summary>
         /// Forces element to be reported even if not all attributes have been reported.
         /// </summary>
-        public void ForceAttributesReported()
+        public void SubmitReport()
         {
             // Asigned forcedReported as true
             forcedReported = true;

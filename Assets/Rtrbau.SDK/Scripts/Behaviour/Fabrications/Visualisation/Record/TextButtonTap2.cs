@@ -40,6 +40,7 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
+        public string attributeDateTimeValue;
         #endregion CLASS_VARIABLES
 
         #region FACETS_VARIABLES
@@ -89,6 +90,7 @@ namespace Rtrbau
             data = fabrication;
             element = elementParent;
             scale = fabricationParent;
+            attributeDateTimeValue = null;
             fabricationCreated = false;
             Scale();
             InferFromText();
@@ -119,6 +121,8 @@ namespace Rtrbau
             {
                 // Assign fabrication to attributeName
                 fabricationText.text = Parser.ParseNamingOntologyFormat(attribute.attributeName.Name());
+                // Initialise record time button
+                recordTimeButton.GetComponent<RecordTimeButton>().Initialise(RecordTime);
                 // Check fabrication creation as true
                 fabricationCreated = true;
             }
@@ -142,7 +146,7 @@ namespace Rtrbau
                 // Update attributeValue assigned automatically when fabrication created (InferFromText)
                 // It could not be done before for attributes values re-initialisation after fabrications creation
                 // This assigns to RtrbauElement from ElementReport through RtrbauFabrication
-                attribute.attributeValue = Parser.ParseNamingDateTimeXSD(recordTimeButton.GetComponent<RecordTimeButton>().ReturnAttributeValueDateTime());
+                attribute.attributeValue = attributeDateTimeValue;
                 // Change button colour for user confirmation
                 fabricationReportedPanel.material = fabricationReportedMaterial;
                 // Check if all attribute values have been recorded
@@ -150,7 +154,7 @@ namespace Rtrbau
                 // If true, then ElementReport will change colour to reported
                 element.gameObject.GetComponent<ElementReport>().CheckAttributesReported();
                 // Deactivate record button
-                DeactivateRecords();
+                // DeactivateRecords();
             }
             else { }
         }
@@ -213,6 +217,13 @@ namespace Rtrbau
 
         #region CLASS_METHODS
         #region PRIVATE
+        void RecordTime(DateTimeOffset timeRecorded)
+        {
+            // Parse DateTime recorded as string
+            attributeDateTimeValue = Parser.ParseNamingDateTimeXSD(timeRecorded);
+            // Call to record attribute
+            OnNextVisualisation();
+        }
         #endregion PRIVATE
 
         #region PUBLIC

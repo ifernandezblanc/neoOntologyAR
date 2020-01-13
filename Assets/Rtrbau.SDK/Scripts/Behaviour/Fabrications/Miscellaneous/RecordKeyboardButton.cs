@@ -29,17 +29,17 @@ namespace Rtrbau
     public class RecordKeyboardButton : MonoBehaviour, IVisualisable
     {
         #region INITIALISATION_VARIABLES
+        public Action<string> recordText;
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
-        public TextMeshProUGUI recordButtonText;
+        public TextMeshPro recordButtonText;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
-        private bool buttonCreated;
         #endregion CLASS_EVENTS
 
         #region MONOBEHAVIOUR_METHODS
@@ -83,16 +83,50 @@ namespace Rtrbau
 
         #region PUBLIC
         /// <summary>
+        /// Initialises RecordKeyboardButton, attaches action to submit recorded text.
+        /// </summary>
+        public void Initialise(Action<string> textRecord)
+        {
+            if (textRecord != null)
+            {
+                recordText = textRecord;
+            }
+            else
+            {
+                recordText = null;
+                throw new ArgumentException("RecordKeyboardButton::Initialise: No action to record text has been declared.");
+            }
+        }
+        /// <summary>
         /// Returns user recorded text.
         /// </summary>
         /// <returns>Returns <see cref="string"/> if text recorded, otherwise returns <see cref="null"/>.</returns>
-        public string ReturnAttributeValue()
+        //public string ReturnAttributeValue()
+        //{
+        //    if (recordButtonText.text != null)
+        //    {
+        //        return recordButtonText.text;
+        //    }
+        //    else { return null; }
+        //}
+
+        /// <summary>
+        /// Invokes action to record text inputed from keyboard if distinct to null.
+        /// </summary>
+        public void RecordKeyboardText()
         {
-            if (recordButtonText.text != null)
+            if (recordText != null)
             {
-                return recordButtonText.text;
+                if (recordButtonText.text != "Keyboard not supported" || recordButtonText.text != "Focus to open keyboard")
+                {
+                    recordText.Invoke(recordButtonText.text);
+                }
+                else
+                {
+                    recordText.Invoke(null);
+                }
             }
-            else { return null; }
+            else { }
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS

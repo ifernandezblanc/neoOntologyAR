@@ -37,6 +37,7 @@ namespace Rtrbau
 
         #region CLASS_VARIABLES
         public JsonClassProperties rangeProperties;
+        public string recordableText;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
@@ -44,7 +45,6 @@ namespace Rtrbau
         public MeshRenderer seenPanel;
         public MeshRenderer reportedPanel;
         public GameObject recordButton;
-        public TextMeshProUGUI recordButtonText;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -55,7 +55,7 @@ namespace Rtrbau
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (buttonText == null || seenPanel == null || reportedPanel == null || recordButton == null || recordButtonText == null)
+            if (buttonText == null || seenPanel == null || reportedPanel == null || recordButton == null)
             {
                 throw new ArgumentException("NominateButton::Start: Script requires some prefabs to work.");
             }
@@ -135,6 +135,8 @@ namespace Rtrbau
                 recordableNominate = true;
                 // Activate record button
                 recordButton.SetActive(true);
+                // Initialise record button
+                recordButton.GetComponent<RecordKeyboardButton>().Initialise(RecordRecordableNominate);
             }
         }
         #endregion PRIVATE
@@ -170,7 +172,7 @@ namespace Rtrbau
             }
             else if (buttonCreated == true && recordableNominate == true)
             {
-                if (recordButtonText != null)
+                if (recordableText != null)
                 {
                     // Trigger the nominate individual action for this button as recordable
                     nominate.Invoke(individual, recordableNominate);
@@ -200,6 +202,16 @@ namespace Rtrbau
                     else { recordButton.SetActive(false); }
                 }
             }
+        }
+
+        public void RecordRecordableNominate(string textRecordable)
+        {
+            if (recordableNominate == true)
+            {
+                recordableText = textRecordable;
+                buttonText.text = textRecordable;
+            }
+            else { }
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS

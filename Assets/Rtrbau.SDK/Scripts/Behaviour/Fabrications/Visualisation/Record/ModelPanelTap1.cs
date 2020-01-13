@@ -56,8 +56,8 @@ namespace Rtrbau
         public Material fabricationNonReportedMaterial;
         public Material fabricationReportedMaterial;
         public Material fabricationModelMaterial;
-        public GameObject recordSelectButton;
-        public TextMeshPro recordSelectButtonText;
+        public GameObject recordSelectPanel;
+        public TextMeshPro recordSelectPanelText;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -69,11 +69,11 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationSeenMaterial == null || fabricationNonReportedMaterial == null || fabricationReportedMaterial == null || fabricationModelMaterial == null || recordSelectButton == null || recordSelectButtonText == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationSeenMaterial == null || fabricationNonReportedMaterial == null || fabricationReportedMaterial == null || fabricationModelMaterial == null || recordSelectPanel == null || recordSelectPanelText == null)
             {
                 throw new ArgumentException("DefaultNominate::Start: Script requires some prefabs to work.");
             }
-            else { recordSelectButton.SetActive(false); }
+            else { recordSelectPanel.SetActive(false); }
         }
 
         void Update() { }
@@ -145,7 +145,7 @@ namespace Rtrbau
                     selectableModels.Add(selectableModel.Key, selectableModel.Value);
                 }
                 // Deactivate record select button
-                recordSelectButton.SetActive(false);
+                recordSelectPanel.SetActive(false);
                 // Set fabrication as created
                 fabricationCreated = true;
             }
@@ -182,7 +182,7 @@ namespace Rtrbau
                     // If true, then ElementReport will change colour to reported
                     element.gameObject.GetComponent<ElementReport>().CheckAttributesReported();
                     // Deactivate record select buttons
-                    DeactivateRecords();
+                    // DeactivateRecords();
                 }
                 else { }
             }
@@ -245,8 +245,8 @@ namespace Rtrbau
                     {
                         selectModel.Value.SetActive(true);
                     }
-                    // Activate record select button
-                    recordSelectButton.SetActive(true);
+                    // Activate record select panel
+                    recordSelectPanel.SetActive(true);
                     // Check record select buttons as active
                     recordSelectModelsActive = true;
                 }
@@ -258,8 +258,8 @@ namespace Rtrbau
                     {
                         selectModel.SetActive(true);
                     }
-                    // Activate record select button
-                    recordSelectButton.SetActive(true);
+                    // Activate record select panel
+                    recordSelectPanel.SetActive(true);
                     // Check record select buttons as active
                     recordSelectModelsActive = true;
                 }
@@ -283,8 +283,8 @@ namespace Rtrbau
                     {
                         selectModel.Value.SetActive(false);
                     }
-                    // Deactivate record select button
-                    recordSelectButton.SetActive(false);
+                    // Deactivate record select panel
+                    recordSelectPanel.SetActive(false);
                     // Check record select buttons as deactive
                     recordSelectModelsActive = false;
                 }
@@ -296,8 +296,8 @@ namespace Rtrbau
                     {
                         selectModel.SetActive(false);
                     }
-                    // Deactivate record select button
-                    recordSelectButton.SetActive(false);
+                    // Deactivate record select panel
+                    recordSelectPanel.SetActive(false);
                     // Check record select buttons as deactive
                     recordSelectModelsActive = false;
                 }
@@ -324,7 +324,7 @@ namespace Rtrbau
             // Initialise material to non reported
             selectableModel.GetComponentInChildren<MeshRenderer>().material = fabricationModelMaterial;
             // Add line renderer to fabrication record select button
-            selectableModel.AddComponent<ElementsLine>().Initialise(selectableModel, recordSelectButton, fabricationReportedMaterial);
+            selectableModel.AddComponent<ElementsLine>().Initialise(selectableModel, recordSelectPanel, fabricationReportedMaterial);
             // Add ManipulationHandler
             selectableModel.AddComponent<ManipulationHandler>();
             selectableModel.GetComponent<ManipulationHandler>().ManipulationType = ManipulationHandler.HandMovementType.OneAndTwoHanded;
@@ -362,11 +362,13 @@ namespace Rtrbau
                     // Update button material
                     fabricationReportedPanel.material = fabricationReportedMaterial;
                     // Assign value to record select button text
-                    recordSelectButtonText.text = setValue;
+                    recordSelectPanelText.text = setValue;
                     // Assign set value as selected
                     selectedRecord = setValue;
                     // Check attribute selection record
                     recordSelected = true;
+                    // Call to report attribute
+                    OnNextVisualisation();
                 }
                 else { }
             }
@@ -381,7 +383,7 @@ namespace Rtrbau
                 // Update button material
                 fabricationReportedPanel.material = fabricationNonReportedMaterial;
                 // Assign value to record select button text
-                recordSelectButtonText.text = null;
+                recordSelectPanelText.text = "Click model to select";
                 // Unassign set value as selected
                 selectedRecord = null;
                 // Uncheck attribute selection record
