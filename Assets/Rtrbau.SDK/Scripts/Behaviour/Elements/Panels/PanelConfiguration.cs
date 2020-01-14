@@ -211,12 +211,43 @@ namespace Rtrbau
 
         public void ConfigureServer(TextMeshPro serverWriteButton)
         {
-            string serverURL = serverWriteButton.text;
-            StartCoroutine(CheckServerConnection(serverURL));
+            // Identify server connection status
+            string serverConnection = serverConnectButton.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text;
+            // If server connection hasn't failed yet connect either to written address or default server
+            if (serverConnection.Contains("Connect to server"))
+            {
+                if (serverWriteButton.text.Contains("http"))
+                {
+                    StartCoroutine(CheckServerConnection(serverWriteButton.text));
+                    Debug.Log("PanelConfiguration::ConfigureServer: Server configured is: " + serverWriteButton.text);
+                }
+                else
+                {
+                    StartCoroutine(CheckServerConnection(serverDefaultURI));
+                    Debug.Log("PanelConfiguration::ConfigureServer: Server configured is: " + serverDefaultURI);
+                }
+            }
+            else if (serverConnection.Contains("Server failed. Try another."))
+            {
+                if (serverWriteButton.text.Contains("http"))
+                {
+                    StartCoroutine(CheckServerConnection(serverWriteButton.text));
+                    Debug.Log("PanelConfiguration::ConfigureServer: Server configured is: " + serverWriteButton.text);
+                }
+                else
+                {
+                    serverWriteButton.text = "Type server http address";
+                    Debug.Log("PanelConfiguration::ConfigureServer: Server cannot be configured");
+                }
+            }
+            else
+            {
+                serverWriteButton.text = "Server already found?";
+                Debug.Log("PanelConfiguration::ConfigureServer: Server already found?");
+            }
             //// When working at home to avoid server connection:
             ////serverURI = serverURL;
             ////InputIntoReport();
-            Debug.Log("PanelConfiguration::ConfigureServer: Server configured is: " + serverURL);
         }
 
         /// <summary>
