@@ -68,21 +68,20 @@ namespace Rtrbau
             }
             else
             {
-#if WINDOWS_UWP
+                if (this.gameObject.GetComponentInParent<ElementReport>() != null)
+                { loadingPanel = this.gameObject.GetComponentInParent<ElementReport>().loadingPanel; }
+                #if WINDOWS_UWP
                 // Windows mixed reality keyboard initialization goes here
                 wmrKeyboard = gameObject.AddComponent<MixedRealityKeyboard>();
-#elif UNITY_IOS || UNITY_ANDROID
+                #elif UNITY_IOS || UNITY_ANDROID
                 // non-Windows mixed reality keyboard initialization goes here
-#else
-                if (this.gameObject.GetComponentInParent<ElementReport>() != null) 
-                { loadingPanel = this.gameObject.GetComponentInParent<ElementReport>().loadingPanel; }
-#endif
+                #endif
             }
         }
 
         private void Update()
         {
-#if WINDOWS_UWP
+            #if WINDOWS_UWP
             // Windows mixed reality keyboard update goes here
             KeyboardText = wmrKeyboard.Text;
             if (wmrKeyboard.Visible)
@@ -105,7 +104,7 @@ namespace Rtrbau
                     if (loadingPanel != null) { if(loadingPanel.active == true) { loadingPanel.SetActive(false); } }
                 }
             }
-#elif UNITY_IOS || UNITY_ANDROID
+            #elif UNITY_IOS || UNITY_ANDROID
             // non-Windows mixed reality keyboard initialization goes here
             // for non-Windows mixed reality keyboards just use Unity's default
             // touchscreenkeyboard. 
@@ -127,20 +126,20 @@ namespace Rtrbau
                     if (loadingPanel != null) { if(loadingPanel.active == true) { loadingPanel.SetActive(false); } }
                 }
             }
-#endif
+            #endif
         }
         #endregion MONOBEHAVIOUR_METHODS
 
         #region CLASS_METHODS
         public void OpenSystemKeyboard()
         {
-#if WINDOWS_UWP
+            #if WINDOWS_UWP
             wmrKeyboard.ShowKeyboard();
-#elif UNITY_IOS || UNITY_ANDROID
+            #elif UNITY_IOS || UNITY_ANDROID
             touchscreenKeyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, false, false);
-#else
+            #else
             recordedText.text = "Keyboard not supported";
-#endif
+            #endif
         }
         #endregion CLASS_METHODS
     }
