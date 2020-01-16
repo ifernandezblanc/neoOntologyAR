@@ -72,6 +72,12 @@ namespace Rtrbau
             }
             else { }
 
+            if (!Directory.Exists(Dictionaries.logsFileDirectory))
+            {
+                Directory.CreateDirectory(Dictionaries.logsFileDirectory);
+            }
+            else { }
+
         }
 
         /// <summary>

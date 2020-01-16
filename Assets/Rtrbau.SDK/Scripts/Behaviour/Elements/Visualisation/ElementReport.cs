@@ -1196,9 +1196,13 @@ namespace Rtrbau
                 else if (visualiser.elementsMode == RtrbauElementMode.Exterior) { }
                 else { throw new ArgumentException("ElementReport::ScaleLoadingPanel: RtrbauElementMode " + visualiser.elementsMode + " not implemented."); }
             }
-                
+
             // Move loading panel half the size of boundSizeIncrease downwards on y axis
-            loadingPanel.transform.position -= new Vector3(0, (float)boundSizeIncrease / 2, 0);
+            // loadingPanel.transform.position -= new Vector3(0, (float)boundSizeIncrease / 2, 0);
+            if (visualiser.elementsMode == RtrbauElementMode.Interior) { loadingPanel.transform.position -= new Vector3(0, (float)boundSizeIncrease / 2, 0); }
+            else if (visualiser.elementsMode == RtrbauElementMode.Exterior) { loadingPanel.transform.localPosition -= new Vector3(0, (float)boundSizeIncrease / 2, 0); }
+            else { throw new ArgumentException("ElementReport::ScaleLoadingPanel: RtrbauElementMode " + visualiser.elementsMode + " not implemented."); }
+            
             // Rescale loading panel background the size of boundSizeIncrease on y axis
             loadingPanel.transform.GetChild(0).localScale += new Vector3(0, (float)boundSizeIncrease + (float)boundSizeOffset, 0);
         }

@@ -31,6 +31,7 @@ namespace Rtrbau
     {
         #region INITIALISATION_VARIABLES
         public Action<OntologyEntity, bool> nominate;
+        public Action<OntologyEntity> destroy;
         public OntologyEntity individual;
         public OntologyElement range;
         #endregion INITIALISATION_VARIABLES
@@ -102,8 +103,10 @@ namespace Rtrbau
                 // If range properties are zero, then activate nominate record button
                 if (rangeProperties.ontProperties.Count == 0)
                 {
-                    // Only if the nominate name is new
-                    if (individual.Name().Contains(Parser.ParseNamingNew())) { LoadButton(true); }
+                    // UPG: Only if the nominate name is new [Requires changes in server to work]
+                    // UPG: For the time being when this case occurs invoke the function to destroy this nominate
+                    // if (individual.Name().Contains(Parser.ParseNamingNew())) { LoadButton(true); }
+                    if (individual.Name().Contains(Parser.ParseNamingNew())) { destroy.Invoke(individual); }
                     else { LoadButton(false); }
                 }
                 else { LoadButton(false); }
@@ -136,16 +139,17 @@ namespace Rtrbau
                 // Activate record button
                 recordButton.SetActive(true);
                 // Initialise record button
-                recordButton.GetComponent<RecordKeyboardButton>().Initialise(RecordRecordableNominate);
+                recordButton.GetComponent<RecordKeyboardButton>().Initialise(RecordRecordableNominate, TouchScreenKeyboardType.Default);
             }
         }
         #endregion PRIVATE
 
         #region PUBLIC
-        public void Initialise(Action<OntologyEntity, bool> nominateIndividual, OntologyEntity relationshipValue, OntologyEntity relationshipRange)
+        public void Initialise(Action<OntologyEntity, bool> nominateIndividual, Action<OntologyEntity> destroyIndividual, OntologyEntity relationshipValue, OntologyEntity relationshipRange)
         {
             // Assign button variables
             nominate = nominateIndividual;
+            destroy = destroyIndividual;
             individual = relationshipValue;
             // To optimise speed, only check range if nominate is new
             if (individual.Name().Contains(Parser.ParseNamingNew()))

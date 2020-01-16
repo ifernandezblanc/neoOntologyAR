@@ -47,10 +47,10 @@ namespace Rtrbau
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
-        public GameObject userWriteButton;
+        public TextMeshPro userWrittenText;
+        public TextMeshPro serverWrittenText;
         public GameObject userSelectReportButton;
         public GameObject userSelectConsultButton;
-        public GameObject serverWriteButton;
         public GameObject serverConnectButton;
         #endregion GAMEOBJECT_PREFABS
 
@@ -76,7 +76,7 @@ namespace Rtrbau
         /// </summary>
         public void Initialise()
         {
-            if (serverWriteButton == null || serverConnectButton == null || userWriteButton == null || userSelectReportButton == null || userSelectConsultButton == null)
+            if (userWrittenText == null || serverWrittenText == null || userSelectReportButton == null || userSelectConsultButton == null || serverConnectButton == null)
             {
                 Debug.LogError("Configuration Panel: Fabrication buttons not found. Please assign them in PanelConfiguration script.");
             }
@@ -85,11 +85,11 @@ namespace Rtrbau
                 serverDefaultURI = Rtrbauer.instance.server.AbsoluteUri;
                 userDefaultName = Rtrbauer.instance.user.name;
 
-                userWriteButton.SetActive(true);
+                userWrittenText.transform.parent.parent.gameObject.SetActive(true);
                 userSelectReportButton.SetActive(true);
                 userSelectConsultButton.SetActive(true);
 
-                userWriteButton.transform.GetChild(0).GetChild(0).GetComponent<TextMeshPro>().text = userDefaultName;
+                userWrittenText.text = userDefaultName;
             }
         }
         #endregion INITIALISATION_METHODS
@@ -150,10 +150,10 @@ namespace Rtrbau
         /// </summary>
         public void CreateFabrications()
         {
-            serverWriteButton.SetActive(true);
+            serverWrittenText.transform.parent.parent.parent.gameObject.SetActive(true);
             serverConnectButton.SetActive(true);
 
-            serverWriteButton.transform.GetChild(0).GetChild(0).GetComponent<TextMeshPro>().text = serverDefaultURI;
+            serverWrittenText.text = serverDefaultURI;
         }
 
         /// <summary>
@@ -162,10 +162,13 @@ namespace Rtrbau
         /// </summary>
         public void InputIntoReport()
         {
-            // Initialise server and user variables
+            // Initialise Rtrbauer server and user variables
             Rtrbauer.instance.server = new Uri(serverURI);
             Rtrbauer.instance.user.name = userName;
             Rtrbauer.instance.user.procedure = userProcedure;
+            // Initialise RtrbauDebug user log variables
+            RtrbauDebug.instance.Initialise();
+            // Initialise Reporter:
             // Generate server and user variables to report
             string serverReport = serverURI + "api/files/owl/server#connected";
             string userReport = serverURI + "api/files/owl/server#" + userName;
@@ -191,13 +194,21 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public void ConfigureUser(TextMeshProUGUI procedure)
+        public void ConfigureUser(TextMeshProUGUI procedureText)
         {
             RtrbauElementType proc;
 
-            if (Enum.TryParse<RtrbauElementType>(procedure.text, out proc))
+            if (Enum.TryParse<RtrbauElementType>(procedureText.text, out proc))
             {
-                userName = userWriteButton.transform.GetChild(0).GetChild(0).GetComponent<TextMeshPro>().text;
+                if (!userWrittenText.text.Contains("Focus to open keyboard") || !userWrittenText.text.Contains("Keyboard not supported"))
+                {
+                    userName = userWrittenText.text;
+                }
+                else
+                {
+                    userName = userDefaultName;
+                    userWrittenText.text = userDefaultName;
+                }
                 userProcedure = proc;
                 Debug.Log("PanelConfiguration: ConfigureUser: User configured is: " + userName + " doing " + userProcedure.ToString());
                 CreateFabrications();
@@ -209,17 +220,17 @@ namespace Rtrbau
             
         }
 
-        public void ConfigureServer(TextMeshPro serverWriteButton)
+        public void ConfigureServer(TextMeshPro writtenText)
         {
             // Identify server connection status
             string serverConnection = serverConnectButton.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text;
             // If server connection hasn't failed yet connect either to written address or default server
             if (serverConnection.Contains("Connect to server"))
             {
-                if (serverWriteButton.text.Contains("http"))
+                if (writtenText.text.Contains("http"))
                 {
-                    StartCoroutine(CheckServerConnection(serverWriteButton.text));
-                    Debug.Log("PanelConfiguration::ConfigureServer: Server configured is: " + serverWriteButton.text);
+                    StartCoroutine(CheckServerConnection(writtenText.text));
+                    Debug.Log("PanelConfiguration::ConfigureServer: Server configured is: " + writtenText.text);
                 }
                 else
                 {
@@ -229,20 +240,20 @@ namespace Rtrbau
             }
             else if (serverConnection.Contains("Server failed. Try another."))
             {
-                if (serverWriteButton.text.Contains("http"))
+                if (writtenText.text.Contains("http"))
                 {
-                    StartCoroutine(CheckServerConnection(serverWriteButton.text));
-                    Debug.Log("PanelConfiguration::ConfigureServer: Server configured is: " + serverWriteButton.text);
+                    StartCoroutine(CheckServerConnection(writtenText.text));
+                    Debug.Log("PanelConfiguration::ConfigureServer: Server configured is: " + writtenText.text);
                 }
                 else
                 {
-                    serverWriteButton.text = "Type server http address";
+                    writtenText.text = "Type server http address";
                     Debug.Log("PanelConfiguration::ConfigureServer: Server cannot be configured");
                 }
             }
             else
             {
-                serverWriteButton.text = "Server already found?";
+                writtenText.text = "Server already found?";
                 Debug.Log("PanelConfiguration::ConfigureServer: Server already found?");
             }
             //// When working at home to avoid server connection:
@@ -275,6 +286,16 @@ namespace Rtrbau
                     InputIntoReport();
                 }
             }
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public void OpenKeyboard(TextMeshPro textOutput)
+        {
+            // Activate RtrbauKeyboard
+            RtrbauKeyboard.instance.OpenRtrbauKeyboard(TouchScreenKeyboardType.Default, textOutput);
         }
         #endregion CLASS_METHODS
     }

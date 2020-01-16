@@ -77,11 +77,7 @@ namespace Rtrbau
         #endregion CLASS_VARIABLES
 
         #region MONOBEHAVIOUR_METHODS
-        // void OnDestroy()
-        void OnApplicationQuit()
-        {
-            SendReport();
-        }
+        void OnApplicationQuit() { SendReport(); }
         #endregion MONOBEHAVIOUR_METHODS
 
         /// <summary>

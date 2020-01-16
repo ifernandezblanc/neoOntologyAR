@@ -455,11 +455,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8072737661283166223, guid: f486cb5feca96c543af53f2473d7bb1e,
-        type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 6273826497656271688, guid: f486cb5feca96c543af53f2473d7bb1e,
         type: 3}
       propertyPath: m_textInfo.characterCount
@@ -487,13 +482,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6273826497656271688, guid: f486cb5feca96c543af53f2473d7bb1e,
         type: 3}
-      propertyPath: m_text
-      value: Type value in here
-      objectReference: {fileID: 0}
-    - target: {fileID: 6273826497656271688, guid: f486cb5feca96c543af53f2473d7bb1e,
-        type: 3}
       propertyPath: m_fontSize
       value: 23.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8072737661283166223, guid: f486cb5feca96c543af53f2473d7bb1e,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f486cb5feca96c543af53f2473d7bb1e, type: 3}

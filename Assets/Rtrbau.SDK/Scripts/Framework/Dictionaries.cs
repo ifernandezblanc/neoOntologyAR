@@ -140,7 +140,11 @@ namespace Rtrbau
         /// Add links when code has been inspired
         /// </summary>
         public static string reportsFileDirectory = Application.persistentDataPath + "/Rtrbau/reports";
-
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public static string logsFileDirectory = Application.persistentDataPath + "/Rtrbau/logs";
 
         #endregion DICTIONARIES_STATIC
 

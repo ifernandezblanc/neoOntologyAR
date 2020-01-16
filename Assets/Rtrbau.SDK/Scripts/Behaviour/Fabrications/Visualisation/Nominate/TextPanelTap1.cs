@@ -43,6 +43,7 @@ namespace Rtrbau
         #region CLASS_VARIABLES
         public Dictionary<OntologyEntity, GameObject> individualNominates;
         public OntologyEntity nominatedIndividual;
+        public List<OntologyEntity> destroyableNominates;
         #endregion CLASS_VARIABLES
 
         #region FACETS_VARIABLES
@@ -102,6 +103,7 @@ namespace Rtrbau
             scale = fabricationParent;
             individualNominates = new Dictionary<OntologyEntity, GameObject>();
             nominatedIndividual = null;
+            destroyableNominates = new List<OntologyEntity>();
             fabricationCreated = false;
             nominateButtonsActive = false;
             individualNominated = false;
@@ -154,6 +156,8 @@ namespace Rtrbau
                     // Create individual button and assign both to dictionary
                     individualNominates.Add(individualEntity, CreateIndividualButton(individualEntity, individualRange));
                 }
+                // UPG: Destroy destroyable nominates [To be removed once nominates do not need to be destroyed due to neoOntology server changes]
+                DestroyDestroyableNominates();
                 // Set fabrication as created
                 fabricationCreated = true;
             }
@@ -193,7 +197,7 @@ namespace Rtrbau
                                 attribute.attributeValue = newIndividual.URI();
                                 // Assign nominated individual as new element report
                                 newReportNominated = true;
-                                Debug.Log("DefaultNominate::OnNextVisualisation: nominatedIndividual " + nominatedIndividual.Name() + " is new to report");
+                                Debug.Log("TextPanelTap1::OnNextVisualisation: nominatedIndividual " + nominatedIndividual.Name() + " is new to report");
                             }
                             else
                             {
@@ -205,10 +209,10 @@ namespace Rtrbau
                                 {
                                     newNominatedRecorded = individual.GetComponent<NominateButton>().recordableText;
                                 }
-                                else { throw new ArgumentException("DefaultNominate::OnNextVisualisation: nominated individual not found"); }
+                                else { throw new ArgumentException("TextPanelTap1::OnNextVisualisation: nominated individual not found"); }
                                 // Assign user-reported attribute value to RtrbauElement from ElementReport through RtrbauFabrication
                                 attribute.attributeValue = nominatedIndividual.Ontology().URI() + newNominatedRecorded;
-                                //Debug.Log("DefaultNominate::OnNextVisualisation: nominatedIndividual " + nominatedIndividual.Name() + " is new to record");
+                                Debug.Log("TextPanelTap1::OnNextVisualisation: nominatedIndividual " + nominatedIndividual.Name() + " is new to record");
                             }
                         }
                         else
@@ -394,7 +398,7 @@ namespace Rtrbau
             // Instantiate nominate button
             GameObject individualButton = Instantiate(nominateButton);
             // Initialise nominate button with corresponding nominate function
-            individualButton.GetComponent<NominateButton>().Initialise(NominateIndividual, individual, range);
+            individualButton.GetComponent<NominateButton>().Initialise(NominateIndividual, DestroyIndividual, individual, range);
             // Scale buttons to possible change in fabrications scale
             ScaleIndividualButton(individualButton);
             // Set tile grid object collection as button parent
@@ -452,9 +456,57 @@ namespace Rtrbau
             // Activate tile grid object collection
             nominateButtons.gameObject.GetComponent<TileGridObjectCollection>().enabled = true;
         }
+
+        void DestroyIndividualButton(GameObject button)
+        {
+            // Deactivate tile grid object collection
+            nominateButtons.gameObject.GetComponent<TileGridObjectCollection>().enabled = false;
+            // Set fabrication root as button parent
+            button.transform.SetParent(this.transform, false);
+            // Destroy game object button
+            Destroy(button);
+            // Activate tile grid object collection
+            nominateButtons.gameObject.GetComponent<TileGridObjectCollection>().enabled = true;
+        }
+
+        void DestroyDestroyableNominates()
+        {
+            // For each nominate included in the destroyable list
+            foreach (OntologyEntity destroyableNominate in destroyableNominates)
+            {
+                // Initialise game object to find nominate in list
+                GameObject destroyableButton;
+                // Find destroyableNominate entity in nominates list
+                if (individualNominates.TryGetValue(destroyableNominate, out destroyableButton))
+                {
+                    // Remove destroyable nominate from list
+                    individualNominates.Remove(destroyableNominate);
+                    // Destroy nominate button
+                    DestroyIndividualButton(destroyableButton);
+                }
+                else { throw new ArgumentException("TextPanelTap1::DestroyDestroyableNominates: nominate could not be destroyed"); }
+            }
+        }
         #endregion PRIVATE
 
         #region PUBLIC
+        /// <summary>
+        /// UPG: Function for the purpose of removing nominates which could not be uploaded
+        /// UPG: To modify once neoOntology server changes are made
+        /// </summary>
+        /// <param name="individual"></param>
+        public void DestroyIndividual(OntologyEntity individual)
+        {
+            // UPG: Ensure nominate to be destroyed is new
+            // UPG: Once function renewed, it should be considered individualNominates.TryGetValue()
+            if (individual.Name().Contains(Parser.ParseNamingNew()))
+            {
+                // UPG: Include nominate in destroyable list to destroy once fabrication is created
+                destroyableNominates.Add(individual);
+            }
+            else { throw new ArgumentException("TextPanelTap1::DestroyIndividual: Individual could be uploaded and not destroyed"); }
+        }
+
         /// <summary>
         /// 
         /// </summary>

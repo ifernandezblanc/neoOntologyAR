@@ -53,7 +53,7 @@ namespace Rtrbau
         #region CLASS_EVENTS
         public bool buttonCreated;
         private bool datableNominate;
-        private bool buttonActive;
+        // private bool buttonActive;
         public bool unloadableNominate;
         #endregion CLASS_EVENTS
 
@@ -279,7 +279,7 @@ namespace Rtrbau
             nominatedDataTexts = new List<GameObject>();
             buttonCreated = false;
             datableNominate = false;
-            buttonActive = false;
+            // buttonActive = false;
             unloadableNominate = false;
             // To optimise speed, only check individual properties if nominate is not new
             if (individual.Name().Contains(Parser.ParseNamingNew()))

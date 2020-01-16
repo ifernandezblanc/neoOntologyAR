@@ -30,13 +30,15 @@ namespace Rtrbau
     {
         #region INITIALISATION_VARIABLES
         public Action<string> recordText;
+        public TouchScreenKeyboardType recordType;
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
-        public TextMeshPro recordButtonText;
+        public TextMeshPro recordedText;
+        public TextMeshPro clickingText;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -45,9 +47,9 @@ namespace Rtrbau
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (recordButtonText == null)
+            if (recordedText == null || clickingText == null)
             {
-                throw new ArgumentException("NominateButton::Start: Script requires some prefabs to work.");
+                throw new ArgumentException("RecordKeyboardButton::Start: Script requires some prefabs to work.");
             }
             else { }
         }
@@ -85,11 +87,12 @@ namespace Rtrbau
         /// <summary>
         /// Initialises RecordKeyboardButton, attaches action to submit recorded text.
         /// </summary>
-        public void Initialise(Action<string> textRecord)
+        public void Initialise(Action<string> textRecord, TouchScreenKeyboardType typeRecord)
         {
             if (textRecord != null)
             {
                 recordText = textRecord;
+                recordType = typeRecord;
             }
             else
             {
@@ -97,19 +100,7 @@ namespace Rtrbau
                 throw new ArgumentException("RecordKeyboardButton::Initialise: No action to record text has been declared.");
             }
         }
-        /// <summary>
-        /// Returns user recorded text.
-        /// </summary>
-        /// <returns>Returns <see cref="string"/> if text recorded, otherwise returns <see cref="null"/>.</returns>
-        //public string ReturnAttributeValue()
-        //{
-        //    if (recordButtonText.text != null)
-        //    {
-        //        return recordButtonText.text;
-        //    }
-        //    else { return null; }
-        //}
-
+        
         /// <summary>
         /// Invokes action to record text inputed from keyboard if distinct to null.
         /// </summary>
@@ -117,16 +108,35 @@ namespace Rtrbau
         {
             if (recordText != null)
             {
-                if (recordButtonText.text != "Keyboard not supported" || recordButtonText.text != "Focus to open keyboard")
+                if (recordedText.text != "Keyboard not supported" || recordedText.text != "Focus to open keyboard")
                 {
-                    recordText.Invoke(recordButtonText.text);
+                    // Invoke record action
+                    recordText.Invoke(recordedText.text);
                 }
                 else
                 {
+                    // Invoke record action
                     recordText.Invoke(null);
                 }
             }
             else { }
+            // Deactivate loading panel
+            this.gameObject.GetComponentInParent<ElementReport>().loadingPanel.SetActive(false);
+            // Provide instructions for user to open keyboard
+            clickingText.text = "Look up to open keyboard";
+        }
+
+        /// <summary>
+        /// Calls RtrbauKeyboard to open system keyboard
+        /// </summary>
+        public void OpenKeyboard()
+        {
+            // Activate Rtrbau keyboard
+            RtrbauKeyboard.instance.OpenRtrbauKeyboard(recordType, recordedText);
+            // Activate loading panel
+            this.gameObject.GetComponentInParent<ElementReport>().loadingPanel.SetActive(true);
+            // Provide instruction for user to click button
+            clickingText.text = "Click to record";
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS

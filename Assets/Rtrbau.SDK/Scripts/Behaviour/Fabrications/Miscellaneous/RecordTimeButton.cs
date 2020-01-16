@@ -37,7 +37,8 @@ namespace Rtrbau
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
-        public TextMeshPro recordButtonText;
+        public TextMeshPro recordText;
+        public TextMeshPro clickingText;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -47,14 +48,14 @@ namespace Rtrbau
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (recordButtonText == null)
+            if (recordText == null || clickingText == null)
             {
-                throw new ArgumentException("NominateButton::Start: Script requires some prefabs to work.");
+                throw new ArgumentException("RecordTimeButton::Start: Script requires some prefabs to work.");
             }
             else
             {
                 attributeValueDateTime = default(DateTimeOffset);
-                recordButtonText.text = "Focus to input date: yyyy-MM-dd HH:mm";
+                recordText.text = "Focus to input date: yyyy-MM-dd HH:mm";
                 buttonCreated = true;
             }
         }
@@ -107,17 +108,35 @@ namespace Rtrbau
         {
             if (buttonCreated == true)
             {
-                if (recordButtonText.text != null)
+                if (recordText.text != null)
                 {
-                    if (DateTimeOffset.TryParse(recordButtonText.text, out attributeValueDateTime))
+                    if (DateTimeOffset.TryParse(recordText.text, out attributeValueDateTime))
                     {
                         timeRecord.Invoke(attributeValueDateTime);
                     }
-                    else { recordButtonText.text = "Input date as: yyyy-MM-dd HH:mm"; }
+                    else { recordText.text = "Input date as: yyyy-MM-dd HH:mm"; }
                 }
-                else { recordButtonText.text = "Input date as: yyyy-MM-dd HH:mm"; }
+                else { recordText.text = "Input date as: yyyy-MM-dd HH:mm"; }
             }
             else { }
+
+            // Deactivate loading panel
+            this.gameObject.GetComponentInParent<ElementReport>().loadingPanel.SetActive(false);
+            // Provide instructions for user to open keyboard
+            clickingText.text = "Look up to open keyboard";
+        }
+
+        /// <summary>
+        /// Calls RtrbauKeyboard to open system keyboard
+        /// </summary>
+        public void OpenKeyboard()
+        {
+            // Activate Rtrbau keyboard
+            RtrbauKeyboard.instance.OpenRtrbauKeyboard(TouchScreenKeyboardType.Default, recordText);
+            // Activate loading panel
+            this.gameObject.GetComponentInParent<ElementReport>().loadingPanel.SetActive(true);
+            // Provide instruction for user to click button
+            clickingText.text = "Click to record";
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS

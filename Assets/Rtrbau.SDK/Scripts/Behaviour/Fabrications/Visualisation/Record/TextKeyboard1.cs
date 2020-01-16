@@ -92,7 +92,7 @@ namespace Rtrbau
             scale = fabricationParent;
             attributeText = null;
             fabricationCreated = false;
-            recordKeyboardButton.GetComponent<RecordKeyboardButton>().Initialise(RecordText);
+            recordKeyboardButton.GetComponent<RecordKeyboardButton>().Initialise(RecordText, TouchScreenKeyboardType.Default);
             Scale();
             InferFromText();
         }
