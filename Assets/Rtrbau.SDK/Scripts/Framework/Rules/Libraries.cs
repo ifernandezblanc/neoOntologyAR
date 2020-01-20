@@ -284,7 +284,7 @@ namespace Rtrbau
         /// </summary>
         public static List<string> StateIdeal = new List<string>
         {
-            "Ideal", "State"
+            "compares", "State"
         };
         #endregion NAME_LIBRARIES
 

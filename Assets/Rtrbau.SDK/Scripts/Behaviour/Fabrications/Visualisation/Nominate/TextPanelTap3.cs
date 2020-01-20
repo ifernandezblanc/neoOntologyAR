@@ -460,7 +460,8 @@ namespace Rtrbau
                 }
 
                 // If created button is unloadable, then add to unloadable nominates
-                if (individualNominate.Value.GetComponent<NominateDataButton>().unloadableNominate == true)
+                // if (individualNominate.Value.GetComponent<NominateDataButton>().unloadableNominate == true)
+                if (individualNominate.Value.GetComponent<NominateDataButton>().loadableNominate == false)
                 {
                     unloadableNominates.Add(individualNominate.Key, individualNominate.Value);
                 }

@@ -1206,6 +1206,23 @@ namespace Rtrbau
             // Rescale loading panel background the size of boundSizeIncrease on y axis
             loadingPanel.transform.GetChild(0).localScale += new Vector3(0, (float)boundSizeIncrease + (float)boundSizeOffset, 0);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ActivateLoadingPanel()
+        {
+            ScaleLoadingPanel();
+            loadingPanel.SetActive(true);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeactivateLoadingPanel()
+        {
+            loadingPanel.SetActive(false);
+        }
         #endregion PUBLIC
         #endregion CLASS_METHODS
     }

@@ -54,7 +54,7 @@ namespace Rtrbau
         public bool buttonCreated;
         private bool datableNominate;
         // private bool buttonActive;
-        public bool unloadableNominate;
+        public bool loadableNominate;
         #endregion CLASS_EVENTS
 
         #region MONOBEHAVIOUR_METHODS
@@ -137,10 +137,13 @@ namespace Rtrbau
             {
                 // Show individual name the button refers to
                 buttonText.text = individual.Name();
+                // Assig nominate as non datable
+                datableNominate = false;
+                // If nominate is new, assign new nominate as loadable
+                if (individual.Name().Contains(Parser.ParseNamingNew())) { loadableNominate = true; }
+                else { }
                 // Assign button as created
                 buttonCreated = true;
-                // Assig nominate as non datable
-                datableNominate = false;               
             }
             else if (datable == true)
             {
@@ -149,7 +152,7 @@ namespace Rtrbau
                 // Generate data texts for each individual property
                 foreach(JsonValue individualProperty in individualProperties.ontProperties)
                 {
-                    Debug.Log("NominateDataButton::LoadButton: individual property is: " + individualProperty.ontName);
+                    // Debug.Log("NominateDataButton::LoadButton: individual property is: " + individualProperty.ontName);
                     // If property is of datatype
                     if (individualProperty.ontType == Rtrbauer.instance.owl.URI() + "DatatypeProperty")
                     {
@@ -166,11 +169,12 @@ namespace Rtrbau
                     else if (individualProperty.ontType == Rtrbauer.instance.owl.URI() + "ObjectProperty")
                     {
                         // Identify if object property refers to individual of component ontology
+                        // Inference rule number 1
                         if (individualProperty.ontValue.Contains(Rtrbauer.instance.component.Ontology().Name()))
                         {
                             // Obtain component name
                             string nominatedComponentName = Parser.ParseURI(individualProperty.ontValue, '#', RtrbauParser.post);
-                            GameObject nominatedComponentModel = parent.GetComponent<TextPanelTap3>().visualiser.manager.FindAssetComponentManipulator(nominatedComponentName);
+                            GameObject nominatedComponentModel = parent.GetComponent<TextPanelTap3>().visualiser.manager.FindAssetComponentManipulator(nominatedComponentName);                            
                             // If component is found in scene create nominated model panel, otherwise destroy nominate data button
                             if (nominatedComponentModel != null)
                             {
@@ -182,11 +186,13 @@ namespace Rtrbau
                                 GameObject nominatedModel = CreateNominatedPropertyModel(nominatedText, nominatedComponentModel);
                                 // Assign nominated model to list of nominated data texts
                                 nominatedDataTexts.Add(nominatedModel);
+                                // Assign nominate as loadable
+                                loadableNominate = true;
                             }
                             else 
                             {
                                 // Set nominate as unloadable
-                                unloadableNominate = true;
+                                // unloadableNominate = true;
                             }
                         }
                         else
@@ -200,10 +206,10 @@ namespace Rtrbau
                     else {}
                 }
 
-                // Assign button as created
-                buttonCreated = true;
                 // Assign nominate as recordable
                 datableNominate = true;
+                // Assign button as created
+                buttonCreated = true;
             }
         }
 
@@ -280,7 +286,7 @@ namespace Rtrbau
             buttonCreated = false;
             datableNominate = false;
             // buttonActive = false;
-            unloadableNominate = false;
+            loadableNominate = false;
             // To optimise speed, only check individual properties if nominate is not new
             if (individual.Name().Contains(Parser.ParseNamingNew()))
             {
