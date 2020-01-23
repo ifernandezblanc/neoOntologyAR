@@ -37,6 +37,31 @@ PrefabInstance:
       propertyPath: m_Name
       value: DefaultObserve
       objectReference: {fileID: 0}
+    - target: {fileID: 8284232116631189567, guid: 5e2dab1d94690f1479e49b78bcb2bfc2,
+        type: 3}
+      propertyPath: m_text
+      value: Attribute Name
+      objectReference: {fileID: 0}
+    - target: {fileID: 8284232116631189567, guid: 5e2dab1d94690f1479e49b78bcb2bfc2,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 12.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 8284232116631189567, guid: 5e2dab1d94690f1479e49b78bcb2bfc2,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 8284232116631189567, guid: 5e2dab1d94690f1479e49b78bcb2bfc2,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8284232116631189567, guid: 5e2dab1d94690f1479e49b78bcb2bfc2,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8284232115157065362, guid: 5e2dab1d94690f1479e49b78bcb2bfc2,
         type: 3}
       propertyPath: m_LocalPosition.x

@@ -1074,12 +1074,12 @@ namespace Rtrbau
         void ScaleLoadingPlate()
         {
             // Determine scale factors according to UI game objects
-            // Factors have been calculated ad-hoc per case
+            // Factors have been calculated ad-hoc per case using scales of elements involved (Backplates with parents at scale 1)
             float scaleFactor;
             float moveFactor;
 
             if (Rtrbauer.instance.archivedFabrications == true) { scaleFactor = 0.395f; moveFactor = -0.025f; }
-            else { scaleFactor = 0.55f; moveFactor = -0.033f; }
+            else { scaleFactor = 0.5f; moveFactor = -0.033f; }
 
             // Calculate maximum number of fabrications to which scale
             int attributeFabs = recordFabrications.Count();
@@ -1089,13 +1089,16 @@ namespace Rtrbau
             if (attributeFabs >= relationshipFabs) { maximumFabs = attributeFabs; }
             else { maximumFabs = relationshipFabs; }
 
+            // Activate loading plate before scaling so it can acquire its initial scale
+            loadingPlate.SetActive(true);
             // Rescale loading plate
             loadingPlate.transform.localScale += new Vector3(0, scaleFactor * maximumFabs, 0);
             // Move loading plate
             loadingPlate.transform.localPosition += new Vector3(0, moveFactor * maximumFabs, 0);
-
-            // Remember to also rescale icons and logos from loading plate
-            // loadingPlate.GetComponent<LoadingAnimation>().ScaleLoadingImages();
+            // Rescale images and text on loading plate
+            loadingPlate.GetComponent<LoadingAnimation>().ScaleLoadingImages();
+            // Deactivate loading plate
+            loadingPlate.SetActive(false);
         }
         #endregion PRIVATE
 

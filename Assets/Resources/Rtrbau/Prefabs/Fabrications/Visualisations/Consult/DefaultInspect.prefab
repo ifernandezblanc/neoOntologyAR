@@ -24,7 +24,7 @@ MonoBehaviour:
   scale: {fileID: 0}
   fabricationText: {fileID: 4647523922818594411}
   fabricationSeenPanel: {fileID: 4088239242293319213}
-  fabricationSeenMaterial: {fileID: 2100000, guid: 45ad6a9dcb613c64285c5c00e53d2aba,
+  fabricationSeenMaterial: {fileID: 2100000, guid: 9e6f4ff13bc154f438d6857f576fad62,
     type: 2}
   fabricationBounds: {fileID: 4647523921660258308}
 --- !u!1001 &2617807846672531972
@@ -38,6 +38,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: DefaultInspect
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: m_text
+      value: Attribute Name
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 12.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
         type: 3}

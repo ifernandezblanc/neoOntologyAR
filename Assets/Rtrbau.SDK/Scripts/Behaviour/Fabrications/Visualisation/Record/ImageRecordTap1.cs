@@ -239,7 +239,7 @@ namespace Rtrbau
         {
             RecorderEvents.StopListening(imageFile.EventName(), OnPictureTaken);
 
-            imageStatus.text = "Picture take";
+            imageStatus.text = "Picture taken";
 
             OntologyFileUpload fileUpload = new OntologyFileUpload(imageFile);
 

@@ -53,6 +53,7 @@ namespace Rtrbau
         public MeshRenderer fabricationSeenPanel;
         public MeshRenderer fabricationReportedPanel;
         public Material fabricationSeenMaterial;
+        public Material fabricationUnseenMaterial;
         public Material fabricationNonReportedMaterial;
         public Material fabricationReportedMaterial;
         public Material fabricationModelMaterial;
@@ -70,7 +71,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationSeenMaterial == null || fabricationNonReportedMaterial == null || fabricationReportedMaterial == null || fabricationModelMaterial == null || fabricationBounds == null || recordSelectPanel == null || recordSelectPanelText == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationSeenMaterial == null || fabricationUnseenMaterial == null || fabricationNonReportedMaterial == null || fabricationReportedMaterial == null || fabricationModelMaterial == null || fabricationBounds == null || recordSelectPanel == null || recordSelectPanelText == null)
             {
                 throw new ArgumentException("DefaultNominate::Start: Script requires some prefabs to work.");
             }
@@ -388,7 +389,7 @@ namespace Rtrbau
                     else { selectModel.Value.SetActive(true); }
                 }
                 // Update button material
-                fabricationReportedPanel.material = fabricationNonReportedMaterial;
+                fabricationReportedPanel.material = fabricationUnseenMaterial;
                 // Assign value to record select button text
                 recordSelectPanelText.text = "Click model to select";
                 // Unassign set value as selected

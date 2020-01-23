@@ -33,7 +33,7 @@ namespace Rtrbau
     {
         #region CLASS_MEMBERS
         [SerializeField]
-        private float loadingSpeed = 90f;
+        private float loadingSpeed = 45f;
         private decimal originalScaleX;
         private decimal originalScaleY;
         private decimal scaleFactorX;
@@ -46,30 +46,38 @@ namespace Rtrbau
         public SpriteRenderer logoSprite;
         #endregion GAMEOBJECT_PREFABS
 
+        #region CLASS_EVENTS
+        public bool scaleInitialised;
+        #endregion CLASS_EVENTS
+
         #region MONOBEHAVIOUR_METHODS
-        void Awake() 
-        { 
-            originalScaleX = (decimal)this.transform.localScale.x; 
-            originalScaleY = (decimal)this.transform.localScale.y;
-            Debug.Log("LoadingAnimation::ScaleLoadingImages: originalScaleX is " + originalScaleX + " and originalScaleY is " + originalScaleY);
-        }
+        void Awake() { InitialiseScaling(); }
 
         void Start() { }
 
-        void Update()
-        {
-            // this.transform.Rotate(new Vector3(0, 0, loadingSpeed), Space.Self);
-            // this.transform.RotateAround(this.transform.position, this.transform.forward, Time.deltaTime * loadingSpeed);
-            iconSprite.transform.RotateAround(iconSprite.transform.position, iconSprite.transform.up, Time.deltaTime * loadingSpeed);
-        }
+        void Update() { RotateTransform(iconSprite.transform, loadingSpeed/3); RotateTransform(logoSprite.transform, loadingSpeed); }
         #endregion MONOBEHAVIOUR_METHODS
 
         #region CLASS_METHODS
         #region PRIVATE
+        void RotateTransform(Transform transform, float speed)
+        {
+            transform.RotateAround(transform.position, transform.up, Time.deltaTime * speed);
+        }
+
+        void InitialiseScaling()
+        {
+            originalScaleX = (decimal)this.transform.localScale.x;
+            originalScaleY = (decimal)this.transform.localScale.y;
+            scaleInitialised = true;
+            Debug.Log("LoadingAnimation::ScaleLoadingImages: originalScaleX is " + originalScaleX + " and originalScaleY is " + originalScaleY);
+        }
+
         void CalculateScaleFactors()
         {
-            scaleFactorX = originalScaleX / (decimal)this.transform.localScale.x;
-            scaleFactorY = originalScaleY / (decimal)this.transform.localScale.y;
+            if (scaleInitialised != true) { InitialiseScaling(); }
+            scaleFactorX = (decimal)this.transform.localScale.x / originalScaleX;
+            scaleFactorY = (decimal)this.transform.localScale.y / originalScaleY;
             Debug.Log("LoadingAnimation::ScaleLoadingImages: currentScaleX is " + (decimal)this.transform.localScale.x + " and currentScaleY is " + (decimal)this.transform.localScale.y);
             Debug.Log("LoadingAnimation::ScaleLoadingImages: scaleFactorX is " + scaleFactorX + " and scaleFactorY is " + scaleFactorY);
         }
@@ -86,9 +94,10 @@ namespace Rtrbau
             decimal currentScaleY = (decimal)transform.localScale.y;
             decimal transformScaleX = currentScaleX * scaleFactorX;
             decimal transformScaleY = currentScaleY * scaleFactorY;
-            // Apply new values
-            transform.sizeDelta = new Vector2((float)transformDeltaX, (float)transformDeltaY);
-            transform.localScale = new Vector3((float)transformScaleX, (float)transformScaleY, transform.localScale.z);
+            // It is expected loadingPlate to be re-scaled over the y-axis
+            // Modify x-axis values accordingly
+            transform.sizeDelta = new Vector2((float)transformDeltaX, transform.sizeDelta.y);
+            transform.localScale = new Vector3((float)transformScaleX, transform.localScale.y, transform.localScale.z);
         }
 
         void ScaleTransform(Transform transform)
@@ -98,8 +107,9 @@ namespace Rtrbau
             decimal currentScaleY = (decimal)transform.localScale.y;
             decimal transformScaleX = currentScaleX * scaleFactorX;
             decimal transformScaleY = currentScaleY * scaleFactorY;
-            // Apply new values
-            transform.localScale = new Vector3((float)transformScaleX, (float)transformScaleY, transform.localScale.z);
+            // It is expected loadingPlate to be re-scaled over the y-axis
+            // Modify x-axis values accordingly
+            transform.localScale = new Vector3((float)transformScaleX, transform.localScale.y, transform.localScale.z);
         }
         #endregion PRIVATE
 

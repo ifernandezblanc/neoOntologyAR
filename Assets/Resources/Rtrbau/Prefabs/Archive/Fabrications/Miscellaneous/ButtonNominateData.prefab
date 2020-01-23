@@ -63,9 +63,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f66d385223694c4496d07b4c322360b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  individual:
-    type: 0
   parent: {fileID: 0}
+  individualElement:
+    type: 0
   individualProperties:
     ontIndividual: 
     ontClass: 
@@ -77,6 +77,8 @@ MonoBehaviour:
   nominatedDataText: {fileID: 5617266142024103414, guid: 3b819b37ceff0e84784a4465953c6ce6,
     type: 3}
   nominatedDataPanel: {fileID: 1236479571494539458}
+  buttonCreated: 0
+  loadableNominate: 0
 --- !u!1001 &4539341669666981390
 PrefabInstance:
   m_ObjectHideFlags: 0
