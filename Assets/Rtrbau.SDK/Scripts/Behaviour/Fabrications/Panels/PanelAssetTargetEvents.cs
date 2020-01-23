@@ -37,7 +37,7 @@ namespace Rtrbau
         #region INITIALISATION_VARIABLES
         public GameObject assetTarget;
         public GameObject assetRegistrationButton;
-        public TextMeshProUGUI assetStatus;
+        public TextMeshPro assetStatus;
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
@@ -141,7 +141,7 @@ namespace Rtrbau
         /// <param name="targetAsset"></param>
         /// <param name="statusPanel"></param>
         /// <param name="registrationButton"></param>
-        public virtual void Initialise(GameObject targetAsset, TextMeshProUGUI statusPanel, GameObject registrationButton)
+        public virtual void Initialise(GameObject targetAsset, TextMeshPro statusPanel, GameObject registrationButton)
         {
             assetTarget = targetAsset;
 

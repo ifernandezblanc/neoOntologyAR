@@ -51,6 +51,7 @@ namespace Rtrbau
         public MeshRenderer fabricationSeenPanel;
         public MeshRenderer fabricationReportedPanel;
         public Material fabricationReportedMaterial;
+        public Renderer fabricationBounds;
         public GameObject recordDictationButton;
         #endregion GAMEOBJECT_PREFABS
 
@@ -61,7 +62,7 @@ namespace Rtrbau
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || recordDictationButton == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || fabricationBounds == null || recordDictationButton == null)
             {
                 throw new ArgumentException("TextDictation1::Start: Script requires some prefabs to work.");
             }
@@ -154,6 +155,12 @@ namespace Rtrbau
             }
             else { }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Renderer GetRenderer() { return fabricationBounds; }
         #endregion IFABRICATIONABLE_METHODS
 
         #region IVISUALISABLE_METHODS

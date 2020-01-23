@@ -56,6 +56,7 @@ namespace Rtrbau
         public Material fabricationSeenMaterial;
         public Material fabricationNonReportedMaterial;
         public Material fabricationReportedMaterial;
+        public Renderer fabricationBounds;
         public Transform nominateButtons;
         public GameObject nominateButton;
         #endregion GAMEOBJECT_PREFABS
@@ -72,7 +73,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationSeenMaterial == null || fabricationNonReportedMaterial == null || fabricationReportedMaterial == null || nominateButtons == null || nominateButton == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationSeenMaterial == null || fabricationNonReportedMaterial == null || fabricationReportedMaterial == null || fabricationBounds == null || nominateButtons == null || nominateButton == null)
             {
                 throw new ArgumentException("DefaultNominate::Start: Script requires some prefabs to work.");
             }
@@ -251,6 +252,12 @@ namespace Rtrbau
             }
             else { }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Renderer GetRenderer() { return fabricationBounds; }
         #endregion IFABRICATIONABLE_METHODS
 
         #region IVISUALISABLE_METHODS

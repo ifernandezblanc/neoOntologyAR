@@ -118,8 +118,8 @@ namespace Rtrbau
         /// </summary>
         public void OnDictationStarts() 
         { 
-            // Activate element loading panel
-            element.GetComponent<ElementReport>().loadingPanel.SetActive(true); 
+            // Activate element loading plate
+            element.GetComponent<IElementable>().ActivateLoadingPlate(); 
         }
         /// <summary>
         /// To trigger actions when dictation ends
@@ -128,8 +128,8 @@ namespace Rtrbau
         {
             // Activate record action
             RecordDictation();
-            // Deactivate element loading panel
-            element.GetComponent<ElementReport>().loadingPanel.SetActive(false);
+            // Deactivate element loading plate
+            element.GetComponent<IElementable>().DeactivateLoadingPlate();
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS

@@ -153,30 +153,30 @@ namespace Rtrbau
         public static List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>> ConsultFormats
             = new List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>>
             {
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.TextNone1, DataFormats.TextNone1, EnvironmentFormats.TextNone1, UserFormats.TextNone1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.IconNone1, DataFormats.IconNone1, EnvironmentFormats.IconNone1, UserFormats.IconNone1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.AudioTap1, DataFormats.AudioTap1, EnvironmentFormats.AudioTap1, UserFormats.AudioTap1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.ImageManipulation1, DataFormats.ImageManipulation1, EnvironmentFormats.ImageManipulation1, UserFormats.ImageManipulation1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.VideoManipulation1, DataFormats.VideoManipulation1, EnvironmentFormats.VideoManipulation1, UserFormats.VideoManipulation1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.ModelManipulation1, DataFormats.ModelManipulation1, EnvironmentFormats.ModelManipulation1, UserFormats.ModelManipulation1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.HologramNone1, DataFormats.HologramNone1, EnvironmentFormats.HologramNone1, UserFormats.HologramNone1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.HologramNone2, DataFormats.HologramNone2, EnvironmentFormats.HologramNone2, UserFormats.HologramNone2),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.AnimationNone1, DataFormats.AnimationNone1, EnvironmentFormats.AnimationNone1, UserFormats.AnimationNone1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.AnimationNone2, DataFormats.AnimationNone2, EnvironmentFormats.AnimationNone2, UserFormats.AnimationNone2),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.TextButtonTap1, DataFormats.TextButtonTap1, EnvironmentFormats.TextButtonTap1, UserFormats.TextButtonTap1)
                 //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                //(RtrbauFabricationName.IconButtonTap1, DataFormats.IconButtonTap1, EnvironmentFormats.IconButtonTap1, UserFormats.IconButtonTap1)
+                //(RtrbauFabricationName.TextNone1, DataFormats.TextNone1, EnvironmentFormats.TextNone1, UserFormats.TextNone1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.IconNone1, DataFormats.IconNone1, EnvironmentFormats.IconNone1, UserFormats.IconNone1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.AudioTap1, DataFormats.AudioTap1, EnvironmentFormats.AudioTap1, UserFormats.AudioTap1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.ImageManipulation1, DataFormats.ImageManipulation1, EnvironmentFormats.ImageManipulation1, UserFormats.ImageManipulation1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.VideoManipulation1, DataFormats.VideoManipulation1, EnvironmentFormats.VideoManipulation1, UserFormats.VideoManipulation1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.ModelManipulation1, DataFormats.ModelManipulation1, EnvironmentFormats.ModelManipulation1, UserFormats.ModelManipulation1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.HologramNone1, DataFormats.HologramNone1, EnvironmentFormats.HologramNone1, UserFormats.HologramNone1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.HologramNone2, DataFormats.HologramNone2, EnvironmentFormats.HologramNone2, UserFormats.HologramNone2),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.AnimationNone1, DataFormats.AnimationNone1, EnvironmentFormats.AnimationNone1, UserFormats.AnimationNone1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.AnimationNone2, DataFormats.AnimationNone2, EnvironmentFormats.AnimationNone2, UserFormats.AnimationNone2),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.TextButtonTap1, DataFormats.TextButtonTap1, EnvironmentFormats.TextButtonTap1, UserFormats.TextButtonTap1)
+                ////new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                ////(RtrbauFabricationName.IconButtonTap1, DataFormats.IconButtonTap1, EnvironmentFormats.IconButtonTap1, UserFormats.IconButtonTap1)
             };
         #endregion CONSULT_FORMATS
 
@@ -184,32 +184,32 @@ namespace Rtrbau
         public static List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>> ReportFormats
             = new List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>>
             {
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.TextDictation1, DataFormats.TextDictation1, EnvironmentFormats.TextDictation1, UserFormats.TextDictation1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.TextKeyboard1, DataFormats.TextKeyboard1, EnvironmentFormats.TextKeyboard1, UserFormats.TextKeyboard1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.AudioRecordTap1, DataFormats.AudioRecordTap1, EnvironmentFormats.AudioRecordTap1, UserFormats.AudioRecordTap1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.ImageRecordTap1, DataFormats.ImageRecordTap1, EnvironmentFormats.ImageRecordTap1, UserFormats.ImageRecordTap1),
-                ////new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                ////(RtrbauFabricationName.VideoRecordDoubleTap1, DataFormats.VideoRecordDoubleTap1, EnvironmentFormats.VideoRecordDoubleTap1, UserFormats.VideoRecordDoubleTap1),
-                ////new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                ////(RtrbauFabricationName.ModelRecordManipulation1, DataFormats.ModelRecordManipulation1, EnvironmentFormats.ModelRecordManipulation1, UserFormats.ModelRecordManipulation1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.TextPanelTap1, DataFormats.TextPanelTap1, EnvironmentFormats.TextPanelTap1, UserFormats.TextPanelTap1),
-                ////new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                ////(RtrbauFabricationName.IconPanelTap1, DataFormats.IconPanelTap1, EnvironmentFormats.IconPanelTap1, UserFormats.IconPanelTap1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.TextNone2, DataFormats.TextNone2, EnvironmentFormats.TextNone2, UserFormats.TextNone2),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.TextButtonTap2, DataFormats.TextButtonTap2, EnvironmentFormats.TextButtonTap2, UserFormats.TextButtonTap2),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.TextPanelTap2, DataFormats.TextPanelTap2, EnvironmentFormats.TextPanelTap2, UserFormats.TextPanelTap2),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.ModelPanelTap1, DataFormats.ModelPanelTap1, EnvironmentFormats.ModelPanelTap1, UserFormats.ModelPanelTap1),
-                new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
-                (RtrbauFabricationName.TextPanelTap3, DataFormats.TextPanelTap3, EnvironmentFormats.TextPanelTap3, UserFormats.TextPanelTap3)
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.TextDictation1, DataFormats.TextDictation1, EnvironmentFormats.TextDictation1, UserFormats.TextDictation1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.TextKeyboard1, DataFormats.TextKeyboard1, EnvironmentFormats.TextKeyboard1, UserFormats.TextKeyboard1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.AudioRecordTap1, DataFormats.AudioRecordTap1, EnvironmentFormats.AudioRecordTap1, UserFormats.AudioRecordTap1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.ImageRecordTap1, DataFormats.ImageRecordTap1, EnvironmentFormats.ImageRecordTap1, UserFormats.ImageRecordTap1),
+                //////new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //////(RtrbauFabricationName.VideoRecordDoubleTap1, DataFormats.VideoRecordDoubleTap1, EnvironmentFormats.VideoRecordDoubleTap1, UserFormats.VideoRecordDoubleTap1),
+                //////new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //////(RtrbauFabricationName.ModelRecordManipulation1, DataFormats.ModelRecordManipulation1, EnvironmentFormats.ModelRecordManipulation1, UserFormats.ModelRecordManipulation1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.TextPanelTap1, DataFormats.TextPanelTap1, EnvironmentFormats.TextPanelTap1, UserFormats.TextPanelTap1),
+                //////new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //////(RtrbauFabricationName.IconPanelTap1, DataFormats.IconPanelTap1, EnvironmentFormats.IconPanelTap1, UserFormats.IconPanelTap1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.TextNone2, DataFormats.TextNone2, EnvironmentFormats.TextNone2, UserFormats.TextNone2),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.TextButtonTap2, DataFormats.TextButtonTap2, EnvironmentFormats.TextButtonTap2, UserFormats.TextButtonTap2),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.TextPanelTap2, DataFormats.TextPanelTap2, EnvironmentFormats.TextPanelTap2, UserFormats.TextPanelTap2),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.ModelPanelTap1, DataFormats.ModelPanelTap1, EnvironmentFormats.ModelPanelTap1, UserFormats.ModelPanelTap1),
+                //new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
+                //(RtrbauFabricationName.TextPanelTap3, DataFormats.TextPanelTap3, EnvironmentFormats.TextPanelTap3, UserFormats.TextPanelTap3)
             };
         #endregion REPORT_FORMATS
         #endregion DICTIONARIES_FORMATS

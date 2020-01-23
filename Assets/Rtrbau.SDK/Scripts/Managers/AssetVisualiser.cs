@@ -73,19 +73,14 @@ namespace Rtrbau
         /// Assumes asset is given with Rtrbau structure <paramref name="assetManager"/>.
         /// </summary>
         /// <param name="assetModel"></param>
-        public void Initialise(AssetManager assetManager)
+        public void Initialise(AssetManager assetManager, GameObject elementConsult, GameObject elementReport, Material elementMaterial)
         {
             // Initialise visualiser manager
             manager = assetManager;
-
             // Initialise visualiser prefabs
-            if (consultElement == null)
-            { consultElement = Resources.Load("Rtrbau/Prefabs/Elements/Visualisations/ConsultElement") as GameObject; }
-            if (reportElement == null)
-            { reportElement = Resources.Load("Rtrbau/Prefabs/Elements/Visualisations/ReportElement") as GameObject; }
-            if (elementSeenMaterial == null)
-            { elementSeenMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardGreyDark") as Material; }
-
+            consultElement = elementConsult;
+            reportElement = elementReport;
+            elementSeenMaterial = elementMaterial;
             // Initialise visualiser variables
             InitialiseVisualiserVariables();
 
@@ -404,8 +399,8 @@ namespace Rtrbau
                             // Set loadedElement to new location (ReloadElement)
                             Tuple<OntologyElement, OntologyElement, GameObject, RtrbauElementLocation> element = new Tuple<OntologyElement, OntologyElement, GameObject, RtrbauElementLocation>(elementIndividual, elementClass, elementObject, RtrbauElementLocation.Primary);
                             ReloadElement(element);
-                            // Scale element loading panel once it has been located
-                            if (elementType == RtrbauElementType.Report) { elementObject.GetComponent<ElementReport>().ScaleLoadingPanel(); }
+                            // Scale element loading panel once it has been located [UPG: moved to LocateElement in IElementable]
+                            // if (elementType == RtrbauElementType.Report) { elementObject.GetComponent<ElementReport>().ScaleLoadingPanel(); }
                         }
                         else { throw new ArgumentException("AssetVisualiser::LocateElement: Element " + elementIndividual.entity.Entity() + " already loaded."); }
                     }
@@ -429,8 +424,8 @@ namespace Rtrbau
                             // Set loadedElement to new location (ReloadElement)
                             Tuple<OntologyElement, OntologyElement, GameObject, RtrbauElementLocation> element = new Tuple<OntologyElement, OntologyElement, GameObject, RtrbauElementLocation>(elementIndividual, elementClass, elementObject, RtrbauElementLocation.Secondary);
                             ReloadElement(element);
-                            // Scale element loading panel once it has been located
-                            if (elementType == RtrbauElementType.Report) { elementObject.GetComponent<ElementReport>().ScaleLoadingPanel(); }
+                            // Scale element loading panel once it has been located [UPG: moved to LocateElement in IElementable]
+                            // if (elementType == RtrbauElementType.Report) { elementObject.GetComponent<ElementReport>().ScaleLoadingPanel(); }
                         }
                         else { throw new ArgumentException("AssetVisualiser::LocateElement: Element " + elementIndividual.entity.Entity() + " already loaded."); }
                     }
@@ -454,8 +449,8 @@ namespace Rtrbau
                             // Set loadedElement to new location (ReloadElement)
                             Tuple<OntologyElement, OntologyElement, GameObject, RtrbauElementLocation> element = new Tuple<OntologyElement, OntologyElement, GameObject, RtrbauElementLocation>(elementIndividual, elementClass, elementObject, RtrbauElementLocation.Tertiary);
                             ReloadElement(element);
-                            // Scale element loading panel once it has been located
-                            if (elementType == RtrbauElementType.Report) { elementObject.GetComponent<ElementReport>().ScaleLoadingPanel(); }
+                            // Scale element loading panel once it has been located [UPG: moved to LocateElement in IElementable]
+                            // if (elementType == RtrbauElementType.Report) { elementObject.GetComponent<ElementReport>().ScaleLoadingPanel(); }
                         }
                         else { throw new ArgumentException("AssetVisualiser::LocateElement: Element " + elementIndividual.entity.Entity() + " already loaded."); }
                     }
@@ -541,8 +536,8 @@ namespace Rtrbau
                             // Set loadedElement to new location (ReloadElement)
                             Tuple<OntologyElement, OntologyElement, GameObject, RtrbauElementLocation> element = new Tuple<OntologyElement, OntologyElement, GameObject, RtrbauElementLocation>(elementIndividual, elementClass, elementObject, RtrbauElementLocation.Secondary);
                             ReloadElement(element);
-                            // Scale element loading panel once it has been located
-                            if (elementType == RtrbauElementType.Report) { elementObject.GetComponent<ElementReport>().ScaleLoadingPanel(); }
+                            // Scale element loading panel once it has been located [UPG: moved to LocateElement in IElementable]
+                            // if (elementType == RtrbauElementType.Report) { elementObject.GetComponent<ElementReport>().ScaleLoadingPanel(); }
                         }
                         else { throw new ArgumentException("AssetVisualiser::LocateElement: Element " + elementIndividual.entity.Entity() + " already loaded."); }
                     }

@@ -71,12 +71,16 @@ namespace Rtrbau
         public User user;
         public Environment environment;
         public GameObject viewer;
+        public bool archivedFabrications;
         private Dictionary<RtrbauFabricationName, GameObject> ConsultFabrications;
         private Dictionary<RtrbauFabricationName, GameObject> ReportFabrications;
         #endregion CLASS_MEMBERS
 
         #region GAMEOBJECT_PREFABS
         public GameObject paneller;
+        public GameObject elementConsult;
+        public GameObject elementReport;
+        public Material elementMaterial;
         private GameObject assetManager;
         #endregion GAMEOBJECT_PREFABS
 
@@ -84,7 +88,7 @@ namespace Rtrbau
         void Awake()
         {
             // if (paneller == null || visualiser == null)
-            if (paneller == null)
+            if (paneller == null || elementConsult == null || elementReport == null || elementMaterial == null)
             {
                 throw new ArgumentException("RtrbauVisualiser and RtrbauPaneller game objects should be attached");
             }
@@ -144,9 +148,16 @@ namespace Rtrbau
             {
                 Dictionary<RtrbauFabricationName, GameObject> fabrications = new Dictionary<RtrbauFabricationName, GameObject>();
 
-                GameObject[] loaded = Resources.LoadAll<GameObject>("Rtrbau/Prefabs/Fabrications/Visualisations/" + type.ToString());
+                string fabricationsPath;
 
-                Debug.Log("Rtrbauer::LoadFabrications: Rtrbau/Prefabs/Fabrications/Visualisations/" + type.ToString());
+                Debug.Log("Rtrbauer::LoadFabrications: fabrications are archived: " + archivedFabrications);
+
+                if (archivedFabrications == true) { fabricationsPath = "Rtrbau/Prefabs/Archive/Fabrications/Visualisations/" + type.ToString(); }
+                else { fabricationsPath = "Rtrbau/Prefabs/Fabrications/Visualisations/" + type.ToString(); }
+
+                GameObject[] loaded = Resources.LoadAll<GameObject>(fabricationsPath);
+
+                Debug.Log("Rtrbauer::LoadFabrications: " + fabricationsPath);
 
                 foreach(GameObject fabrication in loaded)
                 {
@@ -191,7 +202,7 @@ namespace Rtrbau
             assetManager = parentManager.gameObject;
             GameObject assetVisualiser = new GameObject();
             assetVisualiser.AddComponent<AssetVisualiser>();
-            assetVisualiser.GetComponent<AssetVisualiser>().Initialise(parentManager);
+            assetVisualiser.GetComponent<AssetVisualiser>().Initialise(parentManager, elementConsult, elementReport, elementMaterial);
             return assetVisualiser;
         }
 

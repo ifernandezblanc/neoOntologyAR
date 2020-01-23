@@ -35,12 +35,12 @@ namespace Rtrbau
     {
         #region CLASS_VARIABLES
         public RtrbauDescriptiveness description;
-        public TextMeshProUGUI buttonText;
-        public GameObject buttonPlate;
         private bool descriptionActive = false;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
+        public TextMeshPro buttonText;
+        public MeshRenderer buttonPlate;
         public Material buttonMaterialActive;
         public Material buttonMaterialInactive;
         #endregion GAMEOBJECT_PREFABS
@@ -59,12 +59,12 @@ namespace Rtrbau
                 if (descriptionActive)
                 {
                     buttonText.text = description + " active";
-                    buttonPlate.GetComponent<MeshRenderer>().material = buttonMaterialActive;
+                    buttonPlate.material = buttonMaterialActive;
                 }
                 else
                 {
                     buttonText.text = description + " inactive";
-                    buttonPlate.GetComponent<MeshRenderer>().material = buttonMaterialInactive;
+                    buttonPlate.material = buttonMaterialInactive;
                 }
             }
         }
@@ -76,14 +76,14 @@ namespace Rtrbau
             if (descriptionActive)
             {
                 buttonText.text = description + " inactive";
-                buttonPlate.GetComponent<MeshRenderer>().material = buttonMaterialInactive;
+                buttonPlate.material = buttonMaterialInactive;
                 descriptionActive = false;
                 Rtrbauer.instance.user.AssignDescriptiveness(description, descriptionActive);
             }
             else
             {
                 buttonText.text = description + " active";
-                buttonPlate.GetComponent<MeshRenderer>().material = buttonMaterialActive;
+                buttonPlate.material = buttonMaterialActive;
                 descriptionActive = true;
                 Rtrbauer.instance.user.AssignDescriptiveness(description, descriptionActive);
             }

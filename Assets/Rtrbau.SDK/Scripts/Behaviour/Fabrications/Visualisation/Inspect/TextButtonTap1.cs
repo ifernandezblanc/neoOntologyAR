@@ -49,6 +49,7 @@ namespace Rtrbau
         public TextMeshPro fabricationText;
         public MeshRenderer fabricationSeenPanel;
         public Material fabricationSeenMaterial;
+        public Renderer fabricationBounds;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -58,7 +59,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationSeenMaterial == null || fabricationBounds == null)
             {
                 throw new ArgumentException("TextButtonTap1 script requires some prefabs to work.");
             }
@@ -167,6 +168,12 @@ namespace Rtrbau
                 throw new ArgumentException(data.fabricationName.ToString() + "::InferFromText: cannot implement attribute received.");
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Renderer GetRenderer() { return fabricationBounds; }
         #endregion IFABRICATIONABLE_METHODS
 
         #region IVISUALISABLE_METHODS

@@ -35,12 +35,12 @@ namespace Rtrbau
     {
         #region CLASS_VARIABLES
         public RtrbauComprehensiveness comprehension;
-        public TextMeshProUGUI buttonText;
-        public GameObject buttonPlate;
         private bool comprehensionActive = false;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
+        public TextMeshPro buttonText;
+        public MeshRenderer buttonPlate;
         public Material buttonMaterialActive;
         public Material buttonMaterialInactive;
         #endregion GAMEOBJECT_PREFABS
@@ -59,12 +59,12 @@ namespace Rtrbau
                 if (comprehensionActive)
                 {
                     buttonText.text = comprehension + " active";
-                    buttonPlate.GetComponent<MeshRenderer>().material = buttonMaterialActive;
+                    buttonPlate.material = buttonMaterialActive;
                 }
                 else
                 {
                     buttonText.text = comprehension + " inactive";
-                    buttonPlate.GetComponent<MeshRenderer>().material = buttonMaterialInactive;
+                    buttonPlate.material = buttonMaterialInactive;
                 }
             }
         }
@@ -76,14 +76,14 @@ namespace Rtrbau
             if (comprehensionActive)
             {
                 buttonText.text = comprehension + " inactive";
-                buttonPlate.GetComponent<MeshRenderer>().material = buttonMaterialInactive;
+                buttonPlate.material = buttonMaterialInactive;
                 comprehensionActive = false;
                 Rtrbauer.instance.user.AssignComprehensiveness(comprehension, comprehensionActive);
             }
             else
             {
                 buttonText.text = comprehension + " active";
-                buttonPlate.GetComponent<MeshRenderer>().material = buttonMaterialActive;
+                buttonPlate.material = buttonMaterialActive;
                 comprehensionActive = true;
                 Rtrbauer.instance.user.AssignComprehensiveness(comprehension, comprehensionActive);
             }

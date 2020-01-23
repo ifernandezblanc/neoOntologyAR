@@ -49,9 +49,11 @@ namespace Rtrbau
         #region GAMEOBJECT_PREFABS
         public TextMeshPro userWrittenText;
         public TextMeshPro serverWrittenText;
+        public TextMeshPro serverStatusText;
         public GameObject userSelectReportButton;
         public GameObject userSelectConsultButton;
         public GameObject serverConnectButton;
+        public GameObject serverWriteButton;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -76,7 +78,7 @@ namespace Rtrbau
         /// </summary>
         public void Initialise()
         {
-            if (userWrittenText == null || serverWrittenText == null || userSelectReportButton == null || userSelectConsultButton == null || serverConnectButton == null)
+            if (userWrittenText == null || serverWrittenText == null || serverStatusText == null || userSelectReportButton == null || userSelectConsultButton == null || serverConnectButton == null || serverWriteButton == null)
             {
                 Debug.LogError("Configuration Panel: Fabrication buttons not found. Please assign them in PanelConfiguration script.");
             }
@@ -150,7 +152,7 @@ namespace Rtrbau
         /// </summary>
         public void CreateFabrications()
         {
-            serverWrittenText.transform.parent.parent.parent.gameObject.SetActive(true);
+            serverWriteButton.SetActive(true);
             serverConnectButton.SetActive(true);
 
             serverWrittenText.text = serverDefaultURI;
@@ -186,6 +188,16 @@ namespace Rtrbau
             // Destroy this element
             DestroyElement();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ActivateLoadingPlate() { }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeactivateLoadingPlate() { }
         #endregion IELEMENTABLE_METHODS
 
         #region CLASS_METHODS
@@ -194,7 +206,7 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
-        public void ConfigureUser(TextMeshProUGUI procedureText)
+        public void ConfigureUser(TextMeshPro procedureText)
         {
             RtrbauElementType proc;
 
@@ -223,7 +235,7 @@ namespace Rtrbau
         public void ConfigureServer(TextMeshPro writtenText)
         {
             // Identify server connection status
-            string serverConnection = serverConnectButton.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text;
+            string serverConnection = serverStatusText.text;
             // If server connection hasn't failed yet connect either to written address or default server
             if (serverConnection.Contains("Connect to server"))
             {
@@ -275,12 +287,12 @@ namespace Rtrbau
 
                 if (webRequest.isNetworkError || webRequest.isHttpError)
                 {
-                    serverConnectButton.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Server failed. Try another.";
+                    serverStatusText.text = "Server failed. Try another.";
                     Debug.Log("PanelConfiguration::CheckServerConnection: Server not found");
                 }
                 else
                 {
-                    serverConnectButton.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Server found.";
+                    serverStatusText.text = "Server found.";
                     Debug.Log("PanelConfiguration::CheckServerConnection: Server found");
                     serverURI = serverURL;
                     InputIntoReport();

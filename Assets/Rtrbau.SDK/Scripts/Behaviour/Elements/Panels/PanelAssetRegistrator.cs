@@ -56,9 +56,10 @@ namespace Rtrbau
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
-        public TextMeshProUGUI assetNamePanel;
-        public TextMeshProUGUI assetStatusPanel;
-        public GameObject loadingPanel;
+        public Material assetModelMaterial;
+        public TextMeshPro assetNamePanel;
+        public TextMeshPro assetStatusPanel;
+        public GameObject loadingPlate;
         public GameObject assetRegistrationButton;
         #endregion GAMEOBJECT_PREFABS
 
@@ -112,8 +113,7 @@ namespace Rtrbau
         /// <param name="asset"></param>
         public void Initialise(OntologyEntity asset)
         {
-            if (loadingPanel == null || assetNamePanel == null ||
-                assetStatusPanel == null || assetRegistrationButton == null)
+            if (assetModelMaterial == null || loadingPlate == null || assetNamePanel == null || assetStatusPanel == null || assetRegistrationButton == null)
             {
                 Debug.LogError("Fabrications not found for this rtrbau element.");
             }
@@ -126,7 +126,7 @@ namespace Rtrbau
                 assetDatasetFilesDownloaded = 0;
                 assetRegistratorObjectsLoaded = 0;
 
-                loadingPanel.SetActive(false);
+                DeactivateLoadingPlate();
                 assetRegistrationButton.SetActive(false);
 
                 DownloadElement();
@@ -239,6 +239,21 @@ namespace Rtrbau
             DestroyElement();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ActivateLoadingPlate()
+        {
+            loadingPlate.SetActive(true);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeactivateLoadingPlate()
+        {
+            loadingPlate.SetActive(false);
+        }
         #endregion IELEMENTABLE_METHODS
 
         #region CLASS_METHODS
@@ -271,7 +286,7 @@ namespace Rtrbau
                 string modelName = "Model_" + modelAsset.name;
                 assetModelImporter.ImportModelAsync(modelName, modelAsset.FilePath(), assetModel.transform, assetModelImportOptions);
                 assetStatusPanel.text = "Loading Asset Model";
-                loadingPanel.SetActive(true);
+                ActivateLoadingPlate();
             }
             else
             {
@@ -369,19 +384,17 @@ namespace Rtrbau
 
         void LoadAssetModel(GameObject gameObject, string absolutePath)
         {
-            // Load transparent material for asset components models
-            Material componentMaterial = Resources.Load("Rtrbau/Materials/RtrbauMaterialStandardBlueTransparent") as Material;
             // Find mesh renderers for asset components models
             MeshRenderer[] components = assetModel.transform.GetChild(0).GetComponentsInChildren<MeshRenderer>();
             // Assign manipulator and material to components models meshes renderers
-            LoadAssetModelsManipulators(components, componentMaterial);
+            LoadAssetModelsManipulators(components, assetModelMaterial);
             
             assetRegistratorObjectsLoaded += 1;
 
             if (OnRegistratorObjectsDownloaded != null)
             {
                 assetStatusPanel.text = "Loaded Asset Model";
-                loadingPanel.SetActive(false);
+                DeactivateLoadingPlate();
                 OnRegistratorObjectsDownloaded.Invoke();
             }
             else { }

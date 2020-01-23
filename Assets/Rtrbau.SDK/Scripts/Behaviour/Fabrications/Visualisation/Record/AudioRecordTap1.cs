@@ -56,6 +56,7 @@ namespace Rtrbau
         public MeshRenderer fabricationSeenPanel;
         public MeshRenderer fabricationReportedPanel;
         public Material fabricationReportedMaterial;
+        public Renderer fabricationBounds;
         public GameObject recordAudioButton;
         public GameObject playAudioButton;
         public AudioSource audioRenderer;
@@ -69,7 +70,7 @@ namespace Rtrbau
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || recordAudioButton == null || playAudioButton == null || audioRenderer == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || fabricationBounds == null || recordAudioButton == null || playAudioButton == null || audioRenderer == null)
             {
                 throw new ArgumentException("DefaultRecord::Start: Script requires some prefabs to work.");
             }
@@ -174,6 +175,12 @@ namespace Rtrbau
             }
             else { }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Renderer GetRenderer() { return fabricationBounds; }
         #endregion IFABRICATIONABLE_METHODS
 
         #region IVISUALISABLE_METHODS
@@ -282,8 +289,8 @@ namespace Rtrbau
 
             // Call to report attribute
             OnNextVisualisation();
-            // Remember to deactivate loading panel
-            element.GetComponent<ElementReport>().loadingPanel.SetActive(false);
+            // Remember to deactivate loading plate
+            element.GetComponent<IElementable>().DeactivateLoadingPlate();
         }
         #endregion PRIVATE
 
@@ -300,8 +307,8 @@ namespace Rtrbau
             Recorder.instance.StartAudioRecord(audioRecord);
             // Deactivate audio play button
             playAudioButton.SetActive(false);
-            // Activate element loading panel
-            element.GetComponent<ElementReport>().loadingPanel.SetActive(false);
+            // Activate element loading plate
+            element.GetComponent<IElementable>().ActivateLoadingPlate();
         }
 
         public void PlayAudio()

@@ -8,7 +8,7 @@ namespace Rtrbau
 {
     public class PanelButton : MonoBehaviour
     {
-        public TextMeshProUGUI label;
+        public TextMeshPro label;
         public OntologyEntity fabricatedEntity;
 
         // UPG: MERGE WITH BUTTONNOMINATE

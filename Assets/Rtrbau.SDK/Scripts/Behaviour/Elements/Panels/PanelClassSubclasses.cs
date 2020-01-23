@@ -53,8 +53,8 @@ namespace Rtrbau
 
         #region GAMEOBJECT_PREFABS
         public GameObject fabricationPrefab;
-        public GameObject fabricationLocator;
-        public GameObject panelUsage;
+        public TileGridObjectCollection fabricationLocator;
+        public TextMeshPro panelUsage;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -156,7 +156,7 @@ namespace Rtrbau
                 // If it does, then display fabrications to select
                 SelectFabrications();
 
-                panelUsage.GetComponent<TextMeshProUGUI>().text = "Click to select one of the following operations.";
+                panelUsage.text = "Click to select one of the following operations.";
             }
             else
             {
@@ -221,8 +221,9 @@ namespace Rtrbau
             {
                 // fabrications.Add(Instantiate(fabricationPrefab, fabricationLocator.transform));
                 OntologyEntity subclassEntity = new OntologyEntity(subclass.ontSubclass);
+                fabricationLocator.enabled = false;
                 GameObject subclassFabrication = Instantiate(fabricationPrefab, fabricationLocator.transform);
-                
+                fabricationLocator.enabled = true;
                 fabrications.Add(subclassEntity, subclassFabrication);
 
                 subclassFabrication.GetComponent<PanelButton>().Initialise(subclassEntity);
@@ -232,7 +233,7 @@ namespace Rtrbau
                 Debug.Log("PanelClassSubclasses::CreateFabrications: Initialised button " + subclassEntity.Name());
             }
 
-            fabricationLocator.GetComponent<GridObjectCollection>().UpdateCollection();
+            // fabricationLocator.GetComponent<GridObjectCollection>().UpdateCollection();
 
         }
 
@@ -245,6 +246,16 @@ namespace Rtrbau
         {
             Reporter.instance.ReportElement(classElement.entity);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ActivateLoadingPlate() { }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeactivateLoadingPlate() { }
         #endregion IELEMENTABLE_METHODS
 
         #region CLASS_METHODS
@@ -463,7 +474,7 @@ namespace Rtrbau
                     {
                         // In this case, class can be reported and consulted
                         Debug.Log("PanelClassSubclasses::EvaluateNextStep: " + entity.Name() + " can be reported and consulted");
-                        panelUsage.GetComponent<TextMeshProUGUI>().text = entity.Name() + " can be reported and consulted";
+                        panelUsage.text = entity.Name() + " can be reported and consulted";
 
                         // Check if user wants to do procedure(s) available
                         if (Rtrbauer.instance.user.procedure == RtrbauElementType.Consult)
@@ -503,7 +514,7 @@ namespace Rtrbau
                     {
                         // In this case, class can only be reported
                         Debug.Log("PanelClassSubclasses::EvaluateNextStep: " + entity.Name() + " can only be reported");
-                        panelUsage.GetComponent<TextMeshProUGUI>().text = entity.Name() + " can only be reported";
+                        panelUsage.text = entity.Name() + " can only be reported";
 
                         // Check if user wants to do procedure(s) available
                         if (Rtrbauer.instance.user.procedure == RtrbauElementType.Report)
@@ -532,7 +543,7 @@ namespace Rtrbau
                     {
                         // In this case, class is made of datatype individuals
                         Debug.Log("PanelClassSubclasses::EvaluateNextStep: " + entity.Name() + " is made of datatype individuals");
-                        panelUsage.GetComponent<TextMeshProUGUI>().text = entity.Name() + " is made of datatype individuals";
+                        panelUsage.text = entity.Name() + " is made of datatype individuals";
 
                         // Return to previous class nomination
                         Initialise(previousClassElement);
@@ -541,7 +552,7 @@ namespace Rtrbau
                     {
                         // This case should never happen?
                         Debug.LogError("PanelClassSubclasses::EvaluateNextStep: " + "Rationale error: this case should never happen");
-                        panelUsage.GetComponent<TextMeshProUGUI>().text = entity.Name() + "Rationale error: this case should never happen";
+                        panelUsage.text = entity.Name() + "Rationale error: this case should never happen";
 
                         // Return to previous class nomination
                         Initialise(previousClassElement);
@@ -550,7 +561,7 @@ namespace Rtrbau
                     {
                         // This case should never happen?
                         Debug.LogError("PanelClassSubclasses::EvaluateNextStep: " + "Rationale error: this case should never happen");
-                        panelUsage.GetComponent<TextMeshProUGUI>().text = entity.Name() + "Rationale error: this case should never happen";
+                        panelUsage.text = entity.Name() + "Rationale error: this case should never happen";
 
                         // Return to previous class nomination
                         Initialise(previousClassElement);
@@ -560,7 +571,7 @@ namespace Rtrbau
                 {
                     // This case should never happen?
                     Debug.LogError("PanelClassSubclasses::EvaluateNextStep: " + "Rationale error: this case should never happen");
-                    panelUsage.GetComponent<TextMeshProUGUI>().text = entity.Name() + "Rationale error: this case should never happen";
+                    panelUsage.text = entity.Name() + "Rationale error: this case should never happen";
 
                     // Return to previous class nomination
                     Initialise(previousClassElement);

@@ -67,6 +67,8 @@ namespace Rtrbau
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
+        public TextMeshPro buttonText;
+        public MeshRenderer buttonPlate;
         public Material buttonMaterialActive;
         public Material buttonMaterialInactive;
         #endregion GAMEOBJECT_PREFABS
@@ -74,7 +76,7 @@ namespace Rtrbau
         #region CLASS_METHODS
         public void Initialise(GameObject registratorObject)
         {
-            if (buttonMaterialActive == null || buttonMaterialInactive == null)
+            if (buttonPlate == null || buttonText == null || buttonMaterialActive == null || buttonMaterialInactive == null)
             {
                 throw new ArgumentException("Materials need to be referenced in this script.");
             }
@@ -88,8 +90,8 @@ namespace Rtrbau
                 registratorActive = true;
                 buttonActive = true;
 
-                this.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Deactivate Registration";
-                this.transform.GetChild(0).GetChild(1).GetComponent<MeshRenderer>().material = buttonMaterialInactive;
+                buttonText.text = "Deactivate Registration";
+                buttonPlate.material = buttonMaterialInactive;
             }
         }
 
@@ -100,15 +102,15 @@ namespace Rtrbau
                 if (registratorActive)
                 {
                     registrator.SetActive(false);
-                    this.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Activate Registration";
-                    this.transform.GetChild(0).GetChild(1).GetComponent<MeshRenderer>().material = buttonMaterialActive;
+                    buttonText.text = "Activate Registration";
+                    buttonPlate.material = buttonMaterialActive;
                     registratorActive = false;
                 }
                 else
                 {
                     registrator.SetActive(true);
-                    this.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Deactivate Registration";
-                    this.transform.GetChild(0).GetChild(1).GetComponent<MeshRenderer>().material = buttonMaterialInactive;
+                    buttonText.text = "Deactivate Registration";
+                    buttonPlate.material = buttonMaterialInactive;
                     registratorActive = true;
                 }
             }

@@ -55,6 +55,7 @@ namespace Rtrbau
         public MeshRenderer fabricationSeenPanel;
         public MeshRenderer fabricationReportedPanel;
         public Material fabricationReportedMaterial;
+        public Renderer fabricationBounds;
         public GameObject recordImageButton;
         public TextMeshPro imageStatus;
         public SpriteRenderer imageRenderer;
@@ -67,7 +68,7 @@ namespace Rtrbau
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || recordImageButton == null || imageStatus == null || imageRenderer == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || fabricationBounds == null || recordImageButton == null || imageStatus == null || imageRenderer == null)
             {
                 throw new ArgumentException("DefaultRecord::Start: Script requires some prefabs to work.");
             }
@@ -169,6 +170,12 @@ namespace Rtrbau
                 imageStatus.text = "Please take a picture before reporting it.";
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Renderer GetRenderer() { return fabricationBounds; }
         #endregion IFABRICATIONABLE_METHODS
 
         #region IVISUALISABLE_METHODS
@@ -285,8 +292,8 @@ namespace Rtrbau
 
             // Call to report attribute
             OnNextVisualisation();
-            // Remember to deactivate loading panel
-            element.GetComponent<ElementReport>().loadingPanel.SetActive(false);
+            // Remember to deactivate loading plate
+            element.GetComponent<IElementable>().DeactivateLoadingPlate();
         }
         #endregion PRIVATE
 
@@ -301,8 +308,8 @@ namespace Rtrbau
             RecorderEvents.StartListening(imageRecord.EventName(), OnPictureTaken);
             // Start image record
             Recorder.instance.StartImageRecord(imageRecord);
-            // Activate element loading panel
-            element.GetComponent<ElementReport>().loadingPanel.SetActive(true);
+            // Activate element loading plate
+            element.GetComponent<IElementable>().ActivateLoadingPlate();
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS

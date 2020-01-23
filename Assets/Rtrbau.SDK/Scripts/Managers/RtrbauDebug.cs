@@ -71,7 +71,7 @@ namespace Rtrbau
 
         #region GAMEOBJECT_PREFABS
         [SerializeField]
-        public TextMeshProUGUI debugField;
+        public TextMeshPro debugField;
         #endregion GAMEOBJECT_PREFABS
 
         #region MONOBEHAVIOUR_METHODS
@@ -100,17 +100,18 @@ namespace Rtrbau
         private void WriteLogFile()
         {
             Debug.Log("RtrbauDebug::WriteLogFile: file path is " + debugLogFilePath);
-            if (!File.Exists(debugLogFilePath))
-            {
-                File.WriteAllText(debugLogFilePath, debugLog);
-            }
+
+            if (!File.Exists(debugLogFilePath)) { File.WriteAllText(debugLogFilePath, debugLog); }
+            else { }
         }
         #endregion PRIVATE
 
         #region PUBLIC
         public void Log(string textString)
         {
-            debugField.text = textString;
+            if (debugField != null) { debugField.text = textString; }
+            else { }
+
             debugLog += textString + "\n";
         }
         #endregion PUBLIC

@@ -120,8 +120,8 @@ namespace Rtrbau
             }
             else { }
 
-            // Deactivate loading panel
-            this.gameObject.GetComponentInParent<ElementReport>().loadingPanel.SetActive(false);
+            // Deactivate loading plate
+            this.gameObject.GetComponentInParent<IElementable>().DeactivateLoadingPlate();
             // Provide instructions for user to open keyboard
             clickingText.text = "Look up to open keyboard";
         }
@@ -133,8 +133,8 @@ namespace Rtrbau
         {
             // Activate Rtrbau keyboard
             RtrbauKeyboard.instance.OpenRtrbauKeyboard(TouchScreenKeyboardType.Default, recordText);
-            // Activate loading panel
-            this.gameObject.GetComponentInParent<ElementReport>().loadingPanel.SetActive(true);
+            // Activate loading plate
+            this.gameObject.GetComponentInParent<IElementable>().ActivateLoadingPlate();
             // Provide instruction for user to click button
             clickingText.text = "Click to record";
         }

@@ -46,6 +46,7 @@ namespace Rtrbau
         #region GAMEOBJECT_PREFABS
         public TextMeshPro fabricationText;
         public MeshRenderer fabricationSeenPanel;
+        public Renderer fabricationBounds;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -55,7 +56,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSeenPanel == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationBounds == null)
             {
                 throw new ArgumentException("DefaultObserve::Start: Script requires some prefabs to work.");
             }
@@ -132,6 +133,12 @@ namespace Rtrbau
             // Do nothing
             // Activation / de-activation is managed by
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Renderer GetRenderer() { return fabricationBounds; }
         #endregion IFABRICATIONABLE_METHODS
 
         #region IVISUALISABLE_METHODS

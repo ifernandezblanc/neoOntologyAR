@@ -146,8 +146,7 @@ namespace Rtrbau
 
             reportedElement = Instantiate(reportElement, reportPanel.transform);
 
-            reportedElement.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = entity.Ontology().Name();
-            reportedElement.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = entity.Name();
+            reportedElement.GetComponentInChildren<TextMeshPro>().text = entity.Ontology().Name() + "#" + entity.Name();
 
             Debug.Log("Reporter::ReportElement: " + Parser.ParseNamingDateTimeXSD() + "_" + entity.Entity());
         }

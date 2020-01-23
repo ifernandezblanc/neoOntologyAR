@@ -54,6 +54,7 @@ namespace Rtrbau
         public TextMeshPro fabricationText;
         public SpriteRenderer fabricationSprite;
         public MeshRenderer fabricationSeenPanel;
+        public Renderer fabricationBounds;
         public Material lineMaterial;
         #endregion GAMEOBJECT_PREFABS
 
@@ -63,7 +64,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSprite == null || fabricationSeenPanel == null || lineMaterial == null)
+            if (fabricationText == null || fabricationSprite == null || fabricationSeenPanel == null || fabricationBounds == null || lineMaterial == null)
             {
                 throw new ArgumentException("ImageManipulation1::Start: script requires some prefabs to work.");
             }
@@ -146,6 +147,12 @@ namespace Rtrbau
             // Do nothing
             // Activation / de-activation is managed by
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Renderer GetRenderer() { return fabricationBounds; }
         #endregion IFABRICATIONABLE_METHODS
 
         #region IVISUALISABLE_METHODS

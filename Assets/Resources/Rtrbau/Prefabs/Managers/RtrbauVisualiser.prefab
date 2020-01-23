@@ -44,11 +44,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab8cf39da6eaa254bb3130f32756eab4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  assetBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
   asset: {fileID: 0}
   assetModel: {fileID: 0}
+  assetComponentsModels: []
   assetRegistrator: {fileID: 0}
   assetVisualiser: {fileID: 0}
-  assetComponentsModels: []
 --- !u!114 &2838505250085442483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62,5 +65,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manager: {fileID: 0}
-  consultElement: {fileID: 1631253845002667377, guid: d3f30e923c07cab4bac09e27f50ff567,
-    type: 3}
+  elementsMode: 0
+  consultElement: {fileID: 0}
+  reportElement: {fileID: 0}
+  elementSeenMaterial: {fileID: 0}

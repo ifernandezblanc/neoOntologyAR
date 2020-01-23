@@ -49,7 +49,7 @@ namespace Rtrbau
 
         #region GAMEOBJECT_PREFABS
         public GameObject fabricationPrefab;
-        public GameObject fabricationLocator;
+        public TileGridObjectCollection fabricationLocator;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -180,8 +180,9 @@ namespace Rtrbau
             foreach (JsonOntology ontology in ontologies.ontOntologies)
             {
                 OntologyEntity ontologyEntity = new OntologyEntity(new Ontology(ontology.ontUri), null);
+                fabricationLocator.enabled = false;
                 GameObject ontologyFabrication = Instantiate(fabricationPrefab, fabricationLocator.transform);
-
+                fabricationLocator.enabled = true;
                 Debug.Log(ontologyEntity.Entity());
                 ontologyFabrication.GetComponent<PanelButton>().Initialise(ontologyEntity);
 
@@ -190,7 +191,7 @@ namespace Rtrbau
                 Debug.Log("PanelOntologies::CreateFabrications: Initialised button for " + ontologyEntity.Ontology().Name());
             }
 
-            fabricationLocator.GetComponent<GridObjectCollection>().UpdateCollection();
+            // fabricationLocator.GetComponent<GridObjectCollection>().UpdateCollection();
 
         }
 
@@ -202,6 +203,16 @@ namespace Rtrbau
         {
             // Implemented in NominatedOntology()
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ActivateLoadingPlate() { }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeactivateLoadingPlate() { }
         #endregion IELEMENTABLE_METHODS
 
         #region CLASS_METHODS

@@ -35,12 +35,12 @@ namespace Rtrbau
     {
         #region CLASS_VARIABLES
         public RtrbauSense sense;
-        public TextMeshProUGUI buttonText;
-        public GameObject buttonPlate;
         private bool senseActive = false;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
+        public TextMeshPro buttonText;
+        public MeshRenderer buttonPlate;
         public Material buttonMaterialActive;
         public Material buttonMaterialInactive;
         #endregion GAMEOBJECT_PREFABS
@@ -59,12 +59,12 @@ namespace Rtrbau
                 if (senseActive)
                 {
                     buttonText.text = sense + " active";
-                    buttonPlate.GetComponent<MeshRenderer>().material = buttonMaterialActive;
+                    buttonPlate.material = buttonMaterialActive;
                 }
                 else
                 {
                     buttonText.text = sense + " inactive";
-                    buttonPlate.GetComponent<MeshRenderer>().material = buttonMaterialInactive;
+                    buttonPlate.material = buttonMaterialInactive;
                 }
             }
         }
@@ -76,14 +76,14 @@ namespace Rtrbau
             if (senseActive)
             {
                 buttonText.text = sense + " inactive";
-                buttonPlate.GetComponent<MeshRenderer>().material = buttonMaterialInactive;
+                buttonPlate.material = buttonMaterialInactive;
                 senseActive = false;
                 Rtrbauer.instance.environment.AssignSense(sense, senseActive);
             }
             else
             {
                 buttonText.text = sense + " active";
-                buttonPlate.GetComponent<MeshRenderer>().material = buttonMaterialActive;
+                buttonPlate.material = buttonMaterialActive;
                 senseActive = true;
                 Rtrbauer.instance.environment.AssignSense(sense, senseActive);
             }

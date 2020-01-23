@@ -48,6 +48,7 @@ namespace Rtrbau
         #region GAMEOBJECT_PREFABS
         public TextMeshPro fabricationText;
         public MeshRenderer fabricationSeenPanel;
+        public Renderer fabricationBounds;
         public Material lineMaterial;
         public Material modelMaterial;
         #endregion GAMEOBJECT_PREFABS
@@ -59,7 +60,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSeenPanel == null || lineMaterial == null || modelMaterial == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationBounds == null || lineMaterial == null || modelMaterial == null)
             {
                 throw new ArgumentException("ModelManipulation1::Start: script requires some prefabs to work.");
             }
@@ -159,6 +160,12 @@ namespace Rtrbau
             // Do nothing
             // Activation / de-activation is managed by
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Renderer GetRenderer() { return fabricationBounds; }
         #endregion IFABRICATIONABLE_METHODS
 
         #region IVISUALISABLE_METHODS

@@ -72,6 +72,7 @@ namespace Rtrbau
         public MeshRenderer fabricationSeenPanel;
         public Material lineMaterial;
         public Material modelMaterial;
+        public Renderer fabricationBounds;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -81,7 +82,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (fabricationSeenPanel == null || fabricationText == null || lineMaterial == null || modelMaterial == null )
+            if (fabricationSeenPanel == null || fabricationText == null || lineMaterial == null || modelMaterial == null || fabricationBounds == null)
             {
                 throw new ArgumentException("AnimationNone2 script requires some prefabs to work.");
             }
@@ -274,6 +275,12 @@ namespace Rtrbau
             // Do nothing
             // Activation / de-activation is managed by
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Renderer GetRenderer() { return fabricationBounds; }
         #endregion IFABRICATIONABLE_METHODS
 
         #region IVISUALISABLE_METHODS

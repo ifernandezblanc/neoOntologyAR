@@ -62,17 +62,15 @@ namespace Rtrbau
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
+        public Transform fabricationsAttributes;
+        public Transform fabricationsAttributesNonText;
+        public Transform fabricationsRelationships;
+        [SerializeField]
+        private GameObject loadingPlate;
         public TextMeshPro classText;
         public TextMeshPro individualText;
         public TextMeshPro statusText;
-        public MeshRenderer panelPrimary;
-        public MeshRenderer panelSecondary;
-        public Transform fabricationsObserveRest;
-        public Transform fabricationsObserveImageVideo;
-        public Transform fabricationsInspect;
-        public SpriteRenderer activationButton;
-        public Sprite activationButtonMaximise;
-        public Sprite activationButtonMinimise;
+        public MeshRenderer panelPlate;
         public Material lineMaterial;
         #endregion GAMEOBJECT_PREFABS
 
@@ -118,7 +116,8 @@ namespace Rtrbau
         /// </summary>
         public void Initialise(AssetVisualiser assetVisualiser, OntologyElement elementIndividual, OntologyElement elementClass, GameObject elementPrevious)
         {
-            if (individualText == null || classText == null || statusText == null || fabricationsObserveRest == null || fabricationsObserveImageVideo == null || fabricationsInspect == null || panelPrimary == null || panelSecondary == null || activationButton == null || activationButtonMaximise == null || activationButtonMinimise == null || lineMaterial == null) 
+            if (fabricationsAttributes == null || fabricationsAttributesNonText == null || fabricationsRelationships == null || loadingPlate == null || 
+                classText == null || individualText == null || statusText == null ||  panelPlate == null || lineMaterial == null) 
             {
                 Debug.LogError("ElementConsult::Initialise: Fabrication not found. Please assign them in ElementConsult script.");
             }
@@ -428,6 +427,8 @@ namespace Rtrbau
 
                 Debug.Log("ElementConsult::LocateElement: rtrbau location is " + rtrbauLocationType);
 
+                ScaleLoadingPlate();
+
                 LocateIt();
             }
             else { }
@@ -493,7 +494,7 @@ namespace Rtrbau
 
                 // Disable tile grid object collection from side panel to allow image manipulation
                 // UPG: do it with other fabrication panels as well?
-                fabricationsObserveImageVideo.GetComponent<TileGridObjectCollection>().enabled = false;
+                fabricationsAttributesNonText.GetComponent<TileGridObjectCollection>().enabled = false;
 
                 // Set fabrications as created
                 fabricationsCreated = true;
@@ -516,6 +517,22 @@ namespace Rtrbau
             Reporter.instance.ReportElement(rtrbauElement.elementName);
             // Assign element as reported
             elementReported = true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ActivateLoadingPlate()
+        {
+            loadingPlate.SetActive(true);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeactivateLoadingPlate()
+        {
+            loadingPlate.SetActive(false);
         }
         #endregion IELEMENTABLE_METHODS
 
@@ -550,8 +567,8 @@ namespace Rtrbau
 
                 fabricationsActive = false;
                 statusText.text = "Element minimised, click to show information";
-                activationButton.sprite = activationButtonMaximise;
-                activationButton.size = new Vector2(0.75f, 0.75f);
+                //activationButton.sprite = activationButtonMaximise;
+                //activationButton.size = new Vector2(0.75f, 0.75f);
             }
             else
             {
@@ -562,8 +579,8 @@ namespace Rtrbau
 
                 fabricationsActive = true;
                 statusText.text = "Element maximised, click to hide information";
-                activationButton.sprite = activationButtonMinimise;
-                activationButton.size = new Vector2(0.75f, 0.75f);
+                //activationButton.sprite = activationButtonMinimise;
+                //activationButton.size = new Vector2(0.75f, 0.75f);
             }
         }
 
@@ -591,9 +608,10 @@ namespace Rtrbau
             // Check if element has already been reported
             if (elementReported == true)
             {
-                // Set material of element panels
-                panelPrimary.material = material;
-                panelSecondary.material = material;
+                // Set material of element plate
+                panelPlate.material = material;
+                //panelPrimary.material = material;
+                //panelSecondary.material = material;
 
                 // Set material of fabrication panels
                 foreach (KeyValuePair<RtrbauFabrication, GameObject> fabrication in elementFabrications)
@@ -783,20 +801,20 @@ namespace Rtrbau
                 fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Icon ||
                 fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Audio)
                 {
-                    fabrication.Value.transform.SetParent(fabricationsObserveRest, false);
+                    fabrication.Value.transform.SetParent(fabricationsAttributes, false);
                     fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
                 }
                 else if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Image ||
                 fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Video)
                 {
-                    fabrication.Value.transform.SetParent(fabricationsObserveImageVideo, false);
+                    fabrication.Value.transform.SetParent(fabricationsAttributesNonText, false);
                     fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
                 }
                 else if (fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Model ||
                 fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Hologram ||
                 fabrication.Key.fabricationAugmentation == RtrbauAugmentation.Animation)
                 {
-                    fabrication.Value.transform.SetParent(fabricationsObserveRest, false);
+                    fabrication.Value.transform.SetParent(fabricationsAttributes, false);
                     fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, visualiser.transform);
                     // unparentedFabrications.Add(fabrication.Value);
                 }
@@ -805,7 +823,7 @@ namespace Rtrbau
             }
             else if (fabrication.Key.fabricationType == RtrbauFabricationType.Inspect)
             {
-                fabrication.Value.transform.SetParent(fabricationsInspect, false);
+                fabrication.Value.transform.SetParent(fabricationsRelationships, false);
                 fabrication.Value.GetComponent<IFabricationable>().Initialise(visualiser, fabrication.Key, this.transform, this.transform);
                 inspectFabrications.Add(fabrication.Value);
             }
@@ -844,6 +862,36 @@ namespace Rtrbau
             {
                 this.gameObject.AddComponent<ElementsLine>().Initialise(this.gameObject, previousElement, lineMaterial);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void ScaleLoadingPlate()
+        {
+            // Determine scale factors according to UI game objects
+            // Factors have been calculated ad-hoc per case
+            float scaleFactor;
+            float moveFactor;
+
+            if (Rtrbauer.instance.archivedFabrications == true) { scaleFactor = 0.395f; moveFactor = -0.025f; }
+            else { scaleFactor = 0.55f; moveFactor = -0.033f; }
+
+            // Calculate maximum number of fabrications to which scale
+            int attributeFabs = observeFabrications.Count();
+            int relationshipFabs = inspectFabrications.Count();
+            int maximumFabs;
+
+            if (attributeFabs >= relationshipFabs) { maximumFabs = attributeFabs; }
+            else { maximumFabs = relationshipFabs; }
+
+            // Rescale loading plate
+            loadingPlate.transform.localScale += new Vector3(0, scaleFactor * maximumFabs, 0);
+            // Move loading plate
+            loadingPlate.transform.localPosition += new Vector3(0, moveFactor * maximumFabs, 0);
+
+            // Remember to also rescale icons and logos from loading plate
+            // loadingPlate.GetComponent<LoadingAnimation>().ScaleLoadingImages();
         }
         #endregion PRIVATE
 

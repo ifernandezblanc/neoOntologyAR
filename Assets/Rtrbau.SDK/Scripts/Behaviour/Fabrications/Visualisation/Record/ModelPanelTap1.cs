@@ -56,6 +56,7 @@ namespace Rtrbau
         public Material fabricationNonReportedMaterial;
         public Material fabricationReportedMaterial;
         public Material fabricationModelMaterial;
+        public Renderer fabricationBounds;
         public GameObject recordSelectPanel;
         public TextMeshPro recordSelectPanelText;
         #endregion GAMEOBJECT_PREFABS
@@ -69,7 +70,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationSeenMaterial == null || fabricationNonReportedMaterial == null || fabricationReportedMaterial == null || fabricationModelMaterial == null || recordSelectPanel == null || recordSelectPanelText == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationSeenMaterial == null || fabricationNonReportedMaterial == null || fabricationReportedMaterial == null || fabricationModelMaterial == null || fabricationBounds == null || recordSelectPanel == null || recordSelectPanelText == null)
             {
                 throw new ArgumentException("DefaultNominate::Start: Script requires some prefabs to work.");
             }
@@ -188,6 +189,12 @@ namespace Rtrbau
             }
             else { }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Renderer GetRenderer() { return fabricationBounds; }
         #endregion IFABRICATIONABLE_METHODS
 
         #region IVISUALISABLE_METHODS

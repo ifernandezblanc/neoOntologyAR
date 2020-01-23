@@ -56,6 +56,8 @@ namespace Rtrbau
         void SelectFabrications();
         void CreateFabrications();
         void InputIntoReport();
+        void ActivateLoadingPlate();
+        void DeactivateLoadingPlate();
     }
     /// <summary>
     /// Describe script purpose
@@ -67,6 +69,7 @@ namespace Rtrbau
         void Scale();
         void InferFromText();
         void OnNextVisualisation();
+        Renderer GetRenderer();
     }
 
     public interface ILoadable

@@ -55,6 +55,7 @@ namespace Rtrbau
         public TextMeshPro fabricationText;
         public MeshRenderer fabricationSeenPanel;
         public Material modelMaterial;
+        public Renderer fabricationBounds;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -64,7 +65,7 @@ namespace Rtrbau
         #region MONOBEHVAIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSeenPanel == null || modelMaterial == null)
+            if (fabricationText == null || fabricationSeenPanel == null || modelMaterial == null || fabricationBounds == null)
             {
                 throw new ArgumentException("HologramNone1 script requires some prefabs to work.");
             }
@@ -182,6 +183,12 @@ namespace Rtrbau
             // Do nothing
             // Activation / de-activation is managed by
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Renderer GetRenderer() { return fabricationBounds; }
         #endregion IFABRICATIONABLE_METHODS
 
         #region IVISUALISABLE_METHODS
