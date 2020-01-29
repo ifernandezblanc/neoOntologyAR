@@ -55,17 +55,27 @@ PrefabInstance:
     - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
         type: 3}
       propertyPath: m_textInfo.characterCount
-      value: 14
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
         type: 3}
       propertyPath: m_textInfo.spaceCount
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
         type: 3}
       propertyPath: m_textInfo.wordCount
-      value: 2
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: m_textInfo.pageCount
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
         type: 3}
@@ -301,11 +311,6 @@ PrefabInstance:
         type: 3}
       propertyPath: OnDictationResult.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8345464513495904043, guid: 45d87f48fee61c54caabd15e8b5d014e,
-        type: 3}
-      propertyPath: OnDictationResult.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8345464513495904043, guid: 45d87f48fee61c54caabd15e8b5d014e,
         type: 3}
