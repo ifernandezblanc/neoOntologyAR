@@ -119,7 +119,7 @@ namespace Rtrbau
 
         IEnumerator ForceVuforiaRegistration()
         {
-            int counter = 15;
+            int counter = 30;
             Debug.Log("PanelAssetTargetEvents::ForceVuforiaRegistration: waiting for " + counter + " seconds before forcing registration");
             while (counter > 0 && assetTargetTrackableBehaviourFound == false)
             {

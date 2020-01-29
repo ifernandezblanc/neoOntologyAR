@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.UI;
+using Microsoft.MixedReality.Toolkit.Input;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -204,6 +205,10 @@ namespace Rtrbau
         /// </summary>
         void LoadManipulationHandler()
         {
+            // Assign near interaction grabbable
+            assetRegistrator.AddComponent<NearInteractionGrabbable>();
+            assetRegistrator.GetComponent<NearInteractionGrabbable>().ShowTetherWhenManipulating = true;
+            // Assign manipulation handler
             assetRegistrator.AddComponent<ManipulationHandler>();
             assetRegistrator.GetComponent<ManipulationHandler>().HostTransform = asset.transform;
             assetRegistrator.GetComponent<ManipulationHandler>().ManipulationType = ManipulationHandler.HandMovementType.OneAndTwoHanded;
