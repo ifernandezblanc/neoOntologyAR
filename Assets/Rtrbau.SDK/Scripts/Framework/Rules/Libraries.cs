@@ -275,7 +275,7 @@ namespace Rtrbau
         /// </summary>
         public static List<string> TimeRecord = new List<string>
         {
-            "Start", "End"
+            "Start", "End", "Measure"
         };
 
         /// <summary>
@@ -284,7 +284,16 @@ namespace Rtrbau
         /// </summary>
         public static List<string> StateIdeal = new List<string>
         {
-            "compares", "State"
+            "Diagnoses", "State"
+        };
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired 
+        /// </summary>
+        public static List<string> StateNone = new List<string>
+        {
+            "Evaluates", "Monitors"
         };
         #endregion NAME_LIBRARIES
 

@@ -124,6 +124,7 @@ namespace Rtrbau
         public static EnvironmentFormat TextPanelTap1 = new EnvironmentFormat(RtrbauFabricationName.TextPanelTap1, EnvironmentFacets.text, EnvironmentFacets.gesturetap);
         public static EnvironmentFormat TextPanelTap2 = new EnvironmentFormat(RtrbauFabricationName.TextPanelTap2, EnvironmentFacets.text, EnvironmentFacets.gesturetap);
         public static EnvironmentFormat TextPanelTap3 = new EnvironmentFormat(RtrbauFabricationName.TextPanelTap3, EnvironmentFacets.text, EnvironmentFacets.gesturetap);
+        public static EnvironmentFormat TextPanelTap4 = new EnvironmentFormat(RtrbauFabricationName.TextPanelTap4, EnvironmentFacets.text, EnvironmentFacets.gesturetap);
         #endregion TEXTPANEL_FORMATS
 
         #region ICONPANEL_FORMATS

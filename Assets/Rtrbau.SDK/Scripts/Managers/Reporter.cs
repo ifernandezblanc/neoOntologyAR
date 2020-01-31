@@ -73,7 +73,7 @@ namespace Rtrbau
         public GameObject reportElement;
         public GameObject reportPanel;
         public GameObject reportButton;
-        public List<KeyValuePair<DateTimeOffset, OntologyEntity>> reportDictionary;
+        public List<Tuple<DateTimeOffset, OntologyEntity, GameObject>> reportDictionary;
         #endregion CLASS_VARIABLES
 
         #region MONOBEHAVIOUR_METHODS
@@ -96,7 +96,7 @@ namespace Rtrbau
             else
             {
                 // reportPanel = this.transform.Find("ReportElements").gameObject;
-                reportDictionary = new List<KeyValuePair<DateTimeOffset, OntologyEntity>>();
+                reportDictionary = new List<Tuple<DateTimeOffset, OntologyEntity, GameObject>>();
             }
         }
 
@@ -105,19 +105,14 @@ namespace Rtrbau
         /// </summary>
         public void ReinitialiseReport()
         {
-            // Destroy reported elements if exist
-            HorizontalLayoutGroup[] reportedElements = reportPanel.GetComponentsInChildren<HorizontalLayoutGroup>();
-
-            if (reportedElements.Length != 0)
+            // Destroy reportedElements GameObjects if exist
+            foreach (Tuple<DateTimeOffset, OntologyEntity, GameObject> reportedElement in reportDictionary)
             {
-                foreach (HorizontalLayoutGroup reportedElement in reportedElements)
-                {
-                    Destroy(reportedElement.gameObject);
-                }
+                Destroy(reportedElement.Item3);
             }
 
             // Initialise report dictionary
-            reportDictionary = new List<KeyValuePair<DateTimeOffset, OntologyEntity>>();
+            reportDictionary = new List<Tuple<DateTimeOffset, OntologyEntity, GameObject>>();
 
             // Update user
             Rtrbauer.instance.user.name = Parser.ParseAddDateTime("User_");
@@ -138,17 +133,17 @@ namespace Rtrbau
         /// Inputs ontology entity into user's report.
         /// Loading entities created is a different function [TBD].
         /// </summary>
-        public void ReportElement(OntologyEntity entity)
+        public void ReportElement(OntologyEntity reportedEntity)
         {
-            GameObject reportedElement;
+            GameObject reportedObject;
 
-            reportDictionary.Add(new KeyValuePair<DateTimeOffset, OntologyEntity>(DateTimeOffset.Now, entity));
+            reportedObject = Instantiate(reportElement, reportPanel.transform);
 
-            reportedElement = Instantiate(reportElement, reportPanel.transform);
+            reportedObject.GetComponentInChildren<TextMeshPro>().text = reportedEntity.Ontology().Name() + "#" + reportedEntity.Name();
 
-            reportedElement.GetComponentInChildren<TextMeshPro>().text = entity.Ontology().Name() + "#" + entity.Name();
+            reportDictionary.Add(new Tuple<DateTimeOffset, OntologyEntity, GameObject>(DateTimeOffset.Now, reportedEntity, reportedObject));
 
-            Debug.Log("Reporter::ReportElement: " + Parser.ParseNamingDateTimeXSD() + "_" + entity.Entity());
+            RtrbauDebug.instance.Log("Reporter::ReportElement: " + Parser.ParseNamingDateTimeXSD() + "_" + reportedEntity.Entity());
         }
 
         /// <summary>
@@ -166,8 +161,8 @@ namespace Rtrbau
             for (int i = 0; i < reportDictionary.Count; i++)
             {
                 reportWriter.WriteLine("{");
-                reportWriter.WriteLine("\"dateTime\": " + "\"" + Parser.ParseNamingDateTimeXSD(reportDictionary[i].Key) + "\",");
-                reportWriter.WriteLine("\"entity\": " + "\"" + reportDictionary[i].Value.URI() + "\"");
+                reportWriter.WriteLine("\"dateTime\": " + "\"" + Parser.ParseNamingDateTimeXSD(reportDictionary[i].Item1) + "\",");
+                reportWriter.WriteLine("\"entity\": " + "\"" + reportDictionary[i].Item2.URI() + "\"");
                 if (i != reportDictionary.Count - 1) { reportWriter.WriteLine("},"); }
                 else { reportWriter.WriteLine("}"); }
             }

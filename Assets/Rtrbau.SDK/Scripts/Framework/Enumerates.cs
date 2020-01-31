@@ -90,7 +90,7 @@ namespace Rtrbau
         ModelRecordManipulation1,
         TextDictation1,
         TextKeyboard1,
-        TextPanelTap1, TextPanelTap2, TextPanelTap3,
+        TextPanelTap1, TextPanelTap2, TextPanelTap3, TextPanelTap4,
         IconPanelTap1,
         ModelPanelTap1
     }
