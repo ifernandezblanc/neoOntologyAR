@@ -58,7 +58,7 @@ namespace Rtrbau
         /// <param name="range"></param>
         /// <param name="value"></param>
         /// <param name="type"></param>
-        public RtrbauAttribute (OntologyEntity name, OntologyEntity range, string value, OntologyEntity type, RtrbauFabricationType fabrication)
+        public RtrbauAttribute(OntologyEntity name, OntologyEntity range, string value, OntologyEntity type, RtrbauFabricationType fabrication)
         {
             attributeName = name;
             attributeRange = range;
@@ -101,7 +101,7 @@ namespace Rtrbau
         /// <param name="nameEntity"></param>
         /// <param name="classEntity"></param>
         /// <param name="attributes"></param>
-        public RtrbauElement (OntologyEntity nameEntity, OntologyEntity classEntity, List<RtrbauAttribute> attributes)
+        public RtrbauElement(OntologyEntity nameEntity, OntologyEntity classEntity, List<RtrbauAttribute> attributes)
         {
             elementName = nameEntity;
             elementClass = classEntity;
@@ -116,7 +116,7 @@ namespace Rtrbau
         /// <param name="individualElement"></param>
         /// <param name="classElement"></param>
         /// <param name="relationshipClassesElements"></param>
-        public RtrbauElement (RtrbauElementType elementType, AssetManager assetManager, JsonIndividualValues individualElement, JsonClassProperties classElement, List<JsonClassProperties> relationshipClassesElements)
+        public RtrbauElement(RtrbauElementType elementType, AssetManager assetManager, JsonIndividualValues individualElement, JsonClassProperties classElement, List<JsonClassProperties> relationshipClassesElements)
         {
             // IMP: to merge both class and invidual ontology elements into a single one to evaluate attributes for augmentation
             // IMP: drops all properties that cannot be found in the matching class
@@ -246,7 +246,7 @@ namespace Rtrbau
             {
                 throw new ArgumentException("RtrbauData::RtrbauElement: this declaration does not implement " + elementType.ToString() + " elements");
             }
-            
+
         }
 
         /// <summary>
@@ -258,7 +258,7 @@ namespace Rtrbau
         /// <param name="assetManager"></param>
         /// <param name="classElement"></param>
         /// <param name="exampleElement"></param>
-        public RtrbauElement (RtrbauElementType elementType, AssetManager assetManager, OntologyElement individualElement, JsonClassProperties classElement, JsonIndividualValues exampleElement)
+        public RtrbauElement(RtrbauElementType elementType, AssetManager assetManager, OntologyElement individualElement, JsonClassProperties classElement, JsonIndividualValues exampleElement)
         {
             if (elementType == RtrbauElementType.Report)
             {
@@ -398,7 +398,7 @@ namespace Rtrbau
             fabricationDescription = RtrbauDescriptiveness.literal;
         }
 
-        public RtrbauFabrication (RtrbauFabricationName name, RtrbauFabricationType type, Dictionary<DataFacet, RtrbauAttribute> data)
+        public RtrbauFabrication(RtrbauFabricationName name, RtrbauFabricationType type, Dictionary<DataFacet, RtrbauAttribute> data)
         {
             fabricationName = name;
             fabricationType = type;
@@ -418,7 +418,7 @@ namespace Rtrbau
         #region MEMBERS
         private RtrbauElementLocation locationType;
         private AssetVisualiser locationManager;
-        private List<KeyValuePair<OntologyElement,GameObject>> locationElements;
+        private List<KeyValuePair<OntologyElement, GameObject>> locationElements;
         private int locationMaximum;
         private int locationCounter;
         #endregion MEMBERS
@@ -467,7 +467,7 @@ namespace Rtrbau
                         pZ = 0.5f;
 
                         Debug.Log("RtrbauData::RtrbauLocation::SetPosition: element position follows user at: (" + pX + "," + pY + "," + pZ + ")");
-                        element.AddComponent< Microsoft.MixedReality.Toolkit.Examples.Demos.EyeTracking.MoveWithCamera>().offsetToCamera = new Vector3(pX, pY, pZ);
+                        element.AddComponent<Microsoft.MixedReality.Toolkit.Examples.Demos.EyeTracking.MoveWithCamera>().offsetToCamera = new Vector3(pX, pY, pZ);
 
                         return true;
                     }
@@ -797,10 +797,10 @@ namespace Rtrbau
             }
         }
 
-        public KeyValuePair<OntologyElement,GameObject> FindFirstElement()
+        public KeyValuePair<OntologyElement, GameObject> FindFirstElement()
         {
             if (locationElements.Count() > 0) { return locationElements.First(); }
-            else { return new KeyValuePair<OntologyElement, GameObject>(); }   
+            else { return new KeyValuePair<OntologyElement, GameObject>(); }
         }
 
         public void DebugLocationElements(string functionName)
@@ -814,16 +814,164 @@ namespace Rtrbau
         #endregion METHODS
     }
 
+    /// <summary>
+    /// Describe script purpose
+    /// Add links when code has been inspired
+    /// </summary> 
+    [Serializable]
+    public class RtrbauRecommendation
+    {
+        #region MEMBERS
+        public RecommendationFormat recommendationFormat;
+        public RtrbauAttribute recommendationAttribute;
+        public RtrbauElement recommendationTarget;
+        public List<RtrbauElement> recommendationCases;
+        public List<RtrbauElement> recommendations;
+        #endregion MEMBERS
+
+        #region CONSTRUCTORS
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public RtrbauRecommendation()
+        {
+            recommendationFormat = new RecommendationFormat();
+            recommendationAttribute = new RtrbauAttribute();
+            recommendationTarget = new RtrbauElement();
+            recommendationCases = new List<RtrbauElement>();
+            recommendations = new List<RtrbauElement>();
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="attribute"></param>
+        /// <param name="range"></param>
+        /// <param name="target"></param>
+        /// <param name="cases"></param>
+        public RtrbauRecommendation(RecommendationFormat format, RtrbauAttribute attribute, JsonIndividualValues target, List<JsonIndividualValues> cases)
+        {
+            // Generates clean RtrbauElements for target and cases individuals based on recomended range
+
+            if (attribute.attributeName.URI() == format.formatAttribute.URI())
+            {
+                recommendationFormat = format;
+                recommendationAttribute = attribute;
+
+                if (target != null)
+                {
+                    if (target.ontClass == format.formatRange.URI())
+                    {
+                        RtrbauElement targetElement = CreateElement(target);
+
+                        // Evaluate whether there the target meets the recommendation criteria
+                        if (targetElement == null) { recommendationTarget = null; }
+                        else { recommendationTarget = targetElement; }
+                    }
+                    else { throw new ArgumentException("RtrbauData::RtrbauRecommendation: Target individual does not belong to the recommendable class"); }
+                }
+                else { recommendationTarget = null; }
+
+                recommendationCases = new List<RtrbauElement>();
+
+                foreach (JsonIndividualValues individual in cases)
+                {
+                    if (individual.ontClass == format.formatRange.URI())
+                    {
+                        RtrbauElement individualElement = CreateElement(individual);
+
+                        // Evaluate whether there are cases that meet the recommendation criteria
+                        if (individualElement == null) { }
+                        else { recommendationCases.Add(CreateElement(individual)); }
+                    }
+                    else { throw new ArgumentException("RtrbauData::RtrbauRecommendation: Case individual does not belong to the recommendable class"); }
+                }
+            }
+            else { throw new ArgumentException("RtrbauData::RtrbauRecommendation: Fabrication attribute does not belong to the recommendable attribute"); }
+        }
+        #endregion CONSTRUCTORS
+
+        #region METHODS
+        #region PRIVATE
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        /// <param name="ontologyIndividual"></param>
+        /// <returns></returns>
+        RtrbauElement CreateElement(JsonIndividualValues ontologyIndividual)
+        {
+            // Generates rtrbau elements for ontology inferencing using recommendationFormat facets as template
+            if (recommendationFormat.formatRange.URI() == ontologyIndividual.ontClass)
+            {
+                // Initialise element variables
+                OntologyEntity elementName = new OntologyEntity(ontologyIndividual.ontIndividual);
+                OntologyEntity elementClass = new OntologyEntity(ontologyIndividual.ontClass);
+                List<RtrbauAttribute> elementAttributes = new List<RtrbauAttribute>();
+
+                // Generate RtrbauAttributes using recommendationFormat facets
+                foreach (RecommendationFacet formatFacet in recommendationFormat.formatFacets)
+                {
+                    // The recommendation algorithm only considers single occurrences of individual asserted attributes
+                    // Find individual value to assign to recommendation facet attribute through attribute name comparison
+                    // UPG: to modify rtrbau recommendations to consider attributes and relationships that are asserted to individuals more than once
+                    JsonValue individualAttribute = ontologyIndividual.ontProperties.Find(delegate (JsonValue individualValue) { return individualValue.ontName == formatFacet.facetAttribute.URI(); });
+
+                    // ErrorHandling: when individual value does not exist, leave value empty
+                    if (!Equals(individualAttribute, default(JsonValue))) 
+                    {
+                        // Initialise RtrbauAttribute variables setting RtrbauFabricationType as default
+                        OntologyEntity attributeName = new OntologyEntity(individualAttribute.ontName);
+                        OntologyEntity attributeRange = formatFacet.facetRange;
+                        string attributeValue = individualAttribute.ontValue;
+                        OntologyEntity attributeType = new OntologyEntity(individualAttribute.ontType);
+                        RtrbauFabricationType attributeFabrication = RtrbauFabricationType.Observe;
+
+                        // Generate RtrbauAttribute instance and add to RtrbauElement list
+                        elementAttributes.Add(new RtrbauAttribute(attributeName, attributeRange, attributeValue, attributeType, attributeFabrication));
+                    }
+                    else { }
+                }
+
+                // Generate new RtrbauElement instance to return
+                // Return new RtrbauElement or null depending on whether RtrbauAttributes assigned coincide with the number of formatFacets
+                if (elementAttributes.Count != recommendationFormat.formatFacets.Count) { return null; }
+                else { return new RtrbauElement(elementName, elementClass, elementAttributes); }
+            }
+            else
+            {
+                throw new ArgumentException("RtrbauData::RtrbauRecommendation::CreateIndividual: Individual does not belong to Class");
+            }
+        }
+        #endregion PRIVATE
+
+        #region PUBLIC
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        /// <returns></returns>
+        public List<KeyValuePair<decimal,RtrbauElement>> RecommendCases()
+        {
+            return recommendationFormat.RecommendIndividuals(recommendationAttribute, recommendationTarget, recommendationCases);
+        }
+        #endregion PUBLIC
+        #endregion METHODS
+    }
+
+
     #endregion RTRBAU_ELEMENTS
 
     #region AUTHORING_DATA
-
     /// <summary>
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
     [Serializable]
-    public class DataFacetRules
+    public class DataRule
     {
         #region MEMBERS
         public RtrbauFacetRuleType facetNameType;
@@ -838,7 +986,7 @@ namespace Rtrbau
         #endregion MEMBERS
 
         #region CONSTRUCTORS
-        public DataFacetRules()
+        public DataRule()
         {
             facetNameType = RtrbauFacetRuleType.Any;
             facetNameRule = new List<string>();
@@ -859,7 +1007,7 @@ namespace Rtrbau
         /// <param name="nameRules"></param>
         /// <param name="rangeRules"></param>
         /// <param name="valueRules"></param>
-        public DataFacetRules(RtrbauFacetRuleType nameRuleType, List<string> nameRules, RtrbauFacetRuleType rangeRuleType, List<string> rangeRules, RtrbauFacetRuleType valueRuleType, List<string> valueRules, RtrbauFacetRuleType typeRuleType, List<string> typeRules)
+        public DataRule(RtrbauFacetRuleType nameRuleType, List<string> nameRules, RtrbauFacetRuleType rangeRuleType, List<string> rangeRules, RtrbauFacetRuleType valueRuleType, List<string> valueRules, RtrbauFacetRuleType typeRuleType, List<string> typeRules)
         {
             facetRestrictivity = 0;
             if (nameRules != null) facetRestrictivity += 1;
@@ -976,14 +1124,14 @@ namespace Rtrbau
     {
         #region MEMBERS
         public RtrbauFacetForm facetForm;
-        public DataFacetRules facetRules;
+        public DataRule facetRules;
         #endregion MEMBERS
 
         #region CONSTRUCTOR
         public DataFacet()
         {
             facetForm = RtrbauFacetForm.source;
-            facetRules = new DataFacetRules();
+            facetRules = new DataRule();
         }
 
         /// <summary>
@@ -992,7 +1140,7 @@ namespace Rtrbau
         /// </summary>
         /// <param name="form"></param>
         /// <param name="rules"></param>
-        public DataFacet (RtrbauFacetForm form, DataFacetRules rules)
+        public DataFacet (RtrbauFacetForm form, DataRule rules)
         {
             facetForm = form;
             facetRules = rules;
@@ -1012,7 +1160,7 @@ namespace Rtrbau
         public RtrbauFabricationType formatType;
         public List<DataFacet> formatFacets;
         public int formatRequiredFacets;
-        // public List<KeyValuePair<RtrbauFacetForm, DataFacetRules>> formatFacets;
+        // public List<KeyValuePair<RtrbauFacetForm, DataRule>> formatFacets;
         #endregion MEMBERS
 
         #region CONSTRUCTORS
@@ -1085,7 +1233,7 @@ namespace Rtrbau
                     {
                         if (facet.facetRules.EvaluateFacet(attribute.attributeName.Name(), attribute.attributeRange.Name(), attribute.attributeValue, attribute.attributeType.Name()))
                         {
-                            // assignableFacets.Add(new KeyValuePair<KeyValuePair<RtrbauFacetForm, DataFacetRules>, RtrbauAttribute>(new KeyValuePair<RtrbauFacetForm, DataFacetRules>(facet.Key, facet.Value), attribute));
+                            // assignableFacets.Add(new KeyValuePair<KeyValuePair<RtrbauFacetForm, DataRule>, RtrbauAttribute>(new KeyValuePair<RtrbauFacetForm, DataRule>(facet.Key, facet.Value), attribute));
                             assignableAttributes.Add(new KeyValuePair<DataFacet, RtrbauAttribute>(facet, attribute));
                         }
                     }
@@ -1434,4 +1582,412 @@ namespace Rtrbau
         #endregion METHODS
     }
     #endregion AUTHORING_USER
+
+    #region RECOMMENDATION
+    /// <summary>
+    /// Describe script purpose
+    /// Add links when code has been inspired
+    /// </summary>
+    [Serializable]
+    public class RecommendationRule
+    {
+        #region MEMBERS
+        public RtrbauRecommendationRuleType ruleType;
+        public Dictionary<decimal, List<string>> ruleSubsets;
+        public Func<RtrbauAttribute, RtrbauAttribute, decimal> ruleEvaluation;
+        #endregion MEMBERS
+
+        #region CONSTRUCTORS
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public RecommendationRule()
+        {
+            ruleType = RtrbauRecommendationRuleType.Binary;
+            ruleSubsets = new Dictionary<decimal, List<string>>();
+            ruleEvaluation = null;
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        /// <param name="typeRule"></param>
+        public RecommendationRule(RtrbauRecommendationRuleType typeRule)
+        {
+            ruleType = typeRule;
+            ruleSubsets = new Dictionary<decimal, List<string>>();
+
+            if (typeRule == RtrbauRecommendationRuleType.Binary) { ruleEvaluation = EvaluateBinaryRule; }
+            else if (typeRule == RtrbauRecommendationRuleType.Symmetric) { ruleEvaluation = EvaluateSymmetricRule; }
+            else if (typeRule == RtrbauRecommendationRuleType.Component) { ruleEvaluation = EvaluateComponentRule; }
+            else if (typeRule == RtrbauRecommendationRuleType.Subset) { throw new ArgumentException("RtrbauData::RecommendationRule: rule of type subset requires of a subset dictionary for subsets evaluation."); }
+            else { throw new ArgumentException("RtrbauData::RecommendationRule: rule of type " + typeRule.ToString() + " has not been implemented yet"); }
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        /// <param name="typeRule"></param>
+        /// <param name="subsetsDictionary"></param>
+        public RecommendationRule(RtrbauRecommendationRuleType typeRule, Dictionary<decimal, List<string>> subsetsDictionary)
+        {
+            if (typeRule == RtrbauRecommendationRuleType.Subset)
+            {
+                ruleType = typeRule;
+                ruleSubsets = subsetsDictionary;
+                ruleEvaluation = EvaluateSubsetRule;
+            }
+            else
+            {
+                throw new ArgumentException("RtrbauData::RecommendationRule: only rules of type subset require a subset dictionary.");
+            }
+        }
+        #endregion CONSTRUCTORS
+
+        #region METHODS
+        #region PRIVATE
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        decimal EvaluateBinaryRule(RtrbauAttribute targetAttribute, RtrbauAttribute caseAttribute)
+        {
+            if (ruleType == RtrbauRecommendationRuleType.Binary)
+            {
+                if (caseAttribute.attributeValue == targetAttribute.attributeValue) { return 1; }
+                else { return 0; }
+            }
+            else
+            {
+                throw new ArgumentException("RtrbauData::RecommendationRule::EvaluateBinaryRule: Rule has not been declared as of binary type.");
+            }
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        decimal EvaluateSymmetricRule(RtrbauAttribute targetAttribute, RtrbauAttribute caseAttribute)
+        {
+            if (ruleType == RtrbauRecommendationRuleType.Symmetric)
+            {
+                decimal targetValue;
+                decimal caseValue;
+
+                if (decimal.TryParse(targetAttribute.attributeValue, out targetValue))
+                {
+                    if (decimal.TryParse(caseAttribute.attributeValue, out caseValue))
+                    {
+                        return (1 - (Math.Abs(targetValue - caseValue) / Math.Max(targetValue, caseValue)));
+                    }
+                    else
+                    {
+                        throw new ArgumentException("RtrbauData::RecommendationRule::EvaluateSymmetricRule: caseAttribute.attributeValue should be a numeric string.");
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException("RtrbauData::RecommendationRule::EvaluateSymmetricRule: targetAttribute.attributeValue should be a numeric string.");
+                }
+
+            }
+            else
+            {
+                throw new ArgumentException("RtrbauData::RecommendationRule::EvaluateSymmetricRule: Rule has not been declared as of symmetric type.");
+            }
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        decimal EvaluateSubsetRule(RtrbauAttribute targetAttribute, RtrbauAttribute caseAttribute)
+        {
+            if (ruleType == RtrbauRecommendationRuleType.Subset)
+            {
+                if (caseAttribute.attributeValue == targetAttribute.attributeValue)
+                {
+                    foreach (KeyValuePair<decimal,List<string>> subset in ruleSubsets)
+                    {
+                        if (subset.Value.All(caseAttribute.attributeValue.Contains)) { return subset.Key; }
+                    }
+
+                    return 0;
+                }
+                else { return 0; }
+            }
+            else
+            {
+                throw new ArgumentException("RtrbauData::RecommendationRule::EvaluateSubsetRule: Rule has not been declared as of subset type.");
+            }
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        decimal EvaluateComponentRule(RtrbauAttribute targetAttribute, RtrbauAttribute caseAttribute)
+        {
+            if (ruleType == RtrbauRecommendationRuleType.Component)
+            {
+                if (targetAttribute.attributeRange.URI() == Rtrbauer.instance.component.URI() && caseAttribute.attributeRange.URI() == Rtrbauer.instance.component.URI())
+                {
+                    AssetManager targetAsset = GameObject.FindWithTag(RtrbauGameObjectTags.RtrbauAssetManager.ToString()).GetComponent<AssetManager>();
+                    
+                    if (targetAsset != null)
+                    {
+                        // Considers generic individual URI to find components names
+                        // The recieved RtrbauElements are "clean" versions for accurate ontology inferencing
+                        string targetName = Parser.ParseURI(targetAttribute.attributeValue, '#', RtrbauParser.post);
+                        string caseName = Parser.ParseURI(caseAttribute.attributeValue, '#', RtrbauParser.post);
+
+                        GameObject targetModel = targetAsset.FindAssetComponentManipulator(targetName);
+                        GameObject caseModel = targetAsset.FindAssetComponentManipulator(caseName);
+
+                        if (targetModel != null)
+                        {
+                            if (caseModel != null)
+                            {
+                                decimal assetVolume = (decimal)(targetAsset.ReturnAssetBoundsLocal().size.sqrMagnitude);
+                                Vector3 caseDirection = targetModel.transform.localPosition - caseModel.transform.localPosition;
+                                decimal caseVolume = (decimal)(caseDirection.sqrMagnitude);
+                                return (1 - (caseVolume / assetVolume));
+                            }
+                            else
+                            {
+                                return 0;
+                            }
+                        }
+                        else
+                        {
+                            throw new ArgumentException("RtrbauData::RecommendationRule::EvaluateComponentRule: Target Component should always be found in the scene.");
+                        }
+                    }
+                    else
+                    {
+                        throw new ArgumentException("RtrbauData::RecommendationRule::EvaluateComponentRule: There is not AssetManager in the scene; this rule cannot be evaluated otherwise.");
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException("RtrbauData::RecommendationRule::EvaluateComponentRule: case and target attributes should be of Rtrbauer.instance.component range.");
+                }
+            }
+            else
+            {
+                throw new ArgumentException("RtrbauData::RecommendationRule::EvaluateComponentRule: Rule has not been declared as of subset type.");
+            }
+        }
+        #endregion PRIVATE
+
+        #region PUBLIC
+        #endregion PUBLIC
+        #endregion METHODS
+    }
+
+    /// <summary>
+    /// Describe script purpose
+    /// Add links when code has been inspired
+    /// </summary>
+    [Serializable]
+    public class RecommendationFacet
+    {
+        #region MEMBERS
+        public RecommendationRule facetRule;
+        public OntologyEntity facetAttribute;
+        public OntologyEntity facetRange;
+        #endregion MEMBERS
+
+        #region CONSTRUCTORS
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public RecommendationFacet()
+        {
+            facetRule = new RecommendationRule();
+            facetAttribute = new OntologyEntity();
+            facetRange = new OntologyEntity();
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public RecommendationFacet(RecommendationRule ruleFacet, OntologyEntity attributeFacet, OntologyEntity rangeFacet)
+        {
+            facetRule = ruleFacet;
+            facetAttribute = attributeFacet;
+            facetRange = rangeFacet;
+        }
+        #endregion CONSTRUCTORS
+
+        #region METHODS
+        #region PRIVATE
+        #endregion PRIVATE
+
+        #region PUBLIC
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public bool ValidateFacet(RtrbauAttribute attribute)
+        {
+            if (facetAttribute.URI() == attribute.attributeName.URI() && facetRange.URI() == attribute.attributeRange.URI()) { return true; }
+            else { return false; }
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public decimal EvaluateFacet(RtrbauAttribute targetAttribute, RtrbauAttribute caseAttribute)
+        {
+            if (ValidateFacet(targetAttribute) && ValidateFacet(caseAttribute))
+            {
+                return facetRule.ruleEvaluation(targetAttribute, caseAttribute);
+            }
+            else { throw new ArgumentException("RtrbauData::RecommendationFacet::EvaluateFacet: Target and/or case attributes do not coincide with expected facet's attribute or range"); }
+        }
+        #endregion PUBLIC
+        #endregion METHODS
+    }
+
+    /// <summary>
+    /// Describe script purpose
+    /// Add links when code has been inspired
+    /// </summary>
+    [Serializable]
+    public class RecommendationFormat
+    {
+        #region MEMBERS
+        public RtrbauFabricationName formatName;
+        public RtrbauFabricationType formatType;
+        public OntologyEntity formatAttribute;
+        public OntologyEntity formatRange;
+        public List<RecommendationFacet> formatFacets;
+        #endregion MEMBERS
+
+        #region CONSTRUCTORS
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public RecommendationFormat()
+        {
+            formatName = RtrbauFabricationName.DefaultObserve;
+            formatType = RtrbauFabricationType.Observe;
+            formatAttribute = new OntologyEntity();
+            formatRange = new OntologyEntity();
+            formatFacets = new List<RecommendationFacet>();
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        public RecommendationFormat(RtrbauFabricationName name, RtrbauFabricationType type, OntologyEntity attribute, OntologyEntity range, List<RecommendationFacet> facets)
+        {
+            formatName = name;
+            formatType = type;
+            formatAttribute = attribute;
+            formatRange = range;
+            formatFacets = facets;
+        }
+        #endregion CONSTRUCTORS
+
+        #region METHODS
+        #region PRIVATE
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        /// <param name="individual"></param>
+        /// <returns></returns>
+        decimal EvaluateIndividual(RtrbauElement targetIndividual, RtrbauElement caseIndividual)
+        {
+            // Initialise case individual similarity result
+            decimal caseSimilarity = 0;
+
+            // Find the target and case individuals attributes that are valid for each recommendation facet
+            // It considers that target and case individuals only include one attribute for each facet
+            // UPG: to modify to accept more than one attribute assigned to each facet coming from target and case individuals
+            foreach (RecommendationFacet formatFacet in formatFacets)
+            {
+                RtrbauAttribute targetAttribute = targetIndividual.elementAttributes.Find(formatFacet.ValidateFacet);
+                RtrbauAttribute caseAttribute = caseIndividual.elementAttributes.Find(formatFacet.ValidateFacet);
+                caseSimilarity += formatFacet.EvaluateFacet(targetAttribute, caseAttribute);
+            }
+
+            Debug.Log("RtrbauData::RecommendationFormat::EvaluateIndividual: caseIndividual " + caseIndividual.elementName.Entity() + " similarity is " + caseSimilarity);
+
+            return caseSimilarity;
+        }
+        #endregion PRIVATE
+
+        #region PUBLIC
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
+        /// <param name="attribute"></param>
+        /// <param name="targetIndividual"></param>
+        /// <param name="caseIndividuals"></param>
+        /// <returns></returns>
+        public List<KeyValuePair<decimal,RtrbauElement>> RecommendIndividuals(RtrbauAttribute attribute, RtrbauElement targetIndividual, List<RtrbauElement> caseIndividuals)
+        {
+            if (attribute.attributeName.URI() == formatAttribute.URI() && attribute.attributeRange.URI() == formatRange.URI())
+            {
+                if (targetIndividual != null)
+                {
+                    // Recommends five cases according to similarity facets to the target
+                    if (formatRange.URI() == targetIndividual.elementClass.URI())
+                    {
+                        List<KeyValuePair<decimal, RtrbauElement>> individualsResults = new List<KeyValuePair<decimal, RtrbauElement>>();
+
+                        foreach (RtrbauElement caseIndividual in caseIndividuals)
+                        {
+                            decimal recommendationResult = EvaluateIndividual(targetIndividual, caseIndividual);
+
+                            individualsResults.Add(new KeyValuePair<decimal, RtrbauElement>(recommendationResult, caseIndividual));
+                        }
+
+                        // Order results in descending numerical order
+                        individualsResults.Sort((x, y) => y.Key.CompareTo(x.Key));
+
+                        // Return the first 5
+                        return individualsResults.GetRange(0, 5);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("RtrbauData::RecommendationFormat::RecommendIndividuals: Target individual to which compare do not belong to the ontology class this format recommends.");
+                    }
+                }
+                else
+                {
+                    // Otherwise, recommends the first five cases on the cases list with a value of 0
+                    List<KeyValuePair<decimal, RtrbauElement>> individualsResults = new List<KeyValuePair<decimal, RtrbauElement>>();
+
+                    foreach (RtrbauElement caseIndividual in caseIndividuals)
+                    {
+                        individualsResults.Add(new KeyValuePair<decimal, RtrbauElement>(0.0M, caseIndividual));
+                    }
+
+                    // Return the first 5
+                    return individualsResults.GetRange(0, 5);
+                }
+            }
+            else
+            {
+                throw new ArgumentException("RtrbauData::RecommendationFormat::RecommendIndividuals: Individuals to recommend do not belong to the ontology attribute or class this format recommends.");
+            }
+        }
+        #endregion PUBLIC
+        #endregion METHODS
+    }
+    #endregion RECOMMENDATION
+
 }

@@ -39,6 +39,7 @@ namespace Rtrbau
         private Dictionary<string, Action<OntologyElement>> downloadElementsDictionary;
         private Dictionary<string, Action<OntologyElementUpload>> uploadElementsDictionary;
         private Dictionary<string, Action<OntologyDistance>> downloadDistancesDictionary;
+        private Dictionary<string, Action<OntologyRecommendation>> downloadRecommendationsDictionary;
         private Dictionary<string, Action<OntologyFile>> downloadFilesDictionary;
         private Dictionary<string, Action<OntologyFileUpload>> uploadFilesDictionary;
 
@@ -88,6 +89,12 @@ namespace Rtrbau
             {
                 downloadDistancesDictionary = new Dictionary<string, Action<OntologyDistance>>();
             } 
+            else { }
+
+            if (downloadRecommendationsDictionary == null)
+            {
+                downloadRecommendationsDictionary = new Dictionary<string, Action<OntologyRecommendation>>();
+            }
             else { }
 
             if (downloadFilesDictionary == null)
@@ -187,6 +194,47 @@ namespace Rtrbau
             }
         }
         #endregion DISTANCE_EVENTS
+
+        #region RECOMMENDATION_EVENTS
+        public static void StartListening(string eventName, Action<OntologyRecommendation> eventListener)
+        {
+            Action<OntologyRecommendation> thisEvent = null;
+
+            if (instance.downloadRecommendationsDictionary.TryGetValue(eventName, out thisEvent))
+            {
+                thisEvent += eventListener;
+                instance.downloadRecommendationsDictionary[eventName] = thisEvent;
+            }
+            else
+            {
+                thisEvent += eventListener;
+                instance.downloadRecommendationsDictionary.Add(eventName, thisEvent);
+            }
+        }
+
+        public static void StopListening(string eventName, Action<OntologyRecommendation> eventListener)
+        {
+            if (loaderEventsManager == null) { return; }
+
+            Action<OntologyRecommendation> thisEvent = null;
+
+            if (instance.downloadRecommendationsDictionary.TryGetValue(eventName, out thisEvent))
+            {
+                thisEvent -= eventListener;
+                instance.downloadRecommendationsDictionary[eventName] = thisEvent;
+            }
+        }
+
+        public static void TriggerEvent(string eventName, OntologyRecommendation ontElement)
+        {
+            Action<OntologyRecommendation> thisEvent = null;
+
+            if (instance.downloadRecommendationsDictionary.TryGetValue(eventName, out thisEvent))
+            {
+                thisEvent.Invoke(ontElement);
+            }
+        }
+        #endregion RECOMMENDATION_EVENTS
 
         #region FILE_EVENTS
         public static void StartListening(string eventName, Action<OntologyFile> eventListener)

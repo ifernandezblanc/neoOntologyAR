@@ -99,5 +99,14 @@ namespace Rtrbau
         void DeactivateNominates();
         bool NominatesNewReportElement(bool reportedForced);
     }
+
+    public interface IRecommendable
+    {
+        void DetermineRecommendationFormat();
+        void DownloadRecommendationElements();
+        void GenerateRecommendation();
+        void RecommendCases();
+        void DestroyRecommendation();
+    }
     #endregion INTERFACES
 }

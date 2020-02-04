@@ -231,13 +231,15 @@ namespace Rtrbau
         {
             Debug.Log("PanelClassIndividuals::NominatedIndividual: individual selected is " + entity.Name());
 
-            // Report individual selected: InputIntoReport()
-            Reporter.instance.ReportElement(entity);
             // Complete paneller behaviour
             PanellerEvents.TriggerEvent("UnloadPaneller", entity);
             // Generate OntologyElement(s) to load RtrbauElement
             OntologyElement elementIndividual = new OntologyElement(entity.URI(), OntologyElementType.IndividualProperties);
             OntologyElement elementClass = new OntologyElement(classElement.entity.URI(), OntologyElementType.ClassProperties);
+            // Generate OntologyEntity(s) to report RtrbauElement
+            OntologyEntity elementRelationship = new OntologyEntity(Rtrbauer.instance.rdf, "type");
+            // Report individual selected: InputIntoReport()
+            Reporter.instance.ReportElement(elementRelationship, elementClass.entity, elementIndividual.entity);
             // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load
             RtrbauerEvents.TriggerEvent("AssetVisualiser_CreateElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
             // Complete paneller behaviour: destroy this element

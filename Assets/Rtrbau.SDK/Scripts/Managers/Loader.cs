@@ -148,6 +148,43 @@ namespace Rtrbau
 
         #endregion DISTANCE_DOWNLOADERS
 
+        #region RECOMMENDATION_DOWNLOADERS
+        public void StartOntRecommendationDownload(OntologyRecommendation recommendation)
+        {
+            StartCoroutine(DownloadRecommendation(recommendation));
+        }
+
+        IEnumerator DownloadRecommendation(OntologyRecommendation recommendation)
+        {
+            OntologyRecommendation result = null;
+
+            if (!File.Exists(recommendation.FilePath()))
+            {
+                UnityWebRequest webRequest = UnityWebRequest.Get(recommendation.URL());
+
+                yield return webRequest.SendWebRequest();
+
+                if (webRequest.isNetworkError || webRequest.isHttpError)
+                {
+                    throw new ArgumentException("Loader::DownloadElement: Web error: " + webRequest.error + " from element " + recommendation.EventName() + " of type " + recommendation.type.ToString());
+                }
+                else
+                {
+                    File.WriteAllText(recommendation.FilePath(), webRequest.downloadHandler.text);
+                    result = recommendation;
+                }
+            }
+            else
+            {
+                result = recommendation;
+            }
+
+            LoaderEvents.TriggerEvent(recommendation.EventName(), result);
+            // Debug.Log("Loader events: Trigger event: " + element.EventName());
+
+        }
+        #endregion RECOMMENDATION_DOWNLOADERS
+
         #region FILE_DOWNLOADERS
         public void StartFileDownload(OntologyFile file)
         {

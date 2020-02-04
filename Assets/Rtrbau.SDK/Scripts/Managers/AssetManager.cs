@@ -61,6 +61,10 @@ namespace Rtrbau
             Vector3 registeredPosition = this.transform.position;
             Quaternion registeredRotation = this.transform.rotation;
 
+            // Tag game object as RtrbauAssetManager for other Rtrbau services to find it
+            // Remember that tag has to be defined in editor in advance, otherwise will result in error
+            this.gameObject.tag = RtrbauGameObjectTags.RtrbauAssetManager.ToString();
+
             // Set model at origin
             this.transform.position = new Vector3(0, 0, 0);
             this.transform.rotation = Quaternion.Euler(0, 0, 0);

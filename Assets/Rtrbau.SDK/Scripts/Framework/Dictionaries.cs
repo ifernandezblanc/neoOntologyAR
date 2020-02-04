@@ -80,7 +80,7 @@ namespace Rtrbau
         public static Dictionary<RtrbauElementType, OntologyElementType> OntElementProcedures = new Dictionary<RtrbauElementType, OntologyElementType>()
         {
             {RtrbauElementType.Report, OntologyElementType.ClassProperties},
-            {RtrbauElementType.Consult, OntologyElementType.ClassIndividuals }
+            {RtrbauElementType.Consult, OntologyElementType.ClassIndividuals}
         };
 
         /// <summary>
@@ -89,10 +89,10 @@ namespace Rtrbau
         /// </summary>
         public static Dictionary<RtrbauFileType, RtrbauAugmentation> FileAugmentations = new Dictionary<RtrbauFileType, RtrbauAugmentation>()
         {
-            {RtrbauFileType.wav, RtrbauAugmentation.Audio },
-            {RtrbauFileType.jpg, RtrbauAugmentation.Image },
-            {RtrbauFileType.png, RtrbauAugmentation.Image },
-            {RtrbauFileType.mp4, RtrbauAugmentation.Video },
+            {RtrbauFileType.wav, RtrbauAugmentation.Audio},
+            {RtrbauFileType.jpg, RtrbauAugmentation.Image},
+            {RtrbauFileType.png, RtrbauAugmentation.Image},
+            {RtrbauFileType.mp4, RtrbauAugmentation.Video},
             {RtrbauFileType.obj, RtrbauAugmentation.Model},
             {RtrbauFileType.dat, RtrbauAugmentation.Registration},
             {RtrbauFileType.xml, RtrbauAugmentation.Registration}
@@ -103,13 +103,13 @@ namespace Rtrbau
         /// </summary>
         public static Dictionary<OntologyElementType, string> ontDataDirectories = new Dictionary<OntologyElementType, string>()
         {
-            {OntologyElementType.Ontologies, Application.persistentDataPath + "/Rtrbau/ontologies/ontologies" },
-            {OntologyElementType.ClassSubclasses, Application.persistentDataPath + "/Rtrbau/ontologies/classes-subclasses" },
-            {OntologyElementType.ClassIndividuals, Application.persistentDataPath + "/Rtrbau/ontologies/classes-individuals" },
-            {OntologyElementType.ClassProperties, Application.persistentDataPath + "/Rtrbau/ontologies/classes-properties" },
-            {OntologyElementType.ClassExample, Application.persistentDataPath + "/Rtrbau/ontologies/classes-example" },
-            {OntologyElementType.IndividualProperties, Application.persistentDataPath + "/Rtrbau/ontologies/individuals-properties" },
-            {OntologyElementType.IndividualUpload, Application.persistentDataPath + "/Rtrbau/ontologies/individuals-uploads" }
+            {OntologyElementType.Ontologies, Application.persistentDataPath + "/Rtrbau/ontologies/ontologies"},
+            {OntologyElementType.ClassSubclasses, Application.persistentDataPath + "/Rtrbau/ontologies/classes-subclasses"},
+            {OntologyElementType.ClassIndividuals, Application.persistentDataPath + "/Rtrbau/ontologies/classes-individuals"},
+            {OntologyElementType.ClassProperties, Application.persistentDataPath + "/Rtrbau/ontologies/classes-properties"},
+            {OntologyElementType.ClassExample, Application.persistentDataPath + "/Rtrbau/ontologies/classes-example"},
+            {OntologyElementType.IndividualProperties, Application.persistentDataPath + "/Rtrbau/ontologies/individuals-properties"},
+            {OntologyElementType.IndividualUpload, Application.persistentDataPath + "/Rtrbau/ontologies/individuals-uploads"}
         };
         /// <summary>
         /// Describe script purpose
@@ -124,15 +124,23 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
+        public static Dictionary<RtrbauRecommendationType, string> recommendationDataDirectories = new Dictionary<RtrbauRecommendationType, string>()
+        {
+            {RtrbauRecommendationType.ClassIndividuals, Application.persistentDataPath + "/Rtrbau/recommendations/classes-individuals"}
+        };
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
         public static Dictionary<RtrbauFileType, string> fileDataDirectories = new Dictionary<RtrbauFileType, string>()
         {
-            {RtrbauFileType.wav, Application.persistentDataPath + "/Rtrbau/files/wav" },
-            {RtrbauFileType.jpg, Application.persistentDataPath + "/Rtrbau/files/jpg" },
-            {RtrbauFileType.png, Application.persistentDataPath + "/Rtrbau/files/png" },
-            {RtrbauFileType.mp4, Application.persistentDataPath + "/Rtrbau/files/mp4" },
-            {RtrbauFileType.obj, Application.persistentDataPath + "/Rtrbau/files/obj" },
-            {RtrbauFileType.xml, Application.persistentDataPath + "/Rtrbau/files/xml-dat" },
-            {RtrbauFileType.dat, Application.persistentDataPath + "/Rtrbau/files/xml-dat" }
+            {RtrbauFileType.wav, Application.persistentDataPath + "/Rtrbau/files/wav"},
+            {RtrbauFileType.jpg, Application.persistentDataPath + "/Rtrbau/files/jpg"},
+            {RtrbauFileType.png, Application.persistentDataPath + "/Rtrbau/files/png"},
+            {RtrbauFileType.mp4, Application.persistentDataPath + "/Rtrbau/files/mp4"},
+            {RtrbauFileType.obj, Application.persistentDataPath + "/Rtrbau/files/obj"},
+            {RtrbauFileType.xml, Application.persistentDataPath + "/Rtrbau/files/xml-dat"},
+            {RtrbauFileType.dat, Application.persistentDataPath + "/Rtrbau/files/xml-dat"}
             // .xml and .dat files need to be in the same folder to allow Vuforia to load them for tracking purposes
         };
         /// <summary>
@@ -150,7 +158,7 @@ namespace Rtrbau
 
         #region DICTIONARIES_FORMATS
         #region CONSULT_FORMATS
-        public static List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>> ConsultFormats
+        public static List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>> ConsultFormats 
             = new List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>>
             {
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
@@ -181,7 +189,7 @@ namespace Rtrbau
         #endregion CONSULT_FORMATS
 
         #region REPORT_FORMATS
-        public static List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>> ReportFormats
+        public static List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>> ReportFormats 
             = new List<Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>>
             {
                 new Tuple<RtrbauFabricationName, DataFormat, EnvironmentFormat, UserFormat>
@@ -214,6 +222,15 @@ namespace Rtrbau
                 (RtrbauFabricationName.TextPanelTap4, DataFormats.TextPanelTap4, EnvironmentFormats.TextPanelTap4, UserFormats.TextPanelTap4)
             };
         #endregion REPORT_FORMATS
+
+        #region RECOMMENDATION_FORMATS
+        // To ensure recommendation formats are defined properly, they are added as a separate dictionary where fabrications scripts can find them
+        public static Dictionary<RtrbauFabricationName, RecommendationFormat> RecommendFormats 
+            = new Dictionary<RtrbauFabricationName, RecommendationFormat> 
+            {
+                {RtrbauFabricationName.TextPanelTap3, RecommendationFormats.TextPanelTap3}
+            };
+        #endregion RECOMMENDATION_FORMATS
         #endregion DICTIONARIES_FORMATS
 
         #region DICTIONARIES_CONFIGURATION

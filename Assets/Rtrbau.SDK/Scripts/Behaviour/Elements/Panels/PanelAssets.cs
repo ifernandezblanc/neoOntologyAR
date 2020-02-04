@@ -234,7 +234,7 @@ namespace Rtrbau
             Debug.Log("PanelAssets::NominatedIndividual: Asset selected is " + entity.Name());
 
             // Report asset selected: InputIntoReport()
-            Reporter.instance.ReportElement(entity);
+            Reporter.instance.ReportElement(null, classElement.entity, entity);
 
             // Move to next panel
             PanellerEvents.TriggerEvent("LoadAssetRegistrator", entity);

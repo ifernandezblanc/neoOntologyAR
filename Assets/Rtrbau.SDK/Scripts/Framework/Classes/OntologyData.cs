@@ -226,7 +226,7 @@ namespace Rtrbau
 
         public string EventName()
         {
-            return "Ontology__" + OntologyElementType.IndividualUpload + "__" + individualElement.entity.Entity();
+            return "Ontology__" + OntologyElementType.IndividualUpload.ToString() + "__" + individualElement.entity.Entity();
         }
         #endregion ILOADABLE_METHODS
     }
@@ -241,7 +241,7 @@ namespace Rtrbau
         #region MEMBERS
         public OntologyEntity startClass;
         public OntologyEntity endClass;
-        public RtrbauDistanceType distanceType;
+        public RtrbauDistanceType type;
         #endregion MEMBERS
 
         #region CONSTRUCTOR
@@ -249,7 +249,7 @@ namespace Rtrbau
         {
             startClass = new OntologyEntity();
             endClass = new OntologyEntity();
-            distanceType = RtrbauDistanceType.Component;
+            type = RtrbauDistanceType.Component;
         }
 
         public OntologyDistance (string startClassURI, RtrbauDistanceType distance)
@@ -283,7 +283,7 @@ namespace Rtrbau
                 throw new ArgumentException("OntologyData::OntologyDistance::Constructor: Argument distance error: rtrbau distance type not implemented.");
             }
 
-            distanceType = distance;
+            type = distance;
         }
         #endregion CONSTRUCTOR
 
@@ -297,7 +297,7 @@ namespace Rtrbau
         {
             string folder;
 
-            if (Dictionaries.distanceDataDirectories.TryGetValue(distanceType, out folder)){}
+            if (Dictionaries.distanceDataDirectories.TryGetValue(type, out folder)){}
             else { throw new ArgumentException("OntologyData::OntologyDistance::FilePath: Argument distance error: rtrbau distance type not implemented."); }
 
             return folder + "/" + startClass.Entity() + ".json";
@@ -305,11 +305,60 @@ namespace Rtrbau
 
         public string EventName()
         {
-            return "Distance__" + distanceType + "__" + startClass.Entity();
+            return "Distance__" + type.ToString() + "__" + startClass.Entity();
         }
-
         #endregion ILOADABLE_METHODS
     }
+
+    /// <summary>
+    /// Describe script purpose
+    /// Add links when code has been inspired
+    /// </summary> 
+    [Serializable]
+    public class OntologyRecommendation : ILoadable
+    {
+        #region MEMBERS
+        public OntologyEntity entity;
+        public RtrbauRecommendationType type;
+        #endregion MEMBERS
+
+        #region CONSTRUCTOR
+        public OntologyRecommendation()
+        {
+            entity = new OntologyEntity();
+            type = RtrbauRecommendationType.Ontologies;
+        }
+
+        public OntologyRecommendation(string entityURI, RtrbauRecommendationType recommendation)
+        {
+            entity = new OntologyEntity(entityURI);
+            type = recommendation;
+        }
+        #endregion CONSTRUCTOR
+
+        #region ILOADABLE_METHODS
+        public string URL()
+        {
+            return Parser.ParseOntRecommendationURI(entity, type);
+        }
+
+        public string FilePath()
+        {
+            string folder;
+
+            if (Dictionaries.recommendationDataDirectories.TryGetValue(type, out folder)) { }
+            else { throw new ArgumentException("OntologyData::OntologyDistance::FilePath: Argument distance error: rtrbau distance type not implemented."); }
+
+            return folder + "/" + entity.Entity() + ".json";
+        }
+
+        public string EventName()
+        {
+            return "Recommendation__" + type.ToString() + "__" + entity.Entity();
+        }
+        #endregion ILOADABLE_METHODS
+    }
+
 
     /// <summary>
     /// Describe script purpose

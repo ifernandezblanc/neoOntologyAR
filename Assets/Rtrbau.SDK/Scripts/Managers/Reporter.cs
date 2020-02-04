@@ -73,7 +73,7 @@ namespace Rtrbau
         public GameObject reportElement;
         public GameObject reportPanel;
         public GameObject reportButton;
-        public List<Tuple<DateTimeOffset, OntologyEntity, GameObject>> reportDictionary;
+        public List<Tuple<DateTimeOffset, OntologyEntity, OntologyEntity, OntologyEntity, GameObject>> reportDictionary;
         #endregion CLASS_VARIABLES
 
         #region MONOBEHAVIOUR_METHODS
@@ -96,7 +96,7 @@ namespace Rtrbau
             else
             {
                 // reportPanel = this.transform.Find("ReportElements").gameObject;
-                reportDictionary = new List<Tuple<DateTimeOffset, OntologyEntity, GameObject>>();
+                reportDictionary = new List<Tuple<DateTimeOffset, OntologyEntity, OntologyEntity, OntologyEntity, GameObject>>();
             }
         }
 
@@ -106,25 +106,29 @@ namespace Rtrbau
         public void ReinitialiseReport()
         {
             // Destroy reportedElements GameObjects if exist
-            foreach (Tuple<DateTimeOffset, OntologyEntity, GameObject> reportedElement in reportDictionary)
+            foreach (Tuple<DateTimeOffset, OntologyEntity, OntologyEntity, OntologyEntity, GameObject> reportedElement in reportDictionary)
             {
-                Destroy(reportedElement.Item3);
+                Destroy(reportedElement.Item5);
             }
 
             // Initialise report dictionary
-            reportDictionary = new List<Tuple<DateTimeOffset, OntologyEntity, GameObject>>();
+            reportDictionary = new List<Tuple<DateTimeOffset, OntologyEntity, OntologyEntity, OntologyEntity, GameObject>>();
 
             // Update user
             Rtrbauer.instance.user.name = Parser.ParseAddDateTime("User_");
 
-            // Re-initialise dictionary elements: server, user and asset
-            string serverReport = Rtrbauer.instance.server.AbsoluteUri + "server#connected";
-            string userReport = Rtrbauer.instance.server.AbsoluteUri + "user#" + Rtrbauer.instance.user.name;
+            // Re-initialise dictionary elements: server, user, asset and component
+            OntologyEntity serverIndividual = new OntologyEntity(Rtrbauer.instance.server.AbsoluteUri + "api/files/owl/server#connected");
+            OntologyEntity userRange = new OntologyEntity(Rtrbauer.instance.server.AbsoluteUri + "api/files/owl/orgont#Agent");
+            OntologyEntity userIndividual = new OntologyEntity(Rtrbauer.instance.server.AbsoluteUri + "api/files/owl/orgont#" + Rtrbauer.instance.user.name);
+            OntologyEntity assetRange = new OntologyEntity(Rtrbauer.instance.asset.URI());
+            OntologyEntity componentRange = new OntologyEntity(Rtrbauer.instance.component.URI());
 
             // Report re-initialised elements
-            ReportElement(new OntologyEntity(serverReport));
-            ReportElement(new OntologyEntity(userReport));
-            ReportElement(new OntologyEntity(Rtrbauer.instance.asset.URI()));
+            ReportElement(null, null, serverIndividual);
+            ReportElement(null, userRange, userIndividual);
+            ReportElement(null, assetRange, null);
+            ReportElement(null, componentRange, null);
 
             // UPG: to reinitialise with Vuforia to start the app again (start at configuration panel)
         }
@@ -133,17 +137,26 @@ namespace Rtrbau
         /// Inputs ontology entity into user's report.
         /// Loading entities created is a different function [TBD].
         /// </summary>
-        public void ReportElement(OntologyEntity reportedEntity)
+        public void ReportElement(OntologyEntity relationship, OntologyEntity range, OntologyEntity individual)
         {
-            GameObject reportedObject;
+            // Initialise reportedElement members
+            GameObject reportedObject = Instantiate(reportElement, reportPanel.transform);
+            OntologyEntity reportedRelationship = relationship;
+            OntologyEntity reportedRange = range;
+            OntologyEntity reportedIndividual = individual;
 
-            reportedObject = Instantiate(reportElement, reportPanel.transform);
+            // Include reportedElement to reportDictionary
+            reportDictionary.Add(new Tuple<DateTimeOffset, OntologyEntity, OntologyEntity, OntologyEntity, GameObject>(DateTimeOffset.Now, reportedRelationship, reportedRange, reportedIndividual, reportedObject));
 
-            reportedObject.GetComponentInChildren<TextMeshPro>().text = reportedEntity.Ontology().Name() + "#" + reportedEntity.Name();
+            // Add reportedElement text to its GameObject
+            string reportedText = "";
+            if (reportedRelationship != null) { reportedText += reportedRelationship.Entity() + " : "; }
+            if (reportedRange != null) { reportedText += reportedRange.Entity() + " : "; }
+            if (reportedIndividual != null) { reportedText += reportedIndividual.Entity(); }
+            reportedObject.GetComponentInChildren<TextMeshPro>().text = reportedText;
 
-            reportDictionary.Add(new Tuple<DateTimeOffset, OntologyEntity, GameObject>(DateTimeOffset.Now, reportedEntity, reportedObject));
-
-            RtrbauDebug.instance.Log("Reporter::ReportElement: " + Parser.ParseNamingDateTimeXSD() + "_" + reportedEntity.Entity());
+            // Include same text to debugger
+            RtrbauDebug.instance.Log("Reporter::ReportElement: " + Parser.ParseNamingDateTimeXSD() + " : " + reportedText);
         }
 
         /// <summary>
@@ -162,7 +175,12 @@ namespace Rtrbau
             {
                 reportWriter.WriteLine("{");
                 reportWriter.WriteLine("\"dateTime\": " + "\"" + Parser.ParseNamingDateTimeXSD(reportDictionary[i].Item1) + "\",");
-                reportWriter.WriteLine("\"entity\": " + "\"" + reportDictionary[i].Item2.URI() + "\"");
+                if (reportDictionary[i].Item2 != null) { reportWriter.WriteLine("\"relationship\": " + "\"" + reportDictionary[i].Item2.URI() + "\","); }
+                else { reportWriter.WriteLine("\"relationship\": " + "\"\","); }
+                if (reportDictionary[i].Item3 != null) { reportWriter.WriteLine("\"range\": " + "\"" + reportDictionary[i].Item3.URI() + "\","); }
+                else { reportWriter.WriteLine("\"range\": " + "\"\","); }
+                if (reportDictionary[i].Item4 != null) { reportWriter.WriteLine("\"individual\": " + "\"" + reportDictionary[i].Item4.URI() + "\""); }
+                else { reportWriter.WriteLine("\"individual\": " + "\"\""); }
                 if (i != reportDictionary.Count - 1) { reportWriter.WriteLine("},"); }
                 else { reportWriter.WriteLine("}"); }
             }
@@ -175,6 +193,27 @@ namespace Rtrbau
             Debug.Log("Report written.");
 
         }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired 
+        /// </summary>
+        /// <param name="classEntity"></param>
+        /// <returns></returns>
+        public OntologyEntity FindLastReportedIndividualFromClass(OntologyEntity classEntity)
+        {
+            // Returns the last individual reported from a given class
+            // Necessary for recommendation methods to find target
+            // Determine reported elements that are individuals belonging to a class
+            List<Tuple<DateTimeOffset, OntologyEntity, OntologyEntity, OntologyEntity, GameObject>> reportedClassIndividuals = reportDictionary.FindAll((x) => x.Item3 != null && x.Item4 != null);
+            // Determine that last report element that belongs to the given class
+            Tuple<DateTimeOffset, OntologyEntity, OntologyEntity, OntologyEntity, GameObject> lastClassIndividual = reportedClassIndividuals.FindLast((x) => x.Item3.URI() == classEntity.URI());
+            // Initialise return variable
+            // Return ontology entity from last individual, otherwise return null
+            if (lastClassIndividual == null) { return null; } 
+            else { return lastClassIndividual.Item4; }
+        }
+
         #endregion CLASS_METHODS
     }
 }

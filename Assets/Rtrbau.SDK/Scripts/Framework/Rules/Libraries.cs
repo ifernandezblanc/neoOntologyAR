@@ -34,6 +34,7 @@ namespace Rtrbau
     public static class Libraries
     {
         #region LIBRARIES
+        #region DATA_LIBRARIES
         #region NAME_LIBRARIES
         /// <summary>
         /// Describe script purpose
@@ -468,6 +469,42 @@ namespace Rtrbau
             OntologyPropertyType.ObjectProperty.ToString()
         };
         #endregion VALUE_LIBRARIES
+        #endregion DATA_LIBRARIES
+
+        #region RECOMMENDATION_LIBRARIES
+        #region ATTRIBUTE_LIBRARIES
+        public static List<OntologyEntity> RecommendationStateAttributesLibrary = new List<OntologyEntity> 
+        {
+            new OntologyEntity("http://138.250.108.1:3003/api/files/owl/diagont#stepDiagnosesState"),
+            new OntologyEntity("http://138.250.108.1:3003/api/files/owl/diagont#hasStateStatus"),
+            new OntologyEntity("http://138.250.108.1:3003/api/files/owl/diagont#hasStateDominion"),
+            new OntologyEntity("http://138.250.108.1:3003/api/files/owl/diagont#hasStatePhenomenon"),
+            new OntologyEntity("http://138.250.108.1:3003/api/files/owl/diagont#hasMeasureUnit"),
+            new OntologyEntity("http://138.250.108.1:3003/api/files/owl/diagont#refersToComponent")
+        };
+        #endregion ATTRIBUTE_LIBRARIES
+
+        #region RANGE_LIBRARIES
+        public static List<OntologyEntity> RecommendationStateRangesLibrary = new List<OntologyEntity>
+        {
+            new OntologyEntity("http://138.250.108.1:3003/api/files/owl/diagont#State"),
+            new OntologyEntity("http://138.250.108.1:3003/api/files/owl/diagont#Status"),
+            new OntologyEntity("http://138.250.108.1:3003/api/files/owl/diagont#Dominion"),
+            new OntologyEntity("http://138.250.108.1:3003/api/files/owl/diagont#Phenomenon"),
+            new OntologyEntity("http://138.250.108.1:3003/api/files/owl/diagont#Unit"),
+            new OntologyEntity("http://138.250.108.1:3003/api/files/owl/orgont#Component")
+        };
+        #endregion RANGE_LIBRARIES
+
+        #region SUBSET_LIBRARIES
+        public static Dictionary<decimal, List<string>> RecommendationStateStatusSubsetsLibrary = new Dictionary<decimal, List<string>>
+        {
+            {1.0M, new List<string>(){"http://138.250.108.1:3003/api/files/owl/diagont#Faulty"}},
+            {0.5M, new List<string>(){"http://138.250.108.1:3003/api/files/owl/diagont#SafelyDegraded", "http://138.250.108.1:3003/api/files/owl/diagont#UnsafelyDegraded"}},
+            {0.0M, new List<string>(){"http://138.250.108.1:3003/api/files/owl/diagont#Normal"}},
+        };
+        #endregion SUBSET_LIBRARIES
+        #endregion RECOMMENDATION_LIBRARIES
         #endregion LIBRARIES
     }
 }

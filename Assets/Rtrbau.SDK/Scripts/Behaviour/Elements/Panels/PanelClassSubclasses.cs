@@ -244,7 +244,9 @@ namespace Rtrbau
         // Called from Initialise (where middle classes accessed, or at final evaluation when criteria met
         public void InputIntoReport()
         {
-            Reporter.instance.ReportElement(classElement.entity);
+            // Report class subclass and initialise any OntologyEntities required
+            OntologyEntity relationship = new OntologyEntity(Rtrbauer.instance.rdfs, "subclassOf");
+            Reporter.instance.ReportElement(relationship, classElement.entity, null);
         }
 
         /// <summary>
@@ -479,10 +481,12 @@ namespace Rtrbau
                         // Check if user wants to do procedure(s) available
                         if (Rtrbauer.instance.user.procedure == RtrbauElementType.Consult)
                         {
-                            // Report class selected: InputIntoReport()
-                            Reporter.instance.ReportElement(entity);
                             // Remember to add operation to configuration
                             Rtrbauer.instance.operation = new OntologyEntity(entity.URI());
+                            // Generate ontology entities to report connection to new RtrbauElement
+                            OntologyEntity relationship = new OntologyEntity(Rtrbauer.instance.rdfs, "subClassOf");
+                            // Report class selected: InputIntoReport()
+                            Reporter.instance.ReportElement(relationship, entity, null);
                             // Complete paneller behaviour
                             PanellerEvents.TriggerEvent("LoadOperationIndividuals", entity);
                             // Complete paneller behaviour: destroy this element
@@ -490,8 +494,6 @@ namespace Rtrbau
                         }
                         else if (Rtrbauer.instance.user.procedure == RtrbauElementType.Report)
                         {
-                            // Report class selected: InputIntoReport()
-                            Reporter.instance.ReportElement(entity);
                             // Remember to add operation to configuration
                             Rtrbauer.instance.operation = new OntologyEntity(entity.URI());
                             // Complete paneller behaviour
@@ -499,6 +501,10 @@ namespace Rtrbau
                             // Generate OntologyElement(s) to load RtrbauElement
                             OntologyElement elementClass = new OntologyElement(entity.URI(), OntologyElementType.ClassProperties);
                             OntologyElement elementIndividual = new OntologyElement(Parser.ParseAddDateTime(entity.URI()), OntologyElementType.IndividualProperties);
+                            // Generate ontology entities to report connection to new RtrbauElement
+                            OntologyEntity entityRelationship = new OntologyEntity(Rtrbauer.instance.rdf, "type");
+                            // Report class selected: InputIntoReport()
+                            Reporter.instance.ReportElement(entityRelationship, elementClass.entity, elementIndividual.entity);
                             // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load
                             RtrbauerEvents.TriggerEvent("AssetVisualiser_CreateElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
                             // Complete paneller behaviour: destroy this element
@@ -519,8 +525,6 @@ namespace Rtrbau
                         // Check if user wants to do procedure(s) available
                         if (Rtrbauer.instance.user.procedure == RtrbauElementType.Report)
                         {
-                            // Report class selected: InputIntoReport()
-                            Reporter.instance.ReportElement(entity);
                             // Remember to add operation to configuration
                             Rtrbauer.instance.operation = new OntologyEntity(entity.URI());
                             // Complete paneller behaviour
@@ -528,6 +532,10 @@ namespace Rtrbau
                             // Generate OntologyElement(s) to load RtrbauElement
                             OntologyElement elementClass = new OntologyElement(entity.URI(), OntologyElementType.ClassProperties);
                             OntologyElement elementIndividual = new OntologyElement(Parser.ParseAddDateTime(entity.URI()), OntologyElementType.IndividualProperties);
+                            // Generate ontology entities to report connection to new RtrbauElement
+                            OntologyEntity entityRelationship = new OntologyEntity(Rtrbauer.instance.rdf, "type");
+                            // Report class selected: InputIntoReport()
+                            Reporter.instance.ReportElement(entityRelationship, elementClass.entity, elementIndividual.entity);
                             // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load
                             RtrbauerEvents.TriggerEvent("AssetVisualiser_CreateElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
                             // Complete paneller behaviour: destroy this element

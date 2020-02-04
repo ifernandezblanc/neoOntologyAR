@@ -32,13 +32,15 @@ namespace Rtrbau
     {
         #region INITIALISATION_VARIABLES
         public Action<OntologyEntity, bool> nominate;
-        public OntologyEntity individual;
+        // public OntologyEntity individual;
+        public OntologyEntity individualEntity;
+        public RtrbauElement individualValues;
         public Transform parent;
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
-        public OntologyElement individualElement;
-        public JsonIndividualValues individualProperties;
+        // public OntologyElement individualElement;
+        // public JsonIndividualValues individualProperties;
         public List<GameObject> nominatedDataTexts;
         #endregion CLASS_VARIABLES
 
@@ -54,7 +56,7 @@ namespace Rtrbau
         public bool buttonCreated;
         private bool datableNominate;
         // private bool buttonActive;
-        public bool loadableNominate;
+        // public bool loadableNominate;
         #endregion CLASS_EVENTS
 
         #region MONOBEHAVIOUR_METHODS
@@ -102,62 +104,67 @@ namespace Rtrbau
 
         #region CLASS_METHODS
         #region PRIVATE
-        void DownloadIndividualProperties(OntologyElement nominatedElement)
-        {
-            // Stop individual properties download
-            LoaderEvents.StopListening(individualElement.EventName(), DownloadIndividualProperties);
+        //void DownloadIndividualProperties(OntologyElement nominatedElement)
+        //{
+        //    // Stop individual properties download
+        //    LoaderEvents.StopListening(individualElement.EventName(), DownloadIndividualProperties);
 
-            if (File.Exists(individualElement.FilePath())) 
-            {
-                string jsonFile = File.ReadAllText(individualElement.FilePath());
+        //    if (File.Exists(individualElement.FilePath())) 
+        //    {
+        //        string jsonFile = File.ReadAllText(individualElement.FilePath());
 
-                individualProperties = JsonUtility.FromJson<JsonIndividualValues>(jsonFile);
+        //        individualProperties = JsonUtility.FromJson<JsonIndividualValues>(jsonFile);
 
-                // If individual properties are not zero, then load button as datable
-                if (individualProperties.ontProperties.Count != 0)
-                {
-                    // Load button as datable
-                    LoadButton(true);
-                }
-                else
-                {
-                    // Load button as non datable
-                    LoadButton(false);
-                }
-            }
-            else
-            {
-                Debug.LogError("NominateDataButton::DownloadIndividualProperties: File not found: " + individualElement.FilePath());
-            }
-        }
+        //        // If individual properties are not zero, then load button as datable
+        //        if (individualProperties.ontProperties.Count != 0)
+        //        {
+        //            // Load button as datable
+        //            LoadButton(true);
+        //        }
+        //        else
+        //        {
+        //            // Load button as non datable
+        //            LoadButton(false);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Debug.LogError("NominateDataButton::DownloadIndividualProperties: File not found: " + individualElement.FilePath());
+        //    }
+        //}
 
         void LoadButton(bool datable)
         {
             if (datable == false)
             {
                 // Show individual name the button refers to
-                buttonText.text = individual.Name();
+                // buttonText.text = individual.Name();
+                buttonText.text = individualEntity.Name();
                 // Assig nominate as non datable
                 datableNominate = false;
                 // If nominate is new, assign new nominate as loadable
-                if (individual.Name().Contains(Parser.ParseNamingNew())) { loadableNominate = true; }
-                else { }
+                // if (individual.Name().Contains(Parser.ParseNamingNew())) { loadableNominate = true; }
+                // else { }
                 // Assign button as created
                 buttonCreated = true;
             }
             else if (datable == true)
             {
                 // Show individual name the button refers to
-                buttonText.text = individual.Name();
+                // buttonText.text = individual.Name();
+                buttonText.text = individualEntity.Name();
                 // Generate data texts for each individual property
-                foreach(JsonValue individualProperty in individualProperties.ontProperties)
+                // foreach (JsonValue individualProperty in individualProperties.ontProperties)
+                foreach (RtrbauAttribute individualProperty in individualValues.elementAttributes)
                 {
                     // Debug.Log("NominateDataButton::LoadButton: individual property is: " + individualProperty.ontName);
                     // If property is of datatype
-                    if (individualProperty.ontType == Rtrbauer.instance.owl.URI() + "DatatypeProperty")
+                    // if (individualProperty.ontType == Rtrbauer.instance.owl.URI() + "DatatypeProperty")
+                    if (individualProperty.attributeType.URI() == Rtrbauer.instance.owl.URI() + "DatatypeProperty")
                     {
                         // UPG: add audio and image properties
-                        if (individualProperty.ontValue.Contains("http://")) { }
+                        // if (individualProperty.ontValue.Contains("http://")) { }
+                        if (individualProperty.attributeValue.Contains("http://")) { }
                         else
                         {
                             // Create nominate datatype property text panel
@@ -166,14 +173,16 @@ namespace Rtrbau
                             nominatedDataTexts.Add(nominatedText);
                         }
                     }
-                    else if (individualProperty.ontType == Rtrbauer.instance.owl.URI() + "ObjectProperty")
+                    // else if (individualProperty.ontType == Rtrbauer.instance.owl.URI() + "ObjectProperty")
+                    else if (individualProperty.attributeType.URI() == Rtrbauer.instance.owl.URI() + "ObjectProperty")
                     {
                         // Identify if object property refers to individual of component ontology
-                        // Inference rule number 1
-                        if (individualProperty.ontValue.Contains(Rtrbauer.instance.component.Ontology().Name()))
+                        // if (individualProperty.ontValue.Contains(Rtrbauer.instance.component.Ontology().Name()))
+                        if (individualProperty.attributeRange.URI() == Rtrbauer.instance.component.URI())
                         {
                             // Obtain component name
-                            string nominatedComponentName = Parser.ParseURI(individualProperty.ontValue, '#', RtrbauParser.post);
+                            // string nominatedComponentName = Parser.ParseURI(individualProperty.ontValue, '#', RtrbauParser.post);
+                            string nominatedComponentName = Parser.ParseURI(individualProperty.attributeValue, '#', RtrbauParser.post);
                             GameObject nominatedComponentModel = parent.GetComponent<TextPanelTap3>().visualiser.manager.FindAssetComponentManipulator(nominatedComponentName);                            
                             // If component is found in scene create nominated model panel, otherwise destroy nominate data button
                             if (nominatedComponentModel != null)
@@ -187,7 +196,7 @@ namespace Rtrbau
                                 // Assign nominated model to list of nominated data texts
                                 nominatedDataTexts.Add(nominatedModel);
                                 // Assign nominate as loadable
-                                loadableNominate = true;
+                                // loadableNominate = true;
                             }
                             else 
                             {
@@ -213,7 +222,8 @@ namespace Rtrbau
             }
         }
 
-        GameObject CreateNominatedPropertyText(JsonValue nominatedProperty, bool isDatatype)
+        // GameObject CreateNominatedPropertyText(JsonValue nominatedProperty, bool isDatatype)
+        GameObject CreateNominatedPropertyText(RtrbauAttribute nominatedProperty, bool isDatatype)
         {
             // Instantiate nominated text panel
             GameObject nominatedText = Instantiate(nominatedDataText);
@@ -222,10 +232,13 @@ namespace Rtrbau
             // Scale nominated text panel
             ScaleNominatedText(nominatedText);
             // Generate datatype property text
-            string propertyName = Parser.ParseURI(nominatedProperty.ontName, '#', RtrbauParser.post);
+            // string propertyName = Parser.ParseURI(nominatedProperty.ontName, '#', RtrbauParser.post);
+            string propertyName = nominatedProperty.attributeName.Name();
             string propertyValue;
-            if (isDatatype == true) { propertyValue = nominatedProperty.ontValue; }
-            else { propertyValue = Parser.ParseURI(nominatedProperty.ontValue, '#', RtrbauParser.post); }
+            //if (isDatatype == true) { propertyValue = nominatedProperty.ontValue; }
+            //else { propertyValue = Parser.ParseURI(nominatedProperty.ontValue, '#', RtrbauParser.post); }
+            if (isDatatype == true) { propertyValue = nominatedProperty.attributeValue; }
+            else { propertyValue = Parser.ParseURI(nominatedProperty.attributeValue, '#', RtrbauParser.post); }
             // Add nominated datatype property text to panel
             nominatedText.GetComponentInChildren<TextMeshPro>().text = propertyName + ": " + propertyValue;
             // Deactivate nominated data text
@@ -275,29 +288,34 @@ namespace Rtrbau
         #endregion PRIVATE
 
         #region PUBLIC
-        public void Initialise(Action<OntologyEntity, bool> nominateIndividual, OntologyEntity relationshipValue, Transform fabricationParent)
+        // public void Initialise(Action<OntologyEntity, bool> nominateIndividual, OntologyEntity relationshipValue, JsonIndividualValues valueProperties, Transform fabricationParent)
+        public void Initialise(Action<OntologyEntity, bool> nominateIndividual, OntologyEntity entityIndividual, RtrbauElement valuesIndividual, Transform fabricationParent)
         {
             // Initialise button variables
             nominate = nominateIndividual;
-            individual = relationshipValue;
-            individualElement = new OntologyElement(relationshipValue.URI(), OntologyElementType.IndividualProperties);
+            individualEntity = entityIndividual;
+            individualValues = valuesIndividual;
+            //individualValues = valueProperties;
+            //individualElement = new OntologyElement(relationshipValue.URI(), OntologyElementType.IndividualProperties);
             parent = fabricationParent;
             nominatedDataTexts = new List<GameObject>();
             buttonCreated = false;
             datableNominate = false;
             // buttonActive = false;
-            loadableNominate = false;
+            // loadableNominate = false;
             // To optimise speed, only check individual properties if nominate is not new
-            if (individual.Name().Contains(Parser.ParseNamingNew()))
+            if (individualEntity.Name().Contains(Parser.ParseNamingNew()))
             {
                 // Load button as non datable
                 LoadButton(false);
             }
             else
             {
-                // Start individual properties download
-                LoaderEvents.StartListening(individualElement.EventName(), DownloadIndividualProperties);
-                Loader.instance.StartOntElementDownload(individualElement);
+                //// Start individual properties download
+                //LoaderEvents.StartListening(individualElement.EventName(), DownloadIndividualProperties);
+                //Loader.instance.StartOntElementDownload(individualElement);
+                // Load button as datable
+                LoadButton(true);
             }
         }
 
@@ -306,7 +324,7 @@ namespace Rtrbau
             if (buttonCreated == true)
             {
                 // Trigger the nominate individual action for this button as non-recordable
-                nominate.Invoke(individual, false);
+                nominate.Invoke(individualEntity, false);
             }
             else { }
         }

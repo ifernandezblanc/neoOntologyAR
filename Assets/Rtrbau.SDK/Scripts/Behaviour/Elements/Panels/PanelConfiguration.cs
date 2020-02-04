@@ -171,18 +171,20 @@ namespace Rtrbau
             // Initialise RtrbauDebug user log variables
             RtrbauDebug.instance.Initialise();
             // Initialise Reporter:
-            // Generate server and user variables to report
-            string serverReport = serverURI + "api/files/owl/server#connected";
-            string userReport = serverURI + "api/files/owl/server#" + userName;
+            // Generate server, user, asset and component variables to report
+            OntologyEntity serverIndividual = new OntologyEntity(Rtrbauer.instance.server.AbsoluteUri + "api/files/owl/server#connected");
+            OntologyEntity userRange = new OntologyEntity(Rtrbauer.instance.server.AbsoluteUri + "api/files/owl/orgont#Agent");
+            OntologyEntity userIndividual = new OntologyEntity(Rtrbauer.instance.server.AbsoluteUri + "api/files/owl/orgont#" + Rtrbauer.instance.user.name);
+            OntologyEntity assetRange = new OntologyEntity(Rtrbauer.instance.asset.URI());
+            OntologyEntity componentRange = new OntologyEntity(Rtrbauer.instance.component.URI());
             // Confirm user and server through log
-            Debug.Log("PanelConfiguration::InputIntoReport: serverReport: " + serverReport);
-            Debug.Log("PanelConfiguration::InputIntoReport: userReport: " + userReport);
-            // Report server and user
-            Reporter.instance.ReportElement(new OntologyEntity(serverReport));
-            Reporter.instance.ReportElement(new OntologyEntity(userReport));
-            // Report asset and component
-            Reporter.instance.ReportElement(Rtrbauer.instance.asset);
-            Reporter.instance.ReportElement(Rtrbauer.instance.component);
+            RtrbauDebug.instance.Log("PanelConfiguration::InputIntoReport: serverReport: " + serverIndividual.URI());
+            RtrbauDebug.instance.Log("PanelConfiguration::InputIntoReport: userReport: " + userIndividual.URI());
+            // Report server, user, asset and component
+            Reporter.instance.ReportElement(null, null, serverIndividual);
+            Reporter.instance.ReportElement(null, userRange, userIndividual);
+            Reporter.instance.ReportElement(null, assetRange, null);
+            Reporter.instance.ReportElement(null, componentRange, null);
             // Move to next panel
             PanellerEvents.TriggerEvent("LoadAssets", Rtrbauer.instance.asset);
             // Destroy this element

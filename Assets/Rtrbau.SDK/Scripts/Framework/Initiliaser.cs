@@ -57,6 +57,15 @@ namespace Rtrbau
                 else {}
             }
 
+            foreach (string directory in Dictionaries.recommendationDataDirectories.Values)
+            {
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+                else {}
+            }
+
             foreach (string directory in Dictionaries.fileDataDirectories.Values)
             {
                 if (!Directory.Exists(directory))

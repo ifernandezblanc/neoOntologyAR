@@ -200,6 +200,23 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired
         /// </summary>
+        public static string ParseOntRecommendationURI(OntologyEntity entity, RtrbauRecommendationType type)
+        {
+            if (type == RtrbauRecommendationType.ClassIndividuals)
+            {
+                return Rtrbauer.instance.server.AbsoluteUri + "api/recommendations/ontology/" + entity.Ontology().Name() + "/class/" + entity.Name() + "/individuals/";
+            }
+            else
+            {
+                throw new ArgumentException("Argument Error: ontology element type not implemented for recommendation");
+            }
+        }
+
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired
+        /// </summary>
         public static string ParseFileURI(string name, string type)
         {
             RtrbauFileType filetype;

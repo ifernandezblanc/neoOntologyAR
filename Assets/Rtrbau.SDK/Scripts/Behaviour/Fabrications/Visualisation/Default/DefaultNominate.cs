@@ -234,13 +234,13 @@ namespace Rtrbau
                     {
                         //Debug.Log("DefaultNominate::OnNextVisualisation: new element to report is of range: " + attribute.attributeRange.Name());
                         //Debug.Log("DefaultNominate::OnNextVisualisation: new element to report name is: " + attribute.attributeValue);
-                        // Generate ontology entity to report connection to new RtrbauElement
-                        OntologyEntity relationship = new OntologyEntity(attribute.attributeName.URI());
-                        // Report relationship attribute to load next RtrbauElement
-                        Reporter.instance.ReportElement(relationship);
+                        // Generate ontology entities to report connection to new RtrbauElement
+                        OntologyEntity entityRelationship = new OntologyEntity(attribute.attributeName.URI());
                         // Generate OntologyElement(s) to load RtrbauElement
                         OntologyElement elementClass = new OntologyElement(attribute.attributeRange.URI(), OntologyElementType.ClassProperties);
                         OntologyElement elementIndividual = new OntologyElement(attribute.attributeValue, OntologyElementType.IndividualProperties);
+                        // Report relationship attribute to load next RtrbauElement
+                        Reporter.instance.ReportElement(entityRelationship, elementClass.entity, elementIndividual.entity);
                         // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load
                         RtrbauerEvents.TriggerEvent("AssetVisualiser_CreateElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
                         // Check RtrbauElement to UnloadElement if necessary

@@ -138,13 +138,13 @@ namespace Rtrbau
             // Check data received meets fabrication requirements
             if (data.fabricationData.TryGetValue(textfacet2, out attribute))
             {
-                // Generate ontology entity to report
-                OntologyEntity relationship = new OntologyEntity(attribute.attributeName.URI());
-                // Report relationship attribute to load next RtrbauElement
-                Reporter.instance.ReportElement(relationship);
                 // Generate OntologyElement(s) to load next RtrbauElement
                 OntologyElement individual = new OntologyElement(attribute.attributeValue, OntologyElementType.IndividualProperties);
-                OntologyElement individualClass = new OntologyElement(attribute.attributeRange.URI(), OntologyElementType.ClassProperties); 
+                OntologyElement individualClass = new OntologyElement(attribute.attributeRange.URI(), OntologyElementType.ClassProperties);
+                // Generate ontology entities to report connection to new RtrbauElement
+                OntologyEntity entityRelationship = new OntologyEntity(attribute.attributeName.URI());
+                // Report class selected: InputIntoReport()
+                Reporter.instance.ReportElement(entityRelationship, individualClass.entity, individual.entity);
                 // Find if appointed element has already been loaded
                 GameObject nextElement = visualiser.FindElement(individual);
                 // If so update line renderer, otherwise load new RtrbauElement

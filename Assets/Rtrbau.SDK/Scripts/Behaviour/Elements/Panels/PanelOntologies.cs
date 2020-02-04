@@ -236,7 +236,8 @@ namespace Rtrbau
             // Confirm ontology chosen through log
             Debug.Log("PanelOntologies::NominatedOntology: Ontology selected " + entity.Ontology().Name());
             // Report ontology selected: InputIntoReport()
-            Reporter.instance.ReportElement(entity);
+            OntologyEntity relationship = new OntologyEntity(Rtrbauer.instance.rdfs, "subclassOf");
+            Reporter.instance.ReportElement(relationship, entity, null);
             // Move to next panel
             PanellerEvents.TriggerEvent("LoadOperationSubclasses", entity);
             // Destroy this element

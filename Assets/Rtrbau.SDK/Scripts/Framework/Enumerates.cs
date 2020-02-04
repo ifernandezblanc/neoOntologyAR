@@ -30,7 +30,7 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
-    public enum OntologyElementType : int { Ontologies, ClassSubclasses, ClassIndividuals, ClassProperties, ClassExample, IndividualProperties, IndividualUpload}
+    public enum OntologyElementType : int { Ontologies, ClassSubclasses, ClassIndividuals, ClassProperties, ClassExample, IndividualProperties, IndividualUpload }
 
     /// <summary>
     /// Describe script purpose
@@ -60,13 +60,13 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
-    public enum RtrbauFileType : int { wav, png, jpg, mp4, obj, xml, dat }
+    public enum RtrbauRecommendationType : int { Ontologies, ClassSubclasses, ClassIndividuals, ClassProperties, ClassExample, IndividualProperties, IndividualUpload }
 
     /// <summary>
     /// Describe script purpose
-    /// Add links when code has been inspired 
+    /// Add links when code has been inspired
     /// </summary>
-    public enum RtrbauFacetRuleType : int { Any, All }
+    public enum RtrbauFileType : int { wav, png, jpg, mp4, obj, xml, dat }
 
     /// <summary>
     /// Describe script purpose
@@ -94,6 +94,12 @@ namespace Rtrbau
         IconPanelTap1,
         ModelPanelTap1
     }
+
+    /// <summary>
+    /// Describe script purpose
+    /// Add links when code has been inspired 
+    /// </summary>
+    public enum RtrbauFacetRuleType : int { Any, All }
 
     /// <summary>
     /// Describe script purpose
@@ -156,6 +162,12 @@ namespace Rtrbau
 
     /// <summary>
     /// Describe script purpose
+    /// Add links when code has been inspired 
+    /// </summary>
+    public enum RtrbauRecommendationRuleType : int { Binary, Symmetric, Subset, Component }
+
+    /// <summary>
+    /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
     public enum RtrbauPanel : int { Ontology, User, Asset, Operation }
@@ -177,6 +189,12 @@ namespace Rtrbau
     /// Add links when code has been inspired
     /// </summary>
     public enum VuforiaTargetType : int { DifferentTarget, ImageTarget, ModelTarget }
+
+    /// <summary>
+    /// Describe script purpose
+    /// Add links when code has been inspired
+    /// </summary>
+    public enum RtrbauGameObjectTags : int { RtrbauAssetManager }
 
     #endregion ENUMERATES
 }

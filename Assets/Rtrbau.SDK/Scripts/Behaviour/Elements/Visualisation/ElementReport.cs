@@ -1014,7 +1014,8 @@ namespace Rtrbau
             if (File.Exists(classIndividuals.FilePath())) { File.Delete(classIndividuals.FilePath()); }
 
             // Report rtrbauElement to reporter
-            Reporter.instance.ReportElement(rtrbauElement.elementName);
+            // UPG: not necessary as it is being already called by previous button
+            // Reporter.instance.ReportElement(rtrbauElement.elementName);
 
             // Activate fabrications
             ActivateIt();

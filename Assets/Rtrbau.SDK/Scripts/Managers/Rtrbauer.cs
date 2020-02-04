@@ -63,6 +63,8 @@ namespace Rtrbau
 
         #region CLASS_MEMBERS
         public Uri server;
+        public Ontology rdf;
+        public Ontology rdfs;
         public Ontology xsd;
         public Ontology owl;
         public OntologyEntity asset;
@@ -109,6 +111,8 @@ namespace Rtrbau
         {
             // Declare Rtrbau configuration ontologies and server
             server = new Uri("http://138.250.108.1:3003");
+            rdf = new Ontology(OntologyStandardType.rdf);
+            rdfs = new Ontology(OntologyStandardType.rdfs);
             xsd = new Ontology(OntologyStandardType.xsd);
             owl = new Ontology(OntologyStandardType.owl);
             Ontology orgont = new Ontology(server.AbsoluteUri + "api/files/owl/orgont#");

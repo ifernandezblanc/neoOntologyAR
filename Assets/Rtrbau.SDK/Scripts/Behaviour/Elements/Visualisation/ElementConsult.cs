@@ -514,7 +514,8 @@ namespace Rtrbau
         {
             // Function called after generating fabrications
             // Input into report
-            Reporter.instance.ReportElement(rtrbauElement.elementName);
+            // UPG: not necessary as it is being already called by previous button
+            // Reporter.instance.ReportElement(rtrbauElement.elementName);
             // Assign element as reported
             elementReported = true;
         }

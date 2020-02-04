@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
+using System.IO;
 using TMPro;
 using Microsoft.MixedReality.Toolkit.Utilities;
 #endregion NAMESPACES
@@ -32,7 +33,7 @@ namespace Rtrbau
     /// Describe script purpose
     /// Add links when code has been inspired
     /// </summary>
-    public class TextPanelTap3 : MonoBehaviour, IFabricationable, IVisualisable, INominatable
+    public class TextPanelTap3 : MonoBehaviour, IFabricationable, IVisualisable, INominatable, IRecommendable
     {
         #region INITIALISATION_VARIABLES
         public AssetVisualiser visualiser;
@@ -45,6 +46,16 @@ namespace Rtrbau
         public Dictionary<OntologyEntity, GameObject> individualNominates;
         public OntologyEntity nominatedIndividual;
         #endregion CLASS_VARIABLES
+
+        #region RECOMMENDATION_VARIABLES
+        public RecommendationFormat recommendationFormat;
+        public JsonIndividualValues recommendationTarget;
+        public List<JsonIndividualValues> recommendationCases;
+        public RtrbauRecommendation recommendation;
+        public int recommendationCasesDownloadable;
+        public bool recommendationTargetDownloaded;
+        public bool recommendationCasesDownloaded;
+        #endregion RECOMMENDATION_VARIABLES
 
         #region FACETS_VARIABLES
         #endregion FACETS_VARIABLES
@@ -104,6 +115,13 @@ namespace Rtrbau
             element = elementParent;
             scale = fabricationParent;
             individualNominates = new Dictionary<OntologyEntity, GameObject>();
+            recommendationFormat = null;
+            recommendation = null;
+            recommendationTarget = null;
+            recommendationCases = new List<JsonIndividualValues>();
+            recommendationCasesDownloadable = 0;
+            recommendationTargetDownloaded = false;
+            recommendationCasesDownloaded = false;
             nominatedIndividual = null;
             fabricationCreated = false;
             nominateButtonsActive = false;
@@ -140,27 +158,29 @@ namespace Rtrbau
             {
                 // Set button name to relationship name
                 fabricationText.text = Parser.ParseNamingOntologyFormat(attribute.attributeName.Name());
-                // Assign nominated class
-                OntologyEntity individualRange = attribute.attributeRange;
-                // Use generic name (class) to generate ontology entity for "new" individual
-                OntologyEntity newIndividualEntity = new OntologyEntity(Parser.ParseAddNew(attribute.attributeRange.URI()));
-                // Create and assign "new" individual in case user wants to define a new one
-                individualNominates.Add(newIndividualEntity, CreateIndividualButton(newIndividualEntity, individualRange));
-                // Retrieve JsonIndividuals from ElementReport
-                List<JsonIndividual> individuals = element.GetComponent<ElementReport>().objectClassesIndividuals.Find(x => x.ontClass == attribute.attributeRange.URI()).ontIndividuals;
-                // Add individuals to fabrication list
-                foreach (JsonIndividual individual in individuals)
-                {
-                    Debug.Log("DefaultNominate::InferFromtText: individual nominated is: " + individual.ontIndividual);
-                    // Generate OntologyEntity to parse individual URI
-                    OntologyEntity individualEntity = new OntologyEntity(individual.ontIndividual);
-                    // Create individual button and assign both to dictionary
-                    individualNominates.Add(individualEntity, CreateIndividualButton(individualEntity, individualRange));
-                }
-                // Ensure no nominates buttons are unloadable
-                StartCoroutine(UnloadNominates());
-                // Set fabrication as created
-                fabricationCreated = true;
+                // Start recommendation procedure
+                DetermineRecommendationFormat();
+                //// Assign nominated class
+                //OntologyEntity individualRange = attribute.attributeRange;
+                //// Use generic name (class) to generate ontology entity for "new" individual
+                //OntologyEntity newIndividualEntity = new OntologyEntity(Parser.ParseAddNew(attribute.attributeRange.URI()));
+                //// Create and assign "new" individual in case user wants to define a new one
+                //individualNominates.Add(newIndividualEntity, CreateIndividualButton(newIndividualEntity, individualRange));
+                //// Retrieve JsonIndividuals from ElementReport
+                //List<JsonIndividual> individuals = element.GetComponent<ElementReport>().objectClassesIndividuals.Find(x => x.ontClass == attribute.attributeRange.URI()).ontIndividuals;
+                //// Add individuals to fabrication list
+                //foreach (JsonIndividual individual in individuals)
+                //{
+                //    Debug.Log("DefaultNominate::InferFromtText: individual nominated is: " + individual.ontIndividual);
+                //    // Generate OntologyEntity to parse individual URI
+                //    OntologyEntity individualEntity = new OntologyEntity(individual.ontIndividual);
+                //    // Create individual button and assign both to dictionary
+                //    individualNominates.Add(individualEntity, CreateIndividualButton(individualEntity, individualRange));
+                //}
+                //// Ensure no nominates buttons are unloadable
+                //StartCoroutine(UnloadNominates());
+                //// Set fabrication as created
+                //fabricationCreated = true;
             }
             else
             {
@@ -224,15 +244,17 @@ namespace Rtrbau
                     {
                         //Debug.Log("DefaultNominate::OnNextVisualisation: new element to report is of range: " + attribute.attributeRange.Name());
                         //Debug.Log("DefaultNominate::OnNextVisualisation: new element to report name is: " + attribute.attributeValue);
-                        // Generate ontology entity to report connection to new RtrbauElement
-                        OntologyEntity relationship = new OntologyEntity(attribute.attributeName.URI());
-                        // Report relationship attribute to load next RtrbauElement
-                        Reporter.instance.ReportElement(relationship);
                         // Generate OntologyElement(s) to load RtrbauElement
                         OntologyElement elementClass = new OntologyElement(attribute.attributeRange.URI(), OntologyElementType.ClassProperties);
                         OntologyElement elementIndividual = new OntologyElement(attribute.attributeValue, OntologyElementType.IndividualProperties);
+                        // Generate ontology entities to report connection to new RtrbauElement
+                        OntologyEntity entityRelationship = new OntologyEntity(attribute.attributeName.URI());
+                        // Report class selected: InputIntoReport()
+                        Reporter.instance.ReportElement(entityRelationship, elementClass.entity, elementIndividual.entity);
                         // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load
                         RtrbauerEvents.TriggerEvent("AssetVisualiser_CreateElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
+                        // Destroy OntologyRecommendation
+                        DestroyRecommendation();
                         // Check RtrbauElement to UnloadElement if necessary
                         element.GetComponent<ElementReport>().CheckNewNominatesReported(this.gameObject);
                     }
@@ -387,14 +409,147 @@ namespace Rtrbau
         }
         #endregion INOMINATABLE_METHODS
 
+        #region IRECOMMENDABLE_METHODS
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DetermineRecommendationFormat()
+        {
+            if (Dictionaries.RecommendFormats.TryGetValue(data.fabricationName, out recommendationFormat))
+            {
+                DownloadRecommendationElements();
+            }
+            else { throw new ArgumentException("TextPanelTap3::FindRecommendationFormat: Fabrication does not have recommendation format implemented"); }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DownloadRecommendationElements()
+        {
+            // Find recommendation target
+            OntologyEntity target = Reporter.instance.FindLastReportedIndividualFromClass(recommendationFormat.formatRange);
+
+            if (target != null)
+            {
+                // If target exists, then recommendation can be done
+                OntologyElement targetElement = new OntologyElement(target.URI(), OntologyElementType.IndividualProperties);
+                // Start OntologyElement target download
+                LoaderEvents.StartListening(targetElement.EventName(), DownloadRecommendationTarget);
+                Loader.instance.StartOntElementDownload(targetElement);
+            }
+            else
+            {
+                // Otherwise, simply return all downloadable cases
+                recommendationTarget = null;
+                recommendationTargetDownloaded = true;
+            }
+
+            // Generate recommendationCases OntologyRecommendation
+            OntologyRecommendation casesRecommendation = new OntologyRecommendation(recommendationFormat.formatRange.URI(), RtrbauRecommendationType.ClassIndividuals);
+            // Start OntologyRecommendation cases download
+            LoaderEvents.StartListening(casesRecommendation.EventName(), DownloadRecommendationCases);
+            Loader.instance.StartOntRecommendationDownload(casesRecommendation);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void GenerateRecommendation()
+        {
+            if (recommendationTargetDownloaded == true && recommendationCasesDownloaded == true && recommendationCasesDownloadable == recommendationCases.Count)
+            {
+                DataFacet textfacet7 = DataFormats.TextPanelTap3.formatFacets[0];
+                RtrbauAttribute attribute;
+
+                // Check data received meets fabrication requirements
+                if (data.fabricationData.TryGetValue(textfacet7, out attribute))
+                {
+                    recommendation = new RtrbauRecommendation(recommendationFormat, attribute, recommendationTarget, recommendationCases);
+                    RecommendCases();
+                }
+                else { throw new ArgumentException(data.fabricationName.ToString() + "::GenerateRecommendation: cannot recommend attribute received."); }
+            }
+            else { Debug.Log("TextPanelTap3::GenerateRecommendation: Recommendation elements still being downloaded"); }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void RecommendCases()
+        {
+            DataFacet textfacet7 = DataFormats.TextPanelTap3.formatFacets[0];
+            RtrbauAttribute attribute;
+
+            // Check data received meets fabrication requirements
+            if (data.fabricationData.TryGetValue(textfacet7, out attribute))
+            {
+                // Generate individual entity and values for "new" individual nominate
+                OntologyEntity newIndividualEntity = new OntologyEntity(Parser.ParseAddNew(attribute.attributeRange.URI()));
+                RtrbauElement newIndividualValues = new RtrbauElement();
+                // Create "new" nominate button and assign to individual nominates list
+                individualNominates.Add(newIndividualEntity, CreateIndividualButton(newIndividualEntity, newIndividualValues));
+                // For each recommended case
+                foreach (KeyValuePair<decimal,RtrbauElement> recommendedCase in recommendation.RecommendCases())
+                {
+                    Debug.Log("TextPanelTap3::RecommendCases: individual recommended is: " + recommendedCase.Value.elementName.Name() + " with similarity " + recommendedCase.Key);
+                    // Create individual button and assign both to dictionary
+                    individualNominates.Add(recommendedCase.Value.elementName, CreateIndividualButton(recommendedCase.Value.elementName, recommendedCase.Value));
+                }
+                // Set fabrication as created
+                fabricationCreated = true;
+
+                //// Assign nominated class
+                //OntologyEntity fabricationRange = attribute.attributeRange;
+                //// Use generic name (class) to generate ontology entity for "new" individual
+                //OntologyEntity newIndividualEntity = new OntologyEntity(Parser.ParseAddNew(attribute.attributeRange.URI()));
+                //// Create and assign "new" individual in case user wants to define a new one
+                //individualNominates.Add(newIndividualEntity, CreateIndividualButton(newIndividualEntity, individualRange));
+                //// Retrieve JsonIndividuals from ElementReport
+                //List<JsonIndividual> individuals = element.GetComponent<ElementReport>().objectClassesIndividuals.Find(x => x.ontClass == attribute.attributeRange.URI()).ontIndividuals;
+                //// Add individuals to fabrication list
+                //foreach (JsonIndividual individual in individuals)
+                //{
+                //    Debug.Log("DefaultNominate::InferFromtText: individual nominated is: " + individual.ontIndividual);
+                //    // Generate OntologyEntity to parse individual URI
+                //    OntologyEntity individualEntity = new OntologyEntity(individual.ontIndividual);
+                //    // Create individual button and assign both to dictionary
+                //    individualNominates.Add(individualEntity, CreateIndividualButton(individualEntity, individualRange));
+                //}
+                //// Ensure no nominates buttons are unloadable
+                //// StartCoroutine(UnloadNominates());
+                //// Set fabrication as created
+                //fabricationCreated = true;
+            }
+            else
+            {
+                throw new ArgumentException(data.fabricationName.ToString() + "::RecommendCases: cannot recommend attribute received.");
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DestroyRecommendation()
+        {
+            // To delete recommendation file so inferred knowledge is not kept
+            // Similar to ElementReport destroying class individuals ontology file
+            // Generate recommendationCases OntologyRecommendation
+            OntologyRecommendation casesRecommendation = new OntologyRecommendation(recommendationFormat.formatRange.URI(), RtrbauRecommendationType.ClassIndividuals);
+            // If json file exists, delete it to enable re-download with new recommendation
+            // UPG: ensure no events are calling to the same file at the same time
+            if (File.Exists(casesRecommendation.FilePath())) { File.Delete(casesRecommendation.FilePath()); }
+        }
+        #endregion IRECOMMENDABLE_METHODS
+
         #region CLASS_METHODS
         #region PRIVATE
-        GameObject CreateIndividualButton(OntologyEntity individual, OntologyEntity range)
+        GameObject CreateIndividualButton(OntologyEntity individualEntity, RtrbauElement individualValues)
         {
             // Instantiate nominate button
             GameObject individualButton = Instantiate(nominateButton);
             // Initialise nominate button with corresponding nominate function
-            individualButton.GetComponent<NominateDataButton>().Initialise(NominateIndividual, individual, this.transform);
+            individualButton.GetComponent<NominateDataButton>().Initialise(NominateIndividual, individualEntity, individualValues, this.transform);
             // Scale buttons to possible change in fabrications scale
             ScaleIndividualButton(individualButton);
             // Set tile grid object collection as button parent
@@ -455,44 +610,100 @@ namespace Rtrbau
             nominateButtons.gameObject.GetComponent<TileGridObjectCollection>().enabled = true;
         }
 
-        IEnumerator UnloadNominates()
+        void DownloadRecommendationTarget(OntologyElement target)
         {
-            Dictionary<OntologyEntity, GameObject> unloadableNominates = new Dictionary<OntologyEntity, GameObject>();
+            LoaderEvents.StopListening(target.EventName(), DownloadRecommendationTarget);
 
-            foreach (KeyValuePair<OntologyEntity,GameObject> individualNominate in individualNominates)
+            if (File.Exists(target.FilePath())) 
             {
-                // Wait until all nominates buttons have been created
-                while(individualNominate.Value.GetComponent<NominateDataButton>().buttonCreated == false)
-                {
-                    yield return null;
-                }
-
-                // If created button is unloadable, then add to unloadable nominates
-                // if (individualNominate.Value.GetComponent<NominateDataButton>().unloadableNominate == true)
-                if (individualNominate.Value.GetComponent<NominateDataButton>().loadableNominate == false)
-                {
-                    unloadableNominates.Add(individualNominate.Key, individualNominate.Value);
-                }
-                else {}
+                string jsonFile = File.ReadAllText(target.FilePath());
+                recommendationTarget = JsonUtility.FromJson<JsonIndividualValues>(jsonFile);
+                recommendationTargetDownloaded = true; 
             }
+            else { }
 
-            foreach (KeyValuePair<OntologyEntity, GameObject> nominate in unloadableNominates)
-            {
-                // Remove from individual Nominates
-                individualNominates.Remove(nominate.Key);
-                // Destroy button
-                Destroy(nominate.Value);
-            }
-
-            //GameObject nominateDataButton;
-            //if (individualNominates.TryGetValue(nominate, out nominateDataButton))
-            //{
-            //    individualNominates.Remove(nominate);
-            //    Destroy(nominateDataButton);
-            //    Debug.Log("TextPanelTap3::UnloadNominate: individual nominate being unloaded: " + nominate.Entity());
-            //}
-            //else { throw new ArgumentException("TextPanelTap3::UnloadNominate: Nominate should be found: " + nominate.Entity()); }
+            GenerateRecommendation();
         }
+
+        void DownloadRecommendationCases(OntologyRecommendation cases)
+        {
+            LoaderEvents.StopListening(cases.EventName(), DownloadRecommendationCases);
+
+            if (File.Exists(cases.FilePath()))
+            {
+                string jsonFile = File.ReadAllText(cases.FilePath());
+                JsonClassIndividuals casesIndividuals = JsonUtility.FromJson<JsonClassIndividuals>(jsonFile);
+
+                if (casesIndividuals.ontClass == recommendationFormat.formatRange.URI())
+                {
+                    recommendationCasesDownloadable = casesIndividuals.ontIndividuals.Count;
+                    recommendationCasesDownloaded = true;
+
+                    foreach (JsonIndividual individual in casesIndividuals.ontIndividuals)
+                    {
+                        OntologyElement caseIndividual = new OntologyElement(individual.ontIndividual, OntologyElementType.IndividualProperties);
+                        LoaderEvents.StartListening(caseIndividual.EventName(), DownloadRecommendationCase);
+                        Loader.instance.StartOntElementDownload(caseIndividual);
+                    }
+                }
+                else { throw new ArgumentException("TextPanelTap3::DownloadRecommendationCases: individuals do not match recommendation range class"); }
+            }
+            else { }
+        }
+
+        void DownloadRecommendationCase(OntologyElement individual)
+        {
+            LoaderEvents.StopListening(individual.EventName(), DownloadRecommendationCase);
+
+            if (File.Exists(individual.FilePath())) 
+            {
+                string jsonFile = File.ReadAllText(individual.FilePath());
+                JsonIndividualValues caseIndividual = JsonUtility.FromJson<JsonIndividualValues>(jsonFile);
+                recommendationCases.Add(caseIndividual);
+            }
+            else { }
+
+            GenerateRecommendation();
+        }
+
+        //IEnumerator UnloadNominates()
+        //{
+        //    Dictionary<OntologyEntity, GameObject> unloadableNominates = new Dictionary<OntologyEntity, GameObject>();
+
+        //    foreach (KeyValuePair<OntologyEntity,GameObject> individualNominate in individualNominates)
+        //    {
+        //        // Wait until all nominates buttons have been created
+        //        while(individualNominate.Value.GetComponent<NominateDataButton>().buttonCreated == false)
+        //        {
+        //            yield return null;
+        //        }
+
+        //        // If created button is unloadable, then add to unloadable nominates
+        //        // if (individualNominate.Value.GetComponent<NominateDataButton>().unloadableNominate == true)
+        //        if (individualNominate.Value.GetComponent<NominateDataButton>().loadableNominate == false)
+        //        {
+        //            unloadableNominates.Add(individualNominate.Key, individualNominate.Value);
+        //        }
+        //        else {}
+        //    }
+
+        //    foreach (KeyValuePair<OntologyEntity, GameObject> nominate in unloadableNominates)
+        //    {
+        //        // Remove from individual Nominates
+        //        individualNominates.Remove(nominate.Key);
+        //        // Destroy button
+        //        Destroy(nominate.Value);
+        //    }
+
+        //    //GameObject nominateDataButton;
+        //    //if (individualNominates.TryGetValue(nominate, out nominateDataButton))
+        //    //{
+        //    //    individualNominates.Remove(nominate);
+        //    //    Destroy(nominateDataButton);
+        //    //    Debug.Log("TextPanelTap3::UnloadNominate: individual nominate being unloaded: " + nominate.Entity());
+        //    //}
+        //    //else { throw new ArgumentException("TextPanelTap3::UnloadNominate: Nominate should be found: " + nominate.Entity()); }
+        //}
         #endregion PRIVATE
 
         #region PUBLIC
