@@ -53,6 +53,7 @@ namespace Rtrbau
         public Material fabricationReportedMaterial;
         public Renderer fabricationBounds;
         public GameObject recordText;
+        public MeshRenderer recordTextPanel;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -63,7 +64,7 @@ namespace Rtrbau
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || fabricationBounds == null || recordText == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || fabricationBounds == null || recordText == null || recordTextPanel == null)
             {
                 throw new ArgumentException("DefaultRecord::Start: Script requires some prefabs to work.");
             }
@@ -153,6 +154,7 @@ namespace Rtrbau
                 attribute.attributeValue = Parser.ParseNamingDateTimeXSD(attributeDate);
                 // Change button colour for user confirmation
                 fabricationReportedPanel.material = fabricationReportedMaterial;
+                recordTextPanel.material = fabricationReportedMaterial;
                 // Check if all attribute values have been recorded
                 // If true, then ElementReport will input reported element into report
                 // If true, then ElementReport will change colour to reported
@@ -230,6 +232,23 @@ namespace Rtrbau
 
             // Ensure call to report attribute is made at least once
             ReportInmutableValue();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ActivateReporting()
+        {
+            /// Fabrication does not include reporting actions that are not automatic.
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="forcedReporting"></param>
+        public void DeactivateReporting(bool forcedReporting)
+        {
+            /// Fabrication does not include reporting actions that are not automatic.
         }
         #endregion IRECORDABLE_METHODS
 

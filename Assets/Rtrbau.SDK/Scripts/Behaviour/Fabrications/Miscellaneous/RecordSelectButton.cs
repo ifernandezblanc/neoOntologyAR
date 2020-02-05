@@ -21,7 +21,9 @@ Date: 18/11/2019
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using TMPro;
+using Microsoft.MixedReality.Toolkit.UI;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -34,6 +36,7 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
+        public UnityAction report;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
@@ -93,8 +96,12 @@ namespace Rtrbau
             selectableValue = setValue;
             // Assign selectable value to button
             buttonText.text = setValue;
+            // Assign report action
+            report = SelectRecord;
             // Check button as created
             buttonCreated = true;
+            // Activate button interactions
+            ActivateReporting();
         }
 
         public void SelectRecord()
@@ -115,6 +122,24 @@ namespace Rtrbau
         public void SeenMaterial(Material material)
         {
             seenPanel.material = material;
+        }
+
+        public void ActivateReporting()
+        {
+            if (buttonCreated == true)
+            {
+                this.gameObject.GetComponent<Interactable>().OnClick.AddListener(report);
+            }
+            else { }
+        }
+
+        public void DeactivateReporting()
+        {
+            if (buttonCreated == true)
+            {
+                this.gameObject.GetComponent<Interactable>().OnClick.RemoveListener(report);
+            }
+            else { }
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS

@@ -286,6 +286,59 @@ namespace Rtrbau
                 else { }
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ActivateReporting()
+        {
+            /// Fabrication reporting is managed by <see cref="RecordSelectButton"/>.
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="forcedReporting"></param>
+        public void DeactivateReporting(bool forcedReporting)
+        {
+            if (recordSelected == true || forcedReporting == true)
+            {
+                // Deactivate selectable records
+                DeactivateRecords();
+                // Initialise list of destroyable records
+                Dictionary<string, GameObject> destroyableRecords = new Dictionary<string, GameObject>();
+
+                // Destroy all selectable records that are not selected
+                foreach (KeyValuePair<string, GameObject> record in selectableRecords)
+                {
+                    // If individual record is not that being recorded
+                    // Considers the option when selectedRecord equals null because no record has been selected
+                    if (record.Key != selectedRecord)
+                    {
+                        // Add record to list of destroyables
+                        destroyableRecords.Add(record.Key, record.Value);
+                    }
+                    else 
+                    {
+                        // Otherwise deactivate record reporting action
+                        record.Value.GetComponent<RecordSelectButton>().DeactivateReporting();
+                    }
+                }
+
+                // Remove destroyableNominates from individualNominates list
+                foreach (KeyValuePair<string, GameObject> record in destroyableRecords)
+                {
+                    // Remove nominate from individualNominates
+                    selectableRecords.Remove(record.Key);
+                    // Destroy nominate button
+                    Destroy(record.Value);
+                }
+            }
+            else
+            {
+                throw new ArgumentException("TextPanelTap2::DeactivateReporting: this function should not be accesed before an individual is nominated.");
+            }
+        }
         #endregion IRECORDABLE_METHODS
 
         #region CLASS_METHODS

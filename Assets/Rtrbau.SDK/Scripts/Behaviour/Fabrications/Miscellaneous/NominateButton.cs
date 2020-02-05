@@ -21,8 +21,10 @@ Date: 05/11/2019
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using TMPro;
 using System.IO;
+using Microsoft.MixedReality.Toolkit.UI;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -37,6 +39,7 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
+        public UnityAction report;
         public JsonClassProperties rangeProperties;
         public string recordableText;
         #endregion CLASS_VARIABLES
@@ -123,8 +126,6 @@ namespace Rtrbau
             {
                 // Show individual name the button refers to
                 buttonText.text = individual.Name();
-                // Assign button as created
-                buttonCreated = true;
                 // Assig nominate as non recordable
                 recordableNominate = false;
             }
@@ -132,8 +133,6 @@ namespace Rtrbau
             {
                 // Show individual name the button refers to
                 buttonText.text = individual.Name();
-                // Assign button as created
-                buttonCreated = true;
                 // Assign nominate as recordable
                 recordableNominate = true;
                 // Activate record button
@@ -141,6 +140,11 @@ namespace Rtrbau
                 // Initialise record button
                 recordButton.GetComponent<RecordKeyboardButton>().Initialise(RecordRecordableNominate, TouchScreenKeyboardType.Default);
             }
+
+            // Assign button as created
+            buttonCreated = true;
+            // Assign report action
+            ActivateReporting();
         }
         #endregion PRIVATE
 
@@ -151,6 +155,7 @@ namespace Rtrbau
             nominate = nominateIndividual;
             destroy = destroyIndividual;
             individual = relationshipValue;
+            report = NominateIndividual;
             // To optimise speed, only check range if nominate is new
             if (individual.Name().Contains(Parser.ParseNamingNew()))
             {
@@ -214,6 +219,24 @@ namespace Rtrbau
             {
                 recordableText = textRecordable;
                 buttonText.text = textRecordable;
+            }
+            else { }
+        }
+
+        public void ActivateReporting()
+        {
+            if (buttonCreated == true)
+            {
+                this.gameObject.GetComponent<Interactable>().OnClick.AddListener(report);
+            }
+            else { }
+        }
+
+        public void DeactivateReporting()
+        {
+            if (buttonCreated == true)
+            {
+                this.gameObject.GetComponent<Interactable>().OnClick.RemoveListener(report);
             }
             else { }
         }

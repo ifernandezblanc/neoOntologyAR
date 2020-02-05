@@ -22,7 +22,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using TMPro;
+using Microsoft.MixedReality.Toolkit.UI;
+using Microsoft.MixedReality.Toolkit.Input;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -30,15 +33,16 @@ namespace Rtrbau
     public class RecordDictationButton : MonoBehaviour, IVisualisable
     {
         #region INITIALISATION_VARIABLES
+        public Action<string> recordDictation;
+        public Transform element;
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
-        public Action<string> recordDictation;
-        public Transform element;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
         public TextMeshPro dictatedText;
+        public DictationHandler dictationHandler;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
@@ -48,7 +52,7 @@ namespace Rtrbau
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (dictatedText == null)
+            if (dictatedText == null || dictationHandler == null)
             {
                 throw new ArgumentException("RecordDictationButton::Start: Script requires some prefabs to work.");
             }
@@ -86,17 +90,17 @@ namespace Rtrbau
         /// Records dictated text after being visualised by the user.
         /// </summary>
         /// <returns>Awaits for user to visualise text dictated before recording it.</returns>
-        void RecordDictation()
+        void RecordDictation(string dictatedText)
         {
             // Determine whether to invoke record action
-            if (!dictatedText.text.Contains("<Dictation text will appear here>")|| !dictatedText.text.Contains("<Dictation error, please try again>") || !dictatedText.text.Contains("Dictation has timed out. Please try again."))
+            if (!dictatedText.Contains("<Dictation text will appear here>")|| !dictatedText.Contains("<Dictation error, please try again>") || !dictatedText.Contains("Dictation has timed out. Please try again."))
             {
                 // yield return new WaitForSecondsRealtime(3f);
-                recordDictation.Invoke(dictatedText.text);
+                recordDictation.Invoke(dictatedText);
             }
             else
             {
-                dictatedText.text = "<Dictation error, please try again>";
+                recordDictation.Invoke(null);
             }
         }
         #endregion PRIVATE
@@ -112,24 +116,63 @@ namespace Rtrbau
             // Initialise class variables
             recordDictation = recordAction;
             element = elementFabrication;
+            buttonCreated = true;
+            ActivateReporting();
         }
         /// <summary>
-        /// To trigger actions when dictation starts
+        /// To trigger actions when dictationHandler starts
         /// </summary>
         public void OnDictationStarts() 
-        { 
+        {
+            Debug.Log("RecordDictationButton::OnDictationStarts: Listener called");
+            // Start dictationHandler
+            dictationHandler.StartRecording();
             // Activate element loading plate
-            element.GetComponent<IElementable>().ActivateLoadingPlate(); 
+            element.GetComponent<IElementable>().ActivateLoadingPlate();
         }
         /// <summary>
-        /// To trigger actions when dictation ends
+        /// To trigger actions when dictationHandler ends
         /// </summary>
-        public void OnDictationEnds() 
+        public void OnDictationEnds(string dictatedText) 
         {
+            Debug.Log("RecordDictationButton::OnDictationEnds: Listener called");
+            // Stop dictationHandler
+            dictationHandler.StopRecording();
             // Activate record action
-            RecordDictation();
+            RecordDictation(dictatedText);
             // Deactivate element loading plate
             element.GetComponent<IElementable>().DeactivateLoadingPlate();
+        }
+
+        public void ActivateReporting()
+        {
+            if (buttonCreated == true)
+            {
+                this.gameObject.GetComponent<Interactable>().OnClick.AddListener(() => OnDictationStarts());
+                dictationHandler.OnDictationResult.AddListener((string dictation) => OnDictationEnds(dictation));
+                dictationHandler.OnDictationComplete.AddListener((string dictation) => OnDictationEnds(dictation));
+                dictationHandler.OnDictationHypothesis.AddListener((string dictation) => dictatedText.text = dictation);
+                dictationHandler.OnDictationResult.AddListener((string dictation) => dictatedText.text = dictation);
+                dictationHandler.OnDictationError.AddListener((string dictation) => dictatedText.text = dictation);
+                dictationHandler.OnDictationComplete.AddListener((string dictation) => dictatedText.text = dictation);
+            }
+            else { }
+        }
+
+        public void DeactivateReporting()
+        {
+            if (buttonCreated == true)
+            {
+                Debug.Log("RecordDictationButton::DeactivateReporting");
+                this.gameObject.GetComponent<Interactable>().OnClick.RemoveListener(() => OnDictationStarts());
+                dictationHandler.OnDictationResult.RemoveListener((string dictation) => OnDictationEnds(dictation));
+                dictationHandler.OnDictationComplete.RemoveListener((string dictation) => OnDictationEnds(dictation));
+                dictationHandler.OnDictationHypothesis.RemoveListener((string dictation) => dictatedText.text = dictation);
+                dictationHandler.OnDictationResult.RemoveListener((string dictation) => dictatedText.text = dictation);
+                dictationHandler.OnDictationError.RemoveListener((string dictation) => dictatedText.text = dictation);
+                dictationHandler.OnDictationComplete.RemoveListener((string dictation) => dictatedText.text = dictation);
+            }
+            else { }
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS

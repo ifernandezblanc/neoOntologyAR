@@ -220,6 +220,30 @@ namespace Rtrbau
             }
             else { }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ActivateReporting()
+        {
+            /// Fabrication reporting is managed by <see cref="RecordTimeButton"/>.
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="forcedReporting"></param>
+        public void DeactivateReporting(bool forcedReporting)
+        {
+            if (attributeDateTimeValue != null || forcedReporting == true)
+            {
+                recordTimeButton.GetComponent<RecordTimeButton>().DeactivateReporting();
+            }
+            else
+            {
+                throw new ArgumentException("TextButtonTap2::DeactivateReporting: this function should not be accesed before an individual is nominated.");
+            }
+        }
         #endregion IRECORDABLE_METHODS
 
         #region CLASS_METHODS

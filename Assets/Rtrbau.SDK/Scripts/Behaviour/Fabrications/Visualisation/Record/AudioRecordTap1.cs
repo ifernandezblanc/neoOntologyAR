@@ -21,10 +21,12 @@ Date: 26/11/2019
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using System.Collections;
 using System.IO;
 using UnityEngine.Networking;
 using TMPro;
+using Microsoft.MixedReality.Toolkit.UI;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -43,6 +45,8 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
+        public UnityAction report;
+        public UnityAction play;
         public string audioGenericName;
         public OntologyFile audioRecord;
         public AudioClip audioClip;
@@ -104,6 +108,8 @@ namespace Rtrbau
             data = fabrication;
             element = elementParent;
             scale = fabricationParent;
+            report = RecordAudio;
+            play = PlayAudio;
             audioGenericName = null;
             audioRecord = null;
             audioClip = null;
@@ -139,6 +145,7 @@ namespace Rtrbau
                 fabricationText.text = Parser.ParseNamingOntologyFormat(attribute.attributeName.Name());
                 audioGenericName = attribute.attributeName.Name();
                 fabricationCreated = true;
+                ActivateReporting();
             }
             else
             {
@@ -237,6 +244,35 @@ namespace Rtrbau
                 recordAudioButton.SetActive(false);
             }
             else { }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ActivateReporting()
+        {
+            if (fabricationCreated == true)
+            {
+                recordAudioButton.GetComponent<Interactable>().OnClick.AddListener(report);
+                playAudioButton.GetComponent<Interactable>().OnClick.AddListener(play);
+            }
+            else { }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="forcedReporting"></param>
+        public void DeactivateReporting(bool forcedReporting)
+        {
+            if (audioRecorded == true || forcedReporting == true)
+            {
+                recordAudioButton.GetComponent<Interactable>().OnClick.RemoveListener(report);
+            }
+            else 
+            {
+                throw new ArgumentException("AudioRecordTap1::DeactivateReporting: this function should not be accesed before an individual is nominated.");
+            }
         }
         #endregion IRECORDABLE_METHODS
 

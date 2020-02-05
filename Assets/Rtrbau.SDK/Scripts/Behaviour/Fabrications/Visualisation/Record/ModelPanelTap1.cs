@@ -312,6 +312,53 @@ namespace Rtrbau
                 else { }
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ActivateReporting()
+        {
+            /// Fabrication reporting is managed by <see cref="InitialiseSelectableModel"/>.
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="forcedReporting"></param>
+        public void DeactivateReporting(bool forcedReporting)
+        {
+            // Destroy all non reported componentModels and deactivate OnClick on that reported
+            if (recordSelected == true || forcedReporting == true)
+            {
+                Dictionary<string, GameObject> destroyableModels = new Dictionary<string, GameObject>();
+
+                foreach (KeyValuePair<string, GameObject> selectableModel in selectableModels)
+                {
+                    // If individual record is not that being recorded
+                    // Considers the option when selectedRecord equals null because no record has been selected
+                    if (selectableModel.Key != selectedRecord)
+                    {
+                        // Add selectableModel to destroyableModels list
+                        destroyableModels.Add(selectableModel.Key, selectableModel.Value);
+                    }
+                    else
+                    {
+                        // Remove listener on selectable model interactable
+                        selectableModel.Value.GetComponent<Interactable>().OnClick.AddListener(() => SelectRecord(selectableModel.Key));
+                    }
+                }
+
+                foreach (KeyValuePair<string, GameObject> destroyableModel in destroyableModels)
+                {
+                    selectableModels.Remove(destroyableModel.Key);
+                    Destroy(destroyableModel.Value);
+                }
+            }
+            else 
+            {
+                throw new ArgumentException("ModelPanelTap1::DeactivateReporting: this function should not be accesed before an individual is nominated.");
+            }
+        }
         #endregion IRECORDABLE_METHODS
 
         #region CLASS_METHODS

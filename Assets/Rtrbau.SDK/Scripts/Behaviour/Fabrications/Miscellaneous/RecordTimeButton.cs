@@ -21,7 +21,9 @@ Date: 18/11/2019
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using TMPro;
+using Microsoft.MixedReality.Toolkit.UI;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -33,30 +35,33 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
+        public UnityAction report;
+        public UnityAction open;
         public DateTimeOffset attributeValueDateTime;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
-        public TextMeshPro recordText;
+        public GameObject recordedButton;
+        public TextMeshPro recordedText;
         public TextMeshPro clickingText;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
         private bool buttonCreated;
+        private bool reportingActive;
         #endregion CLASS_EVENTS
 
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (recordText == null || clickingText == null)
+            if (recordedButton == null || recordedText == null || clickingText == null)
             {
                 throw new ArgumentException("RecordTimeButton::Start: Script requires some prefabs to work.");
             }
             else
             {
                 attributeValueDateTime = default(DateTimeOffset);
-                recordText.text = "Focus to input date: yyyy-MM-dd HH:mm";
-                buttonCreated = true;
+                recordedText.text = "Focus to input date: yyyy-MM-dd HH:mm";
             }
         }
 
@@ -97,6 +102,11 @@ namespace Rtrbau
         public void Initialise(Action<DateTimeOffset> recordTime)
         {
             timeRecord = recordTime;
+            report = RecordDateTime;
+            open = OpenKeyboard;
+            buttonCreated = true;
+            reportingActive = false;
+            ActivateReporting();
         }
 
 
@@ -108,15 +118,15 @@ namespace Rtrbau
         {
             if (buttonCreated == true)
             {
-                if (recordText.text != null)
+                if (recordedText.text != null)
                 {
-                    if (DateTimeOffset.TryParse(recordText.text, out attributeValueDateTime))
+                    if (DateTimeOffset.TryParse(recordedText.text, out attributeValueDateTime))
                     {
                         timeRecord.Invoke(attributeValueDateTime);
                     }
-                    else { recordText.text = "Input date as: yyyy-MM-dd HH:mm"; }
+                    else { recordedText.text = "Input date as: yyyy-MM-dd HH:mm"; }
                 }
-                else { recordText.text = "Input date as: yyyy-MM-dd HH:mm"; }
+                else { recordedText.text = "Input date as: yyyy-MM-dd HH:mm"; }
             }
             else { }
 
@@ -131,12 +141,36 @@ namespace Rtrbau
         /// </summary>
         public void OpenKeyboard()
         {
-            // Activate Rtrbau keyboard
-            RtrbauKeyboard.instance.OpenRtrbauKeyboard(TouchScreenKeyboardType.Default, recordText);
-            // Activate loading plate
-            this.gameObject.GetComponentInParent<IElementable>().ActivateLoadingPlate();
-            // Provide instruction for user to click button
-            clickingText.text = "Click to record";
+            if (reportingActive == true)
+            {
+                // Activate Rtrbau keyboard
+                RtrbauKeyboard.instance.OpenRtrbauKeyboard(TouchScreenKeyboardType.Default, recordedText);
+                // Activate loading plate
+                this.gameObject.GetComponentInParent<IElementable>().ActivateLoadingPlate();
+                // Provide instruction for user to click button
+                clickingText.text = "Click to record";
+            }
+            else { }
+        }
+
+        public void ActivateReporting()
+        {
+            if (buttonCreated == true)
+            {
+                this.gameObject.GetComponent<Interactable>().OnClick.AddListener(report);
+                reportingActive = true;
+            }
+            else { }
+        }
+
+        public void DeactivateReporting()
+        {
+            if (buttonCreated == true)
+            {
+                this.gameObject.GetComponent<Interactable>().OnClick.RemoveListener(report);
+                reportingActive = false;
+            }
+            else { }
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS

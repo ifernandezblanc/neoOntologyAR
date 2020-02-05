@@ -6,21 +6,22 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4485791550765461932}
+  m_GameObject: {fileID: 8979238103337485442}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e33d12982b61924ca1034d2e38adada, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   element: {fileID: 0}
-  dictatedText: {fileID: 8028889047578460995}
+  dictatedText: {fileID: 462711621054075018}
+  dictationHandler: {fileID: 8345464513495904043}
 --- !u!114 &8345464513495904043
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4485791550765461932}
+  m_GameObject: {fileID: 8979238103337485442}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8de1283adb8ab574da200bee434b4524, type: 3}
@@ -33,91 +34,25 @@ MonoBehaviour:
   startRecordingOnStart: 0
   OnDictationHypothesis:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8028889047578460995}
-        m_MethodName: set_text
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: Microsoft.MixedReality.Toolkit.Input.DictationHandler+StringUnityEvent,
       Microsoft.MixedReality.Toolkit.SDK, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   OnDictationResult:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8028889047578460995}
-        m_MethodName: set_text
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 318854326189422827}
-        m_MethodName: OnDictationEnds
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: Microsoft.MixedReality.Toolkit.Input.DictationHandler+StringUnityEvent,
       Microsoft.MixedReality.Toolkit.SDK, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   OnDictationComplete:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8028889047578460995}
-        m_MethodName: set_text
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 318854326189422827}
-        m_MethodName: OnDictationEnds
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: Microsoft.MixedReality.Toolkit.Input.DictationHandler+StringUnityEvent,
       Microsoft.MixedReality.Toolkit.SDK, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   OnDictationError:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8028889047578460995}
-        m_MethodName: set_text
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: Microsoft.MixedReality.Toolkit.Input.DictationHandler+StringUnityEvent,
       Microsoft.MixedReality.Toolkit.SDK, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
---- !u!1001 &6515507554230506547
+--- !u!1001 &1781078289411940637
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -129,85 +64,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ButtonRecordDictation
       objectReference: {fileID: 0}
-    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
+    - target: {fileID: 7217863100968101279, guid: d3e12207c84cb1c428eefdf00d09cee5,
         type: 3}
-      propertyPath: m_text
-      value: Click to dictate
-      objectReference: {fileID: 0}
-    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
-        type: 3}
-      propertyPath: m_fontSize
-      value: 13.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
-        type: 3}
-      propertyPath: m_textInfo.characterCount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
-        type: 3}
-      propertyPath: m_textInfo.spaceCount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
-        type: 3}
-      propertyPath: m_textInfo.wordCount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
-        type: 3}
-      propertyPath: m_textInfo.lineCount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
-        type: 3}
-      propertyPath: m_textInfo.pageCount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
-        type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
-        type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      propertyPath: m_IsActive
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
-        type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
-        type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 8345464513495904043}
-    - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
-        type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 318854326189422827}
-    - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
-        type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: StartRecording
-      objectReference: {fileID: 0}
-    - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
-        type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
-        type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: OnDictationStarts
-      objectReference: {fileID: 0}
-    - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
-        type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 7217863102594966398, guid: d3e12207c84cb1c428eefdf00d09cee5,
         type: 3}
@@ -264,10 +124,90 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 8345464513495904043}
+    - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 318854326189422827}
+    - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: StartRecording
+      objectReference: {fileID: 0}
+    - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: OnDictationStarts
+      objectReference: {fileID: 0}
+    - target: {fileID: 245455744006802236, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 7217863101589156881, guid: d3e12207c84cb1c428eefdf00d09cee5,
         type: 3}
       propertyPath: m_Mesh
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: m_text
+      value: Click to dictate
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 13.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217863101589156975, guid: d3e12207c84cb1c428eefdf00d09cee5,
+        type: 3}
+      propertyPath: m_textInfo.pageCount
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2082921097615971369, guid: d3e12207c84cb1c428eefdf00d09cee5,
         type: 3}
@@ -276,24 +216,24 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 2e7aaaf6345142344a2264fde9ac386f, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d3e12207c84cb1c428eefdf00d09cee5, type: 3}
---- !u!1 &4485791550765461932 stripped
+--- !u!1 &8979238103337485442 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7217863100968101279, guid: d3e12207c84cb1c428eefdf00d09cee5,
     type: 3}
-  m_PrefabInstance: {fileID: 6515507554230506547}
+  m_PrefabInstance: {fileID: 1781078289411940637}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &4485791552359823181 stripped
+--- !u!4 &8979238104931844707 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7217863102594966398, guid: d3e12207c84cb1c428eefdf00d09cee5,
     type: 3}
-  m_PrefabInstance: {fileID: 6515507554230506547}
+  m_PrefabInstance: {fileID: 1781078289411940637}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &8028889047578467150
+--- !u!1001 &8402697603353979061
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 4485791552359823181}
+    m_TransformParent: {fileID: 8979238104931844707}
     m_Modifications:
     - target: {fileID: 8284232115157065365, guid: 5e2dab1d94690f1479e49b78bcb2bfc2,
         type: 3}
@@ -303,27 +243,27 @@ PrefabInstance:
     - target: {fileID: 8284232116631189567, guid: 5e2dab1d94690f1479e49b78bcb2bfc2,
         type: 3}
       propertyPath: m_textInfo.characterCount
-      value: 0
+      value: 33
       objectReference: {fileID: 0}
     - target: {fileID: 8284232116631189567, guid: 5e2dab1d94690f1479e49b78bcb2bfc2,
         type: 3}
       propertyPath: m_textInfo.spaceCount
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8284232116631189567, guid: 5e2dab1d94690f1479e49b78bcb2bfc2,
         type: 3}
       propertyPath: m_textInfo.wordCount
-      value: 0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8284232116631189567, guid: 5e2dab1d94690f1479e49b78bcb2bfc2,
         type: 3}
       propertyPath: m_textInfo.lineCount
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8284232116631189567, guid: 5e2dab1d94690f1479e49b78bcb2bfc2,
         type: 3}
       propertyPath: m_textInfo.pageCount
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8284232116631189567, guid: 5e2dab1d94690f1479e49b78bcb2bfc2,
         type: 3}
@@ -417,11 +357,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5e2dab1d94690f1479e49b78bcb2bfc2, type: 3}
---- !u!114 &8028889047578460995 stripped
+--- !u!114 &462711621054075018 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8284232116631189567, guid: 5e2dab1d94690f1479e49b78bcb2bfc2,
     type: 3}
-  m_PrefabInstance: {fileID: 8028889047578467150}
+  m_PrefabInstance: {fileID: 8402697603353979061}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1

@@ -968,35 +968,50 @@ namespace Rtrbau
         }
 
         /// <summary>
-        /// Identifies nominate fabrications that report new elements to report.
-        /// Destroys the rest of fabrications of all types.
+        /// Sends call to DeactivateReporting to INominatable and IRecordable fabrications
         /// </summary>
-        void AssignNewReportElements()
+        /// REMEMBER: FOR INOMINATABLE TO KEEP ACTIONS OF NOMINATED INDIVIDUALS ON UNTIL NEW ELEMENT CREATED
+        void DeactivateFabricationsReporting()
         {
-            // Create list for new nominate fabrications
-            List<GameObject> reportElementFabrications = new List<GameObject>();
 
-            // Check if nominate fabrication reports new element, otherwise destroy
+            // For each nominate fabrication
             foreach (GameObject nominate in nominateFabrications)
             {
-                if (nominate.GetComponent<INominatable>().NominatesNewReportElement(forcedReported))
-                {
-                    reportElementFabrications.Add(nominate);
-                }
-                else { Destroy(nominate); }
+                // Deactivate reporting using INominatable function
+                nominate.GetComponent<INominatable>().DeactivateReporting(forcedReported);
             }
 
-            // Assign new list of nominate fabrications
-            nominateFabrications = reportElementFabrications;
-
-            // Destroy all record fabrications
+            // For each record fabrication
             foreach (GameObject record in recordFabrications)
             {
-                Destroy(record);
+                // Deactivate reporting using IRecordable function
+                record.GetComponent<IRecordable>().DeactivateReporting(forcedReported);
             }
 
-            // Assign empty list of record fabrications
-            recordFabrications = new List<GameObject>();
+            //// Create list for new nominate fabrications
+            //List<GameObject> reportElementFabrications = new List<GameObject>();
+
+            //// Check if nominate fabrication reports new element, otherwise destroy
+            //foreach (GameObject nominate in nominateFabrications)
+            //{
+            //    if (nominate.GetComponent<INominatable>().NominatesNewReportElement(forcedReported))
+            //    {
+            //        reportElementFabrications.Add(nominate);
+            //    }
+            //    else { Destroy(nominate); }
+            //}
+
+            //// Assign new list of nominate fabrications
+            //nominateFabrications = reportElementFabrications;
+
+            //// Destroy all record fabrications
+            //foreach (GameObject record in recordFabrications)
+            //{
+            //    Destroy(record);
+            //}
+
+            //// Assign empty list of record fabrications
+            //recordFabrications = new List<GameObject>();
         }
 
         /// <summary>
@@ -1020,8 +1035,8 @@ namespace Rtrbau
             // Activate fabrications
             ActivateIt();
 
-            // Assign new report elements
-            AssignNewReportElements();
+            // Modify fabrications behaviour
+            DeactivateFabricationsReporting();
 
             // Update status text
             statusText.text = "Click on an attribute to open new report";

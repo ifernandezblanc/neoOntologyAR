@@ -21,6 +21,7 @@ Date: 07/12/2019
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using TMPro;
 using System.IO;
 using Microsoft.MixedReality.Toolkit.UI;
@@ -32,16 +33,14 @@ namespace Rtrbau
     {
         #region INITIALISATION_VARIABLES
         public Action<OntologyEntity, bool> nominate;
-        // public OntologyEntity individual;
         public OntologyEntity individualEntity;
         public RtrbauElement individualValues;
         public Transform parent;
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
-        // public OntologyElement individualElement;
-        // public JsonIndividualValues individualProperties;
-        public List<GameObject> nominatedDataTexts;
+        public UnityAction report;
+        public List<GameObject> nominatedDataFabs;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
@@ -54,9 +53,6 @@ namespace Rtrbau
 
         #region CLASS_EVENTS
         public bool buttonCreated;
-        private bool datableNominate;
-        // private bool buttonActive;
-        // public bool loadableNominate;
         #endregion CLASS_EVENTS
 
         #region MONOBEHAVIOUR_METHODS
@@ -89,7 +85,7 @@ namespace Rtrbau
 
         public void DestroyIt() 
         { 
-            foreach (GameObject nominatedData in nominatedDataTexts)
+            foreach (GameObject nominatedData in nominatedDataFabs)
             {
                 Destroy(nominatedData);
             }
@@ -104,122 +100,73 @@ namespace Rtrbau
 
         #region CLASS_METHODS
         #region PRIVATE
-        //void DownloadIndividualProperties(OntologyElement nominatedElement)
-        //{
-        //    // Stop individual properties download
-        //    LoaderEvents.StopListening(individualElement.EventName(), DownloadIndividualProperties);
-
-        //    if (File.Exists(individualElement.FilePath())) 
-        //    {
-        //        string jsonFile = File.ReadAllText(individualElement.FilePath());
-
-        //        individualProperties = JsonUtility.FromJson<JsonIndividualValues>(jsonFile);
-
-        //        // If individual properties are not zero, then load button as datable
-        //        if (individualProperties.ontProperties.Count != 0)
-        //        {
-        //            // Load button as datable
-        //            LoadButton(true);
-        //        }
-        //        else
-        //        {
-        //            // Load button as non datable
-        //            LoadButton(false);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Debug.LogError("NominateDataButton::DownloadIndividualProperties: File not found: " + individualElement.FilePath());
-        //    }
-        //}
-
-        void LoadButton(bool datable)
+        void CreateButton()
         {
-            if (datable == false)
+            // Show individual name the button refers to
+            buttonText.text = individualEntity.Name();
+            // Ensure the RtrbauElement received is not empty, other wise do not add its attributes
+            if (!individualValues.Equals(default(RtrbauElement)) && !individualEntity.Name().Contains(Parser.ParseNamingNew()))
             {
-                // Show individual name the button refers to
-                // buttonText.text = individual.Name();
-                buttonText.text = individualEntity.Name();
-                // Assig nominate as non datable
-                datableNominate = false;
-                // If nominate is new, assign new nominate as loadable
-                // if (individual.Name().Contains(Parser.ParseNamingNew())) { loadableNominate = true; }
-                // else { }
-                // Assign button as created
-                buttonCreated = true;
-            }
-            else if (datable == true)
-            {
-                // Show individual name the button refers to
-                // buttonText.text = individual.Name();
-                buttonText.text = individualEntity.Name();
-                // Generate data texts for each individual property
-                // foreach (JsonValue individualProperty in individualProperties.ontProperties)
+                // For each RtrbauAttribute in RtrbauElement of nominated individual
                 foreach (RtrbauAttribute individualProperty in individualValues.elementAttributes)
                 {
-                    // Debug.Log("NominateDataButton::LoadButton: individual property is: " + individualProperty.ontName);
-                    // If property is of datatype
-                    // if (individualProperty.ontType == Rtrbauer.instance.owl.URI() + "DatatypeProperty")
-                    if (individualProperty.attributeType.URI() == Rtrbauer.instance.owl.URI() + "DatatypeProperty")
-                    {
-                        // UPG: add audio and image properties
-                        // if (individualProperty.ontValue.Contains("http://")) { }
-                        if (individualProperty.attributeValue.Contains("http://")) { }
-                        else
-                        {
-                            // Create nominate datatype property text panel
-                            GameObject nominatedText = CreateNominatedPropertyText(individualProperty, true);
-                            // Assign nominated text to list of nominated data texts
-                            nominatedDataTexts.Add(nominatedText);
-                        }
-                    }
-                    // else if (individualProperty.ontType == Rtrbauer.instance.owl.URI() + "ObjectProperty")
-                    else if (individualProperty.attributeType.URI() == Rtrbauer.instance.owl.URI() + "ObjectProperty")
-                    {
-                        // Identify if object property refers to individual of component ontology
-                        // if (individualProperty.ontValue.Contains(Rtrbauer.instance.component.Ontology().Name()))
-                        if (individualProperty.attributeRange.URI() == Rtrbauer.instance.component.URI())
-                        {
-                            // Obtain component name
-                            // string nominatedComponentName = Parser.ParseURI(individualProperty.ontValue, '#', RtrbauParser.post);
-                            string nominatedComponentName = Parser.ParseURI(individualProperty.attributeValue, '#', RtrbauParser.post);
-                            GameObject nominatedComponentModel = parent.GetComponent<TextPanelTap3>().visualiser.manager.FindAssetComponentManipulator(nominatedComponentName);                            
-                            // If component is found in scene create nominated model panel, otherwise destroy nominate data button
-                            if (nominatedComponentModel != null)
-                            {
-                                // Create nominate object property text panel
-                                GameObject nominatedText = CreateNominatedPropertyText(individualProperty, false);
-                                // Assign nominated text to list of nominated data texts
-                                nominatedDataTexts.Add(nominatedText);
-                                // Create nominate object property model panel
-                                GameObject nominatedModel = CreateNominatedPropertyModel(nominatedText, nominatedComponentModel);
-                                // Assign nominated model to list of nominated data texts
-                                nominatedDataTexts.Add(nominatedModel);
-                                // Assign nominate as loadable
-                                // loadableNominate = true;
-                            }
-                            else 
-                            {
-                                // Set nominate as unloadable
-                                // unloadableNominate = true;
-                            }
-                        }
-                        else
-                        {
-                            // Create nominate object property text panel
-                            GameObject nominatedText = CreateNominatedPropertyText(individualProperty, false);
-                            // Assign nominated text to list of nominated data texts
-                            nominatedDataTexts.Add(nominatedText);
-                        }
-                    }
-                    else {}
+                    // Generate data fabs for each individual property
+                    CreateNominatedText(individualProperty);
                 }
-
-                // Assign nominate as recordable
-                datableNominate = true;
-                // Assign button as created
-                buttonCreated = true;
             }
+            else { }
+            // Assign button as created
+            buttonCreated = true;
+            // Assign report action
+            ActivateReporting();
+        }
+
+        void CreateNominatedText(RtrbauAttribute individualProperty)
+        {
+            // If property is of datatype
+            if (individualProperty.attributeType.URI() == Rtrbauer.instance.owl.URI() + "DatatypeProperty")
+            {
+                // UPG: add audio and image properties
+                if (individualProperty.attributeValue.Contains("http://")) { }
+                else
+                {
+                    // Create nominate datatype property text panel
+                    GameObject nominatedText = CreateNominatedPropertyText(individualProperty, true);
+                    // Assign nominated text to list of nominated data texts
+                    nominatedDataFabs.Add(nominatedText);
+                }
+            }
+            else if (individualProperty.attributeType.URI() == Rtrbauer.instance.owl.URI() + "ObjectProperty")
+            {
+                // Identify if object property refers to individual of component ontology
+                if (individualProperty.attributeRange.URI() == Rtrbauer.instance.component.URI())
+                {
+                    // Obtain component name
+                    string nominatedComponentName = Parser.ParseURI(individualProperty.attributeValue, '#', RtrbauParser.post);
+                    GameObject nominatedComponentModel = parent.GetComponent<TextPanelTap3>().visualiser.manager.FindAssetComponentManipulator(nominatedComponentName);
+                    // If component is found in scene create nominated model panel, otherwise destroy nominate data button
+                    if (nominatedComponentModel != null)
+                    {
+                        // Create nominate object property text panel
+                        GameObject nominatedText = CreateNominatedPropertyText(individualProperty, false);
+                        // Assign nominated text to list of nominated data texts
+                        nominatedDataFabs.Add(nominatedText);
+                        // Create nominate object property model panel
+                        GameObject nominatedModel = CreateNominatedPropertyModel(nominatedText, nominatedComponentModel);
+                        // Assign nominated model to list of nominated data texts
+                        nominatedDataFabs.Add(nominatedModel);
+                    }
+                    else { }
+                }
+                else
+                {
+                    // Create nominate object property text panel
+                    GameObject nominatedText = CreateNominatedPropertyText(individualProperty, false);
+                    // Assign nominated text to list of nominated data texts
+                    nominatedDataFabs.Add(nominatedText);
+                }
+            }
+            else { }
         }
 
         // GameObject CreateNominatedPropertyText(JsonValue nominatedProperty, bool isDatatype)
@@ -231,12 +178,9 @@ namespace Rtrbau
             nominatedText.transform.SetParent(nominatedDataPanel, false);
             // Scale nominated text panel
             ScaleNominatedText(nominatedText);
-            // Generate datatype property text
-            // string propertyName = Parser.ParseURI(nominatedProperty.ontName, '#', RtrbauParser.post);
+            // Generate datatype property text values
             string propertyName = nominatedProperty.attributeName.Name();
             string propertyValue;
-            //if (isDatatype == true) { propertyValue = nominatedProperty.ontValue; }
-            //else { propertyValue = Parser.ParseURI(nominatedProperty.ontValue, '#', RtrbauParser.post); }
             if (isDatatype == true) { propertyValue = nominatedProperty.attributeValue; }
             else { propertyValue = Parser.ParseURI(nominatedProperty.attributeValue, '#', RtrbauParser.post); }
             // Add nominated datatype property text to panel
@@ -288,35 +232,18 @@ namespace Rtrbau
         #endregion PRIVATE
 
         #region PUBLIC
-        // public void Initialise(Action<OntologyEntity, bool> nominateIndividual, OntologyEntity relationshipValue, JsonIndividualValues valueProperties, Transform fabricationParent)
         public void Initialise(Action<OntologyEntity, bool> nominateIndividual, OntologyEntity entityIndividual, RtrbauElement valuesIndividual, Transform fabricationParent)
         {
             // Initialise button variables
             nominate = nominateIndividual;
             individualEntity = entityIndividual;
             individualValues = valuesIndividual;
-            //individualValues = valueProperties;
-            //individualElement = new OntologyElement(relationshipValue.URI(), OntologyElementType.IndividualProperties);
             parent = fabricationParent;
-            nominatedDataTexts = new List<GameObject>();
+            report = NominateIndividual;
+            nominatedDataFabs = new List<GameObject>();
             buttonCreated = false;
-            datableNominate = false;
-            // buttonActive = false;
-            // loadableNominate = false;
-            // To optimise speed, only check individual properties if nominate is not new
-            if (individualEntity.Name().Contains(Parser.ParseNamingNew()))
-            {
-                // Load button as non datable
-                LoadButton(false);
-            }
-            else
-            {
-                //// Start individual properties download
-                //LoaderEvents.StartListening(individualElement.EventName(), DownloadIndividualProperties);
-                //Loader.instance.StartOntElementDownload(individualElement);
-                // Load button as datable
-                LoadButton(true);
-            }
+            // Generate nominate data button
+            CreateButton();
         }
 
         public void NominateIndividual()
@@ -343,16 +270,12 @@ namespace Rtrbau
         {
             if (buttonCreated == true)
             {
-                if (datableNominate == true)
-                {
-                    parent.GetComponent<TextPanelTap3>().DeactivateNominatesData();
+                parent.GetComponent<TextPanelTap3>().DeactivateNominatesData();
 
-                    foreach (GameObject nominatedText in nominatedDataTexts)
-                    {
-                        nominatedText.SetActive(true);
-                    }
+                foreach (GameObject nominatedFab in nominatedDataFabs)
+                {
+                    nominatedFab.SetActive(true);
                 }
-                else { }
             }
             else { }
         }
@@ -361,14 +284,28 @@ namespace Rtrbau
         {
             if (buttonCreated == true)
             {
-                if (datableNominate == true)
+                foreach (GameObject nominatedFab in nominatedDataFabs)
                 {
-                    foreach (GameObject nominatedText in nominatedDataTexts)
-                    {
-                        nominatedText.SetActive(false);
-                    }
+                    nominatedFab.SetActive(false);
                 }
-                else { }
+            }
+            else { }
+        }
+
+        public void ActivateReporting()
+        {
+            if (buttonCreated == true)
+            {
+                this.gameObject.GetComponent<Interactable>().OnClick.AddListener(report);
+            }
+            else { }
+        }
+
+        public void DeactivateReporting()
+        {
+            if (buttonCreated == true)
+            {
+                this.gameObject.GetComponent<Interactable>().OnClick.RemoveListener(report);
             }
             else { }
         }

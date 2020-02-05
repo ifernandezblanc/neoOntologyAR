@@ -53,18 +53,20 @@ namespace Rtrbau
         public Material fabricationReportedMaterial;
         public Renderer fabricationBounds;
         public GameObject recordKeyboardButton;
+        public GameObject recordedKeyboardText;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
         private bool fabricationCreated;
+        private bool reportingActive;
         #endregion CLASS_EVENTS
 
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || fabricationBounds == null || recordKeyboardButton == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || fabricationBounds == null || recordKeyboardButton == null || recordedKeyboardText == null)
             {
-                throw new ArgumentException("DefaultRecord::Start: Script requires some prefabs to work.");
+                throw new ArgumentException("TextKeyboard1::Start: Script requires some prefabs to work.");
             }
         }
 
@@ -93,6 +95,7 @@ namespace Rtrbau
             scale = fabricationParent;
             attributeText = null;
             fabricationCreated = false;
+            reportingActive = false;
             recordKeyboardButton.GetComponent<RecordKeyboardButton>().Initialise(RecordText, TouchScreenKeyboardType.Default);
             Scale();
             InferFromText();
@@ -198,11 +201,22 @@ namespace Rtrbau
             // Call ElementReport to deactivate buttons from other nominate fabrications
             element.GetComponent<ElementReport>().DeactivateNominates(null);
 
-            if (fabricationCreated == true && recordKeyboardButton.activeSelf == false)
+            if (reportingActive == false)
             {
-                recordKeyboardButton.SetActive(true);
+                if (fabricationCreated == true && recordKeyboardButton.activeSelf == false)
+                {
+                    recordKeyboardButton.SetActive(true);
+                }
+                else { }
             }
-            else { }
+            else
+            {
+                if (fabricationCreated == true && recordedKeyboardText.activeSelf == false)
+                {
+                    recordedKeyboardText.SetActive(true);
+                }
+                else { }
+            }
         }
 
         /// <summary>
@@ -211,11 +225,57 @@ namespace Rtrbau
         /// </summary>
         public void DeactivateRecords()
         {
-            if (fabricationCreated == true && recordKeyboardButton.activeSelf == true)
+            if (reportingActive == false)
             {
-                recordKeyboardButton.SetActive(false);
+                if (fabricationCreated == true && recordKeyboardButton.activeSelf == true)
+                {
+                    recordKeyboardButton.SetActive(false);
+                }
+                else { }
             }
-            else { }
+            else
+            {
+                if (fabricationCreated == true && recordedKeyboardText.activeSelf == true)
+                {
+                    recordedKeyboardText.SetActive(false);
+                }
+                else { }
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ActivateReporting()
+        {
+            /// Fabrication reporting is managed by <see cref="RecordKeyboardButton"/>.
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="forcedReporting"></param>
+        public void DeactivateReporting(bool forcedReporting)
+        {
+            if (attributeText != null || forcedReporting == true)
+            {
+                // Set recordedKeyboardText at same state as recordDictationButton
+                if (recordKeyboardButton.activeSelf == true) { recordedKeyboardText.SetActive(true); }
+                else { recordedKeyboardText.SetActive(false); }
+                // Set dictatedText in recordTextPanel
+                recordedKeyboardText.GetComponentInChildren<TextMeshPro>().text = attributeText;
+                // Deactivate reporting from RecordDictationButton and destroy
+                recordKeyboardButton.GetComponent<RecordKeyboardButton>().DeactivateReporting();
+                Destroy(recordKeyboardButton);
+                recordKeyboardButton = null;
+                // Assign reporting as completed
+                reportingActive = true;
+            }
+            else
+            {
+                throw new ArgumentException("TextKeyboard1::DeactivateReporting: this function should not be accesed before an individual is nominated.");
+            }
         }
         #endregion IRECORDABLE_METHODS
 

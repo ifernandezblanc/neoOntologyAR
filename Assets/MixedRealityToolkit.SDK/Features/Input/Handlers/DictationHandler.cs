@@ -130,7 +130,7 @@ namespace Microsoft.MixedReality.Toolkit.Input
 
         protected override void OnDisable()
         {
-            StopRecording();
+            //StopRecording();
 
             base.OnDisable();
         }

@@ -29,6 +29,7 @@ MonoBehaviour:
     type: 2}
   fabricationBounds: {fileID: 3579516989044992411}
   recordText: {fileID: 6981733290867199683}
+  recordTextPanel: {fileID: 0}
 --- !u!1001 &3247254367572884277
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -44,7 +45,7 @@ PrefabInstance:
     - target: {fileID: 5617266142024103414, guid: 3b819b37ceff0e84784a4465953c6ce6,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 865245061703266956, guid: 3b819b37ceff0e84784a4465953c6ce6,
         type: 3}
@@ -146,6 +147,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 1589907472474931316, guid: 3b819b37ceff0e84784a4465953c6ce6,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d1e6ac5dd3c0c3b40ac84b4b2a1faaff, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3b819b37ceff0e84784a4465953c6ce6, type: 3}
 --- !u!1 &6981733290867199683 stripped

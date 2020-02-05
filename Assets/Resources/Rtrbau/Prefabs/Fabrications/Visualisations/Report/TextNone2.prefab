@@ -29,6 +29,7 @@ MonoBehaviour:
     type: 2}
   fabricationBounds: {fileID: 2857962417431744911}
   recordText: {fileID: 1068627307310115975}
+  recordTextPanel: {fileID: 1068627308150755413}
 --- !u!1001 &4864597412930042767
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -336,6 +337,12 @@ PrefabInstance:
 --- !u!1 &1068627307310115975 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8284232115157065365, guid: 5e2dab1d94690f1479e49b78bcb2bfc2,
+    type: 3}
+  m_PrefabInstance: {fileID: 8945001979064726034}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1068627308150755413 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8284232115995419207, guid: 5e2dab1d94690f1479e49b78bcb2bfc2,
     type: 3}
   m_PrefabInstance: {fileID: 8945001979064726034}
   m_PrefabAsset: {fileID: 0}

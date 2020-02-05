@@ -199,7 +199,6 @@ namespace Rtrbau
                                 attribute.attributeValue = newIndividual.URI();
                                 // Assign nominated individual as new element report
                                 newReportNominated = true;
-                                //Debug.Log("DefaultNominate::OnNextVisualisation: nominatedIndividual " + nominatedIndividual.Name() + " is new to report");
                             }
                             else
                             {
@@ -214,13 +213,16 @@ namespace Rtrbau
                                 else { throw new ArgumentException("DefaultNominate::OnNextVisualisation: nominated individual not found"); }
                                 // Assign user-reported attribute value to RtrbauElement from ElementReport through RtrbauFabrication
                                 attribute.attributeValue = nominatedIndividual.Ontology().URI() + newNominatedRecorded;
-                                //Debug.Log("DefaultNominate::OnNextVisualisation: nominatedIndividual " + nominatedIndividual.Name() + " is new to record");
+                                // Assign nominated individual as non new element report
+                                newReportNominated = false;
                             }
                         }
                         else
                         {
                             // Assign user-reported attribute value to RtrbauElement from ElementReport through RtrbauFabrication
                             attribute.attributeValue = nominatedIndividual.URI();
+                            // Assign nominated individual as non new element report
+                            newReportNominated = false;
                         }
 
                         // Change button colour for user confirmation
@@ -243,8 +245,13 @@ namespace Rtrbau
                         Reporter.instance.ReportElement(entityRelationship, elementClass.entity, elementIndividual.entity);
                         // Load new RtrbauElement from AssetVisualiser, ensure user has selected the type of RtrbauElement to load
                         RtrbauerEvents.TriggerEvent("AssetVisualiser_CreateElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
+                        // Deactivate reporting action of left nominates
+                        foreach (KeyValuePair<OntologyEntity, GameObject> nominate in individualNominates)
+                        {
+                            nominate.Value.GetComponent<NominateButton>().DeactivateReporting();
+                        }
                         // Check RtrbauElement to UnloadElement if necessary
-                        element.GetComponent<ElementReport>().CheckNewNominatesReported(this.gameObject);
+                        // element.GetComponent<ElementReport>().CheckNewNominatesReported(this.gameObject);
                     }
                 }
                 else { }
@@ -361,38 +368,72 @@ namespace Rtrbau
         }
 
         /// <summary>
-        /// Checks if the individual nominated is to create a new individual or that element reported has been forced.
+        /// 
         /// </summary>
-        /// <returns>
-        /// If true, returns the nominate button from which create a new report element as an <see cref="OntologyEntity"/>.
-        /// Otherwise, returns a null <see cref="OntologyEntity"/>.
-        /// </returns>
-        public bool NominatesNewReportElement(bool reportedForced)
+        public void ActivateReporting()
+        {
+            /// Fabrication reporting is managed by <see cref="NominateButton"/>.
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="forcedReporting"></param>
+        public void DeactivateReporting(bool forcedReporting)
         {
             // Check if han individual has been nominated
-            if (individualNominated == true || reportedForced == true)
+            if (individualNominated == true || forcedReporting == true)
             {
-                // Check if nominated individual name is that for a new individual
-                if (newReportNominated == true)
+                // Deactivate nominates buttons
+                DeactivateNominates();
+                // Initialise list of destroyable nominates
+                Dictionary<OntologyEntity, GameObject> destroyableNominates = new Dictionary<OntologyEntity, GameObject>();
+
+                // Destroy all nominate buttons except that being nominated
+                foreach (KeyValuePair<OntologyEntity, GameObject> nominate in individualNominates)
                 {
-                    //Debug.Log("DefaultNominate::CreateNewElementReport: individual to report is new.");
-                    // Deactivate nominates buttons
-                    DeactivateNominates();
-                    // Assign fabrication as to nominate new RtrbauElement
-                    nominatesNewReport = true;
-                    // Then return true
-                    return true;
+                    // Ensure there is individual nominated URI to compare
+                    string nominatedURI;
+                    if (nominatedIndividual == null) { nominatedURI = null; }
+                    else { nominatedURI = nominatedIndividual.URI(); }
+
+                    // If individual nominate is not that being nominated
+                    if (nominate.Key.URI() != nominatedURI)
+                    {
+                        // Add nominate to list of destroyables
+                        destroyableNominates.Add(nominate.Key, nominate.Value);
+                        // Destroy nominate button
+                        Destroy(nominate.Value);
+                    }
+                    else
+                    {
+                        // If nominated individual is new
+                        if (nominate.Key.URI().Contains(Parser.ParseNamingNew()))
+                        {
+                            // Update fabrication material to non reported
+                            fabricationReportedPanel.material = fabricationNonReportedMaterial;
+                            // Update nominate material to non reported
+                            nominate.Value.GetComponent<NominateButton>().ReportMaterial(fabricationNonReportedMaterial);
+                            // Then fabrication nominates new report
+                            nominatesNewReport = true;
+                        }
+                        else
+                        {
+                            // Otherwise deactivate reporting
+                            nominate.Value.GetComponent<NominateButton>().DeactivateReporting();
+                        }
+                    }
                 }
-                else
+
+                // Remove destroyableNominates from individualNominates list
+                foreach (KeyValuePair<OntologyEntity, GameObject> nominate in destroyableNominates)
                 {
-                    //Debug.Log("DefaultNominate::CreateNewElementReport: individual to report is not new.");
-                    // Then return false
-                    return false;
+                    individualNominates.Remove(nominate.Key);
                 }
             }
             else
             {
-                throw new ArgumentException("DefaultNominate::CreatesNewElementReport: this function should not be accessible before an individual is nominated.");
+                throw new ArgumentException("DefaultNominate::DeactivateReporting: this function should not be accesed before an individual is nominated.");
             }
         }
         #endregion INOMINATABLE_METHODS

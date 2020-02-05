@@ -19,77 +19,22 @@ MonoBehaviour:
   startRecordingOnStart: 0
   OnDictationHypothesis:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1151843982413561383}
-        m_MethodName: set_text
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: Microsoft.MixedReality.Toolkit.Input.DictationHandler+StringUnityEvent,
       Microsoft.MixedReality.Toolkit.SDK, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   OnDictationResult:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1151843982413561383}
-        m_MethodName: set_text
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: Microsoft.MixedReality.Toolkit.Input.DictationHandler+StringUnityEvent,
       Microsoft.MixedReality.Toolkit.SDK, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   OnDictationComplete:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1151843982413561383}
-        m_MethodName: set_text
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 7457755393741892713}
-        m_MethodName: OnDictationEnds
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: Microsoft.MixedReality.Toolkit.Input.DictationHandler+StringUnityEvent,
       Microsoft.MixedReality.Toolkit.SDK, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   OnDictationError:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1151843982413561383}
-        m_MethodName: set_text
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: Microsoft.MixedReality.Toolkit.Input.DictationHandler+StringUnityEvent,
       Microsoft.MixedReality.Toolkit.SDK, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!114 &7457755393741892713
@@ -105,8 +50,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   element: {fileID: 0}
-  dictateButton: {fileID: 0}
   dictatedText: {fileID: 1151843982413561383}
+  dictationHandler: {fileID: 247313651449745930}
 --- !u!1001 &287628064737037483
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -118,6 +63,41 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TextRecord
+      objectReference: {fileID: 0}
+    - target: {fileID: 865245061703266956, guid: 3b819b37ceff0e84784a4465953c6ce6,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 33
+      objectReference: {fileID: 0}
+    - target: {fileID: 865245061703266956, guid: 3b819b37ceff0e84784a4465953c6ce6,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 865245061703266956, guid: 3b819b37ceff0e84784a4465953c6ce6,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 865245061703266956, guid: 3b819b37ceff0e84784a4465953c6ce6,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 865245061703266956, guid: 3b819b37ceff0e84784a4465953c6ce6,
+        type: 3}
+      propertyPath: m_textInfo.pageCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 865245061703266956, guid: 3b819b37ceff0e84784a4465953c6ce6,
+        type: 3}
+      propertyPath: m_text
+      value: <Dictation text will appear here>
+      objectReference: {fileID: 0}
+    - target: {fileID: 865245061703266956, guid: 3b819b37ceff0e84784a4465953c6ce6,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 17.6
       objectReference: {fileID: 0}
     - target: {fileID: 5617266142024103415, guid: 3b819b37ceff0e84784a4465953c6ce6,
         type: 3}
@@ -188,41 +168,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 865245061703266956, guid: 3b819b37ceff0e84784a4465953c6ce6,
-        type: 3}
-      propertyPath: m_textInfo.characterCount
-      value: 33
-      objectReference: {fileID: 0}
-    - target: {fileID: 865245061703266956, guid: 3b819b37ceff0e84784a4465953c6ce6,
-        type: 3}
-      propertyPath: m_textInfo.spaceCount
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 865245061703266956, guid: 3b819b37ceff0e84784a4465953c6ce6,
-        type: 3}
-      propertyPath: m_textInfo.wordCount
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 865245061703266956, guid: 3b819b37ceff0e84784a4465953c6ce6,
-        type: 3}
-      propertyPath: m_textInfo.lineCount
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 865245061703266956, guid: 3b819b37ceff0e84784a4465953c6ce6,
-        type: 3}
-      propertyPath: m_textInfo.pageCount
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 865245061703266956, guid: 3b819b37ceff0e84784a4465953c6ce6,
-        type: 3}
-      propertyPath: m_text
-      value: <Dictation text will appear here>
-      objectReference: {fileID: 0}
-    - target: {fileID: 865245061703266956, guid: 3b819b37ceff0e84784a4465953c6ce6,
-        type: 3}
-      propertyPath: m_fontSize
-      value: 17.6
       objectReference: {fileID: 0}
     - target: {fileID: 5550802536347706636, guid: 3b819b37ceff0e84784a4465953c6ce6,
         type: 3}
@@ -338,17 +283,17 @@ PrefabInstance:
     - target: {fileID: 6995589815024851810, guid: 1410b751b30772648a4eebd45457b714,
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6995589815024851810, guid: 1410b751b30772648a4eebd45457b714,
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 247313651449745930}
+      objectReference: {fileID: 7457755393741892713}
     - target: {fileID: 6995589815024851810, guid: 1410b751b30772648a4eebd45457b714,
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: StartRecording
+      value: OnDictationStarts
       objectReference: {fileID: 0}
     - target: {fileID: 6995589815024851810, guid: 1410b751b30772648a4eebd45457b714,
         type: 3}

@@ -21,7 +21,9 @@ Date: 25/11/2019
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using TMPro;
+using Microsoft.MixedReality.Toolkit.UI;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -34,6 +36,8 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
+        public UnityAction report;
+        public UnityAction open;
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
@@ -42,6 +46,8 @@ namespace Rtrbau
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
+        private bool buttonCreated;
+        private bool reportingActive;
         #endregion CLASS_EVENTS
 
         #region MONOBEHAVIOUR_METHODS
@@ -93,6 +99,11 @@ namespace Rtrbau
             {
                 recordText = textRecord;
                 recordType = typeRecord;
+                report = RecordKeyboardText;
+                open = OpenKeyboard;
+                buttonCreated = true;
+                reportingActive = false;
+                ActivateReporting();
             }
             else
             {
@@ -131,12 +142,36 @@ namespace Rtrbau
         /// </summary>
         public void OpenKeyboard()
         {
-            // Activate Rtrbau keyboard
-            RtrbauKeyboard.instance.OpenRtrbauKeyboard(recordType, recordedText);
-            // Activate loading plate
-            this.gameObject.GetComponentInParent<IElementable>().ActivateLoadingPlate();
-            // Provide instruction for user to click button
-            clickingText.text = "Click to record";
+            if (reportingActive == true)
+            {
+                // Activate Rtrbau keyboard
+                RtrbauKeyboard.instance.OpenRtrbauKeyboard(recordType, recordedText);
+                // Activate loading plate
+                this.gameObject.GetComponentInParent<IElementable>().ActivateLoadingPlate();
+                // Provide instruction for user to click button
+                clickingText.text = "Click to record";
+            }
+            else { }
+        }
+
+        public void ActivateReporting() 
+        {
+            if (buttonCreated == true)
+            {
+                this.gameObject.GetComponent<Interactable>().OnClick.AddListener(report);
+                reportingActive = true;
+            }
+            else { }
+        }
+
+        public void DeactivateReporting()
+        {
+            if (buttonCreated == true)
+            {
+                this.gameObject.GetComponent<Interactable>().OnClick.RemoveListener(report);
+                reportingActive = false;
+            }
+             else { }
         }
         #endregion PUBLIC
         #endregion CLASS_METHODS

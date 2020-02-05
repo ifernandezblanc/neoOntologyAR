@@ -53,16 +53,18 @@ namespace Rtrbau
         public Material fabricationReportedMaterial;
         public Renderer fabricationBounds;
         public GameObject recordDictationButton;
+        public GameObject recordDictatedText;
         #endregion GAMEOBJECT_PREFABS
 
         #region CLASS_EVENTS
         private bool fabricationCreated;
+        private bool reportingActive;
         #endregion CLASS_EVENTS
 
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || fabricationBounds == null || recordDictationButton == null)
+            if (fabricationText == null || fabricationSeenPanel == null || fabricationReportedPanel == null || fabricationReportedMaterial == null || fabricationBounds == null || recordDictationButton == null || recordDictatedText == null)
             {
                 throw new ArgumentException("TextDictation1::Start: Script requires some prefabs to work.");
             }
@@ -93,6 +95,7 @@ namespace Rtrbau
             scale = fabricationParent;
             dictatedRecord = null;
             fabricationCreated = false;
+            reportingActive = false;
             Scale();
             InferFromText();
         }
@@ -197,11 +200,22 @@ namespace Rtrbau
             // Call ElementReport to deactivate buttons from other nominate fabrications
             element.GetComponent<ElementReport>().DeactivateNominates(null);
 
-            if (fabricationCreated == true && recordDictationButton.activeSelf == false)
+            if (reportingActive == false)
             {
-                recordDictationButton.SetActive(true);
+                if (fabricationCreated == true && recordDictationButton.activeSelf == false)
+                {
+                    recordDictationButton.SetActive(true);
+                }
+                else { }
             }
-            else { }
+            else
+            {
+                if (fabricationCreated == true && recordDictatedText.activeSelf == false)
+                {
+                    recordDictatedText.SetActive(true);
+                }
+                else { }
+            }
         }
 
         /// <summary>
@@ -210,11 +224,57 @@ namespace Rtrbau
         /// </summary>
         public void DeactivateRecords()
         {
-            if (fabricationCreated == true && recordDictationButton.activeSelf == true)
+            if (reportingActive == false)
             {
-                recordDictationButton.SetActive(false);
+                if (fabricationCreated == true && recordDictationButton.activeSelf == true)
+                {
+                    recordDictationButton.SetActive(false);
+                }
+                else { }
             }
-            else { }
+            else
+            {
+                if (fabricationCreated == true && recordDictatedText.activeSelf == true)
+                {
+                    recordDictatedText.SetActive(false);
+                }
+                else { }
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ActivateReporting()
+        {
+            /// Fabrication reporting is managed by <see cref="RecordDictationButton"/>.
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="forcedReporting"></param>
+        public void DeactivateReporting(bool forcedReporting)
+        {
+            if (dictatedRecord != null || forcedReporting == true)
+            {
+                // Set recordedTextPanel at same state as recordDictationButton
+                if (recordDictationButton.activeSelf == true) { recordDictatedText.SetActive(true); }
+                else { recordDictatedText.SetActive(false); }
+                // Set dictatedText in recordTextPanel
+                recordDictatedText.GetComponentInChildren<TextMeshPro>().text = dictatedRecord;
+                // Deactivate reporting from RecordDictationButton and destroy
+                recordDictationButton.GetComponent<RecordDictationButton>().DeactivateReporting();
+                Destroy(recordDictationButton);
+                recordDictationButton = null;
+                // Assign reporting as completed
+                reportingActive = true;
+            }
+            else
+            {
+                throw new ArgumentException("TextDictation1::DeactivateReporting: this function should not be accesed before an individual is nominated.");
+            }
         }
         #endregion IRECORDABLE_METHODS
 
@@ -233,7 +293,6 @@ namespace Rtrbau
             {
                 dictatedRecord = dictation;
                 OnNextVisualisation();
-                dictatedRecord = null;
             }
             else { }
         }

@@ -21,10 +21,12 @@ Date: 26/11/2019
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Networking;
 using System.Collections;
 using System.IO;
-using UnityEngine.Networking;
 using TMPro;
+using Microsoft.MixedReality.Toolkit.UI;
 #endregion NAMESPACES
 
 namespace Rtrbau
@@ -43,6 +45,7 @@ namespace Rtrbau
         #endregion INITIALISATION_VARIABLES
 
         #region CLASS_VARIABLES
+        public UnityAction report;
         public string imageGenericName;
         public OntologyFile imageRecord;
         #endregion CLASS_VARIABLES
@@ -98,6 +101,7 @@ namespace Rtrbau
             data = fabrication;
             element = elementParent;
             scale = fabricationParent;
+            report = RecordImage;
             imageGenericName = null;
             imageRecord = null;
             fabricationCreated = false;
@@ -131,6 +135,7 @@ namespace Rtrbau
                 fabricationText.text = Parser.ParseNamingOntologyFormat(attribute.attributeName.Name());
                 imageGenericName = attribute.attributeName.Name();
                 fabricationCreated = true;
+                ActivateReporting();
             }
             else
             {
@@ -230,6 +235,34 @@ namespace Rtrbau
                 recordImageButton.SetActive(false);
             }
             else { }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ActivateReporting()
+        {
+            if (fabricationCreated == true)
+            {
+                recordImageButton.GetComponent<Interactable>().OnClick.AddListener(report);
+            }
+            else { }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="forcedReporting"></param>
+        public void DeactivateReporting(bool forcedReporting)
+        {
+            if (imageRecord != null || forcedReporting == true)
+            {
+                recordImageButton.GetComponent<Interactable>().OnClick.RemoveListener(report);
+            }
+            else 
+            {
+                throw new ArgumentException("ImageRecordTap1::DeactivateReporting: this function should not be accesed before an individual is nominated.");
+            }
         }
         #endregion IRECORDABLE_METHODS
 

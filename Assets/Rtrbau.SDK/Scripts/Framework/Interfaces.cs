@@ -91,13 +91,16 @@ namespace Rtrbau
     {
         void ActivateRecords();
         void DeactivateRecords();
+        void ActivateReporting();
+        void DeactivateReporting(bool forcedReporting);
     }
 
     public interface INominatable
     {
         void ActivateNominates();
         void DeactivateNominates();
-        bool NominatesNewReportElement(bool reportedForced);
+        void ActivateReporting();
+        void DeactivateReporting(bool forcedReporting);
     }
 
     public interface IRecommendable

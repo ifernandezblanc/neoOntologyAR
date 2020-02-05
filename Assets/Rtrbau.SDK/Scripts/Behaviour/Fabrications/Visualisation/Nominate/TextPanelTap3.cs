@@ -160,27 +160,6 @@ namespace Rtrbau
                 fabricationText.text = Parser.ParseNamingOntologyFormat(attribute.attributeName.Name());
                 // Start recommendation procedure
                 DetermineRecommendationFormat();
-                //// Assign nominated class
-                //OntologyEntity individualRange = attribute.attributeRange;
-                //// Use generic name (class) to generate ontology entity for "new" individual
-                //OntologyEntity newIndividualEntity = new OntologyEntity(Parser.ParseAddNew(attribute.attributeRange.URI()));
-                //// Create and assign "new" individual in case user wants to define a new one
-                //individualNominates.Add(newIndividualEntity, CreateIndividualButton(newIndividualEntity, individualRange));
-                //// Retrieve JsonIndividuals from ElementReport
-                //List<JsonIndividual> individuals = element.GetComponent<ElementReport>().objectClassesIndividuals.Find(x => x.ontClass == attribute.attributeRange.URI()).ontIndividuals;
-                //// Add individuals to fabrication list
-                //foreach (JsonIndividual individual in individuals)
-                //{
-                //    Debug.Log("DefaultNominate::InferFromtText: individual nominated is: " + individual.ontIndividual);
-                //    // Generate OntologyEntity to parse individual URI
-                //    OntologyEntity individualEntity = new OntologyEntity(individual.ontIndividual);
-                //    // Create individual button and assign both to dictionary
-                //    individualNominates.Add(individualEntity, CreateIndividualButton(individualEntity, individualRange));
-                //}
-                //// Ensure no nominates buttons are unloadable
-                //StartCoroutine(UnloadNominates());
-                //// Set fabrication as created
-                //fabricationCreated = true;
             }
             else
             {
@@ -204,8 +183,6 @@ namespace Rtrbau
                 {
                     if (nominatesNewReport == false)
                     {
-                        //Debug.Log("DefaultNominate::OnNextVisualisation: nominatedIndividual is: " + nominatedIndividual.Name());
-                        //Debug.Log("DefaultNominate::OnNextVisualisation: nominatedIndividual is: " + nominatedIndividual.URI());
                         // If nominatedIndividual is new, then attribute value needs to be modified
                         if (nominatedIndividual.Name().Contains(Parser.ParseNamingNew()))
                         {
@@ -218,7 +195,6 @@ namespace Rtrbau
                                 attribute.attributeValue = newIndividual.URI();
                                 // Assign nominated individual as new element report
                                 newReportNominated = true;
-                                Debug.Log("TextPanelTap3::OnNextVisualisation: nominatedIndividual " + nominatedIndividual.Name() + " is new to report");
                             }
                             else
                             {
@@ -229,21 +205,17 @@ namespace Rtrbau
                         {
                             // Assign user-reported attribute value to RtrbauElement from ElementReport through RtrbauFabrication
                             attribute.attributeValue = nominatedIndividual.URI();
+                            // Assign nominated individual as non new element report
+                            newReportNominated = false;
                         }
                         
                         // Change button colour for user confirmation
                         fabricationReportedPanel.material = fabricationReportedMaterial;
                         // Check if all attribute values have been recorded
-                        // If true, then ElementReport will input reported element into report
-                        // If true, then ElementReport will change colour to reported
                         element.gameObject.GetComponent<ElementReport>().CheckAttributesReported();
-                        // Deactivate nominate buttons
-                        // DeactivateNominates();
                     }
                     else
                     {
-                        //Debug.Log("DefaultNominate::OnNextVisualisation: new element to report is of range: " + attribute.attributeRange.Name());
-                        //Debug.Log("DefaultNominate::OnNextVisualisation: new element to report name is: " + attribute.attributeValue);
                         // Generate OntologyElement(s) to load RtrbauElement
                         OntologyElement elementClass = new OntologyElement(attribute.attributeRange.URI(), OntologyElementType.ClassProperties);
                         OntologyElement elementIndividual = new OntologyElement(attribute.attributeValue, OntologyElementType.IndividualProperties);
@@ -255,13 +227,18 @@ namespace Rtrbau
                         RtrbauerEvents.TriggerEvent("AssetVisualiser_CreateElement", elementIndividual, elementClass, Rtrbauer.instance.user.procedure);
                         // Destroy OntologyRecommendation
                         DestroyRecommendation();
+                        // Deactivate reporting action of left nominates
+                        foreach (KeyValuePair<OntologyEntity, GameObject> nominate in individualNominates)
+                        {
+                            nominate.Value.GetComponent<NominateDataButton>().DeactivateReporting();
+                        }
                         // Check RtrbauElement to UnloadElement if necessary
-                        element.GetComponent<ElementReport>().CheckNewNominatesReported(this.gameObject);
+                        // element.GetComponent<ElementReport>().CheckNewNominatesReported(this.gameObject);
                     }
                 }
                 else { }
             }
-            else { }
+            else { Debug.Log("TextPanelTap3::7"); }
         }
 
         /// <summary>
@@ -372,39 +349,71 @@ namespace Rtrbau
             }
         }
 
+        public void ActivateReporting()
+        {
+            /// Fabrication reporting is managed by <see cref="NominateDataButton"/>.
+        }
+
+
         /// <summary>
-        /// Checks if the individual nominated is to create a new individual or that element reported has been forced.
+        /// 
         /// </summary>
-        /// <returns>
-        /// If true, returns the nominate button from which create a new report element as an <see cref="OntologyEntity"/>.
-        /// Otherwise, returns a null <see cref="OntologyEntity"/>.
-        /// </returns>
-        public bool NominatesNewReportElement(bool reportedForced)
+        public void DeactivateReporting(bool forcedReporting)
         {
             // Check if han individual has been nominated
-            if (individualNominated == true || reportedForced == true)
+            if (individualNominated == true || forcedReporting == true)
             {
-                // Check if nominated individual name is that for a new individual
-                if (newReportNominated == true)
+                // Deactivate nominates buttons
+                DeactivateNominates();
+                // Initialise list of destroyable nominates
+                Dictionary<OntologyEntity, GameObject> destroyableNominates = new Dictionary<OntologyEntity, GameObject>();
+
+                // Destroy all nominate buttons except that being nominated
+                foreach (KeyValuePair<OntologyEntity, GameObject> nominate in individualNominates)
                 {
-                    //Debug.Log("DefaultNominate::CreateNewElementReport: individual to report is new.");
-                    // Deactivate nominates buttons
-                    DeactivateNominates();
-                    // Assign fabrication as to nominate new RtrbauElement
-                    nominatesNewReport = true;
-                    // Then return true
-                    return true;
+                    // Ensure there is individual nominated URI to compare
+                    string nominatedURI;
+                    if (nominatedIndividual == null) { nominatedURI = null; }
+                    else { nominatedURI = nominatedIndividual.URI(); }
+
+                    // If individual nominate is not that being nominated
+                    if (nominate.Key.URI() != nominatedURI)
+                    {
+                        // Add nominate to list of destroyables
+                        destroyableNominates.Add(nominate.Key, nominate.Value);
+                    }
+                    else
+                    {
+                        // If nominated individual is new
+                        if (nominate.Key.URI().Contains(Parser.ParseNamingNew()))
+                        {
+                            // Update fabrication material to non reported
+                            fabricationReportedPanel.material = fabricationNonReportedMaterial;
+                            // Update nominate material to non reported
+                            nominate.Value.GetComponent<NominateDataButton>().ReportMaterial(fabricationNonReportedMaterial);
+                            // Then fabrication nominates new report
+                            nominatesNewReport = true;
+                        }
+                        else
+                        {
+                            // Otherwise deactivate reporting
+                            nominate.Value.GetComponent<NominateDataButton>().DeactivateReporting();
+                        }
+                    }
                 }
-                else
+
+                // Remove destroyableNominates from individualNominates list
+                foreach (KeyValuePair<OntologyEntity, GameObject> nominate in destroyableNominates)
                 {
-                    //Debug.Log("DefaultNominate::CreateNewElementReport: individual to report is not new.");
-                    // Then return false
-                    return false;
+                    // Remove nominate from individualNominates
+                    individualNominates.Remove(nominate.Key);
+                    // Destroy nominate button
+                    Destroy(nominate.Value);
                 }
             }
             else
             {
-                throw new ArgumentException("DefaultNominate::CreatesNewElementReport: this function should not be accessible before an individual is nominated.");
+                throw new ArgumentException("TextPanelTap3::DeactivateReporting: this function should not be accesed before an individual is nominated.");
             }
         }
         #endregion INOMINATABLE_METHODS
@@ -498,28 +507,6 @@ namespace Rtrbau
                 }
                 // Set fabrication as created
                 fabricationCreated = true;
-
-                //// Assign nominated class
-                //OntologyEntity fabricationRange = attribute.attributeRange;
-                //// Use generic name (class) to generate ontology entity for "new" individual
-                //OntologyEntity newIndividualEntity = new OntologyEntity(Parser.ParseAddNew(attribute.attributeRange.URI()));
-                //// Create and assign "new" individual in case user wants to define a new one
-                //individualNominates.Add(newIndividualEntity, CreateIndividualButton(newIndividualEntity, individualRange));
-                //// Retrieve JsonIndividuals from ElementReport
-                //List<JsonIndividual> individuals = element.GetComponent<ElementReport>().objectClassesIndividuals.Find(x => x.ontClass == attribute.attributeRange.URI()).ontIndividuals;
-                //// Add individuals to fabrication list
-                //foreach (JsonIndividual individual in individuals)
-                //{
-                //    Debug.Log("DefaultNominate::InferFromtText: individual nominated is: " + individual.ontIndividual);
-                //    // Generate OntologyEntity to parse individual URI
-                //    OntologyEntity individualEntity = new OntologyEntity(individual.ontIndividual);
-                //    // Create individual button and assign both to dictionary
-                //    individualNominates.Add(individualEntity, CreateIndividualButton(individualEntity, individualRange));
-                //}
-                //// Ensure no nominates buttons are unloadable
-                //// StartCoroutine(UnloadNominates());
-                //// Set fabrication as created
-                //fabricationCreated = true;
             }
             else
             {
@@ -665,45 +652,6 @@ namespace Rtrbau
 
             GenerateRecommendation();
         }
-
-        //IEnumerator UnloadNominates()
-        //{
-        //    Dictionary<OntologyEntity, GameObject> unloadableNominates = new Dictionary<OntologyEntity, GameObject>();
-
-        //    foreach (KeyValuePair<OntologyEntity,GameObject> individualNominate in individualNominates)
-        //    {
-        //        // Wait until all nominates buttons have been created
-        //        while(individualNominate.Value.GetComponent<NominateDataButton>().buttonCreated == false)
-        //        {
-        //            yield return null;
-        //        }
-
-        //        // If created button is unloadable, then add to unloadable nominates
-        //        // if (individualNominate.Value.GetComponent<NominateDataButton>().unloadableNominate == true)
-        //        if (individualNominate.Value.GetComponent<NominateDataButton>().loadableNominate == false)
-        //        {
-        //            unloadableNominates.Add(individualNominate.Key, individualNominate.Value);
-        //        }
-        //        else {}
-        //    }
-
-        //    foreach (KeyValuePair<OntologyEntity, GameObject> nominate in unloadableNominates)
-        //    {
-        //        // Remove from individual Nominates
-        //        individualNominates.Remove(nominate.Key);
-        //        // Destroy button
-        //        Destroy(nominate.Value);
-        //    }
-
-        //    //GameObject nominateDataButton;
-        //    //if (individualNominates.TryGetValue(nominate, out nominateDataButton))
-        //    //{
-        //    //    individualNominates.Remove(nominate);
-        //    //    Destroy(nominateDataButton);
-        //    //    Debug.Log("TextPanelTap3::UnloadNominate: individual nominate being unloaded: " + nominate.Entity());
-        //    //}
-        //    //else { throw new ArgumentException("TextPanelTap3::UnloadNominate: Nominate should be found: " + nominate.Entity()); }
-        //}
         #endregion PRIVATE
 
         #region PUBLIC
