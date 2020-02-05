@@ -140,7 +140,7 @@ namespace Rtrbau
             if (data.fabricationData.TryGetValue(iconfacet2, out attribute))
             {
                 // Set button name to relationship name
-                fabricationText.text = Parser.ParseNamingOntologyFormat(attribute.attributeName.Name());
+                fabricationText.text = Parser.ParseNamingOntologyAttribute(attribute.attributeName.Name(), element.GetComponent<ElementReport>().classElement.entity.Name());
                 // Assign nominated class
                 OntologyEntity individualRange = attribute.attributeRange;
                 // Use generic name (class) to generate ontology entity for "new" individual

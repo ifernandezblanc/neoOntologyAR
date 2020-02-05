@@ -117,7 +117,7 @@ namespace Rtrbau
             if (data.fabricationData.TryGetValue(textfacet1, out attribute))
             {
                 // text.text = attribute.attributeName.name + ": " + attribute.attributeValue;
-                fabricationText.text = Parser.ParseNamingOntologyFormat(attribute.attributeValue);
+                fabricationText.text = Parser.ParseNamingOntologyAttribute(attribute.attributeName.Name(), element.GetComponent<ElementConsult>().classElement.entity.Name());
             }
             else
             {

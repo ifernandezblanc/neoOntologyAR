@@ -127,7 +127,7 @@ namespace Rtrbau
             {
                 // Add text for attributes name
                 string attributeName = Parser.ParseURI(attribute.attributeValue, '#', RtrbauParser.post);
-                fabricationText.text = Parser.ParseNamingOntologyFormat(attribute.attributeName.Name()) + ":";
+                fabricationText.text = Parser.ParseNamingOntologyAttribute(attributeName, element.GetComponent<ElementConsult>().classElement.entity.Name()) + ":";
                 // Find icon that retrieves value
                 // iconName = Libraries.IconLibrary.Find(x => x.Contains(attribute.attributeValue));
                 iconName = Libraries.IconLibrary.Find(x => attribute.attributeValue.Contains(x));

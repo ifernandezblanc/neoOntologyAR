@@ -79,9 +79,29 @@ namespace Rtrbau
         /// Describe script purpose
         /// Add links when code has been inspired 
         /// </summary>
-        public static string ParseNamingOntologyFormat(string ontologyFormattedName)
+        /// <param name="ontologyFormattedName"></param>
+        /// <returns></returns>
+        public static string ParseNamingOntology(string ontologyFormattedName)
         {
             return Regex.Replace(ontologyFormattedName, "([A-Z])", " $1", RegexOptions.Compiled).Trim();
+        }
+
+        /// <summary>
+        /// Describe script purpose
+        /// Add links when code has been inspired 
+        /// </summary>
+        /// <param name="ontologyAttributeName"></param>
+        /// <param name="ontologyClassName"></param>
+        /// <returns></returns>
+        public static string ParseNamingOntologyAttribute(string ontologyAttributeName, string ontologyClassName)
+        {
+            int indexOfClass = ontologyAttributeName.ToUpper().IndexOf(ontologyClassName.ToUpper());
+            string attributeSubString;
+
+            if (indexOfClass >= 0) { attributeSubString = ontologyAttributeName.Remove(indexOfClass, ontologyClassName.Length); }
+            else { attributeSubString = ontologyAttributeName; }
+            
+            return ParseNamingOntology(attributeSubString);
         }
 
         /// <summary>

@@ -461,7 +461,7 @@ namespace Rtrbau
             if (fabricationsSelected == true)
             {
                 individualText.text = rtrbauElement.elementName.Name();
-                classText.text = Parser.ParseNamingOntologyFormat(rtrbauElement.elementClass.Name());
+                classText.text = Parser.ParseNamingOntology(rtrbauElement.elementClass.Name());
 
                 Debug.Log("ElementConsult::CreateFabrications: Starting to create fabrications for: " + individualElement.entity.Entity());
 

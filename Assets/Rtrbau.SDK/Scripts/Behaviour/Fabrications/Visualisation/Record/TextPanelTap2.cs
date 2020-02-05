@@ -132,7 +132,7 @@ namespace Rtrbau
             if (data.fabricationData.TryGetValue(textfacet6, out attribute))
             {
                 // Set button name to relationship name
-                fabricationText.text = Parser.ParseNamingOntologyFormat(attribute.attributeName.Name());
+                fabricationText.text = Parser.ParseNamingOntologyAttribute(attribute.attributeName.Name(), element.GetComponent<ElementReport>().classElement.entity.Name());
                 // Create record select button for 'true' boolean value and assign to selectable records
                 selectableRecords.Add("true", CreateRecordSelectButton("true"));
                 // Create record select button for 'false' boolean value and assign to selectable records

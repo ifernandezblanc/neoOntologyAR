@@ -137,7 +137,7 @@ namespace Rtrbau
             if (data.fabricationData.TryGetValue(modelfacet1, out attribute))
             {
                 // Set button name to relationship name
-                fabricationText.text = Parser.ParseNamingOntologyFormat(attribute.attributeName.Name());
+                fabricationText.text = Parser.ParseNamingOntologyAttribute(attribute.attributeName.Name(), element.GetComponent<ElementReport>().classElement.entity.Name());
                 // Create a selectable replica of each asset component
                 foreach (GameObject componentModel in visualiser.manager.assetComponentsModels)
                 {
