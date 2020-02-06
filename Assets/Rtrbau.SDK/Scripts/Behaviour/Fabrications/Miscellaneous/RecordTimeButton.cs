@@ -41,7 +41,6 @@ namespace Rtrbau
         #endregion CLASS_VARIABLES
 
         #region GAMEOBJECT_PREFABS
-        public GameObject recordedButton;
         public TextMeshPro recordedText;
         public TextMeshPro clickingText;
         #endregion GAMEOBJECT_PREFABS
@@ -54,7 +53,7 @@ namespace Rtrbau
         #region MONOBEHAVIOUR_METHODS
         void Start()
         {
-            if (recordedButton == null || recordedText == null || clickingText == null)
+            if (recordedText == null || clickingText == null)
             {
                 throw new ArgumentException("RecordTimeButton::Start: Script requires some prefabs to work.");
             }

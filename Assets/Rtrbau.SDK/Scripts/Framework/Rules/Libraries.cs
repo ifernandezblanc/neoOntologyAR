@@ -276,7 +276,7 @@ namespace Rtrbau
         /// </summary>
         public static List<string> TimeRecord = new List<string>
         {
-            "Start", "End", "Measure"
+            "Start", "End", "State"
         };
 
         /// <summary>
