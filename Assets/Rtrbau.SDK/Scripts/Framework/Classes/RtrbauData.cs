@@ -462,9 +462,9 @@ namespace Rtrbau
                     }
                     else if (locationManager.elementsMode == RtrbauElementMode.Interior)
                     {
-                        pX = 0.45f;
+                        pX = 0.40f;
                         pY = 0;
-                        pZ = 0.45f;
+                        pZ = 0.40f;
 
                         Debug.Log("RtrbauData::RtrbauLocation::SetPosition: element position follows user at: (" + pX + "," + pY + "," + pZ + ")");
                         element.AddComponent<Microsoft.MixedReality.Toolkit.Examples.Demos.EyeTracking.MoveWithCamera>().offsetToCamera = new Vector3(pX, pY, pZ);
@@ -539,7 +539,7 @@ namespace Rtrbau
                     }
                     else if (locationManager.elementsMode == RtrbauElementMode.Interior)
                     {
-                        pX = -0.45f;
+                        pX = -0.40f;
                         pY = 0;
                         pZ = (-0.75f * position) + 1.5f;
 

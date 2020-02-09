@@ -500,13 +500,18 @@ namespace Rtrbau
                 individualNominates.Add(newIndividualEntity, CreateIndividualButton(newIndividualEntity, newIndividualValues));
                 // Determine recommended cases
                 List<KeyValuePair<decimal, RtrbauElement>> recommendedCases = recommendation.RecommendedCases();
-                // For each recommended case
-                foreach (KeyValuePair<decimal,RtrbauElement> recommendedCase in recommendedCases)
+                // Ensure there are recommendations
+                if (recommendedCases != null)
                 {
-                    Debug.Log("TextPanelTap3::RecommendCases: individual recommended is: " + recommendedCase.Value.elementName.Name() + " with similarity " + recommendedCase.Key);
-                    // Create individual button and assign both to dictionary
-                    individualNominates.Add(recommendedCase.Value.elementName, CreateIndividualButton(recommendedCase.Value.elementName, recommendedCase.Value));
+                    // For each recommended case
+                    foreach (KeyValuePair<decimal, RtrbauElement> recommendedCase in recommendedCases)
+                    {
+                        Debug.Log("TextPanelTap3::RecommendCases: individual recommended is: " + recommendedCase.Value.elementName.Name() + " with similarity " + recommendedCase.Key);
+                        // Create individual button and assign both to dictionary
+                        individualNominates.Add(recommendedCase.Value.elementName, CreateIndividualButton(recommendedCase.Value.elementName, recommendedCase.Value));
+                    }
                 }
+                else { }
                 // Set fabrication as created
                 fabricationCreated = true;
             }

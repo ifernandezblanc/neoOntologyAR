@@ -208,8 +208,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hostTransform: {fileID: 0}
-  manipulationType: 1
-  twoHandedManipulationType: 5
+  manipulationType: 2
+  twoHandedManipulationType: 2
   allowFarManipulation: 1
   oneHandRotationModeNear: 6
   oneHandRotationModeFar: 6
