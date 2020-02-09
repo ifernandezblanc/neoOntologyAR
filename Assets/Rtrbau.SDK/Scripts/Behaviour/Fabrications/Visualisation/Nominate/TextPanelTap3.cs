@@ -238,7 +238,7 @@ namespace Rtrbau
                 }
                 else { }
             }
-            else { Debug.Log("TextPanelTap3::7"); }
+            else { }
         }
 
         /// <summary>
@@ -498,8 +498,10 @@ namespace Rtrbau
                 RtrbauElement newIndividualValues = new RtrbauElement();
                 // Create "new" nominate button and assign to individual nominates list
                 individualNominates.Add(newIndividualEntity, CreateIndividualButton(newIndividualEntity, newIndividualValues));
+                // Determine recommended cases
+                List<KeyValuePair<decimal, RtrbauElement>> recommendedCases = recommendation.RecommendedCases();
                 // For each recommended case
-                foreach (KeyValuePair<decimal,RtrbauElement> recommendedCase in recommendation.RecommendCases())
+                foreach (KeyValuePair<decimal,RtrbauElement> recommendedCase in recommendedCases)
                 {
                     Debug.Log("TextPanelTap3::RecommendCases: individual recommended is: " + recommendedCase.Value.elementName.Name() + " with similarity " + recommendedCase.Key);
                     // Create individual button and assign both to dictionary

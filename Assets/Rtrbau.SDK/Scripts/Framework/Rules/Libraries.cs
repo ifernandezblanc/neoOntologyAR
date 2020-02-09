@@ -479,7 +479,7 @@ namespace Rtrbau
             new OntologyEntity("http://138.250.108.1:3003/api/files/owl/diagont#hasStateStatus"),
             new OntologyEntity("http://138.250.108.1:3003/api/files/owl/diagont#hasStateDominion"),
             new OntologyEntity("http://138.250.108.1:3003/api/files/owl/diagont#hasStatePhenomenon"),
-            new OntologyEntity("http://138.250.108.1:3003/api/files/owl/diagont#hasMeasureUnit"),
+            new OntologyEntity("http://138.250.108.1:3003/api/files/owl/diagont#hasStateUnit"),
             new OntologyEntity("http://138.250.108.1:3003/api/files/owl/diagont#refersToComponent")
         };
         #endregion ATTRIBUTE_LIBRARIES

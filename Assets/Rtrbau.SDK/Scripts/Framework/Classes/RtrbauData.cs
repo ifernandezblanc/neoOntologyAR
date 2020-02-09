@@ -462,9 +462,9 @@ namespace Rtrbau
                     }
                     else if (locationManager.elementsMode == RtrbauElementMode.Interior)
                     {
-                        pX = 0.35f;
+                        pX = 0.45f;
                         pY = 0;
-                        pZ = 0.35f;
+                        pZ = 0.45f;
 
                         Debug.Log("RtrbauData::RtrbauLocation::SetPosition: element position follows user at: (" + pX + "," + pY + "," + pZ + ")");
                         element.AddComponent<Microsoft.MixedReality.Toolkit.Examples.Demos.EyeTracking.MoveWithCamera>().offsetToCamera = new Vector3(pX, pY, pZ);
@@ -539,7 +539,7 @@ namespace Rtrbau
                     }
                     else if (locationManager.elementsMode == RtrbauElementMode.Interior)
                     {
-                        pX = -0.35f;
+                        pX = -0.45f;
                         pY = 0;
                         pZ = (-0.75f * position) + 1.5f;
 
@@ -826,7 +826,7 @@ namespace Rtrbau
         public RtrbauAttribute recommendationAttribute;
         public RtrbauElement recommendationTarget;
         public List<RtrbauElement> recommendationCases;
-        public List<RtrbauElement> recommendations;
+        public List<KeyValuePair<decimal,RtrbauElement>> recommendationElements;
         #endregion MEMBERS
 
         #region CONSTRUCTORS
@@ -840,7 +840,7 @@ namespace Rtrbau
             recommendationAttribute = new RtrbauAttribute();
             recommendationTarget = new RtrbauElement();
             recommendationCases = new List<RtrbauElement>();
-            recommendations = new List<RtrbauElement>();
+            recommendationElements = new List<KeyValuePair<decimal, RtrbauElement>>();
         }
 
         /// <summary>
@@ -889,6 +889,8 @@ namespace Rtrbau
                     }
                     else { throw new ArgumentException("RtrbauData::RtrbauRecommendation: Case individual does not belong to the recommendable class"); }
                 }
+
+                recommendationElements = recommendationFormat.RecommendIndividuals(recommendationAttribute, recommendationTarget, recommendationCases);
             }
             else { throw new ArgumentException("RtrbauData::RtrbauRecommendation: Fabrication attribute does not belong to the recommendable attribute"); }
         }
@@ -937,9 +939,11 @@ namespace Rtrbau
                 }
 
                 // Generate new RtrbauElement instance to return
+                RtrbauElement element = new RtrbauElement(elementName, elementClass, elementAttributes);
+                Debug.Log("RtrbauData::RecommendationFormat:CreateElement: new RtrbauElement created for: " + elementName.Name());
                 // Return new RtrbauElement or null depending on whether RtrbauAttributes assigned coincide with the number of formatFacets
                 if (elementAttributes.Count != recommendationFormat.formatFacets.Count) { return null; }
-                else { return new RtrbauElement(elementName, elementClass, elementAttributes); }
+                else { return element; }
             }
             else
             {
@@ -954,9 +958,9 @@ namespace Rtrbau
         /// Add links when code has been inspired
         /// </summary>
         /// <returns></returns>
-        public List<KeyValuePair<decimal,RtrbauElement>> RecommendCases()
+        public List<KeyValuePair<decimal,RtrbauElement>> RecommendedCases()
         {
-            return recommendationFormat.RecommendIndividuals(recommendationAttribute, recommendationTarget, recommendationCases);
+            return recommendationElements;
         }
         #endregion PUBLIC
         #endregion METHODS
@@ -1953,13 +1957,19 @@ namespace Rtrbau
                             decimal recommendationResult = EvaluateIndividual(targetIndividual, caseIndividual);
 
                             individualsResults.Add(new KeyValuePair<decimal, RtrbauElement>(recommendationResult, caseIndividual));
+                            Debug.Log("RtrbauData::RecommendationFormat::RecommendIndividuals: individual " + caseIndividual.elementName.Name() + " is added with value " + recommendationResult);
                         }
 
                         // Order results in descending numerical order
                         individualsResults.Sort((x, y) => y.Key.CompareTo(x.Key));
 
-                        // Return the first 5
-                        return individualsResults.GetRange(0, 5);
+                        // Return the first 3 if there are enough
+                        if (individualsResults.Count != 0)
+                        {
+                            if (individualsResults.Count >= 3) { return individualsResults.GetRange(0, 3); }
+                            else { return individualsResults; }
+                        }
+                        else { return null; }
                     }
                     else
                     {
@@ -1968,16 +1978,23 @@ namespace Rtrbau
                 }
                 else
                 {
-                    // Otherwise, recommends the first five cases on the cases list with a value of 0
-                    List<KeyValuePair<decimal, RtrbauElement>> individualsResults = new List<KeyValuePair<decimal, RtrbauElement>>();
+                    // Otherwise, recommends none
+                    return null;
+                    //List<KeyValuePair<decimal, RtrbauElement>> individualsResults = new List<KeyValuePair<decimal, RtrbauElement>>();
 
-                    foreach (RtrbauElement caseIndividual in caseIndividuals)
-                    {
-                        individualsResults.Add(new KeyValuePair<decimal, RtrbauElement>(0.0M, caseIndividual));
-                    }
+                    //foreach (RtrbauElement caseIndividual in caseIndividuals)
+                    //{
+                    //    individualsResults.Add(new KeyValuePair<decimal, RtrbauElement>(0.0M, caseIndividual));
+                    //    Debug.Log("RtrbauData::RecommendationFormat::RecommendIndividuals: individual " + caseIndividual.elementName.Name() + " is added with value 0.0M");
+                    //}
 
-                    // Return the first 5
-                    return individualsResults.GetRange(0, 5);
+                    //// Return the first 3 if there are enough
+                    //if (individualsResults.Count != 0)
+                    //{
+                    //    if (individualsResults.Count >=3 ) { return individualsResults.GetRange(0, 3); }
+                    //    else { return individualsResults; }
+                    //}
+                    //else { return null; }
                 }
             }
             else
