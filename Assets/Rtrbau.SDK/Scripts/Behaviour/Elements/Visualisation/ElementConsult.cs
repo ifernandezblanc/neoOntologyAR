@@ -67,6 +67,8 @@ namespace Rtrbau
         public Transform fabricationsRelationships;
         [SerializeField]
         private GameObject loadingPlate;
+        [SerializeField]
+        private GameObject activationButton;
         public TextMeshPro classText;
         public TextMeshPro individualText;
         public TextMeshPro statusText;
@@ -117,7 +119,7 @@ namespace Rtrbau
         public void Initialise(AssetVisualiser assetVisualiser, OntologyElement elementIndividual, OntologyElement elementClass, GameObject elementPrevious)
         {
             if (fabricationsAttributes == null || fabricationsAttributesNonText == null || fabricationsRelationships == null || loadingPlate == null || 
-                classText == null || individualText == null || statusText == null ||  panelPlate == null || lineMaterial == null) 
+                activationButton == null || classText == null || individualText == null || statusText == null ||  panelPlate == null || lineMaterial == null) 
             {
                 Debug.LogError("ElementConsult::Initialise: Fabrication not found. Please assign them in ElementConsult script.");
             }

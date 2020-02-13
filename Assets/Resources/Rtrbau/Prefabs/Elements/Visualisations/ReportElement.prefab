@@ -48,6 +48,8 @@ MonoBehaviour:
   fabricationsAttributes: {fileID: 4843541794800467067}
   fabricationsRelationships: {fileID: 4843541794490888412}
   loadingPlate: {fileID: 239586573998586729}
+  activationButton: {fileID: 2818329392484303793}
+  submissionButton: {fileID: 2818329392216858860}
   classText: {fileID: 3584925424881158116}
   individualText: {fileID: 3584925424504391853}
   statusText: {fileID: 3584925425098861268}
@@ -240,6 +242,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2818329392484303793 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2002190450858088037, guid: f92073de1831f9c40a5cc1e6fe3bc3d2,
+    type: 3}
+  m_PrefabInstance: {fileID: 4383553011339924948}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2818329392216858860 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2002190451127514424, guid: f92073de1831f9c40a5cc1e6fe3bc3d2,
+    type: 3}
+  m_PrefabInstance: {fileID: 4383553011339924948}
+  m_PrefabAsset: {fileID: 0}
 --- !u!23 &5500010916601164675 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8108296773934179927, guid: f92073de1831f9c40a5cc1e6fe3bc3d2,

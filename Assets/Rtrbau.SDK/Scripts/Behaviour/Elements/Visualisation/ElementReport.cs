@@ -71,6 +71,10 @@ namespace Rtrbau
         public Transform fabricationsRelationships;
         [SerializeField]
         private GameObject loadingPlate;
+        [SerializeField]
+        private GameObject activationButton;
+        [SerializeField]
+        private GameObject submissionButton;
         public TextMeshPro classText;
         public TextMeshPro individualText;
         public TextMeshPro statusText;
@@ -121,7 +125,7 @@ namespace Rtrbau
         /// </summary>
         public void Initialise(AssetVisualiser assetVisualiser, OntologyElement elementIndividual, OntologyElement elementClass, GameObject elementPrevious)
         {
-            if (fabricationsAttributes == null || fabricationsRelationships == null || loadingPlate == null || classText == null || individualText == null || statusText == null ||  panelPlate == null || reportedMaterial == null ||  lineMaterial == null )
+            if (fabricationsAttributes == null || fabricationsRelationships == null || loadingPlate == null || activationButton == null || submissionButton == null || classText == null || individualText == null || statusText == null ||  panelPlate == null || reportedMaterial == null ||  lineMaterial == null )
             {
                 Debug.LogError("ElementReport::Initialise: Fabrication not found. Please assign them in ElementReport script.");
             }
@@ -1046,6 +1050,9 @@ namespace Rtrbau
 
             // Deactivate loading plate
             DeactivateLoadingPlate();
+
+            // Deactivate submit button
+            submissionButton.SetActive(false);
 
             // Update rtrbauLocation
             rtrbauLocationType = RtrbauElementLocation.Quaternary;

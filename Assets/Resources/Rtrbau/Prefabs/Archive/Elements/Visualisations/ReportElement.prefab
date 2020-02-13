@@ -48,6 +48,8 @@ MonoBehaviour:
   fabricationsAttributes: {fileID: 5667374532145503220}
   fabricationsRelationships: {fileID: 3433461705774457311}
   loadingPlate: {fileID: 8826765241893803439}
+  activationButton: {fileID: 1586432290398672852}
+  submissionButton: {fileID: 8316569711903824789}
   classText: {fileID: 2654695879259212615}
   individualText: {fileID: 8645779583049182304}
   statusText: {fileID: 6974380414694427009}
@@ -131,15 +133,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8555882259772492913, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2550298081673476097, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
         type: 3}
       propertyPath: m_RootOrder
       value: 9
       objectReference: {fileID: 0}
-    - target: {fileID: 8555882259772492913, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
+    - target: {fileID: 9198608536213045835, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 349447831995841957, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
         type: 3}
@@ -161,10 +168,25 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 9198608536213045835, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
+    - target: {fileID: 4975956538469990316, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
         type: 3}
-      propertyPath: m_IsActive
-      value: 1
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 8698028628660104389}
+    - target: {fileID: 4975956538469990316, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SubmitReport
+      objectReference: {fileID: 0}
+    - target: {fileID: 4975956538469990316, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 9101133647686229675, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 718438295965587664, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
         type: 3}
@@ -191,37 +213,17 @@ PrefabInstance:
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
-    - target: {fileID: 4975956538469990316, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
-        type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 8698028628660104389}
-    - target: {fileID: 4975956538469990316, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
-        type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SubmitReport
-      objectReference: {fileID: 0}
-    - target: {fileID: 4975956538469990316, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
-        type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 9101133647686229675, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
-        type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 1466816695776026267, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
         type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 4593037131391869768, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
+    - target: {fileID: 6544848719230693129, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
         type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 6544848719230693129, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
+    - target: {fileID: 4593037131391869768, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
         type: 3}
       propertyPath: m_Mesh
       value: 
@@ -303,6 +305,18 @@ MonoBehaviour:
 --- !u!23 &7993474377195311833 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7074283331440855815, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
+    type: 3}
+  m_PrefabInstance: {fileID: 919404670518434270}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1586432290398672852 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1929302532710600202, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
+    type: 3}
+  m_PrefabInstance: {fileID: 919404670518434270}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8316569711903824789 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9198608536213045835, guid: 359c98b88c0dbcc43bbeb495f59d17c5,
     type: 3}
   m_PrefabInstance: {fileID: 919404670518434270}
   m_PrefabAsset: {fileID: 0}
